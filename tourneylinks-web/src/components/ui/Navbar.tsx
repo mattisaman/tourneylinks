@@ -11,8 +11,7 @@ export default function Navbar() {
     <div className="site-header">
       <nav>
         <Link className="nav-logo" href="/">
-          <img src="/logo.png" alt="TourneyLinks Logo" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />
-          <div className="nav-logo-text">Tourney<span>Links</span></div>
+          <img src="/logo.png" alt="TourneyLinks Logo" style={{ width: '160px', height: 'auto', objectFit: 'contain', mixBlendMode: 'lighten' }} />
         </Link>
         <div className="nav-actions">
           <Link href="/admin" className="btn-ghost">Admin Dashboard</Link>
