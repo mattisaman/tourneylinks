@@ -100,7 +100,7 @@ export default async function TournamentDetailPage({ params }: { params: Promise
                 {tournament.includes && (
                   <div>
                     <h2 className="section-title" style={{ fontSize: '2rem', marginBottom: '1.5rem' }}>What&apos;s Included</h2>
-                    <ul style={{ listStylePos: 'inside', fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--ink)', whiteSpace: 'pre-line' }}>
+                    <ul style={{ listStylePosition: 'inside', fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--ink)', whiteSpace: 'pre-line' }}>
                       {tournament.includes}
                     </ul>
                   </div>
