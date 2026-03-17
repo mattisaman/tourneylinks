@@ -1414,6 +1414,14 @@ nav {
   .course-meta { display: flex; gap: 1rem; font-size: 0.75rem; color: var(--mist); }
   .course-rating { color: var(--gold); font-weight: 600; }
 
+  /* ========== HEADER ACCENT LINE ========== */
+  .nav-accent-line {
+    height: 2px; width: 100%;
+    background: linear-gradient(90deg, transparent, #e8c84b, var(--gold-light), #b8942e, transparent);
+    animation: gold-foil-rotate 4s linear infinite;
+    opacity: 0.8;
+  }
+
   /* ========== PAGE TABS (navigation between views) ========== */
   .page-nav {
     background: var(--forest); 

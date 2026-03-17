@@ -19,6 +19,9 @@ export default function Navbar() {
         </div>
       </nav>
 
+      {/* GLOWING GOLD ACCENT LINE */}
+      <div className="nav-accent-line"></div>
+
       {/* PAGE NAVIGATION TABS */}
       <div className="page-nav hidden md:flex">
         <Link href="/" className={`page-tab ${pathname === '/' ? 'active' : ''}`}>🏠 Home</Link>
