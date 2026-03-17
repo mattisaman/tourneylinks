@@ -64,6 +64,11 @@ export default async function TournamentDetailPage({ params }: { params: Promise
                   <div className="hero-stat-num" style={{ color: 'var(--forest)' }}>{tournament.entryFee ? `$${tournament.entryFee}` : 'TBD'}</div>
                </div>
                <div className="feature-card" style={{ background: 'var(--white)', border: '1px solid rgba(26,46,26,0.06)' }}>
+                  <div className="t-detail-label">Format</div>
+                  <div className="hero-stat-num" style={{ color: 'var(--forest)' }}>{tournament.format || 'Standard'}</div>
+                  <div style={{ fontSize: '0.85rem', color: 'var(--mist)', marginTop: '0.2rem' }}>{tournament.holes || 18} Holes {tournament.formatDetail ? `• ${tournament.formatDetail}` : ''}</div>
+               </div>
+               <div className="feature-card" style={{ background: 'var(--white)', border: '1px solid rgba(26,46,26,0.06)' }}>
                   <div className="t-detail-label">Field Size</div>
                   <div className="hero-stat-num" style={{ color: 'var(--forest)' }}>{tournament.maxPlayers || 'Open'} <span style={{fontSize: '1rem', color: 'var(--mist)'}}>players</span></div>
                </div>
@@ -71,6 +76,22 @@ export default async function TournamentDetailPage({ params }: { params: Promise
                   <div className="t-detail-label">Spots Left</div>
                   <div className="hero-stat-num" style={{ color: 'var(--grass)' }}>{tournament.spotsRemaining !== null ? tournament.spotsRemaining : 'Open'}</div>
                </div>
+               {tournament.handicapMax !== null && (
+                 <div className="feature-card" style={{ background: 'var(--white)', border: '1px solid rgba(26,46,26,0.06)' }}>
+                    <div className="t-detail-label">Max Handicap</div>
+                    <div className="hero-stat-num" style={{ color: 'var(--forest)' }}>{tournament.handicapMax}</div>
+                 </div>
+               )}
+               <div className="feature-card" style={{ background: 'var(--white)', border: '1px solid rgba(26,46,26,0.06)' }}>
+                  <div className="t-detail-label">Access</div>
+                  <div className="hero-stat-num" style={{ color: 'var(--forest)' }}>{tournament.isPrivate ? 'Private' : 'Public'}</div>
+               </div>
+               {tournament.isCharity && (
+                 <div className="feature-card" style={{ background: 'var(--white)', border: '1px solid rgba(26,46,26,0.06)' }}>
+                    <div className="t-detail-label">Event Type</div>
+                    <div className="hero-stat-num" style={{ color: 'var(--gold)' }}>Charity</div>
+                 </div>
+               )}
                <div className="feature-card" style={{ background: 'var(--white)', border: '1px solid rgba(26,46,26,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   {tournament.registrationUrl ? (
                     <a href={tournament.registrationUrl} target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ width: '100%', textAlign: 'center', padding: '1rem' }}>
@@ -109,7 +130,7 @@ export default async function TournamentDetailPage({ params }: { params: Promise
 
               {/* Sidebar Area */}
               <div>
-                <div style={{ background: 'rgba(26,46,26,0.02)', border: '1px solid rgba(26,46,26,0.06)', borderRadius: 'var(--radius-lg)', padding: '2rem' }}>
+                <div style={{ background: 'rgba(26,46,26,0.02)', border: '1px solid rgba(26,46,26,0.06)', borderRadius: 'var(--radius-lg)', padding: '2rem', marginBottom: '1.5rem' }}>
                   <h3 className="section-eyebrow">Organizer</h3>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1.5rem' }}>
                     {tournament.organizerName && (
@@ -135,6 +156,27 @@ export default async function TournamentDetailPage({ params }: { params: Promise
                     )}
                   </div>
                 </div>
+
+                <div style={{ background: 'var(--white)', border: '1px solid rgba(201,168,76,0.3)', borderRadius: 'var(--radius-lg)', padding: '2rem', marginBottom: '1.5rem', boxShadow: 'var(--shadow-glow)' }}>
+                  <h3 className="section-eyebrow" style={{ color: 'var(--forest)' }}>Manage Event</h3>
+                  <p style={{ fontSize: '0.9rem', color: 'var(--mist)', marginBottom: '1.5rem', lineHeight: '1.5' }}>
+                    Are you the host? Claim this tournament to manage registrations and collect payments on TourneyLinks.
+                  </p>
+                  <Link href="/host" className="btn-primary" style={{ width: '100%', textAlign: 'center', display: 'block', padding: '0.9rem' }}>
+                    Claim Tournament
+                  </Link>
+                  <p style={{ fontSize: '0.8rem', color: 'var(--mist)', marginTop: '1.25rem', fontStyle: 'italic', textAlign: 'center' }}>
+                    Know the host? <Link href="#" style={{ color: 'var(--grass)', textDecoration: 'none', fontWeight: 600 }}>Share this page</Link> with them.
+                  </p>
+                </div>
+
+                {tournament.sourceUrl && (
+                  <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+                     <a href={tournament.sourceUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--mist)', fontSize: '0.85rem', textDecoration: 'underline', fontWeight: 500, transition: 'var(--transition)' }}>
+                       View Original Event Listing ↗
+                     </a>
+                  </div>
+                )}
               </div>
               
             </div>
