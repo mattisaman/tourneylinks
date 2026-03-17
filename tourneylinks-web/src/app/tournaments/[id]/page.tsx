@@ -141,19 +141,6 @@ export default async function TournamentDetailPage({ params }: { params: Promise
           </div>
         </div>
       </div>
-      
-      {/* Footer */}
-      <footer style={{ background: 'var(--forest)', padding: '4rem 0', marginTop: 'auto' }}>
-        <div className="section-wrapper" style={{ padding: '0 3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-                <div className="nav-logo-text" style={{ marginBottom: '0.5rem' }}>Tourney<span>Links</span> Agent</div>
-                <p style={{ fontSize: '0.85rem', color: 'var(--mist)' }}>Discovering the best competitive golf near you.</p>
-            </div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--mist)' }}>
-                &copy; {new Date().getFullYear()} TourneyLinks Network. All attributes extracted autonomously.
-            </div>
-        </div>
-      </footer>
     </>
   );
 }
