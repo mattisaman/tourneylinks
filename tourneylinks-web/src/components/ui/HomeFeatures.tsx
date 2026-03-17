@@ -199,7 +199,9 @@ export default function HomeFeatures() {
         <div className="footer-inner">
           <div className="footer-grid">
             <div>
-              <div className="footer-brand-name">Tourney<span>Links</span></div>
+              <div className="footer-brand-name">
+                <img src="/logo.png" alt="TourneyLinks Logo" style={{ height: '48px', objectFit: 'contain', marginBottom: '0.75rem' }} />
+              </div>
                 The premier platform for golf tournament discovery, registration, and management. Built for players, loved by organizers.
               <div className="footer-social">
                 <a href="#" className="social-icon">X</a>

@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --forest: #0c1f17;
-  --pine: #163028;
-  --fairway: #1e4d3d;
-  --grass: #2a7a5a;
-  --morning: #4ec9a0;
-  --gold: #c9a84c;
-  --amber: #e8c84b;
-  --gold-light: #dfc06a;
-  --cream: #f5f2ed;
-  --parchment: #edeae3;
-  --white: #fafaf8;
-  --ink: #141a16;
-  --mist: #5e7a6b;
+  --forest: #032115;
+  --pine: #073b22;
+  --fairway: #084c2a;
+  --grass: #0f6e40;
+  --morning: #17935a;
+  --gold: #dfb14b;
+  --amber: #f2ce76;
+  --gold-light: #f7df99;
+  --cream: #faf5eb;
+  --parchment: #f0eadc;
+  --white: #fdfcf9;
+  --ink: #07120c;
+  --mist: #67786f;
   --sand: #d4c5a0;
   --flag-red: #c0392b;
   --teal: #0d5e4f;
@@ -206,15 +206,9 @@ nav {
   padding: 2px;
 }
 .btn-primary:hover::before { opacity: 1; animation: gold-foil-rotate 3s ease infinite; }
-.btn-primary::after {
-  content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
-  transition: left 0.5s ease; border-radius: inherit;
-}
-.btn-primary:hover::after { left: 100%; }
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 28px rgba(201,168,76,0.4);
+  box-shadow: 0 6px 28px rgba(223, 177, 75, 0.4);
   filter: brightness(1.08);
 }
 
@@ -294,13 +288,7 @@ nav {
   -webkit-mask-composite: xor; mask-composite: exclude; padding: 2px;
 }
 .btn-hero:hover::before { opacity: 1; animation: gold-foil-rotate 3s ease infinite; }
-.btn-hero::after {
-  content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-  transition: left 0.6s ease; border-radius: inherit;
-}
-.btn-hero:hover::after { left: 100%; }
-.btn-hero:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(201,168,76,0.45); filter: brightness(1.1); }
+.btn-hero:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(223, 177, 75, 0.45); filter: brightness(1.1); }
 
 .btn-hero-outline {
   background: rgba(255,255,255,0.04); border: 1px solid rgba(245,240,232,0.2);
