@@ -25,8 +25,8 @@ export default async function Tournaments({ showAll = false }: { showAll?: boole
   };
 
   const getStatus = (t: any) => {
-    if (!t.registration_deadline) return "OPEN";
-    const deadline = new Date(t.registration_deadline);
+    if (!t.registrationDeadline) return "OPEN";
+    const deadline = new Date(t.registrationDeadline);
     if (deadline < new Date()) return "CLOSED";
     return "OPEN";
   };
@@ -73,16 +73,16 @@ export default async function Tournaments({ showAll = false }: { showAll?: boole
             </div>
             
             <div className="t-card-body">
-              <div className="t-card-date">{formatDate(t.date_start)}</div>
+              <div className="t-card-date">{formatDate(t.dateStart)}</div>
               <h3 className="t-card-title">{t.name}</h3>
               <div className="t-card-location">
-                <span role="img" aria-label="location">📍</span> {t.course_name} · {t.course_city}, {t.course_state}
+                <span role="img" aria-label="location">📍</span> {t.courseName} · {t.courseCity}, {t.courseState}
               </div>
               
               <div className="t-card-details">
                 <div>
                   <div className="t-detail-label">Entry Fee</div>
-                  <div className="t-detail-val">{t.entry_fee ? `$${t.entry_fee}` : 'TBD'}</div>
+                  <div className="t-detail-val">{t.entryFee ? `$${t.entryFee}` : 'TBD'}</div>
                 </div>
                 <div>
                   <div className="t-detail-label">Division</div>
@@ -93,8 +93,8 @@ export default async function Tournaments({ showAll = false }: { showAll?: boole
             
             <div className="t-card-footer">
               <div className="t-spots">
-                {t.spots_remaining !== null && t.max_players !== null ? (
-                    <><strong>{t.max_players - t.spots_remaining}</strong> / {t.max_players} Filled</>
+                {t.spotsRemaining !== null && t.maxPlayers !== null ? (
+                    <><strong>{t.maxPlayers - t.spotsRemaining}</strong> / {t.maxPlayers} Filled</>
                 ) : (
                     <>Spots Available</>
                 )}

@@ -1,6 +1,6 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { pgTable, serial, text, real, integer, boolean, timestamp } from 'drizzle-orm/pg-core';
-import { eq, and, gte } from 'drizzle-orm';
+import { eq, and, gte, asc } from 'drizzle-orm';
 import pg from 'pg';
 
 export const tournaments = pgTable('tournaments', {
@@ -60,7 +60,8 @@ export async function getExistingTournaments() {
     .where(and(
       eq(tournaments.isActive, true),
       gte(tournaments.dateStart, new Date().toISOString().split('T')[0])
-    ));
+    ))
+    .orderBy(asc(tournaments.dateStart));
   return rows;
 }
 
