@@ -37,16 +37,20 @@ export default async function Tournaments({ showAll = false }: { showAll?: boole
       
       <div className="section-header">
         <div>
-          <h2 className="section-title">Featured Tournaments</h2>
+          <h2 className="section-title">{showAll ? "All Events" : "Featured Tournaments"}</h2>
           <p className="section-sub">
-            Discover premier amateur championships, local competitive leagues, and high-end charity scrambles in your area.
+            {showAll 
+              ? "Browse the complete schedule of upcoming amateur championships, competitive leagues, and high-end charity scrambles in your area." 
+              : "Discover premier amateur championships, local competitive leagues, and high-end charity scrambles in your area."}
           </p>
         </div>
-        <div className="hidden md:block">
-          <Link href="/tournaments" style={{ textDecoration: 'none', color: 'var(--forest)', fontWeight: 600, fontSize: '0.9rem' }}>
-            View All Events <span>→</span>
-          </Link>
-        </div>
+        {!showAll && (
+          <div className="hidden md:block">
+            <Link href="/tournaments" style={{ textDecoration: 'none', color: 'var(--forest)', fontWeight: 600, fontSize: '0.9rem' }}>
+              View All Events <span>→</span>
+            </Link>
+          </div>
+        )}
       </div>
 
       <div className="tournaments-grid">
