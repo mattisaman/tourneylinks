@@ -191,21 +191,12 @@ nav {
   z-index: 1;
 }
 
-.btn-primary::before {
-  content: '';
-  position: absolute; inset: -2px;
-  border-radius: inherit;
-  background: linear-gradient(135deg, #b8942e, #f5e09a, #c9a84c, #e8c84b, #b8942e, #f5e09a);
-  background-size: 300% 300%;
-  opacity: 0; z-index: -1;
-  transition: opacity 0.4s ease;
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  padding: 2px;
+.btn-primary::after {
+  content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+  transform: skewX(-20deg); animation: gold-shine 4s infinite;
 }
-.btn-primary:hover::before { opacity: 1; animation: gold-foil-rotate 3s ease infinite; }
+.btn-primary:hover::after { animation-duration: 2s; }
 .btn-primary:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 28px rgba(223, 177, 75, 0.4);
@@ -277,15 +268,31 @@ nav {
   font-family: var(--font-sans), 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 600;
   cursor: pointer; transition: all var(--transition); text-decoration: none;
   display: inline-flex; align-items: center; gap: 0.5rem;
-  position: relative; overflow: visible; z-index: 1;
+  position: relative; overflow: hidden; z-index: 1;
+  box-shadow: 0 4px 15px rgba(223, 177, 75, 0.3);
 }
-.btn-hero::before {
-  content: ''; position: absolute; inset: -3px; border-radius: inherit;
-  background: linear-gradient(135deg, #b8942e, #f5e09a, #c9a84c, #e8c84b, #b8942e, #f5e09a);
-  background-size: 300% 300%; opacity: 0; z-index: -1; transition: opacity 0.4s ease;
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor; mask-composite: exclude; padding: 2px;
+
+.btn-hero::after {
+  content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+  transform: skewX(-20deg); animation: gold-shine 4s infinite;
+}
+
+.btn-hero:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(223, 177, 75, 0.4);
+}
+
+@keyframes gold-shine {
+  0% { left: -100%; }
+  20% { left: 200%; }
+  100% { left: 200%; }
+}
+
+@keyframes gold-foil-rotate {
+  0% { filter: hue-rotate(0deg) brightness(1); }
+  50% { filter: hue-rotate(15deg) brightness(1.2); }
+  100% { filter: hue-rotate(0deg) brightness(1); }
 }
 .btn-hero:hover::before { opacity: 1; animation: gold-foil-rotate 3s ease infinite; }
 .btn-hero:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(223, 177, 75, 0.45); filter: brightness(1.1); }
@@ -1418,15 +1425,27 @@ nav {
   .page-tab {
     padding: 0.9rem 1.75rem;
     background: transparent; border: none;
-    color: rgba(245,240,232,0.5); font-family: 'DM Sans', sans-serif;
-    font-size: 0.82rem; font-weight: 500;
-    cursor: pointer; transition: all 0.2s;
+    color: rgba(255,255,255,0.7); font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem; font-weight: 500;
+    cursor: pointer; transition: all 0.3s;
     text-transform: uppercase; letter-spacing: 0.08em;
     border-bottom: 2px solid transparent; margin-bottom: -2px;
+    position: relative;
   }
 
-  .page-tab:hover { color: var(--cream); }
-  .page-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .page-tab:hover { color: var(--white); text-shadow: 0 0 8px rgba(255,255,255,0.4); }
+  
+  .page-tab.active { 
+    color: var(--gold); 
+    border-bottom-color: var(--gold);
+    text-shadow: 0 0 12px rgba(223, 177, 75, 0.5);
+  }
+  .page-tab.active::after {
+    content: '';
+    position: absolute; bottom: -2px; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+    animation: gold-foil-rotate 3s linear infinite;
+  }
 
   /* Sections visibility */
   .view { display: none; }
