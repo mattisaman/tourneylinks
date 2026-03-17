@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { getExistingTournaments } from '@/lib/db';
 
-export default async function Tournaments() {
+export default async function Tournaments({ showAll = false }: { showAll?: boolean }) {
   const tournaments = await getExistingTournaments();
 
   // If we don't have exactly the right data or if it failed, provide a fallback.
@@ -25,8 +25,8 @@ export default async function Tournaments() {
   };
 
   const getStatus = (t: any) => {
-    if (!t.registrationDeadline) return "OPEN";
-    const deadline = new Date(t.registrationDeadline);
+    if (!t.registration_deadline) return "OPEN";
+    const deadline = new Date(t.registration_deadline);
     if (deadline < new Date()) return "CLOSED";
     return "OPEN";
   };
@@ -50,7 +50,7 @@ export default async function Tournaments() {
       </div>
 
       <div className="tournaments-grid">
-        {displayTournaments.slice(0, 6).map((t, i) => (
+        {(showAll ? displayTournaments : displayTournaments.slice(0, 6)).map((t, i) => (
           <Link href={`/tournaments/${t.id}`} key={t.id} className="t-card" style={{ textDecoration: 'none' }}>
             <div className="t-card-cover">
               <div 
@@ -69,16 +69,16 @@ export default async function Tournaments() {
             </div>
             
             <div className="t-card-body">
-              <div className="t-card-date">{formatDate(t.dateStart)}</div>
+              <div className="t-card-date">{formatDate(t.date_start)}</div>
               <h3 className="t-card-title">{t.name}</h3>
               <div className="t-card-location">
-                <span role="img" aria-label="location">📍</span> {t.courseName} · {t.courseCity}, {t.courseState}
+                <span role="img" aria-label="location">📍</span> {t.course_name} · {t.course_city}, {t.course_state}
               </div>
               
               <div className="t-card-details">
                 <div>
                   <div className="t-detail-label">Entry Fee</div>
-                  <div className="t-detail-val">{t.entryFee ? `$${t.entryFee}` : 'TBD'}</div>
+                  <div className="t-detail-val">{t.entry_fee ? `$${t.entry_fee}` : 'TBD'}</div>
                 </div>
                 <div>
                   <div className="t-detail-label">Division</div>
@@ -89,8 +89,8 @@ export default async function Tournaments() {
             
             <div className="t-card-footer">
               <div className="t-spots">
-                {t.spotsRemaining !== null && t.maxPlayers !== null ? (
-                    <><strong>{t.maxPlayers - t.spotsRemaining}</strong> / {t.maxPlayers} Filled</>
+                {t.spots_remaining !== null && t.max_players !== null ? (
+                    <><strong>{t.max_players - t.spots_remaining}</strong> / {t.max_players} Filled</>
                 ) : (
                     <>Spots Available</>
                 )}
