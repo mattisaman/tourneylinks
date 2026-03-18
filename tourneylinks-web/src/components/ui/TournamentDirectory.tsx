@@ -37,6 +37,30 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
   const [maxFee, setMaxFee] = useState<number | ''>('');
   const [accessType, setAccessType] = useState('All');
   const [isCharity, setIsCharity] = useState(false);
+  const [requireSpots, setRequireSpots] = useState(false);
+  const [requireOpenReg, setRequireOpenReg] = useState(true);
+
+  // The explicitly applied filters that drive the actual results
+  const [appliedFilters, setAppliedFilters] = useState({
+    zipCode: '',
+    radius: 50,
+    format: 'All',
+    maxFee: '' as number | '',
+    accessType: 'All',
+    isCharity: false,
+    requireSpots: false,
+    requireOpenReg: true
+  });
+
+  const handleApplyFilters = () => {
+    setAppliedFilters({ zipCode, radius, format, maxFee, accessType, isCharity, requireSpots, requireOpenReg });
+  };
+
+  const handleClearFilters = () => {
+    setZipCode(''); setRadius(50); setFormat('All'); setMaxFee(''); setAccessType('All'); 
+    setIsCharity(false); setRequireSpots(false); setRequireOpenReg(false);
+    setAppliedFilters({ zipCode: '', radius: 50, format: 'All', maxFee: '', accessType: 'All', isCharity: false, requireSpots: false, requireOpenReg: false });
+  };
 
   const getGradient = (index: number) => {
     const gradients = [
@@ -63,32 +87,38 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
   const filteredTournaments = useMemo(() => {
     return initialTournaments.filter(t => {
       // 1. Fee Filter
-      if (maxFee !== '' && t.entryFee && t.entryFee > maxFee) {
+      if (appliedFilters.maxFee !== '' && t.entryFee && t.entryFee > appliedFilters.maxFee) {
         return false;
       }
 
       // 2. Format Filter
-      if (format !== 'All') {
-        if (!t.format || !t.format.toLowerCase().includes(format.toLowerCase())) {
-          return false;
+      if (appliedFilters.format !== 'All') {
+        if (!t.format || !t.format.toLowerCase().includes(appliedFilters.format.toLowerCase())) {
+           return false;
         }
       }
 
       // 3. Access Filter
-      if (accessType === 'Public' && t.isPrivate) return false;
-      if (accessType === 'Private' && !t.isPrivate) return false;
+      if (appliedFilters.accessType === 'Public' && t.isPrivate) return false;
+      if (appliedFilters.accessType === 'Private' && !t.isPrivate) return false;
 
       // 4. Charity Filter
-      if (isCharity && !t.isCharity) return false;
+      if (appliedFilters.isCharity && !t.isCharity) return false;
 
-      // 5. ZIP Radius Filter
-      if (zipCode.length >= 3) {
-        // If we have a lat/lng for the tournament and mapping for the zip, we'd do Haversine.
-        // For MVP frontend fallback without an API call, we can just do a fuzzy string match on courseZip/City if we don't have the explicit radius data.
-        // We will try to match the prefix of the zip code since we lack a full backend geocoder.
-        if (t.courseZip && !t.courseZip.startsWith(zipCode.substring(0, 3))) {
-           // Also check if text matches City broadly
-           if (!t.courseCity.toLowerCase().includes(zipCode.toLowerCase())) {
+      // 5. Spots Remaining Filter
+      if (appliedFilters.requireSpots && t.spotsRemaining === 0) return false;
+
+      // 6. Registration Open Filter
+      if (appliedFilters.requireOpenReg && getStatus(t) === 'CLOSED') return false;
+
+      // 7. ZIP Radius Filter
+      if (appliedFilters.zipCode.length >= 3) {
+        // Mocking the radius math by just strictly matching the first 3 or 5 digits of the zip for the MVP until PostGIS is integrated.
+        // A smaller radius requires a more exact string match as a temporary visually-equivalent UX.
+        const matchLength = appliedFilters.radius <= 20 ? 5 : 3;
+        
+        if (t.courseZip && !t.courseZip.startsWith(appliedFilters.zipCode.substring(0, matchLength))) {
+           if (!t.courseCity.toLowerCase().includes(appliedFilters.zipCode.toLowerCase())) {
               return false;
            }
         }
@@ -96,7 +126,7 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
 
       return true;
     });
-  }, [initialTournaments, zipCode, maxFee, format, accessType, isCharity]);
+  }, [initialTournaments, appliedFilters]);
 
   return (
     <div className="section-wrapper" id="explore" style={{ padding: '4rem 3rem' }}>
@@ -124,7 +154,18 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
                 value={zipCode} 
                 onChange={e => setZipCode(e.target.value)} 
               />
-              <span className="wfield-hint" style={{ marginTop: '0.25rem', display: 'block' }}>Shows matches near you</span>
+            </div>
+            
+            <div className="wfield" style={{ marginBottom: '1.25rem' }}>
+              <label>Radius</label>
+              <select value={radius} onChange={e => setRadius(Number(e.target.value))}>
+                <option value={5}>Within 5 miles</option>
+                <option value={10}>Within 10 miles</option>
+                <option value={20}>Within 20 miles</option>
+                <option value={50}>Within 50 miles</option>
+                <option value={100}>Within 100 miles</option>
+                <option value={500}>Statewide</option>
+              </select>
             </div>
 
             <div className="wfield" style={{ marginBottom: '1.25rem' }}>
@@ -140,7 +181,7 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
             </div>
 
             <div className="wfield" style={{ marginBottom: '1.25rem' }}>
-              <label>Max Registration Fee</label>
+              <label>Max Entry Fee</label>
               <div style={{ position: 'relative' }}>
                 <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--mist)' }}>$</span>
                 <input 
@@ -162,25 +203,49 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
               </select>
             </div>
 
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--forest)', fontWeight: 500 }}>
-              <input 
-                type="checkbox" 
-                checked={isCharity} 
-                onChange={e => setIsCharity(e.target.checked)} 
-                style={{ width: '18px', height: '18px', accentColor: 'var(--grass)' }}
-              />
-              Charity Events Only
-            </label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '1.5rem', marginBottom: '2rem' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--forest)', fontWeight: 500 }}>
+                <input 
+                  type="checkbox" 
+                  checked={requireOpenReg} 
+                  onChange={e => setRequireOpenReg(e.target.checked)} 
+                  style={{ width: '18px', height: '18px', accentColor: 'var(--grass)' }}
+                />
+                Registration Currently Open
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--forest)', fontWeight: 500 }}>
+                <input 
+                  type="checkbox" 
+                  checked={requireSpots} 
+                  onChange={e => setRequireSpots(e.target.checked)} 
+                  style={{ width: '18px', height: '18px', accentColor: 'var(--grass)' }}
+                />
+                Has Spots Remaining
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--forest)', fontWeight: 500 }}>
+                <input 
+                  type="checkbox" 
+                  checked={isCharity} 
+                  onChange={e => setIsCharity(e.target.checked)} 
+                  style={{ width: '18px', height: '18px', accentColor: 'var(--grass)' }}
+                />
+                Charity Events Only
+              </label>
+            </div>
+            
+            <button onClick={handleApplyFilters} className="btn-primary" style={{ width: '100%', padding: '0.9rem', textAlign: 'center', display: 'block', fontSize: '0.95rem' }}>
+              Apply Filters
+            </button>
           </div>
           
-          <div style={{ marginTop: '1rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(26,46,26,0.06)' }}>
-            <div style={{ fontSize: '0.85rem', color: 'var(--mist)' }}>
-              Showing {filteredTournaments.length} events
+          <div style={{ marginTop: '0.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(26,46,26,0.06)' }}>
+            <div style={{ fontSize: '0.85rem', color: 'var(--mist)', textAlign: 'center' }}>
+              {filteredTournaments.length} events match
             </div>
-            {(zipCode || format !== 'All' || maxFee !== '' || accessType !== 'All' || isCharity) && (
+            {(appliedFilters.zipCode || appliedFilters.format !== 'All' || appliedFilters.maxFee !== '' || appliedFilters.accessType !== 'All' || appliedFilters.isCharity || appliedFilters.requireSpots || appliedFilters.requireOpenReg) && (
               <button 
-                onClick={() => { setZipCode(''); setFormat('All'); setMaxFee(''); setAccessType('All'); setIsCharity(false); }}
-                style={{ background: 'none', border: 'none', color: 'var(--gold)', fontSize: '0.8rem', textDecoration: 'underline', marginTop: '0.5rem', cursor: 'pointer', fontWeight: 600, padding: 0 }}
+                onClick={handleClearFilters}
+                style={{ background: 'none', border: 'none', color: 'var(--mist)', fontSize: '0.8rem', textDecoration: 'underline', marginTop: '0.75rem', cursor: 'pointer', fontWeight: 500, padding: 0, width: '100%', textAlign: 'center' }}
               >
                 Clear all filters
               </button>
