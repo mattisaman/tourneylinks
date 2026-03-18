@@ -54,7 +54,7 @@ export default async function Tournaments({ showAll = false }: { showAll?: boole
       </div>
 
       <div className="tournaments-grid">
-        {(showAll ? displayTournaments : displayTournaments.slice(0, 6)).map((t, i) => (
+        {(showAll ? displayTournaments : [...displayTournaments].sort(() => 0.5 - Math.random()).slice(0, 6)).map((t, i) => (
           <Link href={`/tournaments/${t.id}`} key={t.id} className="t-card" style={{ textDecoration: 'none' }}>
             <div className="t-card-cover">
               <div 
