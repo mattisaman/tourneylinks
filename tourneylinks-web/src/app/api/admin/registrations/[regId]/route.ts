@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { db, registrations } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 
@@ -21,6 +22,7 @@ export async function PATCH(
       .set({ assignedTeam })
       .where(eq(registrations.id, regId));
 
+    revalidatePath('/admin');
     return NextResponse.json({ success: true });
 
   } catch (error) {

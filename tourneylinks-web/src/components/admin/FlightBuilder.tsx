@@ -11,6 +11,7 @@ export default function FlightBuilder({
   teamsMap: Record<number, any[]> 
 }) {
   const [loading, setLoading] = useState(false);
+  const [movingId, setMovingId] = useState<number | null>(null);
   const router = useRouter();
 
   const handleBuildFlights = async () => {
@@ -32,6 +33,7 @@ export default function FlightBuilder({
   };
 
   const handleMovePlayer = async (regId: number, newTeamId: string) => {
+    setMovingId(regId);
     try {
       const res = await fetch(`/api/admin/registrations/${regId}`, {
         method: 'PATCH',
@@ -46,6 +48,7 @@ export default function FlightBuilder({
     } catch(err) {
       alert('Network error moving player.');
     }
+    setMovingId(null);
   };
 
   const activeTeams = Object.keys(teamsMap).sort((a,b) => parseInt(a) - parseInt(b));
@@ -110,7 +113,8 @@ export default function FlightBuilder({
                         </div>
                         <div>
                           <select 
-                            value={teamId}
+                            defaultValue={teamId}
+                            disabled={movingId === p.id}
                             onChange={(e) => handleMovePlayer(p.id, e.target.value)}
                             style={{ 
                               fontSize: '0.7rem', 
@@ -118,7 +122,8 @@ export default function FlightBuilder({
                               borderRadius: '2px', 
                               border: '1px solid rgba(0,0,0,0.1)', 
                               background: '#fff',
-                              cursor: 'pointer',
+                              cursor: movingId === p.id ? 'wait' : 'pointer',
+                              opacity: movingId === p.id ? 0.5 : 1,
                               outline: 'none' 
                             }}
                           >

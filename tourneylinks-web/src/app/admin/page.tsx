@@ -4,6 +4,8 @@ import { db, registrations, tournaments } from '@/lib/db';
 import { eq, desc } from 'drizzle-orm';
 import FlightBuilder from '@/components/admin/FlightBuilder';
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminDashboard() {
   // Hardcoded for the prototype to point to the first tournament matching our mock seed
   const tourneys = await db.select().from(tournaments).limit(1);
