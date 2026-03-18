@@ -1,7 +1,35 @@
 import React from 'react';
 import Link from 'next/link';
+import { db, registrations, tournaments } from '@/lib/db';
+import { eq, desc } from 'drizzle-orm';
+import FlightBuilder from '@/components/admin/FlightBuilder';
 
-export default function AdminDashboard() {
+export default async function AdminDashboard() {
+  // Hardcoded for the prototype to point to the first tournament matching our mock seed
+  const tourneys = await db.select().from(tournaments).limit(1);
+  const tournamentId = tourneys.length > 0 ? tourneys[0].id : 1;
+  const tourney = tourneys.length > 0 ? tourneys[0] : null;
+
+  const allRegs = await db.select()
+    .from(registrations)
+    .where(eq(registrations.tournamentId, tournamentId))
+    .orderBy(desc(registrations.createdAt));
+
+  // Partition teams
+  const teamsMap: Record<number, typeof allRegs> = {};
+  allRegs.forEach(r => {
+    if (r.assignedTeam) {
+       if (!teamsMap[r.assignedTeam]) teamsMap[r.assignedTeam] = [];
+       teamsMap[r.assignedTeam].push(r);
+    }
+  });
+
+  const avgHcp = allRegs.length > 0 
+    ? (allRegs.reduce((a, b) => a + (b.handicap || 0), 0) / allRegs.length).toFixed(1) 
+    : '0.0';
+
+  const revenue = allRegs.length * 150; // Mock $150 entry fee
+
   return (
     <div style={{ minHeight: 'calc(100vh - 80px)' }}>
       <div className="dashboard-wrap" style={{ minHeight: '100%' }}>
@@ -39,8 +67,8 @@ export default function AdminDashboard() {
         <div className="dash-main">
           <div className="dash-header">
             <div>
-              <div className="dash-greeting">Lakewood Classic Invitational</div>
-              <div className="dash-date">June 14–15, 2025 · Lakewood CC, Westchester IL</div>
+              <div className="dash-greeting">{tourney ? tourney.name : 'Unknown Tournament'}</div>
+              <div className="dash-date">{tourney ? `${new Date(tourney.dateStart).toLocaleDateString()} · ${tourney.courseName}` : 'Date TBD'}</div>
             </div>
             <div style={{ display: 'flex', gap: '0.75rem' }}>
               <button className="btn-ghost" style={{ color: 'var(--forest)', borderColor: 'rgba(26,46,26,0.2)' }}>🔒 Private Link</button>
@@ -52,27 +80,27 @@ export default function AdminDashboard() {
           <div className="kpi-grid">
             <div className="kpi-card">
               <div className="kpi-icon">👥</div>
-              <div className="kpi-val">68</div>
+              <div className="kpi-val">{allRegs.length}</div>
               <div className="kpi-label">Registrants</div>
-              <div className="kpi-change">↑ 8 this week</div>
+              <div className="kpi-change">↑ {allRegs.length} total players</div>
             </div>
             <div className="kpi-card">
               <div className="kpi-icon">✅</div>
-              <div className="kpi-val">61</div>
+              <div className="kpi-val">{allRegs.length}</div>
               <div className="kpi-label">Paid</div>
-              <div className="kpi-change">7 pending payment</div>
+              <div className="kpi-change">0 pending payment</div>
             </div>
             <div className="kpi-card">
               <div className="kpi-icon">💰</div>
-              <div className="kpi-val">$7,625</div>
+              <div className="kpi-val">${revenue.toLocaleString()}</div>
               <div className="kpi-label">Revenue Collected</div>
-              <div className="kpi-change">↑ $875 pending</div>
+              <div className="kpi-change">Based on $150 avg fee</div>
             </div>
             <div className="kpi-card">
               <div className="kpi-icon">🏌️</div>
-              <div className="kpi-val">14.2</div>
+              <div className="kpi-val">{avgHcp}</div>
               <div className="kpi-label">Avg Handicap</div>
-              <div className="kpi-change">Range: 2.1 – 26.8</div>
+              <div className="kpi-change">Field Index Balance</div>
             </div>
           </div>
 
@@ -102,46 +130,29 @@ export default function AdminDashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td><div className="player-name">Mike Reynolds</div><div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>mike@example.com</div></td>
-                      <td><span className="player-hcp">14.2</span></td>
-                      <td style={{ fontSize: '0.8rem', color: 'var(--mist)' }}>May 28</td>
-                      <td><span className="status-pill status-paid">Paid $128.93</span></td>
-                      <td style={{ fontSize: '0.8rem' }}>Team Alpha</td>
-                      <td><button style={{ background: 'none', border: 'none', color: 'var(--mist)', cursor: 'pointer', fontSize: '1rem' }}>⋯</button></td>
-                    </tr>
-                    <tr>
-                      <td><div className="player-name">Sarah Chen</div><div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>sarah@example.com</div></td>
-                      <td><span className="player-hcp">8.7</span></td>
-                      <td style={{ fontSize: '0.8rem', color: 'var(--mist)' }}>May 29</td>
-                      <td><span className="status-pill status-paid">Paid $128.93</span></td>
-                      <td style={{ fontSize: '0.8rem' }}>Team Alpha</td>
-                      <td><button style={{ background: 'none', border: 'none', color: 'var(--mist)', cursor: 'pointer', fontSize: '1rem' }}>⋯</button></td>
-                    </tr>
-                    <tr>
-                      <td><div className="player-name">Tom Harrington</div><div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>tom@example.com</div></td>
-                      <td><span className="player-hcp">22.1</span></td>
-                      <td style={{ fontSize: '0.8rem', color: 'var(--mist)' }}>Jun 1</td>
-                      <td><span className="status-pill status-pending">Pending</span></td>
-                      <td style={{ fontSize: '0.8rem' }}>—</td>
-                      <td><button style={{ background: 'none', border: 'none', color: 'var(--mist)', cursor: 'pointer', fontSize: '1rem' }}>⋯</button></td>
-                    </tr>
-                    <tr>
-                      <td><div className="player-name">James Park</div><div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>james@example.com</div></td>
-                      <td><span className="player-hcp">3.4</span></td>
-                      <td style={{ fontSize: '0.8rem', color: 'var(--mist)' }}>Jun 2</td>
-                      <td><span className="status-pill status-paid">Paid $128.93</span></td>
-                      <td style={{ fontSize: '0.8rem' }}>Team Birdie</td>
-                      <td><button style={{ background: 'none', border: 'none', color: 'var(--mist)', cursor: 'pointer', fontSize: '1rem' }}>⋯</button></td>
-                    </tr>
-                    <tr>
-                      <td><div className="player-name">Karen Williams</div><div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>karen@example.com</div></td>
-                      <td><span className="player-hcp">18.0</span></td>
-                      <td style={{ fontSize: '0.8rem', color: 'var(--mist)' }}>Jun 3</td>
-                      <td><span className="status-pill status-waitlist">Waitlist</span></td>
-                      <td style={{ fontSize: '0.8rem' }}>—</td>
-                      <td><button style={{ background: 'none', border: 'none', color: 'var(--mist)', cursor: 'pointer', fontSize: '1rem' }}>⋯</button></td>
-                    </tr>
+                    {allRegs.length === 0 ? (
+                      <tr><td colSpan={6} style={{ textAlign: 'center', padding: '2rem', color: 'var(--mist)' }}>No registrants yet.</td></tr>
+                    ) : (
+                      allRegs.map(reg => (
+                        <tr key={reg.id}>
+                          <td>
+                            <div className="player-name">{reg.name}</div>
+                            <div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>{reg.email}</div>
+                          </td>
+                          <td><span className="player-hcp">{reg.handicap?.toFixed(1) || 'N/A'}</span></td>
+                          <td style={{ fontSize: '0.8rem', color: 'var(--mist)' }}>Recent</td>
+                          <td><span className={`status-pill status-${reg.paymentStatus?.toLowerCase() === 'completed' ? 'paid' : 'pending'}`}>{reg.paymentStatus}</span></td>
+                          <td style={{ fontSize: '0.8rem' }}>
+                            {reg.assignedTeam ? `Team ${reg.assignedTeam}` : (
+                              <span style={{ color: 'var(--mist)', fontStyle: 'italic', fontSize: '0.75rem' }}>
+                                {reg.pairingRequest ? `Requested: ${reg.pairingRequest}` : '—'}
+                              </span>
+                            )}
+                          </td>
+                          <td><button style={{ background: 'none', border: 'none', color: 'var(--mist)', cursor: 'pointer', fontSize: '1rem' }}>⋯</button></td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -213,29 +224,8 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              {/* Flight Builder */}
-              <div className="dash-card">
-                <div className="dash-card-header">
-                  <div className="dash-card-title">🏌️ Auto Flight Builder</div>
-                  <button className="btn-primary" style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem' }}>Build Flights</button>
-                </div>
-                <div style={{ padding: '1.25rem' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                    <div style={{ background: 'rgba(90,140,58,0.08)', border: '1px solid rgba(90,140,58,0.2)', padding: '0.85rem', borderRadius: '2px' }}>
-                      <div style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--forest)', marginBottom: '0.25rem' }}>Flight A — Championship</div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>HCP 0–8 · 16 players · 4 teams</div>
-                    </div>
-                    <div style={{ background: 'rgba(201,168,76,0.08)', border: '1px solid rgba(201,168,76,0.2)', padding: '0.85rem', borderRadius: '2px' }}>
-                      <div style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--forest)', marginBottom: '0.25rem' }}>Flight B — Main</div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>HCP 9–16 · 28 players · 7 teams</div>
-                    </div>
-                    <div style={{ background: 'rgba(45,74,45,0.08)', border: '1px solid rgba(45,74,45,0.2)', padding: '0.85rem', borderRadius: '2px' }}>
-                      <div style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--forest)', marginBottom: '0.25rem' }}>Flight C — Senior/Social</div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>HCP 17–28 · 24 players · 6 teams</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              {/* Flight Builder (AI React Client Component) */}
+              <FlightBuilder tournamentId={tournamentId} teamsMap={teamsMap} />
             </div>
           </div>
         </div>

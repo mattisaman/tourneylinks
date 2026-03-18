@@ -81,6 +81,29 @@ export const tournaments = pgTable('tournaments', {
   isActive: boolean('is_active').default(true),
 });
 
+export const registrations = pgTable('registrations', {
+  id: serial('id').primaryKey(),
+  tournamentId: integer('tournament_id').references(() => tournaments.id).notNull(),
+  name: text('name').notNull(),
+  email: text('email').notNull(),
+  handicap: real('handicap'),
+  paymentStatus: text('payment_status').default('COMPLETED'),
+  pairingRequest: text('pairing_request'),
+  assignedTeam: integer('assigned_team'),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const crawlLogs = pgTable('crawl_logs', {
+  id: serial('id').primaryKey(),
+  cycleId: text('cycle_id').notNull(),
+  sourceId: text('source_id').notNull(),
+  url: text('url').notNull(),
+  status: text('status').notNull(),
+  tournamentsFound: integer('tournaments_found').default(0),
+  error: text('error'),
+  crawledAt: timestamp('crawled_at').defaultNow(),
+});
+
 const globalForDb = globalThis as unknown as {
   pool: pg.Pool | undefined;
 };
