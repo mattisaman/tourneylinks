@@ -141,6 +141,38 @@ async function processSource(
 
         // Normalize each tournament
         const normalized = extraction.tournaments.map(normalizeTournament);
+
+        // --- DEEP CRAWL LOGIC ---
+        for (let i = 0; i < normalized.length; i++) {
+            const t = normalized[i];
+            const url = t.registrationUrl;
+            const needsDeepCrawl = url && (!t.entryFee || t.spotsRemaining === null || !t.description);
+            // Ensure registrationUrl is a valid web link pointing to a detail page
+            if (needsDeepCrawl && url.startsWith('http')) {
+                logger.info({ url }, `Deep crawling details for ${t.name}...`);
+                try {
+                    const detailPage = await crawlPage(url, source);
+                    const detailExt = await extractTournaments(detailPage.text, url, source.id);
+                    if (detailExt.tournaments.length > 0) {
+                        const dt = detailExt.tournaments[0];
+                        // Merge the deep details into the top-level tournament
+                        if (dt.entryFee) t.entryFee = dt.entryFee;
+                        if (dt.maxPlayers) t.maxPlayers = dt.maxPlayers;
+                        if (dt.spotsRemaining !== null) t.spotsRemaining = dt.spotsRemaining;
+                        if (dt.description && dt.description.length > (t.description?.length || 0)) {
+                            t.description = dt.description;
+                        }
+                        if (dt.includes) t.includes = dt.includes;
+                        if (dt.formatDetail) t.formatDetail = dt.formatDetail;
+                        if (!t.organizerName && dt.organizerName) t.organizerName = dt.organizerName;
+                    }
+                } catch (err) {
+                    logger.warn({ url: t.registrationUrl, error: String(err) }, 'Deep crawl failed, falling back to surface data');
+                }
+            }
+        }
+        // --- END DEEP CRAWL ---
+
         allExtracted.push(...normalized);
 
         stats.tournamentsFound += normalized.length;

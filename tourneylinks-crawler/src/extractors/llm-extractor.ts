@@ -62,7 +62,9 @@ RULES:
 - For format, pick the closest match. "Scramble" includes charity scrambles. "Best-ball" includes 2-man/4-man best ball.
 - entryFee should be a number (just the dollar amount, no $ sign).
 - isCharity = true if it's a fundraiser, charity event, or benefit tournament.
+- Be highly aggressive in capturing the 'registrationUrl'! If there is a 'More Info', 'Event Details', 'Register Here', or link to a child-page for the specific tournament, capture it as the registrationUrl. This is critical for our deep-crawling system.
 - Be highly aggressive in finding the exact course location. Look for full addresses in footers or headers to derive the courseZip.
+- Allow for the fact that you might be reading a "Tournament Directory Page" (multiple events) OR a specific "Tournament Detail Page" (one event). If it's a single event, extract all possible nested details (entryFee, maxPlayers, spotsRemaining, includes) perfectly.
 - Be conservative on other fields: only extract what's clearly stated on the page.
 - If the page has NO golf tournaments, return an empty array.
 
@@ -107,7 +109,15 @@ ${EXTRACTION_PROMPT}`,
       .replace(/```\s*/g, '')
       .trim();
 
-    const parsed = JSON.parse(jsonStr);
+    let parsed: any;
+    try {
+      parsed = JSON.parse(jsonStr);
+    } catch (parseErr) {
+      console.log('--- MALFORMED JSON DETECTED ---');
+      console.log(jsonStr);
+      console.log('-------------------------------');
+      throw parseErr;
+    }
 
     // Validate and enrich each tournament
     const tournaments: Tournament[] = [];

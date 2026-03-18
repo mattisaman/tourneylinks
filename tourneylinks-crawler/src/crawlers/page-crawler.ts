@@ -43,6 +43,14 @@ export async function fetchPage(url: string, userAgent: string): Promise<CrawlRe
     // Remove noise: scripts, styles, nav, footer, ads
     $('script, style, nav, footer, header, .ad, .sidebar, .cookie-banner, noscript').remove();
 
+    // Expose URLs for the LLM
+    $('a').each((_, el) => {
+      const href = $(el).attr('href');
+      if (href && !href.startsWith('javascript:')) {
+         $(el).text(`[ ${$(el).text().trim()} -> REG_LINK: ${href} ]`);
+      }
+    });
+
     const text = $('body').text()
       .replace(/\s+/g, ' ')
       .replace(/\n\s*\n/g, '\n')
@@ -120,6 +128,14 @@ export async function fetchPageWithBrowser(url: string, userAgent: string): Prom
     const html = await page.content();
     const $ = cheerio.load(html);
     $('script, style, nav, footer, header, .ad, .sidebar, noscript').remove();
+
+    // Expose URLs for the LLM
+    $('a').each((_, el) => {
+      const href = $(el).attr('href');
+      if (href && !href.startsWith('javascript:')) {
+         $(el).text(`[ ${$(el).text().trim()} -> REG_LINK: ${href} ]`);
+      }
+    });
 
     const text = $('body').text()
       .replace(/\s+/g, ' ')
