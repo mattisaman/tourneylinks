@@ -159,3 +159,23 @@ To scale beyond 100K pages/month:
 ## License
 
 Proprietary — TourneyLinks, Inc.
+
+
+## How to Start the TourneyLinks Crawler
+
+**Step 1: Open your terminal and navigate to the crawler folder:**
+```bash
+cd "Desktop/Golf Tournament Site/tourneylinks-crawler"
+```
+
+**Step 2: Load the correct Node Version Manager (NVM) environment:**
+```bash
+export PATH="$HOME/.nvm/versions/node/v22.22.1/bin:$PATH"
+```
+
+**Step 3: Start the automated crawler script:**
+```bash
+npm run dev
+```
+
+*(Note: The crawler runs on a `cron` schedule, meaning it will boot up, search the internet, save tournaments to your database, and then quietly pause. Leave the terminal window open/minimized, and your Mac awake, and it will automatically wake up and search again exactly 6 hours later!)*

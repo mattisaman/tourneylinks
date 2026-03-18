@@ -37,7 +37,7 @@ For EACH tournament found, extract these fields as JSON:
   "courseName": "Name of the golf course",
   "courseCity": "City",
   "courseState": "2-letter state code (e.g. NY, CA, IL)",
-  "courseZip": "ZIP code or null",
+  "courseZip": "Exact 5-digit ZIP code if stated or clearly inferable from the address/footer, else null",
   "format": "One of: stroke, scramble, best-ball, match, stableford, alternate-shot, chapman, shamble, other",
   "formatDetail": "Specific format description e.g. '4-Man Scramble', '2-Person Best Ball'",
   "holes": 18,
@@ -62,7 +62,8 @@ RULES:
 - For format, pick the closest match. "Scramble" includes charity scrambles. "Best-ball" includes 2-man/4-man best ball.
 - entryFee should be a number (just the dollar amount, no $ sign).
 - isCharity = true if it's a fundraiser, charity event, or benefit tournament.
-- Be conservative: only extract what's clearly stated on the page.
+- Be highly aggressive in finding the exact course location. Look for full addresses in footers or headers to derive the courseZip.
+- Be conservative on other fields: only extract what's clearly stated on the page.
 - If the page has NO golf tournaments, return an empty array.
 
 Return ONLY valid JSON: { "tournaments": [...], "confidence": 0.95 }
@@ -82,7 +83,7 @@ export async function extractTournaments(
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-1.5-pro',
+      model: 'gemini-2.5-flash',
       contents: `Extract golf tournament information from this web page.
 
 PAGE URL: ${pageUrl}
@@ -179,5 +180,12 @@ export function isLikelyTournamentPage(pageText: string, title: string): boolean
     || /\d{1,2}\/\d{1,2}\/\d{2,4}/.test(text)
     || /202[4-9]/.test(text);
 
-  return hasDate;
+  // NY TARGET LOCATION FILTER
+  const nyKeywords = [
+    'new york', '\\bny\\b', 'n\\.y\\.', 'upstate', 'long island',
+    'albany', 'allegany', 'bronx', 'broome', 'cattaraugus', 'cayuga', 'chautauqua', 'chemung', 'chenango', 'clinton', 'columbia', 'cortland', 'delaware', 'dutchess', 'erie', 'essex', 'franklin', 'fulton', 'genesee', 'greene', 'hamilton', 'herkimer', 'jefferson', 'kings', 'lewis', 'livingston', 'madison', 'monroe', 'montgomery', 'nassau', 'niagara', 'oneida', 'onondaga', 'ontario', 'orange', 'orleans', 'oswego', 'otsego', 'putnam', 'queens', 'rensselaer', 'richmond', 'rockland', 'st. lawrence', 'saratoga', 'schenectady', 'schoharie', 'schuyler', 'seneca', 'steuben', 'suffolk', 'sullivan', 'tioga', 'tompkins', 'ulster', 'warren', 'washington', 'wayne', 'westchester', 'wyoming', 'yates'
+  ];
+  const hasTargetLocation = new RegExp(nyKeywords.join('|'), 'i').test(text);
+  
+  return hasTargetLocation;
 }
