@@ -13,6 +13,41 @@ const logger = pino({ name: 'database' });
 
 // ─── Schema ───
 
+export const courses = pgTable('courses', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  address: text('address'),
+  city: text('city').notNull(),
+  state: text('state').notNull(),
+  zip: text('zip'),
+  latitude: real('latitude'),
+  longitude: real('longitude'),
+  
+  website: text('website'),
+  phone: text('phone'),
+  type: text('type'), // Public, Private, Semi-Private, Resort, Municipal
+  holes: integer('holes').default(18),
+  par: integer('par').default(72),
+  
+  architect: text('architect'),
+  yearBuilt: integer('year_built'),
+  guestPolicy: text('guest_policy'),
+
+  hasDrivingRange: boolean('has_driving_range').default(false),
+  hasChippingArea: boolean('has_chipping_area').default(false),
+  hasPuttingGreen: boolean('has_putting_green').default(false),
+  hasProShop: boolean('has_pro_shop').default(false),
+  
+  rawMetadata: text('raw_metadata'),
+  
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+  isActive: boolean('is_active').default(true),
+}, (table) => [
+  index('idx_courses_state').on(table.state),
+  index('idx_courses_location').on(table.latitude, table.longitude),
+]);
+
 export const tournaments = pgTable('tournaments', {
   id: serial('id').primaryKey(),
   name: text('name').notNull(),
