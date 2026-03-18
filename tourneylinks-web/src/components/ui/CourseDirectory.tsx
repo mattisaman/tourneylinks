@@ -152,7 +152,7 @@ export default function CourseDirectory() {
             <>
               <div className="tournaments-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
                 {courses.map((c, i) => (
-                  <div key={c.id} className="t-card" style={{ textDecoration: 'none', cursor: 'pointer' }}>
+                  <Link href={`/courses/${c.id}`} key={c.id} className="t-card" style={{ textDecoration: 'none', cursor: 'pointer' }}>
                     <div className="t-card-cover" style={{ height: '140px' }}>
                       <div className="cover-bg" style={{ background: getGradient(i) }}></div>
                       <div className="cover-overlay"></div>
@@ -183,7 +183,7 @@ export default function CourseDirectory() {
                     </div>
                     
                     {/* Removed empty buttons per user request */}
-                  </div>
+                  </Link>
                 ))}
               </div>
               
