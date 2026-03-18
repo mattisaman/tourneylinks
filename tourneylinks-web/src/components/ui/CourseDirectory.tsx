@@ -182,12 +182,7 @@ export default function CourseDirectory() {
                       </div>
                     </div>
                     
-                    <div className="t-card-footer">
-                      <div className="t-spots">
-                        <strong>View Details</strong>
-                      </div>
-                      <span className="btn-card" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem' }}>Contact</span>
-                    </div>
+                    {/* Removed empty buttons per user request */}
                   </div>
                 ))}
               </div>
