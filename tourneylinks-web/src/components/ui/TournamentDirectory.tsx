@@ -111,16 +111,16 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
       // 6. Registration Open Filter
       if (appliedFilters.requireOpenReg && getStatus(t) === 'CLOSED') return false;
 
-      // 7. ZIP Radius Filter
+      // 7. ZIP/City Search Filter
       if (appliedFilters.zipCode.length >= 3) {
-        // Mocking the radius math by just strictly matching the first 3 or 5 digits of the zip for the MVP until PostGIS is integrated.
-        // A smaller radius requires a more exact string match as a temporary visually-equivalent UX.
         const matchLength = appliedFilters.radius <= 20 ? 5 : 3;
+        const searchVal = appliedFilters.zipCode.toLowerCase();
         
-        if (t.courseZip && !t.courseZip.startsWith(appliedFilters.zipCode.substring(0, matchLength))) {
-           if (!t.courseCity.toLowerCase().includes(appliedFilters.zipCode.toLowerCase())) {
-              return false;
-           }
+        const zipMatches = t.courseZip && t.courseZip.startsWith(searchVal.substring(0, matchLength));
+        const cityMatches = t.courseCity && t.courseCity.toLowerCase().includes(searchVal);
+        
+        if (!zipMatches && !cityMatches) {
+            return false;
         }
       }
 
