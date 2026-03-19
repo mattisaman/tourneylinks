@@ -32,10 +32,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'This tournament is not actively configured to receive payments via Stripe Connect.' }, { status: 400 });
     }
 
-    // Ensure application fee logic (We take 2% or $0 on donations?)
-    // User requirement: Monetization. We will take a 1% standard processing platform fee on donations to cover infrastructure, or up to 2%. Let's set 2% to align with regular entry fees.
     const amountCents = amount * 100;
-    const applicationFeeAmountCents = Math.round(amountCents * 0.02);
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card', 'link', 'us_bank_account'], // Enables Apple Pay / Google Pay / ACH automatically
@@ -56,7 +53,6 @@ export async function POST(req: Request) {
       ],
       ...(destinationStripeAccountId.includes('Mock') ? {} : {
         payment_intent_data: {
-          application_fee_amount: applicationFeeAmountCents,
           transfer_data: {
             destination: destinationStripeAccountId,
           },

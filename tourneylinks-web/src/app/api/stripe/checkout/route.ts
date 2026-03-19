@@ -11,7 +11,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized. Please sign in to register.' }, { status: 401 });
     }
 
-    const { tournamentId, playerCount = 1, paymentMode = 'full', isClaim, teamGroupId, claimToken } = await req.json();
+    const { tournamentId, playerCount = 1, paymentMode = 'full', isClaim, teamGroupId, claimToken, teammateEmails } = await req.json();
     if (!tournamentId) {
       return NextResponse.json({ error: 'Missing tournament ID' }, { status: 400 });
     }
@@ -48,11 +48,12 @@ export async function POST(req: Request) {
     // Financial Calculation (Cents)
     const rawEntryFeeCents = Math.round(tournament.entryFee * 100);
     const checkoutQuantity = isClaim ? 1 : (paymentMode === 'full' ? playerCount : 1);
-    const totalTransactionVolumeCents = rawEntryFeeCents * checkoutQuantity;
-    
-    // TourneyLinks takes 2% Platform Fee over the total volume
-    const platformFeePercentage = 0.02; 
-    const applicationFeeAmountCents = Math.round(totalTransactionVolumeCents * platformFeePercentage);
+    let finalUnitAmountCents = rawEntryFeeCents;
+    if (tournament.passFeesToRegistrant) {
+      // Calculate 2.9% + 30¢ and push it onto the end-user's receipt
+      const stripeFeeCents = Math.round((rawEntryFeeCents * 0.029) + 30);
+      finalUnitAmountCents += stripeFeeCents;
+    }
 
     // Provide Checkout Session
     const origin = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
@@ -74,7 +75,7 @@ export async function POST(req: Request) {
                     ? `Full Team Registration (${playerCount} Players)` 
                     : `Solo Golfer Registration`,
             },
-            unit_amount: rawEntryFeeCents,
+            unit_amount: finalUnitAmountCents,
           },
           quantity: checkoutQuantity,
         },
@@ -84,7 +85,6 @@ export async function POST(req: Request) {
       cancel_url: `${origin}/tournaments/${tournament.id}?registration=cancelled`,
       ...(hostStripe.stripeAccountId.includes('Mock') ? {} : {
         payment_intent_data: {
-          application_fee_amount: applicationFeeAmountCents,
           transfer_data: {
             destination: hostStripe.stripeAccountId,
           },
@@ -102,6 +102,7 @@ export async function POST(req: Request) {
         userId: dbUser.id.toString(),
         playerCount: playerCount.toString(),
         paymentMode: paymentMode, // 'full' or 'split'
+        teammateEmails: teammateEmails ? teammateEmails.join(',') : '',
       },
       customer_email: clerkUser.emailAddresses[0]?.emailAddress,
     });

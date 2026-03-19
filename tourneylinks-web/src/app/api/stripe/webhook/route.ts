@@ -124,13 +124,17 @@ export async function POST(req: Request) {
             if (pMode === 'split') {
               // Generate the Secure Claim Constraints (Magic Links)
               const crypto = require('crypto');
-              const invites = Array.from({ length: pCount - 1 }).map(() => ({
+              const teammateEmailsStr = session.metadata?.teammateEmails || '';
+              const emails = teammateEmailsStr ? teammateEmailsStr.split(',') : [];
+
+              const invites = Array.from({ length: pCount - 1 }).map((_, i) => ({
                 teamGroupId,
                 token: crypto.randomUUID(),
+                recipientEmail: emails[i] && emails[i].trim() !== '' ? emails[i].trim() : null,
                 status: 'PENDING'
               }));
               await db.insert(split_invites).values(invites);
-              console.log(`✅ [Webhook] Foursome Split Activated! Team ${teamGroupId} generated ${invites.length} pending secure links.`);
+              console.log(`✅ [Webhook] Foursome Split Activated! Team ${teamGroupId} generated ${invites.length} pending secure links. Emails captured: ${emails.length}`);
             }
           }
         }

@@ -19,6 +19,7 @@ export default function HostWizard() {
   const [holes, setHoles] = useState('18 Holes');
   const [org, setOrg] = useState('');
   const [email, setEmail] = useState('');
+  const [passFees, setPassFees] = useState(false);
 
   const [rules, setRules] = useState([
     "All players must have a verified USGA Handicap Index.",
@@ -52,9 +53,14 @@ export default function HostWizard() {
 
   const fee = price || 0;
   const stripeFee = fee > 0 ? (fee * 0.029 + 0.30) : 0;
-  const platformFee = fee * 0.02;
-  const totalFee = fee + stripeFee + platformFee;
-  const organizerRevenue = fee - platformFee;
+  
+  let totalFee = fee;
+  let organizerRevenue = fee - stripeFee;
+
+  if (passFees) {
+    totalFee = fee + stripeFee;
+    organizerRevenue = fee;
+  }
 
   const renderStepNav = () => (
     <div className="wizard-steps">
@@ -224,8 +230,22 @@ export default function HostWizard() {
             </div>
             <div className="pricing-box">
               <div className="pricing-row"><span className="pricing-row-label">Entry fee</span><span className="pricing-row-val">${fee.toFixed(2)}</span></div>
-              <div className="pricing-row"><span className="pricing-row-label">Stripe processing</span><span className="pricing-row-val">${stripeFee.toFixed(2)}</span></div>
-              <div className="pricing-row"><span className="pricing-row-label">TourneyLinks platform fee</span><span className="pricing-row-val">${platformFee.toFixed(2)}</span></div>
+              <div className="pricing-row">
+                <span className="pricing-row-label">Stripe processing (2.9% + 30¢) <br/><span style={{fontSize: '0.7rem', opacity: 0.7}}>{passFees ? '(Passed to Player)' : '(Absorbed by You)'}</span></span>
+                <span className="pricing-row-val">{passFees ? '' : '-'}${stripeFee.toFixed(2)}</span>
+              </div>
+              
+              <div className="notif-row" style={{ marginTop: '1.25rem', marginBottom: '1rem', padding: '0.75rem 1rem', background: '#fff' }}>
+                <div>
+                  <div className="notif-label">Pass Fees to Registrant</div>
+                  <div className="notif-sub">If ON, the player pays the {2.9}% + 30¢.</div>
+                </div>
+                <label className="toggle-switch">
+                  <input type="checkbox" checked={passFees} onChange={e => setPassFees(e.target.checked)} />
+                  <span className="toggle-slider"></span>
+                </label>
+              </div>
+
               <div className="pricing-total">
                 <span>Player pays</span>
                 <span style={{ color: 'var(--forest)' }}>${totalFee.toFixed(2)}</span>

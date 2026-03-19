@@ -41,9 +41,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'This tournament is not actively configured to receive payments via Stripe Connect.' }, { status: 400 });
     }
 
-    // Standard Platform Fee of 2%
     const amountCents = amount * 100;
-    const applicationFeeAmountCents = Math.round(amountCents * 0.02);
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card', 'link', 'us_bank_account'],
@@ -64,7 +62,6 @@ export async function POST(req: Request) {
       ],
       ...(destinationStripeAccountId.includes('Mock') ? {} : {
         payment_intent_data: {
-          application_fee_amount: applicationFeeAmountCents,
           transfer_data: {
             destination: destinationStripeAccountId,
           },

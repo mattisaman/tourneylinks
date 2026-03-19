@@ -5,10 +5,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import ContactHostWidget from '@/components/tournaments/ContactHostWidget';
 import StripeCheckoutButton from './StripeCheckoutButton';
-
-const getHeroImage = () => {
-  return 'https://images.unsplash.com/photo-1593111774240-d529f12cb416?q=80&w=2070&auto=format&fit=crop';
-};
+import HeroCarousel from './HeroCarousel';
 
 export default async function TournamentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
@@ -41,46 +38,34 @@ export default async function TournamentDetailPage({ params }: { params: Promise
 
   const tiers = await db.select().from(sponsorship_tiers).where(eq(sponsorship_tiers.tournamentId, tournamentId));
 
-  const formatDate = (dateStr: string | null) => {
-    if (!dateStr) return "TBD";
-    const d = new Date(dateStr);
-    return d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
-  };
+  // Try to parse the Host's custom image array if provided in the DB
+  let heroImageArray: string[] = [];
+  if (tournament.heroImages) {
+    try {
+      heroImageArray = JSON.parse(tournament.heroImages);
+    } catch (e) {
+      // Fallback if not valid json
+      heroImageArray = [tournament.heroImages];
+    }
+  }
 
-  const heroImage = getHeroImage();
+  // If no Host images or DB null, inject a fantastic set of premium stock images as a default 
+  if (!heroImageArray || heroImageArray.length === 0) {
+    heroImageArray = [
+      'https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1535136104956-618ea0b31649?auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1593111663045-802c638f29ea?auto=format&fit=crop&q=80'
+    ];
+  }
 
   return (
     <>
-      <div style={{ position: 'relative', minHeight: '60vh', padding: '8rem 0 0 0', display: 'flex', alignItems: 'flex-end', paddingBottom: '6rem', overflow: 'hidden' }}>
-        {/* Base Image Layer */}
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundImage: `url('${heroImage}')`, backgroundSize: 'cover', backgroundPosition: 'center 30%', zIndex: -3 }}></div>
-        
-        {/* Dynamic Gradient Array mimicking the Homepage Premium feel */}
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundImage: 'linear-gradient(to right, rgba(7, 21, 16, 0.95) 0%, rgba(7, 21, 16, 0.75) 40%, rgba(7, 21, 16, 0.4) 100%), linear-gradient(to top, rgba(7, 21, 16, 1) 0%, transparent 40%)', zIndex: -2 }}></div>
-        
-        {/* Gold Light Flare */}
-        <div style={{ position: 'absolute', top: '10%', right: '15%', width: '35vw', height: '35vw', background: 'radial-gradient(circle, rgba(201,168,76,0.18) 0%, transparent 70%)', borderRadius: '50%', filter: 'blur(30px)', zIndex: -1, pointerEvents: 'none' }}></div>
-        
-        {/* Subtle grid pattern for texture */}
-        <div style={{ position: 'absolute', inset: 0, opacity: 0.03, backgroundImage: 'linear-gradient(rgba(78,201,160,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(78,201,160,0.4) 1px, transparent 1px)', backgroundSize: '60px 60px', zIndex: -1 }}></div>
-        
-        <div className="section-wrapper" style={{ width: '100%', position: 'relative', zIndex: 1 }}>
-          <h1 className="hero-headline" style={{ fontSize: 'clamp(2.5rem, 4.5vw, 4.5rem)', marginBottom: '1rem', textShadow: '0 4px 30px rgba(0,0,0,0.8)', maxWidth: '1000px', lineHeight: '1.05' }}>
-            {tournament.name}
-          </h1>
-          <div className="hero-sub" style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap', alignItems: 'center', textShadow: '0 2px 15px rgba(0,0,0,0.8)', color: '#f8faf9', marginTop: '1.5rem' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '1.05rem', fontWeight: 500, background: 'rgba(255,255,255,0.06)', padding: '0.6rem 1.25rem', borderRadius: '50px', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.12)' }}>
-              <span style={{ color: 'var(--gold)', fontSize: '1.2rem' }}>📍</span> {tournament.courseName}
-            </span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '1.05rem', fontWeight: 500, background: 'rgba(255,255,255,0.06)', padding: '0.6rem 1.25rem', borderRadius: '50px', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.12)' }}>
-              <span style={{ color: 'var(--gold)', fontSize: '1.2rem' }}>🗓️</span> {formatDate(tournament.dateStart)}
-            </span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '1.05rem', fontWeight: 500, background: 'rgba(255,255,255,0.06)', padding: '0.6rem 1.25rem', borderRadius: '50px', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.12)' }}>
-              <span style={{ color: 'var(--gold)', fontSize: '1.2rem' }}>⛳</span> {tournament.format || '18 Hole Round'}
-            </span>
-          </div>
-        </div>
-      </div>
+      <HeroCarousel 
+        tournament={tournament} 
+        heroImages={heroImageArray} 
+        themeColor={tournament.themeColor} 
+      />
+
 
       <div style={{ background: 'linear-gradient(180deg, rgba(10,31,13,1) 0%, #f8faf9 15rem)', position: 'relative', zIndex: 10, paddingBottom: '6rem' }}>
         
@@ -237,31 +222,83 @@ export default async function TournamentDetailPage({ params }: { params: Promise
                 </div>
               )}
 
-              {/* OVERVIEW CONTENT */}
-              <div>
-                <h2 className="section-title" style={{ fontSize: '1.8rem', marginBottom: '1.5rem', color: 'var(--forest)' }}>Event Overview</h2>
-                <div style={{ fontSize: '1.15rem', lineHeight: '1.9', color: 'var(--ink)' }}>
-                  {tournament.description ? (
-                    <p style={{ whiteSpace: 'pre-line' }}>{tournament.description}</p>
-                  ) : (
-                    <p style={{ fontStyle: 'italic', color: 'var(--mist)' }}>No description provided for this event.</p>
-                  )}
-                </div>
-              </div>
-
-              {/* INCLUDES BLOCK */}
-              {tournament.includes && (
-                <div>
-                  <h2 className="section-title" style={{ fontSize: '1.8rem', marginBottom: '1.5rem', color: 'var(--forest)' }}>What&apos;s Included</h2>
-                  <div style={{ background: '#fff', padding: '2.5rem', borderRadius: '24px', border: '1px solid rgba(26,46,26,0.05)', boxShadow: '0 10px 40px rgba(0,0,0,0.02)' }}>
-                    <ul style={{ listStylePosition: 'inside', fontSize: '1.15rem', lineHeight: '1.9', color: 'var(--ink)', whiteSpace: 'pre-line', margin: 0 }}>
-                      {tournament.includes}
-                    </ul>
+              {/* OVERVIEW & SCHEDULE CONTENT */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '3.5rem' }}>
+                
+                {/* 1. Main Overview */}
+                <div style={{ background: '#fff', padding: '3rem', borderRadius: '24px', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 15px 40px rgba(0,0,0,0.02)' }}>
+                  <h2 style={{ fontSize: '1.8rem', marginBottom: '1.5rem', color: 'var(--forest)', fontWeight: 800, fontFamily: "'Playfair Display', serif" }}>Event Overview</h2>
+                  <div style={{ fontSize: '1.15rem', lineHeight: '1.9', color: 'var(--ink)' }}>
+                    {tournament.description ? (
+                      <p style={{ whiteSpace: 'pre-line' }}>{tournament.description}</p>
+                    ) : (
+                      <p style={{ fontStyle: 'italic', color: 'var(--mist)' }}>Join us for an incredible day of golf, networking, and competition. This premium event features a fully catered breakfast, 18 holes of championship golf, and an evening awards reception. Secure your foursome today before the field fills up!</p>
+                    )}
                   </div>
                 </div>
-              )}
 
-            </div>
+                {/* 2. Schedule of Events (Demo) */}
+                <div style={{ background: '#fff', padding: '3rem', borderRadius: '24px', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 15px 40px rgba(0,0,0,0.02)' }}>
+                  <h2 style={{ fontSize: '1.8rem', marginBottom: '2rem', color: 'var(--forest)', fontWeight: 800, fontFamily: "'Playfair Display', serif" }}>Tournament Schedule</h2>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', position: 'relative' }}>
+                    <div style={{ position: 'absolute', left: '2rem', top: '1rem', bottom: '1rem', width: '2px', background: 'rgba(212,175,55,0.3)' }}></div>
+                    
+                    {[
+                      { time: '8:00 AM', title: 'Registration & Breakfast', icon: '☕' },
+                      { time: '9:00 AM', title: 'Driving Range Opens', icon: '🏌️' },
+                      { time: '10:00 AM', title: 'Shotgun Start', icon: '⛳' },
+                      { time: '3:00 PM', title: 'Cocktail Hour & Networking', icon: '🍸' },
+                      { time: '4:30 PM', title: 'Dinner & Awards Reception', icon: '🏆' },
+                    ].map((item, idx) => (
+                      <div key={idx} style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start', position: 'relative', zIndex: 1 }}>
+                        <div style={{ width: '4rem', height: '4rem', background: '#fff', border: '2px solid var(--gold)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.8rem', flexShrink: 0 }}>
+                          {item.icon}
+                        </div>
+                        <div style={{ paddingTop: '0.8rem' }}>
+                          <div style={{ fontSize: '1rem', color: 'var(--mist)', fontWeight: 700, fontFamily: "'DM Mono', monospace", marginBottom: '0.2rem' }}>{item.time}</div>
+                          <div style={{ fontSize: '1.25rem', color: 'var(--ink)', fontWeight: 700 }}>{item.title}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 3. Included & Prizes */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+                  
+                  <div style={{ background: '#f8faf9', padding: '2.5rem', borderRadius: '24px', border: '1px solid rgba(0,0,0,0.05)' }}>
+                    <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>🛍️</div>
+                    <h3 style={{ fontSize: '1.4rem', color: 'var(--forest)', fontWeight: 800, marginBottom: '1rem' }}>Player Swag Bag</h3>
+                    <ul style={{ listStylePosition: 'outside', marginLeft: '1rem', fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--ink)' }}>
+                      {tournament.includes ? (
+                        tournament.includes.split('\n').filter(Boolean).map((inc: string, i: number) => <li key={i}>{inc.replace(/^- /, '')}</li>)
+                      ) : (
+                        <>
+                          <li>Premium FootJoy Golf Polo</li>
+                          <li>Sleeve of Titleist Pro V1x</li>
+                          <li>Custom Tournament Divot Tool</li>
+                          <li>Breakfast, Lunch, & Open Bar</li>
+                        </>
+                      )}
+                    </ul>
+                  </div>
+
+                  <div style={{ background: '#f8faf9', padding: '2.5rem', borderRadius: '24px', border: '1px solid rgba(0,0,0,0.05)' }}>
+                    <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>🥇</div>
+                    <h3 style={{ fontSize: '1.4rem', color: 'var(--forest)', fontWeight: 800, marginBottom: '1rem' }}>Contests & Prizes</h3>
+                    <ul style={{ listStylePosition: 'outside', marginLeft: '1rem', fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--ink)' }}>
+                      <li>1st Place Team: $1,000 Pro Shop Credit</li>
+                      <li>Closest to the Pin (Hole 4)</li>
+                      <li>Longest Drive (Hole 18)</li>
+                      <li>Hole-in-One: Win a 2025 Porsche Macan</li>
+                    </ul>
+                  </div>
+
+                </div>
+
+              </div>
+
+              </div>
 
 
             {/* ---------------- Sidebar Properties Column ---------------- */}

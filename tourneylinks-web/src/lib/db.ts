@@ -81,6 +81,9 @@ export const tournaments = pgTable('tournaments', {
   extractionConfidence: real('extraction_confidence').default(0),
   extractedAt: text('extracted_at'),
 
+  heroImages: text('hero_images'), // JSON array of urls
+  themeColor: text('theme_color'), // hex code
+
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
   lastVerifiedAt: timestamp('last_verified_at'),

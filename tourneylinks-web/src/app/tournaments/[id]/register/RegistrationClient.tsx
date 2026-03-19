@@ -6,6 +6,7 @@ export default function RegistrationClient({ tournament }: { tournament: any }) 
   const router = useRouter();
   const [playerCount, setPlayerCount] = useState<number>(1);
   const [paymentMode, setPaymentMode] = useState<'full' | 'split'>('full');
+  const [teammateEmails, setTeammateEmails] = useState<string[]>(['', '', '']);
   const [loading, setLoading] = useState(false);
 
   // Math
@@ -22,7 +23,8 @@ export default function RegistrationClient({ tournament }: { tournament: any }) 
         body: JSON.stringify({ 
           tournamentId: tournament.id,
           playerCount,
-          paymentMode // 'full' or 'split'
+          paymentMode, // 'full' or 'split'
+          teammateEmails: paymentMode === 'split' ? teammateEmails.slice(0, playerCount - 1).filter(e => e.trim() !== '') : []
         })
       });
       
@@ -98,6 +100,32 @@ export default function RegistrationClient({ tournament }: { tournament: any }) 
             </div>
 
           </div>
+          
+          {paymentMode === 'split' && (
+            <div style={{ marginTop: '0.5rem', padding: '1.5rem', background: '#f8faf9', borderRadius: '16px', border: '1px solid rgba(0,0,0,0.05)' }}>
+              <h4 style={{ fontSize: '1.1rem', color: 'var(--ink)', marginBottom: '0.4rem', fontWeight: 700 }}>Invite Your Teammates (Optional)</h4>
+              <p style={{ color: 'var(--mist)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>Enter their emails below. We'll automatically send them a secure Magic Link to pay their portion!</p>
+              
+              {Array.from({ length: playerCount - 1 }).map((_, idx) => (
+                <div key={idx} style={{ marginBottom: '1rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--forest)', fontWeight: 600, marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    Teammate {idx + 1} Email
+                  </label>
+                  <input 
+                    type="email" 
+                    placeholder="player@example.com"
+                    value={teammateEmails[idx] || ''}
+                    onChange={(e) => {
+                      const newEmails = [...teammateEmails];
+                      newEmails[idx] = e.target.value;
+                      setTeammateEmails(newEmails);
+                    }}
+                    style={{ width: '100%', padding: '0.8rem 1rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.1)', fontSize: '0.95rem', outline: 'none' }}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
         </>
       )}
 
