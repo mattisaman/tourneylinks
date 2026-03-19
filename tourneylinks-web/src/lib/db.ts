@@ -99,7 +99,7 @@ export const registrations = pgTable('registrations', {
   transactionId: text('transaction_id'), // Future Stripe reference mapped mapping
   pairingRequest: text('pairing_request'),
   assignedTeam: integer('assigned_team'),
-  teamInvoiceId: text('team_invoice_id'), // UUID linking to pending_team_payments
+  teamGroupId: integer('team_group_id'), // Links to team_groups.id
   createdAt: timestamp('created_at').defaultNow(),
 });
 
@@ -271,13 +271,22 @@ export const tournament_sponsors = pgTable('tournament_sponsors', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
-export const pending_team_payments = pgTable('pending_team_payments', {
+export const team_groups = pgTable('team_groups', {
   id: serial('id').primaryKey(),
   tournamentId: integer('tournament_id').references(() => tournaments.id).notNull(),
   captainRegistrationId: integer('captain_registration_id').references(() => registrations.id).notNull(),
-  invoiceGroupId: text('invoice_group_id').notNull().unique(), // The UUID that groups the 4 players
+  groupName: text('group_name'), // e.g. "Team Smith"
   totalSpots: integer('total_spots').notNull(),
-  paidSpots: integer('paid_spots').default(1).notNull(),
-  status: text('status').default('PENDING').notNull(), // 'PENDING', 'COMPLETED', 'CANCELLED'
+  spotsFilled: integer('spots_filled').default(1).notNull(),
+  status: text('status').default('PENDING').notNull(), // 'PENDING', 'COMPLETED'
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const split_invites = pgTable('split_invites', {
+  id: serial('id').primaryKey(),
+  teamGroupId: integer('team_group_id').references(() => team_groups.id).notNull(),
+  token: text('token').notNull().unique(), // The magic link hash
+  recipientEmail: text('recipient_email'), // Optional
+  status: text('status').default('PENDING').notNull(), // 'PENDING', 'CLAIMED'
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });

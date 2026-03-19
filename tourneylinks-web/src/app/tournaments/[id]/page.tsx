@@ -1,10 +1,14 @@
 import React from 'react';
-import { getTournamentById, db, stripe_accounts } from '@/lib/db';
+import { getTournamentById, db, stripe_accounts, users, sponsorship_tiers } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import ContactHostWidget from '@/components/tournaments/ContactHostWidget';
 import StripeCheckoutButton from './StripeCheckoutButton';
+
+const getHeroImage = () => {
+  return 'https://images.unsplash.com/photo-1593111774240-d529f12cb416?q=80&w=2070&auto=format&fit=crop';
+};
 
 export default async function TournamentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
@@ -19,9 +23,12 @@ export default async function TournamentDetailPage({ params }: { params: Promise
     notFound();
   }
 
-  // SERVER CHECK: Is the Host actively onboarded into Stripe?
+  let hostUser = null;
   let hostHasStripe = false;
   if (tournament.hostUserId) {
+    const hData = await db.select().from(users).where(eq(users.id, tournament.hostUserId)).limit(1);
+    hostUser = hData[0];
+
     const hostStripeRow = await db.select()
       .from(stripe_accounts)
       .where(eq(stripe_accounts.userId, tournament.hostUserId))
@@ -32,214 +39,270 @@ export default async function TournamentDetailPage({ params }: { params: Promise
     }
   }
 
+  const tiers = await db.select().from(sponsorship_tiers).where(eq(sponsorship_tiers.tournamentId, tournamentId));
+
   const formatDate = (dateStr: string | null) => {
     if (!dateStr) return "TBD";
     const d = new Date(dateStr);
     return d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
   };
 
-  const isRegistrationOpen = !tournament.registrationDeadline || new Date(tournament.registrationDeadline) >= new Date();
+  const heroImage = getHeroImage();
 
   return (
     <>
-      <div className="hero" style={{ minHeight: '60vh', padding: '6rem 0 0 0', display: 'block' }}>
-        <div className="hero-bg"></div>
-        <div className="hero-grid"></div>
-        <div className="hero-dots"></div>
+      <div style={{ position: 'relative', minHeight: '60vh', padding: '8rem 0 0 0', display: 'flex', alignItems: 'flex-end', paddingBottom: '6rem', overflow: 'hidden' }}>
+        {/* Base Image Layer */}
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundImage: `url('${heroImage}')`, backgroundSize: 'cover', backgroundPosition: 'center 30%', zIndex: -3 }}></div>
         
-        <div className="hero-content" style={{ display: 'block', paddingTop: '4rem', paddingBottom: '2rem' }}>
-          <div className="hero-eyebrow" style={{ marginTop: '0' }}>{tournament.format}</div>
-          <h1 className="hero-headline" style={{ fontSize: 'clamp(2.5rem, 4vw, 4.5rem)', marginBottom: '1rem' }}>
+        {/* Dynamic Gradient Array mimicking the Homepage Premium feel */}
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundImage: 'linear-gradient(to right, rgba(7, 21, 16, 0.95) 0%, rgba(7, 21, 16, 0.75) 40%, rgba(7, 21, 16, 0.4) 100%), linear-gradient(to top, rgba(7, 21, 16, 1) 0%, transparent 40%)', zIndex: -2 }}></div>
+        
+        {/* Gold Light Flare */}
+        <div style={{ position: 'absolute', top: '10%', right: '15%', width: '35vw', height: '35vw', background: 'radial-gradient(circle, rgba(201,168,76,0.18) 0%, transparent 70%)', borderRadius: '50%', filter: 'blur(30px)', zIndex: -1, pointerEvents: 'none' }}></div>
+        
+        {/* Subtle grid pattern for texture */}
+        <div style={{ position: 'absolute', inset: 0, opacity: 0.03, backgroundImage: 'linear-gradient(rgba(78,201,160,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(78,201,160,0.4) 1px, transparent 1px)', backgroundSize: '60px 60px', zIndex: -1 }}></div>
+        
+        <div className="section-wrapper" style={{ width: '100%', position: 'relative', zIndex: 1 }}>
+          <h1 className="hero-headline" style={{ fontSize: 'clamp(2.5rem, 4.5vw, 4.5rem)', marginBottom: '1rem', textShadow: '0 4px 30px rgba(0,0,0,0.8)', maxWidth: '1000px', lineHeight: '1.05' }}>
             {tournament.name}
           </h1>
-          <div className="hero-sub" style={{ maxWidth: '800px', display: 'flex', gap: '2rem', flexWrap: 'wrap', alignItems: 'center' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <span style={{ color: 'var(--gold)' }}>📅</span> {formatDate(tournament.dateStart)}
+          <div className="hero-sub" style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap', alignItems: 'center', textShadow: '0 2px 15px rgba(0,0,0,0.8)', color: '#f8faf9', marginTop: '1.5rem' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '1.05rem', fontWeight: 500, background: 'rgba(255,255,255,0.06)', padding: '0.6rem 1.25rem', borderRadius: '50px', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.12)' }}>
+              <span style={{ color: 'var(--gold)', fontSize: '1.2rem' }}>📍</span> {tournament.courseName}
             </span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <span style={{ color: 'var(--gold)' }}>📍</span> {tournament.courseName} &bull; {tournament.courseCity}, {tournament.courseState}
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '1.05rem', fontWeight: 500, background: 'rgba(255,255,255,0.06)', padding: '0.6rem 1.25rem', borderRadius: '50px', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.12)' }}>
+              <span style={{ color: 'var(--gold)', fontSize: '1.2rem' }}>🗓️</span> {formatDate(tournament.dateStart)}
             </span>
-            {isRegistrationOpen && (
-              <span className="badge badge-open" style={{ padding: '0.4rem 1rem', fontSize: '0.75rem' }}>Registration Open</span>
-            )}
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '1.05rem', fontWeight: 500, background: 'rgba(255,255,255,0.06)', padding: '0.6rem 1.25rem', borderRadius: '50px', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.12)' }}>
+              <span style={{ color: 'var(--gold)', fontSize: '1.2rem' }}>⛳</span> {tournament.format || '18 Hole Round'}
+            </span>
           </div>
         </div>
       </div>
 
-      <div style={{ background: 'var(--white)', position: 'relative', zIndex: 10 }}>
+      <div style={{ background: 'linear-gradient(180deg, rgba(10,31,13,1) 0%, #f8faf9 15rem)', position: 'relative', zIndex: 10, paddingBottom: '6rem' }}>
         
-        <style dangerouslySetInnerHTML={{__html: `
-          .t-layout-grid {
-            display: grid;
-            grid-template-columns: auto 1fr;
-            gap: 2rem;
-            align-items: start;
-          }
-          @media (max-width: 900px) {
-            .t-layout-grid {
-              grid-template-columns: 1fr;
-            }
-            .t-back-nav {
-              position: static !important;
-              margin-bottom: 1rem;
-            }
-          }
-        `}} />
-
-        <div className="section-wrapper" style={{ paddingTop: '3.5rem' }}>
+        <div className="section-wrapper" style={{ paddingTop: '0' }}>
           
-          <div className="t-layout-grid">
+          {/* ---------------- 3 PREMIUM CTAS ROW ---------------- */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', transform: 'translateY(-3rem)' }}>
             
-            {/* Left Wing Sticky Navigation Sidebar */}
-            <div className="t-back-nav" style={{ position: 'sticky', top: '200px', zIndex: 100 }}>
-               <Link href="/tournaments" className="btn-hero-outline" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', padding: '0.6rem 1.25rem', background: 'rgba(10,31,13,0.95)', border: '1px solid rgba(212,175,55,0.6)', color: 'var(--cream)', textDecoration: 'none', borderRadius: '40px', boxShadow: '0 8px 30px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>
-                  ← Back to Directory
-               </Link>
-            </div>
-
-            {/* Primary Content Column */}
-            <div style={{ minWidth: 0 }}>
-              
-              {/* CLAIM EVENT BRAND BANNER */}
-              <div style={{ background: 'linear-gradient(135deg, rgba(10,31,13,0.95), rgba(26,46,26,0.85))', border: '1px solid rgba(212,175,55,0.6)', borderRadius: 'var(--radius-lg)', padding: '2.5rem 3.5rem', marginBottom: '3rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '2rem', flexWrap: 'wrap', boxShadow: '0 15px 40px rgba(0,0,0,0.1), inset 0 0 40px rgba(212,175,55,0.05)' }}>
-            <div>
-              <h3 style={{ color: 'var(--gold)', fontSize: '1.6rem', marginBottom: '0.5rem', fontWeight: 600, textShadow: '0 2px 10px rgba(212,175,55,0.3)' }}>Are you the Tournament Director?</h3>
-              <p style={{ color: '#e0e5df', fontSize: '1rem', lineHeight: '1.6', maxWidth: '600px' }}>
-                Take ownership of your event. Claim this tournament to securely manage player registrations, execute automated blind-draw flighting, and collect gateway payments instantly.
-              </p>
-            </div>
-            <Link href="/host" className="btn-primary" style={{ padding: '1.2rem 2.5rem', fontSize: '1.1rem', whiteSpace: 'nowrap', boxShadow: '0 8px 30px rgba(212,175,55,0.4)', background: 'linear-gradient(135deg, #d4af37, #aa8529)', color: '#000', fontWeight: 700, border: 'none' }}>
-              Claim Your Event 🚀
-            </Link>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '3rem' }}>
-            {/* Top Details Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
-               <div className="feature-card" style={{ background: 'var(--white)', border: '1px solid rgba(26,46,26,0.06)' }}>
-                  <div className="t-detail-label">Entry Fee</div>
-                  <div className="hero-stat-num" style={{ color: 'var(--forest)' }}>
-                    {tournament.entryFee ? (
-                      <>
-                        {tournament.originalPrice && tournament.originalPrice > tournament.entryFee && (
-                          <s style={{ color: 'var(--mist)', marginRight: '0.5rem', fontSize: '0.8em' }}>${tournament.originalPrice}</s>
-                        )}
-                        ${tournament.entryFee}
-                      </>
-                    ) : 'TBD'}
-                  </div>
-               </div>
-               <div className="feature-card" style={{ background: 'var(--white)', border: '1px solid rgba(26,46,26,0.06)' }}>
-                  <div className="t-detail-label">Format</div>
-                  <div className="hero-stat-num" style={{ color: 'var(--forest)' }}>{tournament.format || 'Standard'}</div>
-                  <div style={{ fontSize: '0.85rem', color: 'var(--mist)', marginTop: '0.2rem' }}>{tournament.holes || 18} Holes {tournament.formatDetail ? `• ${tournament.formatDetail}` : ''}</div>
-               </div>
-               <div className="feature-card" style={{ background: 'var(--white)', border: '1px solid rgba(26,46,26,0.06)' }}>
-                  <div className="t-detail-label">Field Size</div>
-                  <div className="hero-stat-num" style={{ color: 'var(--forest)' }}>{tournament.maxPlayers || 'Open'} <span style={{fontSize: '1rem', color: 'var(--mist)'}}>players</span></div>
-               </div>
-               <div className="feature-card" style={{ background: 'var(--white)', border: '1px solid rgba(26,46,26,0.06)' }}>
-                  <div className="t-detail-label">Spots Left</div>
-                  <div className="hero-stat-num" style={{ color: 'var(--grass)' }}>{tournament.spotsRemaining !== null ? tournament.spotsRemaining : 'Open'}</div>
-               </div>
-               {tournament.handicapMax !== null && (
-                 <div className="feature-card" style={{ background: 'var(--white)', border: '1px solid rgba(26,46,26,0.06)' }}>
-                    <div className="t-detail-label">Max Handicap</div>
-                    <div className="hero-stat-num" style={{ color: 'var(--forest)' }}>{tournament.handicapMax}</div>
-                 </div>
-               )}
-               <div className="feature-card" style={{ background: 'var(--white)', border: '1px solid rgba(26,46,26,0.06)' }}>
-                  <div className="t-detail-label">Access</div>
-                  <div className="hero-stat-num" style={{ color: 'var(--forest)' }}>{tournament.isPrivate ? 'Private' : 'Public'}</div>
-               </div>
-               {tournament.isCharity && (
-                 <div className="feature-card" style={{ background: 'var(--white)', border: '1px solid rgba(26,46,26,0.06)' }}>
-                    <div className="t-detail-label">Benefiting</div>
-                    <div className="hero-stat-num" style={{ color: 'var(--gold)', fontSize: '1.2rem' }}>{tournament.charityName || 'Charity'}</div>
-                    {tournament.acceptsDonations && (
-                      <Link href={`/tournaments/${tournament.id}/donate`} className="btn-hero-outline" style={{ marginTop: '0.5rem', display: 'inline-block', padding: '0.3rem 0.8rem', fontSize: '0.8rem', borderRadius: '4px' }}>
-                        Donate to Cause ❤️
-                      </Link>
-                    )}
-                 </div>
-               )}
-               <div className="feature-card" style={{ background: 'var(--white)', border: '1px solid rgba(26,46,26,0.06)', display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'center', justifyContent: 'center' }}>
-                  {hostHasStripe && tournament.entryFee ? (
+            {/* CTA 1: REGISTER NOW */}
+            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: 'linear-gradient(145deg, rgba(26,46,26,0.95), rgba(10,31,13,0.98))', backdropFilter: 'blur(10px)', border: '1px solid rgba(212,175,55,0.4)', borderRadius: '16px', padding: '2.5rem 2rem', boxShadow: '0 20px 40px rgba(0,0,0,0.2)', position: 'relative', overflow: 'hidden' }}>
+              <div style={{ position: 'absolute', top: 0, left: 0, width: '4px', height: '100%', background: 'linear-gradient(to bottom, #d4af37, #aa8529)' }}></div>
+              <div>
+                <div style={{ color: 'var(--gold)', fontSize: '2.5rem', marginBottom: '1rem' }}>🎫</div>
+                <h4 style={{ color: 'var(--gold)', fontSize: '1.1rem', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '0.5rem', fontWeight: 700 }}>Register Now</h4>
+                <div style={{ color: '#fff', fontSize: '2rem', fontWeight: 800, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                  {tournament.entryFee ? (
                     <>
-                      <StripeCheckoutButton tournamentId={tournament.id} entryFee={tournament.entryFee} />
-                      {tournament.allowOfflinePayment && (
-                        <Link href={`/tournaments/${tournament.id}/offline-register`} className="btn-hero-outline" style={{ width: '100%', textAlign: 'center', padding: '0.6rem', fontSize: '0.85rem', borderRadius: '4px', border: '1px dashed var(--mist)', color: 'var(--mist)' }}>
-                           Pay Cash/Check On-Site
-                        </Link>
+                      ${tournament.entryFee} 
+                      {tournament.originalPrice && tournament.originalPrice > tournament.entryFee && (
+                         <s style={{ color: '#a0aab2', fontSize: '0.5em', fontWeight: 400 }}>${tournament.originalPrice}</s>
                       )}
                     </>
-                  ) : tournament.registrationUrl ? (
-                    <a href={tournament.registrationUrl} target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ width: '100%', textAlign: 'center', padding: '0.8rem', fontSize: '0.9rem' }}>
-                      Register (External) ↗
-                    </a>
-                  ) : (
-                    <div style={{ color: 'var(--mist)', fontSize: '0.85rem', fontStyle: 'italic', textAlign: 'center', lineHeight: '1.4' }}>Registration Currently Unavailable</div>
-                  )}
-               </div>
+                  ) : 'TBD'}
+                </div>
+                <p style={{ color: 'var(--mist)', fontSize: '0.9rem', marginBottom: '2rem', lineHeight: '1.5' }}>Secure your team's spot on the green before registration closes.</p>
+              </div>
+              
+              <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                {hostHasStripe && tournament.entryFee ? (
+                  <>
+                    <StripeCheckoutButton tournamentId={tournament.id} entryFee={tournament.entryFee} />
+                    {tournament.allowOfflinePayment && (
+                      <Link href={`/tournaments/${tournament.id}/offline-register`} style={{ display: 'block', width: '100%', textAlign: 'center', padding: '0.8rem', fontSize: '0.9rem', borderRadius: '8px', border: '1px solid rgba(212,175,55,0.3)', color: 'var(--gold)', fontWeight: 600, transition: 'all 0.2s', textDecoration: 'none' }}>
+                          Pay Cash On-Site
+                      </Link>
+                    )}
+                  </>
+                ) : tournament.registrationUrl ? (
+                  <a href={tournament.registrationUrl} target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ width: '100%', textAlign: 'center', padding: '1rem', fontSize: '1rem', borderRadius: '8px' }}>
+                    External Register ↗
+                  </a>
+                ) : (
+                  <div style={{ color: 'var(--mist)', fontSize: '0.9rem', fontStyle: 'italic', textAlign: 'center', padding: '1rem', border: '1px dashed rgba(255,255,255,0.1)', borderRadius: '8px' }}>Pending Setup</div>
+                )}
+              </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '3rem' }}>
+            {/* CTA 2: SUPPORT THE CAUSE */}
+            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: 'linear-gradient(145deg, rgba(26,46,26,0.95), rgba(10,31,13,0.98))', backdropFilter: 'blur(10px)', border: '1px solid rgba(212,175,55,0.4)', borderRadius: '16px', padding: '2.5rem 2rem', boxShadow: '0 20px 40px rgba(0,0,0,0.2)', position: 'relative', overflow: 'hidden', opacity: (!tournament.isCharity && !tournament.acceptsDonations) ? 0.6 : 1 }}>
+              <div style={{ position: 'absolute', top: 0, left: 0, width: '4px', height: '100%', background: 'linear-gradient(to bottom, #d4af37, #aa8529)' }}></div>
+              <div>
+                <div style={{ color: 'var(--gold)', fontSize: '2.5rem', marginBottom: '1rem' }}>🎗️</div>
+                <h4 style={{ color: 'var(--gold)', fontSize: '1.1rem', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '0.5rem', fontWeight: 700 }}>Support The Cause</h4>
+                <div style={{ color: '#fff', fontSize: '1.2rem', fontWeight: 600, marginBottom: '0.5rem', minHeight: '35px' }}>
+                  {tournament.charityName || 'General Donation'}
+                </div>
+                <p style={{ color: 'var(--mist)', fontSize: '0.9rem', marginBottom: '2rem', lineHeight: '1.5' }}>
+                  {tournament.isCharity ? "100% of proceeds directly impact our beneficiary foundation." : "Can't make the tournament? You can still show your support!"}
+                </p>
+              </div>
               
-              {/* Main Content Area */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
+              <div style={{ width: '100%' }}>
+                {tournament.acceptsDonations ? (
+                  <Link href={`/tournaments/${tournament.id}/donate`} className="btn-hero-outline" style={{ display: 'block', width: '100%', textAlign: 'center', padding: '1rem', fontSize: '1rem', borderRadius: '8px', color: '#000', background: 'var(--gold)', border: 'none', fontWeight: 700 }}>
+                    Donate Now ❤️
+                  </Link>
+                ) : (
+                  <div style={{ color: 'var(--mist)', fontSize: '0.9rem', fontStyle: 'italic', textAlign: 'center', padding: '1rem', border: '1px dashed rgba(255,255,255,0.1)', borderRadius: '8px' }}>Not Accepted</div>
+                )}
+              </div>
+            </div>
+
+            {/* CTA 3: SPONSORSHIPS */}
+            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: 'linear-gradient(145deg, rgba(26,46,26,0.95), rgba(10,31,13,0.98))', backdropFilter: 'blur(10px)', border: '1px solid rgba(212,175,55,0.4)', borderRadius: '16px', padding: '2.5rem 2rem', boxShadow: '0 20px 40px rgba(0,0,0,0.2)', position: 'relative', overflow: 'hidden', opacity: (tiers.length === 0) ? 0.6 : 1 }}>
+              <div style={{ position: 'absolute', top: 0, left: 0, width: '4px', height: '100%', background: 'linear-gradient(to bottom, #d4af37, #aa8529)' }}></div>
+              <div>
+                <div style={{ color: 'var(--gold)', fontSize: '2.5rem', marginBottom: '1rem' }}>🤝</div>
+                <h4 style={{ color: 'var(--gold)', fontSize: '1.1rem', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '0.5rem', fontWeight: 700 }}>Become a Sponsor</h4>
+                <div style={{ color: '#fff', fontSize: '1.2rem', fontWeight: 600, marginBottom: '0.5rem', minHeight: '35px' }}>
+                  Premium Branding
+                </div>
+                <p style={{ color: 'var(--mist)', fontSize: '0.9rem', marginBottom: '2rem', lineHeight: '1.5' }}>
+                  Elevate your brand with digital corporate displays and on-course signage.
+                </p>
+              </div>
+
+              <div style={{ width: '100%' }}>
+                {tiers.length > 0 ? (
+                  <Link href={`/tournaments/${tournament.id}/sponsor`} className="btn-hero-outline" style={{ display: 'block', width: '100%', textAlign: 'center', padding: '1rem', fontSize: '1rem', borderRadius: '8px', borderColor: 'var(--gold)', color: 'var(--gold)', fontWeight: 600 }}>
+                    View Sponsor Tiers
+                  </Link>
+                ) : (
+                  <div style={{ color: 'var(--mist)', fontSize: '0.9rem', fontStyle: 'italic', textAlign: 'center', padding: '1rem', border: '1px dashed rgba(255,255,255,0.1)', borderRadius: '8px' }}>Sponsorships Closed</div>
+                )}
+              </div>
+            </div>
+
+          </div>
+
+          <style dangerouslySetInnerHTML={{__html: `
+            .t-layout-grid {
+              display: grid;
+              grid-template-columns: 1fr 350px;
+              gap: 4rem;
+              align-items: start;
+              margin-top: 2rem;
+            }
+            @media (max-width: 1000px) {
+              .t-layout-grid {
+                grid-template-columns: 1fr;
+              }
+            }
+          `}} />
+
+          <div className="t-layout-grid">
+            
+            {/* ---------------- Primary Content Left Column ---------------- */}
+            <div style={{ minWidth: 0, display: 'flex', flexDirection: 'column', gap: '4rem' }}>
+              
+              {/* CLAIM EVENT BRAND BANNER (Only if Unowned) */}
+              {!tournament.hostUserId && (
+                <div style={{ background: 'linear-gradient(135deg, rgba(10,31,13,0.95), rgba(26,46,26,0.85))', border: '1px solid rgba(212,175,55,0.6)', borderRadius: 'var(--radius-lg)', padding: '2.5rem 3.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '2rem', flexWrap: 'wrap', boxShadow: '0 15px 40px rgba(0,0,0,0.1)' }}>
+                  <div>
+                    <h3 style={{ color: 'var(--gold)', fontSize: '1.6rem', marginBottom: '0.5rem', fontWeight: 600 }}>Are you the Tournament Director?</h3>
+                    <p style={{ color: '#e0e5df', fontSize: '1rem', lineHeight: '1.6', maxWidth: '600px' }}>
+                      Take ownership of your event. Claim this tournament to securely manage player registrations, execute automated blind-draw flighting, and collect gateway payments instantly.
+                    </p>
+                  </div>
+                  <Link href="/host" className="btn-primary" style={{ padding: '1.2rem 2.5rem', fontSize: '1.1rem', whiteSpace: 'nowrap', boxShadow: '0 8px 30px rgba(212,175,55,0.4)', background: 'linear-gradient(135deg, #d4af37, #aa8529)', color: '#000', fontWeight: 700, border: 'none' }}>
+                    Claim Your Event 🚀
+                  </Link>
+                </div>
+              )}
+
+              {/* HOST PROFILE WELCOME */}
+              {hostUser && (
                 <div>
-                  <h2 className="section-title" style={{ fontSize: '2rem', marginBottom: '1.5rem' }}>Event Overview</h2>
-                  <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--ink)' }}>
-                    {tournament.description ? (
-                      <p style={{ whiteSpace: 'pre-line' }}>{tournament.description}</p>
-                    ) : (
-                      <p style={{ fontStyle: 'italic', color: 'var(--mist)' }}>No description provided for this event.</p>
-                    )}
+                  <h2 className="section-title" style={{ fontSize: '1.8rem', marginBottom: '1.5rem', color: 'var(--forest)' }}>Meet Your Host</h2>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', padding: '2.5rem', background: '#fff', borderRadius: '24px', border: '1px solid rgba(212,175,55,0.2)', boxShadow: '0 10px 40px rgba(0,0,0,0.03)' }}>
+                    <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--gold), #aa8529)', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', fontWeight: 800, flexShrink: 0, boxShadow: '0 4px 15px rgba(212,175,55,0.3)' }}>
+                      {hostUser.fullName.charAt(0)}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: '0.9rem', color: 'var(--mist)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '0.4rem' }}>Tournament Director</div>
+                      <h3 style={{ fontSize: '1.8rem', color: 'var(--ink)', fontWeight: 700, marginBottom: '0.5rem' }}>{hostUser.fullName}</h3>
+                      <p style={{ color: 'var(--mist)', fontSize: '1rem', lineHeight: '1.5', maxWidth: '500px' }}>
+                        Welcome to {tournament.name}! We're incredibly excited to host you. Please reach out if you have any questions.
+                      </p>
+                    </div>
+                    <div>
+                      <ContactHostWidget tournament={tournament as any} />
+                    </div>
                   </div>
                 </div>
+              )}
 
-                {tournament.includes && (
-                  <div>
-                    <h2 className="section-title" style={{ fontSize: '2rem', marginBottom: '1.5rem' }}>What&apos;s Included</h2>
-                    <ul style={{ listStylePosition: 'inside', fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--ink)', whiteSpace: 'pre-line' }}>
+              {/* OVERVIEW CONTENT */}
+              <div>
+                <h2 className="section-title" style={{ fontSize: '1.8rem', marginBottom: '1.5rem', color: 'var(--forest)' }}>Event Overview</h2>
+                <div style={{ fontSize: '1.15rem', lineHeight: '1.9', color: 'var(--ink)' }}>
+                  {tournament.description ? (
+                    <p style={{ whiteSpace: 'pre-line' }}>{tournament.description}</p>
+                  ) : (
+                    <p style={{ fontStyle: 'italic', color: 'var(--mist)' }}>No description provided for this event.</p>
+                  )}
+                </div>
+              </div>
+
+              {/* INCLUDES BLOCK */}
+              {tournament.includes && (
+                <div>
+                  <h2 className="section-title" style={{ fontSize: '1.8rem', marginBottom: '1.5rem', color: 'var(--forest)' }}>What&apos;s Included</h2>
+                  <div style={{ background: '#fff', padding: '2.5rem', borderRadius: '24px', border: '1px solid rgba(26,46,26,0.05)', boxShadow: '0 10px 40px rgba(0,0,0,0.02)' }}>
+                    <ul style={{ listStylePosition: 'inside', fontSize: '1.15rem', lineHeight: '1.9', color: 'var(--ink)', whiteSpace: 'pre-line', margin: 0 }}>
                       {tournament.includes}
                     </ul>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
 
-              {/* Sidebar Area */}
-              <div>
-                <ContactHostWidget tournament={tournament as any} />
+            </div>
 
-                {/* Sidebar Claim Tool Removed - Promoted to Header Banner */}
 
-                {tournament.sourceUrl && (
-                  <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-                     <a href={tournament.sourceUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--mist)', fontSize: '0.85rem', textDecoration: 'underline', fontWeight: 500, transition: 'var(--transition)' }}>
-                       View Original Event Listing ↗
-                     </a>
+            {/* ---------------- Sidebar Properties Column ---------------- */}
+            <div style={{ position: 'sticky', top: '2rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+              
+              {/* Event Details Card */}
+              <div style={{ background: '#fff', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '24px', padding: '2.5rem', boxShadow: '0 20px 40px rgba(0,0,0,0.03)' }}>
+                <h3 style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: '2rem', color: 'var(--forest)', borderBottom: '2px solid rgba(0,0,0,0.05)', paddingBottom: '1rem' }}>Event Specs</h3>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  <div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--mist)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>Format</div>
+                    <div style={{ fontSize: '1.1rem', color: 'var(--ink)', fontWeight: 600, marginTop: '0.2rem' }}>{tournament.format || 'Standard'}</div>
                   </div>
-                )}
-
-                {/* Sponsorship Banner */}
-                <div style={{ marginTop: '2.5rem', background: 'rgba(212,175,55,0.05)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: 'var(--radius-md)', padding: '1.5rem', textAlign: 'center' }}>
-                  <h4 style={{ color: 'var(--gold)', marginBottom: '0.5rem', fontWeight: 600 }}>Partner With Us</h4>
-                  <p style={{ fontSize: '0.9rem', color: 'var(--mist)', marginBottom: '1.2rem', lineHeight: '1.4' }}>Showcase your brand to our golfers by sponsoring this awesome event.</p>
-                  <Link href={`/tournaments/${tournament.id}/sponsor`} className="btn-hero-outline" style={{ display: 'block', padding: '0.6rem', fontSize: '0.9rem', borderRadius: '4px' }}>
-                    View Sponsorship Tiers
-                  </Link>
+                  <div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--mist)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>Holes</div>
+                    <div style={{ fontSize: '1.1rem', color: 'var(--ink)', fontWeight: 600, marginTop: '0.2rem' }}>{tournament.holes || 18} Hole Event</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--mist)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>Availability</div>
+                    <div style={{ fontSize: '1.1rem', color: 'var(--grass)', fontWeight: 700, marginTop: '0.2rem' }}>{tournament.spotsRemaining !== null ? `${tournament.spotsRemaining} Spots Left` : 'Open Field'}</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--mist)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>Access</div>
+                    <div style={{ fontSize: '1.1rem', color: 'var(--ink)', fontWeight: 600, marginTop: '0.2rem' }}>{tournament.isPrivate ? 'Private' : 'Public'}</div>
+                  </div>
+                  {tournament.sourceUrl && (
+                    <div style={{ paddingTop: '1.5rem', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
+                      <a href={tournament.sourceUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--mist)', fontSize: '0.9rem', textDecoration: 'underline', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                        Original Listing ↗
+                      </a>
+                    </div>
+                  )}
                 </div>
               </div>
-              
             </div>
             
-            </div>{/* End 1fr Grid Container */}
-            </div>{/* End Main Column */}
-          </div>{/* End Sidebar Flex Wrapper */}
-          
+          </div>
         </div>
       </div>
     </>
   );
 }
+

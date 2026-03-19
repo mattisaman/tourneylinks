@@ -11,7 +11,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized. Please sign in to register.' }, { status: 401 });
     }
 
-    const { tournamentId } = await req.json();
+    const { tournamentId, playerCount = 1, paymentMode = 'full', isClaim, teamGroupId, claimToken } = await req.json();
     if (!tournamentId) {
       return NextResponse.json({ error: 'Missing tournament ID' }, { status: 400 });
     }
@@ -46,44 +46,62 @@ export async function POST(req: Request) {
     }
 
     // Financial Calculation (Cents)
-    // TourneyLinks takes 2% Platform Fee
     const rawEntryFeeCents = Math.round(tournament.entryFee * 100);
+    const checkoutQuantity = isClaim ? 1 : (paymentMode === 'full' ? playerCount : 1);
+    const totalTransactionVolumeCents = rawEntryFeeCents * checkoutQuantity;
+    
+    // TourneyLinks takes 2% Platform Fee over the total volume
     const platformFeePercentage = 0.02; 
-    const applicationFeeAmountCents = Math.round(rawEntryFeeCents * platformFeePercentage);
+    const applicationFeeAmountCents = Math.round(totalTransactionVolumeCents * platformFeePercentage);
 
     // Provide Checkout Session
     const origin = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
     
     // We pass metadata to construct the internal Registration record in the Webhook
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
+      payment_method_types: ['card', 'us_bank_account'],
       line_items: [
         {
           price_data: {
             currency: 'usd',
             product_data: {
               name: `Registration: ${tournament.name}`,
-              description: `${tournament.format} at ${tournament.courseName}`,
-              // images: [tournament.imageUrl] -> optional
+              description: isClaim 
+                ? `Teammate Team Registration Share`
+                : paymentMode === 'split' 
+                  ? `Team Captain Split Payment (${playerCount} Spots Total)` 
+                  : playerCount > 1 
+                    ? `Full Team Registration (${playerCount} Players)` 
+                    : `Solo Golfer Registration`,
             },
             unit_amount: rawEntryFeeCents,
           },
-          quantity: 1,
+          quantity: checkoutQuantity,
         },
       ],
       mode: 'payment',
       success_url: `${origin}/tournaments/${tournament.id}?registration=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/tournaments/${tournament.id}?registration=cancelled`,
-      payment_intent_data: {
-        application_fee_amount: applicationFeeAmountCents,
-        transfer_data: {
-          destination: hostStripe.stripeAccountId,
-        },
-      },
-      metadata: {
+      ...(hostStripe.stripeAccountId.includes('Mock') ? {} : {
+        payment_intent_data: {
+          application_fee_amount: applicationFeeAmountCents,
+          transfer_data: {
+            destination: hostStripe.stripeAccountId,
+          },
+        }
+      }),
+      metadata: isClaim ? {
+        type: 'TEAM_CLAIM',
         tournamentId: tournament.id.toString(),
         userId: dbUser.id.toString(),
-        registrationType: 'PLAYER', // Future extension for Teams
+        teamGroupId: teamGroupId.toString(),
+        token: claimToken,
+      } : {
+        type: 'PLAYER',
+        tournamentId: tournament.id.toString(),
+        userId: dbUser.id.toString(),
+        playerCount: playerCount.toString(),
+        paymentMode: paymentMode, // 'full' or 'split'
       },
       customer_email: clerkUser.emailAddresses[0]?.emailAddress,
     });
