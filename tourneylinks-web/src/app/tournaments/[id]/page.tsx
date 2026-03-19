@@ -118,7 +118,16 @@ export default async function TournamentDetailPage({ params }: { params: Promise
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
                <div className="feature-card" style={{ background: 'var(--white)', border: '1px solid rgba(26,46,26,0.06)' }}>
                   <div className="t-detail-label">Entry Fee</div>
-                  <div className="hero-stat-num" style={{ color: 'var(--forest)' }}>{tournament.entryFee ? `$${tournament.entryFee}` : 'TBD'}</div>
+                  <div className="hero-stat-num" style={{ color: 'var(--forest)' }}>
+                    {tournament.entryFee ? (
+                      <>
+                        {tournament.originalPrice && tournament.originalPrice > tournament.entryFee && (
+                          <s style={{ color: 'var(--mist)', marginRight: '0.5rem', fontSize: '0.8em' }}>${tournament.originalPrice}</s>
+                        )}
+                        ${tournament.entryFee}
+                      </>
+                    ) : 'TBD'}
+                  </div>
                </div>
                <div className="feature-card" style={{ background: 'var(--white)', border: '1px solid rgba(26,46,26,0.06)' }}>
                   <div className="t-detail-label">Format</div>
@@ -145,13 +154,25 @@ export default async function TournamentDetailPage({ params }: { params: Promise
                </div>
                {tournament.isCharity && (
                  <div className="feature-card" style={{ background: 'var(--white)', border: '1px solid rgba(26,46,26,0.06)' }}>
-                    <div className="t-detail-label">Event Type</div>
-                    <div className="hero-stat-num" style={{ color: 'var(--gold)' }}>Charity</div>
+                    <div className="t-detail-label">Benefiting</div>
+                    <div className="hero-stat-num" style={{ color: 'var(--gold)', fontSize: '1.2rem' }}>{tournament.charityName || 'Charity'}</div>
+                    {tournament.acceptsDonations && (
+                      <Link href={`/tournaments/${tournament.id}/donate`} className="btn-hero-outline" style={{ marginTop: '0.5rem', display: 'inline-block', padding: '0.3rem 0.8rem', fontSize: '0.8rem', borderRadius: '4px' }}>
+                        Donate to Cause ❤️
+                      </Link>
+                    )}
                  </div>
                )}
-               <div className="feature-card" style={{ background: 'var(--white)', border: '1px solid rgba(26,46,26,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+               <div className="feature-card" style={{ background: 'var(--white)', border: '1px solid rgba(26,46,26,0.06)', display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'center', justifyContent: 'center' }}>
                   {hostHasStripe && tournament.entryFee ? (
-                    <StripeCheckoutButton tournamentId={tournament.id} entryFee={tournament.entryFee} />
+                    <>
+                      <StripeCheckoutButton tournamentId={tournament.id} entryFee={tournament.entryFee} />
+                      {tournament.allowOfflinePayment && (
+                        <Link href={`/tournaments/${tournament.id}/offline-register`} className="btn-hero-outline" style={{ width: '100%', textAlign: 'center', padding: '0.6rem', fontSize: '0.85rem', borderRadius: '4px', border: '1px dashed var(--mist)', color: 'var(--mist)' }}>
+                           Pay Cash/Check On-Site
+                        </Link>
+                      )}
+                    </>
                   ) : tournament.registrationUrl ? (
                     <a href={tournament.registrationUrl} target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ width: '100%', textAlign: 'center', padding: '0.8rem', fontSize: '0.9rem' }}>
                       Register (External) ↗
@@ -200,6 +221,15 @@ export default async function TournamentDetailPage({ params }: { params: Promise
                      </a>
                   </div>
                 )}
+
+                {/* Sponsorship Banner */}
+                <div style={{ marginTop: '2.5rem', background: 'rgba(212,175,55,0.05)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: 'var(--radius-md)', padding: '1.5rem', textAlign: 'center' }}>
+                  <h4 style={{ color: 'var(--gold)', marginBottom: '0.5rem', fontWeight: 600 }}>Partner With Us</h4>
+                  <p style={{ fontSize: '0.9rem', color: 'var(--mist)', marginBottom: '1.2rem', lineHeight: '1.4' }}>Showcase your brand to our golfers by sponsoring this awesome event.</p>
+                  <Link href={`/tournaments/${tournament.id}/sponsor`} className="btn-hero-outline" style={{ display: 'block', padding: '0.6rem', fontSize: '0.9rem', borderRadius: '4px' }}>
+                    View Sponsorship Tiers
+                  </Link>
+                </div>
               </div>
               
             </div>

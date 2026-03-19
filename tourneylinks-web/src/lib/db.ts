@@ -58,12 +58,17 @@ export const tournaments = pgTable('tournaments', {
   holes: integer('holes').default(18),
 
   entryFee: real('entry_fee'),
+  originalPrice: real('original_price'),
+  passFeesToRegistrant: boolean('pass_fees_to_registrant').default(false),
+  allowOfflinePayment: boolean('allow_offline_payment').default(false),
   hostUserId: integer('host_user_id').references(() => users.id),
   maxPlayers: integer('max_players'),
   spotsRemaining: integer('spots_remaining'),
 
   handicapMax: integer('handicap_max'),
   isCharity: boolean('is_charity').default(false),
+  acceptsDonations: boolean('accepts_donations').default(false),
+  charityName: text('charity_name'),
   isPrivate: boolean('is_private').default(false),
 
   organizerName: text('organizer_name'),
@@ -94,6 +99,7 @@ export const registrations = pgTable('registrations', {
   transactionId: text('transaction_id'), // Future Stripe reference mapped mapping
   pairingRequest: text('pairing_request'),
   assignedTeam: integer('assigned_team'),
+  teamInvoiceId: text('team_invoice_id'), // UUID linking to pending_team_payments
   createdAt: timestamp('created_at').defaultNow(),
 });
 
@@ -243,5 +249,35 @@ export const payments = pgTable('payments', {
   amount: integer('amount').notNull(), // captured strictly in cents
   platformFee: integer('platform_fee').notNull(),
   status: text('status').default('PENDING').notNull(), // 'PENDING', 'SUCCEEDED', 'FAILED', 'REFUNDED'
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const sponsorship_tiers = pgTable('sponsorship_tiers', {
+  id: serial('id').primaryKey(),
+  tournamentId: integer('tournament_id').references(() => tournaments.id).notNull(),
+  name: text('name').notNull(),
+  price: integer('price').notNull(), // captured strictly in cents
+  description: text('description'),
+  spotsAvailable: integer('spots_available'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const tournament_sponsors = pgTable('tournament_sponsors', {
+  id: serial('id').primaryKey(),
+  tournamentId: integer('tournament_id').references(() => tournaments.id).notNull(),
+  name: text('name').notNull(),
+  logoUrl: text('logo_url').notNull(),
+  websiteUrl: text('website_url'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const pending_team_payments = pgTable('pending_team_payments', {
+  id: serial('id').primaryKey(),
+  tournamentId: integer('tournament_id').references(() => tournaments.id).notNull(),
+  captainRegistrationId: integer('captain_registration_id').references(() => registrations.id).notNull(),
+  invoiceGroupId: text('invoice_group_id').notNull().unique(), // The UUID that groups the 4 players
+  totalSpots: integer('total_spots').notNull(),
+  paidSpots: integer('paid_spots').default(1).notNull(),
+  status: text('status').default('PENDING').notNull(), // 'PENDING', 'COMPLETED', 'CANCELLED'
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });

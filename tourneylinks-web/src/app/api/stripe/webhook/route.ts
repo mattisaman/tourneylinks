@@ -56,10 +56,9 @@ export async function POST(req: Request) {
       const newRegistration = await db.insert(registrations).values({
         tournamentId,
         userId,
-        playerName: `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Unknown Player',
-        playerEmail: user.email,
-        playerPhone: null,
-        playerHandicapIndex: user.ghinHandicap, // Pull global GHIN if available
+        name: user.fullName || 'Unknown Player',
+        email: user.email,
+        handicap: user.handicapIndex ?? null, // Pull global GHIN if available
         status: 'CONFIRMED'
       }).returning({ id: registrations.id });
 
