@@ -19,9 +19,10 @@ export default async function AdminDashboard() {
   // ENFORCE REQUIRED STRIPE ONBOARDING (Phase 9)
   const accountRow = await db.select().from(stripe_accounts).where(eq(stripe_accounts.userId, dbUser.id)).limit(1);
   const existingAccount = accountRow[0];
-  if (!existingAccount || !existingAccount.chargesEnabled || !existingAccount.payoutsEnabled) {
-    redirect('/host/onboarding');
-  }
+  // TEMPORARIALLY DISABLED FOR STAGING QA
+  // if (!existingAccount || !existingAccount.chargesEnabled || !existingAccount.payoutsEnabled) {
+  //   redirect('/host/onboarding');
+  // }
 
   // Hardcoded for the prototype to point to the first tournament matching our mock seed
   const tourneys = await db.select().from(tournaments).limit(1);

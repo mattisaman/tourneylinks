@@ -1,9 +1,10 @@
 import React from 'react';
-import { getTournamentById } from '@/lib/db';
+import { getTournamentById, db, stripe_accounts } from '@/lib/db';
+import { eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import ContactHostWidget from '@/components/tournaments/ContactHostWidget';
-import MissingLinkWidget from '@/components/tournaments/MissingLinkWidget';
+import StripeCheckoutButton from './StripeCheckoutButton';
 
 export default async function TournamentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
@@ -18,6 +19,19 @@ export default async function TournamentDetailPage({ params }: { params: Promise
     notFound();
   }
 
+  // SERVER CHECK: Is the Host actively onboarded into Stripe?
+  let hostHasStripe = false;
+  if (tournament.hostUserId) {
+    const hostStripeRow = await db.select()
+      .from(stripe_accounts)
+      .where(eq(stripe_accounts.userId, tournament.hostUserId))
+      .limit(1);
+      
+    if (hostStripeRow[0]?.chargesEnabled) {
+      hostHasStripe = true;
+    }
+  }
+
   const formatDate = (dateStr: string | null) => {
     if (!dateStr) return "TBD";
     const d = new Date(dateStr);
@@ -28,13 +42,6 @@ export default async function TournamentDetailPage({ params }: { params: Promise
 
   return (
     <>
-      {/* Root-Level Floating Action Nav (Immune to parent relative overflow) */}
-      <div style={{ position: 'fixed', top: '100px', left: 'max(1rem, calc((100vw - 1200px) / 2))', zIndex: 9999 }}>
-        <Link href="/tournaments" className="btn-hero-outline" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', padding: '0.6rem 1.25rem', background: 'rgba(10,31,13,0.95)', border: '1px solid rgba(212,175,55,0.6)', color: 'var(--cream)', textDecoration: 'none', borderRadius: '40px', boxShadow: '0 8px 30px rgba(0,0,0,0.3)' }}>
-           ← Back to Tournaments
-        </Link>
-      </div>
-
       <div className="hero" style={{ minHeight: '60vh', padding: '6rem 0 0 0', display: 'block' }}>
         <div className="hero-bg"></div>
         <div className="hero-grid"></div>
@@ -60,10 +67,41 @@ export default async function TournamentDetailPage({ params }: { params: Promise
       </div>
 
       <div style={{ background: 'var(--white)', position: 'relative', zIndex: 10 }}>
-        <div className="section-wrapper" style={{ paddingTop: '2.5rem' }}>
+        
+        <style dangerouslySetInnerHTML={{__html: `
+          .t-layout-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 2rem;
+            align-items: start;
+          }
+          @media (max-width: 900px) {
+            .t-layout-grid {
+              grid-template-columns: 1fr;
+            }
+            .t-back-nav {
+              position: static !important;
+              margin-bottom: 1rem;
+            }
+          }
+        `}} />
+
+        <div className="section-wrapper" style={{ paddingTop: '3.5rem' }}>
           
-          {/* CLAIM EVENT BRAND BANNER */}
-          <div style={{ background: 'linear-gradient(135deg, rgba(10,31,13,0.95), rgba(26,46,26,0.85))', border: '1px solid rgba(212,175,55,0.6)', borderRadius: 'var(--radius-lg)', padding: '2.5rem 3.5rem', marginBottom: '3rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '2rem', flexWrap: 'wrap', boxShadow: '0 15px 40px rgba(0,0,0,0.1), inset 0 0 40px rgba(212,175,55,0.05)' }}>
+          <div className="t-layout-grid">
+            
+            {/* Left Wing Sticky Navigation Sidebar */}
+            <div className="t-back-nav" style={{ position: 'sticky', top: '200px', zIndex: 100 }}>
+               <Link href="/tournaments" className="btn-hero-outline" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', padding: '0.6rem 1.25rem', background: 'rgba(10,31,13,0.95)', border: '1px solid rgba(212,175,55,0.6)', color: 'var(--cream)', textDecoration: 'none', borderRadius: '40px', boxShadow: '0 8px 30px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>
+                  ← Back to Directory
+               </Link>
+            </div>
+
+            {/* Primary Content Column */}
+            <div style={{ minWidth: 0 }}>
+              
+              {/* CLAIM EVENT BRAND BANNER */}
+              <div style={{ background: 'linear-gradient(135deg, rgba(10,31,13,0.95), rgba(26,46,26,0.85))', border: '1px solid rgba(212,175,55,0.6)', borderRadius: 'var(--radius-lg)', padding: '2.5rem 3.5rem', marginBottom: '3rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '2rem', flexWrap: 'wrap', boxShadow: '0 15px 40px rgba(0,0,0,0.1), inset 0 0 40px rgba(212,175,55,0.05)' }}>
             <div>
               <h3 style={{ color: 'var(--gold)', fontSize: '1.6rem', marginBottom: '0.5rem', fontWeight: 600, textShadow: '0 2px 10px rgba(212,175,55,0.3)' }}>Are you the Tournament Director?</h3>
               <p style={{ color: '#e0e5df', fontSize: '1rem', lineHeight: '1.6', maxWidth: '600px' }}>
@@ -112,12 +150,14 @@ export default async function TournamentDetailPage({ params }: { params: Promise
                  </div>
                )}
                <div className="feature-card" style={{ background: 'var(--white)', border: '1px solid rgba(26,46,26,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  {tournament.registrationUrl ? (
-                    <a href={tournament.registrationUrl} target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ width: '100%', textAlign: 'center', padding: '1rem' }}>
-                      Register Now
+                  {hostHasStripe && tournament.entryFee ? (
+                    <StripeCheckoutButton tournamentId={tournament.id} entryFee={tournament.entryFee} />
+                  ) : tournament.registrationUrl ? (
+                    <a href={tournament.registrationUrl} target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ width: '100%', textAlign: 'center', padding: '0.8rem', fontSize: '0.9rem' }}>
+                      Register (External) ↗
                     </a>
                   ) : (
-                    <div style={{ color: 'var(--mist)', fontSize: '0.9rem', fontStyle: 'italic', textAlign: 'center' }}>Registration Link Unavailable</div>
+                    <div style={{ color: 'var(--mist)', fontSize: '0.85rem', fontStyle: 'italic', textAlign: 'center', lineHeight: '1.4' }}>Registration Currently Unavailable</div>
                   )}
                </div>
             </div>
@@ -163,7 +203,11 @@ export default async function TournamentDetailPage({ params }: { params: Promise
               </div>
               
             </div>
-          </div>
+            
+            </div>{/* End 1fr Grid Container */}
+            </div>{/* End Main Column */}
+          </div>{/* End Sidebar Flex Wrapper */}
+          
         </div>
       </div>
     </>

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import StripeOnboardButton from './onboarding/StripeOnboardButton';
 
 export default function HostWizard() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -299,11 +300,13 @@ export default function HostWizard() {
                 </div>
               </div>
               
-              <div style={{ background: 'var(--forest)', borderRadius: '6px', padding: '2rem', textAlign: 'center', marginTop: '1.5rem' }}>
-                <div style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.4rem', fontWeight: 700, color: 'var(--cream)', marginBottom: '0.5rem' }}>Ready to Launch?</div>
-                <div style={{ fontSize: '0.875rem', color: 'rgba(245,240,232,0.6)', marginBottom: '1.5rem' }}>Your tournament page will be created immediately.</div>
-                <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-                  <Link href="/admin" className="btn-hero" style={{ textDecoration: 'none' }}>🚀 Create Tournament</Link>
+              <div style={{ background: 'linear-gradient(135deg, var(--forest), #112814)', border: '1px solid rgba(212,175,55,0.2)', borderRadius: 'var(--radius-lg)', padding: '2.5rem', textAlign: 'center', marginTop: '1.5rem', boxShadow: 'inset 0 0 40px rgba(0,0,0,0.2)' }}>
+                <div style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.6rem', fontWeight: 700, color: 'var(--gold)', marginBottom: '0.8rem' }}>Tournament Secured ✅</div>
+                <div style={{ fontSize: '1rem', color: 'var(--cream)', marginBottom: '1.5rem', maxWidth: '420px', margin: '0 auto 2rem auto', lineHeight: '1.6' }}>
+                  To start collecting the <strong style={{color: '#fff'}}>${price} entry fees</strong> from your players instantly, securely connect your payout account. TourneyLinks partners with Stripe to handle bank routing safely.
+                </div>
+                <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                  <StripeOnboardButton />
                   <button className="btn-hero-outline" onClick={handleBack}>← Go Back</button>
                 </div>
               </div>
