@@ -145,29 +145,33 @@ async function processSource(
         // --- DEEP CRAWL LOGIC ---
         for (let i = 0; i < normalized.length; i++) {
             const t = normalized[i];
-            const url = t.registrationUrl;
-            const needsDeepCrawl = url && (!t.entryFee || t.spotsRemaining === null || !t.description);
-            // Ensure registrationUrl is a valid web link pointing to a detail page
-            if (needsDeepCrawl && url.startsWith('http')) {
-                logger.info({ url }, `Deep crawling details for ${t.name}...`);
+            
+            // Resolve Potential Relative URLs
+            let deepCrawlUrl = t.registrationUrl || t.sourceUrl;
+            if (deepCrawlUrl && deepCrawlUrl.startsWith('/')) {
+                try { deepCrawlUrl = new URL(deepCrawlUrl, discovered.url).href; } catch(e) {}
+            }
+
+            const needsDeepCrawl = deepCrawlUrl && (!t.entryFee || !t.description || !t.includes || !t.formatDetail);
+            
+            if (needsDeepCrawl && deepCrawlUrl.startsWith('http') && deepCrawlUrl !== discovered.url) {
+                logger.info({ url: deepCrawlUrl }, `Deep crawling secondary Details layer for ${t.name}...`);
                 try {
-                    const detailPage = await crawlPage(url, source);
-                    const detailExt = await extractTournaments(detailPage.text, url, source.id);
+                    const detailPage = await crawlPage(deepCrawlUrl, source);
+                    const detailExt = await extractTournaments(detailPage.text, deepCrawlUrl, source.id);
                     if (detailExt.tournaments.length > 0) {
                         const dt = detailExt.tournaments[0];
-                        // Merge the deep details into the top-level tournament
-                        if (dt.entryFee) t.entryFee = dt.entryFee;
-                        if (dt.maxPlayers) t.maxPlayers = dt.maxPlayers;
-                        if (dt.spotsRemaining !== null) t.spotsRemaining = dt.spotsRemaining;
-                        if (dt.description && dt.description.length > (t.description?.length || 0)) {
-                            t.description = dt.description;
-                        }
-                        if (dt.includes) t.includes = dt.includes;
-                        if (dt.formatDetail) t.formatDetail = dt.formatDetail;
+                        // Overwrite base attributes with Deep Gold Data
+                        if (!t.entryFee && dt.entryFee) t.entryFee = dt.entryFee;
+                        if (!t.maxPlayers && dt.maxPlayers) t.maxPlayers = dt.maxPlayers;
+                        if (t.spotsRemaining === null && dt.spotsRemaining !== null) t.spotsRemaining = dt.spotsRemaining;
+                        if (dt.description && dt.description.length > (t.description?.length || 0)) t.description = dt.description;
+                        if (!t.includes && dt.includes) t.includes = dt.includes;
+                        if (!t.formatDetail && dt.formatDetail) t.formatDetail = dt.formatDetail;
                         if (!t.organizerName && dt.organizerName) t.organizerName = dt.organizerName;
                     }
                 } catch (err) {
-                    logger.warn({ url: t.registrationUrl, error: String(err) }, 'Deep crawl failed, falling back to surface data');
+                    logger.warn({ url: deepCrawlUrl, error: String(err) }, 'Deep crawl sequence failed, falling back to surface layer');
                 }
             }
         }

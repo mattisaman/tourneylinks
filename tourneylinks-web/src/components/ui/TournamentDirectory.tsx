@@ -2,6 +2,8 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
+import { useAuth, SignInButton } from '@clerk/nextjs';
+import { Bell, Search } from 'lucide-react';
 
 type Tournament = any; // Will use the full Drizzle object
 
@@ -31,6 +33,13 @@ const MOCK_GEOCODES: Record<string, { lat: number, lng: number }> = {
 };
 
 export default function TournamentDirectory({ initialTournaments }: { initialTournaments: Tournament[] }) {
+  const { userId } = useAuth();
+  
+  const [keyword, setKeyword] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [courseFilter, setCourseFilter] = useState('All');
+  
   const [zipCode, setZipCode] = useState('');
   const [radius, setRadius] = useState(50);
   const [format, setFormat] = useState('All');
@@ -40,8 +49,21 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
   const [requireSpots, setRequireSpots] = useState(false);
   const [requireOpenReg, setRequireOpenReg] = useState(true);
 
+  // Derive unique courses for the dropdown
+  const uniqueCourses = useMemo(() => {
+    const courses = new Set<string>();
+    initialTournaments.forEach(t => {
+      if (t.courseName) courses.add(t.courseName);
+    });
+    return Array.from(courses).sort();
+  }, [initialTournaments]);
+
   // The explicitly applied filters that drive the actual results
   const [appliedFilters, setAppliedFilters] = useState({
+    keyword: '',
+    startDate: '',
+    endDate: '',
+    courseFilter: 'All',
     zipCode: '',
     radius: 50,
     format: 'All',
@@ -53,13 +75,16 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
   });
 
   const handleApplyFilters = () => {
-    setAppliedFilters({ zipCode, radius, format, maxFee, accessType, isCharity, requireSpots, requireOpenReg });
+    setAppliedFilters({ keyword, startDate, endDate, courseFilter, zipCode, radius, format, maxFee, accessType, isCharity, requireSpots, requireOpenReg });
   };
 
   const handleClearFilters = () => {
+    setKeyword(''); setStartDate(''); setEndDate(''); setCourseFilter('All');
     setZipCode(''); setRadius(50); setFormat('All'); setMaxFee(''); setAccessType('All'); 
     setIsCharity(false); setRequireSpots(false); setRequireOpenReg(false);
-    setAppliedFilters({ zipCode: '', radius: 50, format: 'All', maxFee: '', accessType: 'All', isCharity: false, requireSpots: false, requireOpenReg: false });
+    setAppliedFilters({ 
+       keyword: '', startDate: '', endDate: '', courseFilter: 'All', zipCode: '', radius: 50, format: 'All', maxFee: '', accessType: 'All', isCharity: false, requireSpots: false, requireOpenReg: false 
+    });
   };
 
   const getGradient = (index: number) => {
@@ -86,6 +111,29 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
 
   const filteredTournaments = useMemo(() => {
     return initialTournaments.filter(t => {
+      // 0. Keyword Custom Search
+      if (appliedFilters.keyword) {
+        const lowerKeyword = appliedFilters.keyword.toLowerCase();
+        const titleMatch = t.name && t.name.toLowerCase().includes(lowerKeyword);
+        const formatDetailsMatch = t.formatDetail && t.formatDetail.toLowerCase().includes(lowerKeyword);
+        const includesMatch = t.includes && t.includes.toLowerCase().includes(lowerKeyword);
+        
+        if (!titleMatch && !formatDetailsMatch && !includesMatch) return false;
+      }
+
+      // 0.1 Date Range Bounding
+      if (appliedFilters.startDate && t.dateStart) {
+        if (new Date(t.dateStart) < new Date(appliedFilters.startDate)) return false;
+      }
+      if (appliedFilters.endDate && t.dateStart) {
+        if (new Date(t.dateStart) > new Date(appliedFilters.endDate)) return false;
+      }
+
+      // 0.2 Exact Course Filter
+      if (appliedFilters.courseFilter !== 'All') {
+        if (t.courseName !== appliedFilters.courseFilter) return false;
+      }
+
       // 1. Fee Filter
       if (appliedFilters.maxFee !== '' && t.entryFee && t.entryFee > appliedFilters.maxFee) {
         return false;
@@ -129,133 +177,143 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
   }, [initialTournaments, appliedFilters]);
 
   return (
-    <div className="section-wrapper" id="explore" style={{ padding: '4rem 3rem' }}>
-      <div className="section-header" style={{ marginBottom: '3rem' }}>
-        <div>
-          <h1 className="section-title" style={{ fontSize: '3rem' }}>Tournament Directory</h1>
-          <p className="section-sub" style={{ maxWidth: '600px' }}>
-            Browse the complete schedule of upcoming amateur championships, competitive leagues, and high-end charity scrambles. Use the filters below to dial in specific events.
-          </p>
+    <>
+      <div style={{ 
+        position: 'relative', 
+        padding: '1.5rem 3rem 1.5rem 3rem', 
+        background: 'linear-gradient(135deg, #0a1f0f 0%, #153a1d 50%, #0a1f0f 100%)', 
+        overflow: 'hidden',
+        textAlign: 'center',
+        borderBottom: '2px solid rgba(212,175,55,0.7)',
+        boxShadow: '0 8px 30px rgba(0,0,0,0.4)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        {/* Subtle background overlay for "foil/lighting" */}
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'radial-gradient(ellipse at top, rgba(212,175,55,0.15) 0%, transparent 60%)', pointerEvents: 'none' }}></div>
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(212,175,55,1), transparent)', opacity: 0.9 }}></div>
+        
+        <div style={{ position: 'relative', zIndex: 1, maxWidth: '800px', margin: '0 auto' }}>
+            <h1 style={{ 
+              fontFamily: 'Playfair Display, serif', 
+              fontSize: '3.5rem', 
+              marginBottom: '0.25rem', 
+              background: 'linear-gradient(to right, #d4af37, #fff9e6, #d4af37)', 
+              WebkitBackgroundClip: 'text', 
+              WebkitTextFillColor: 'transparent',
+              textShadow: '0 4px 20px rgba(212,175,55,0.3)'
+            }}>
+              Tournament Directory
+            </h1>
+            <p style={{ fontSize: '1.15rem', color: 'rgba(255,255,255,0.9)', marginBottom: 0, lineHeight: 1.5, fontWeight: 300 }}>
+              Browse the complete schedule of upcoming amateur championships, competitive leagues, and high-end charity scrambles.
+            </p>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(280px, 1fr) 3fr', gap: '3rem', alignItems: 'start' }}>
-        
-        {/* Filter Sidebar */}
-        <div style={{ background: 'var(--white)', border: '1px solid rgba(26,46,26,0.08)', borderRadius: 'var(--radius-lg)', padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', position: 'sticky', top: '100px' }}>
-          <div>
-            <h3 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.5rem', color: 'var(--forest)', marginBottom: '1.5rem' }}>Filters</h3>
-            
-            <div className="wfield" style={{ marginBottom: '1.25rem' }}>
-              <label>📍 Location Search</label>
-              <input 
-                type="text" 
-                placeholder="Zip Code or City" 
-                value={zipCode} 
-                onChange={e => setZipCode(e.target.value)} 
-              />
-            </div>
-            
-            <div className="wfield" style={{ marginBottom: '1.25rem' }}>
-              <label>Radius</label>
-              <select value={radius} onChange={e => setRadius(Number(e.target.value))}>
-                <option value={5}>Within 5 miles</option>
-                <option value={10}>Within 10 miles</option>
-                <option value={20}>Within 20 miles</option>
-                <option value={50}>Within 50 miles</option>
-                <option value={100}>Within 100 miles</option>
-                <option value={500}>Statewide</option>
-              </select>
+      {/* Sticky Secondary Header (The Filter Matrix) */}
+      <div className="sticky-filter-matrix" style={{ 
+        position: 'sticky', top: '0', zIndex: 40,
+        background: 'rgba(255, 255, 255, 0.98)', backdropFilter: 'blur(10px)',
+        borderBottom: '1px solid rgba(212,175,55,0.4)',
+        borderTop: '2px solid rgba(212,175,55,0.8)',
+        padding: '1.25rem 3rem',
+        boxShadow: '0 4px 30px rgba(0,0,0,0.06)',
+        display: 'flex', flexDirection: 'column', gap: '1rem'
+      }}>
+         {/* Top Row: Primary Search & Actions */}
+         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
+               <div className="wfield" style={{ flex: 2, marginBottom: 0 }}>
+                  <input type="text" placeholder="Search by event name, details, or swag..." value={keyword} onChange={e => setKeyword(e.target.value)} style={{ padding: '0.75rem 1rem', background: '#f4f7f5', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px' }}/>
+               </div>
+               <div className="wfield" style={{ flex: 1, marginBottom: 0 }}>
+                 <select value={courseFilter} onChange={e => setCourseFilter(e.target.value)} style={{ padding: '0.75rem 1rem', background: '#f4f7f5', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px' }}>
+                   <option value="All">All Courses</option>
+                   {uniqueCourses.map(c => <option key={c} value={c}>{c}</option>)}
+                 </select>
+               </div>
+               <div className="wfield" style={{ flex: 1, marginBottom: 0, display: 'flex', gap: '0.5rem' }}>
+                 <input type="text" placeholder="Zip or City" value={zipCode} onChange={e => setZipCode(e.target.value)} style={{ padding: '0.75rem 1rem', background: '#f4f7f5', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px' }}/>
+                 <select value={radius} onChange={e => setRadius(Number(e.target.value))} style={{ padding: '0.75rem 1rem', background: '#f4f7f5', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', width: 'auto' }}>
+                   <option value={5}>5 mi</option>
+                   <option value={20}>20 mi</option>
+                   <option value={50}>50 mi</option>
+                   <option value={100}>100 mi</option>
+                   <option value={500}>State</option>
+                 </select>
+               </div>
             </div>
 
-            <div className="wfield" style={{ marginBottom: '1.25rem' }}>
-              <label>Tournament Format</label>
-              <select value={format} onChange={e => setFormat(e.target.value)}>
+            {/* Radar Button Action */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexShrink: 0 }}>
+               {userId ? (
+                 <button className="btn-hero-outline" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.2rem', fontSize: '0.85rem', borderWidth: '2px' }} onClick={() => alert('Radar saved! Email notifications enabled.')}>
+                    <Bell size={16} /> Save Radar Notification 
+                 </button>
+               ) : (
+                 <SignInButton mode="modal" fallbackRedirectUrl="/tournaments">
+                   <button className="btn-hero-outline" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.2rem', fontSize: '0.85rem', borderWidth: '2px' }}>
+                      <Bell size={16} /> Log In to Save Radar
+                   </button>
+                 </SignInButton>
+               )}
+            </div>
+         </div>
+         
+         {/* Bottom Row: Secondary Nuanced Filters */}
+         <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap', paddingTop: '0.75rem', borderTop: '1px solid rgba(26,46,26,0.05)' }}>
+             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', color: 'var(--mist)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>
+                <Search size={14} /> Refine:
+             </div>
+             
+             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+               <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} style={{ padding: '0.4rem 0.8rem', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.1)', fontSize: '0.8rem', background: '#fff' }} />
+               <span style={{ color: 'var(--mist)', fontSize: '0.8rem' }}>to</span>
+               <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} style={{ padding: '0.4rem 0.8rem', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.1)', fontSize: '0.8rem', background: '#fff' }} />
+             </div>
+
+             <select value={format} onChange={e => setFormat(e.target.value)} style={{ padding: '0.4rem 0.8rem', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.1)', fontSize: '0.8rem', background: '#fff' }}>
                 <option value="All">All Formats</option>
                 <option value="Stroke Play">Stroke Play</option>
                 <option value="Scramble">Scramble</option>
                 <option value="Match Play">Match Play</option>
-                <option value="Stableford">Stableford</option>
                 <option value="Best Ball">Best Ball</option>
-              </select>
-            </div>
+             </select>
 
-            <div className="wfield" style={{ marginBottom: '1.25rem' }}>
-              <label>Max Entry Fee</label>
-              <div style={{ position: 'relative' }}>
-                <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--mist)' }}>$</span>
-                <input 
-                  type="number" 
-                  placeholder="No Limit" 
-                  value={maxFee} 
-                  onChange={e => setMaxFee(e.target.value ? Number(e.target.value) : '')} 
-                  style={{ paddingLeft: '25px' }}
-                />
-              </div>
-            </div>
-
-            <div className="wfield" style={{ marginBottom: '1.25rem' }}>
-              <label>Course Access</label>
-              <select value={accessType} onChange={e => setAccessType(e.target.value)}>
-                <option value="All">Public & Private</option>
+             <select value={accessType} onChange={e => setAccessType(e.target.value)} style={{ padding: '0.4rem 0.8rem', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.1)', fontSize: '0.8rem', background: '#fff' }}>
+                <option value="All">Public + Private</option>
                 <option value="Public">Public Only</option>
                 <option value="Private">Private Only</option>
-              </select>
-            </div>
+             </select>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '1.5rem', marginBottom: '2rem' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--forest)', fontWeight: 500 }}>
-                <input 
-                  type="checkbox" 
-                  checked={requireOpenReg} 
-                  onChange={e => setRequireOpenReg(e.target.checked)} 
-                  style={{ width: '18px', height: '18px', accentColor: 'var(--grass)' }}
-                />
-                Registration Currently Open
-              </label>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--forest)', fontWeight: 500 }}>
-                <input 
-                  type="checkbox" 
-                  checked={requireSpots} 
-                  onChange={e => setRequireSpots(e.target.checked)} 
-                  style={{ width: '18px', height: '18px', accentColor: 'var(--grass)' }}
-                />
-                Has Spots Remaining
-              </label>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--forest)', fontWeight: 500 }}>
-                <input 
-                  type="checkbox" 
-                  checked={isCharity} 
-                  onChange={e => setIsCharity(e.target.checked)} 
-                  style={{ width: '18px', height: '18px', accentColor: 'var(--grass)' }}
-                />
-                Charity Events Only
-              </label>
-            </div>
-            
-            <button onClick={handleApplyFilters} className="btn-primary" style={{ width: '100%', padding: '0.9rem', textAlign: 'center', display: 'block', fontSize: '0.95rem' }}>
-              Apply Filters
-            </button>
-          </div>
-          
-          <div style={{ marginTop: '0.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(26,46,26,0.06)' }}>
-            <div style={{ fontSize: '0.85rem', color: 'var(--mist)', textAlign: 'center' }}>
-              {filteredTournaments.length} events match
-            </div>
-            {(appliedFilters.zipCode || appliedFilters.format !== 'All' || appliedFilters.maxFee !== '' || appliedFilters.accessType !== 'All' || appliedFilters.isCharity || appliedFilters.requireSpots || appliedFilters.requireOpenReg) && (
-              <button 
-                onClick={handleClearFilters}
-                style={{ background: 'none', border: 'none', color: 'var(--mist)', fontSize: '0.8rem', textDecoration: 'underline', marginTop: '0.75rem', cursor: 'pointer', fontWeight: 500, padding: 0, width: '100%', textAlign: 'center' }}
-              >
-                Clear all filters
-              </button>
-            )}
-          </div>
-        </div>
+             <div style={{ position: 'relative' }}>
+                <span style={{ position: 'absolute', left: '8px', top: '50%', transform: 'translateY(-50%)', color: 'var(--mist)', fontSize: '0.85rem' }}>$</span>
+                <input type="number" placeholder="Max Fee" value={maxFee} onChange={e => setMaxFee(e.target.value ? Number(e.target.value) : '')} style={{ padding: '0.4rem 0.8rem 0.4rem 1.5rem', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.1)', fontSize: '0.8rem', width: '100px', background: '#fff' }} />
+             </div>
 
-        {/* Results Grid */}
-        <div>
-          <div className="tournaments-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
+             <label style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.85rem', color: 'var(--forest)', cursor: 'pointer', fontWeight: 500 }}>
+                <input type="checkbox" checked={requireOpenReg} onChange={e => setRequireOpenReg(e.target.checked)} style={{ width: '16px', height: '16px', accentColor: 'var(--grass)' }} /> Reg Open
+             </label>
+             <label style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.85rem', color: 'var(--forest)', cursor: 'pointer', fontWeight: 500 }}>
+                <input type="checkbox" checked={requireSpots} onChange={e => setRequireSpots(e.target.checked)} style={{ width: '16px', height: '16px', accentColor: 'var(--grass)' }} /> Has Spots
+             </label>
+
+             <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+               <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--forest)', padding: '0.4rem 1rem', background: 'rgba(26,46,26,0.06)', borderRadius: '6px' }}>
+                  {filteredTournaments.length} Matches Found
+               </span>
+               <button onClick={handleApplyFilters} className="btn-primary" style={{ padding: '0.4rem 1.2rem', fontSize: '0.8rem', borderRadius: '6px' }}>Apply DB Sync</button>
+               <button onClick={handleClearFilters} style={{ background: 'none', border: 'none', color: '#f44336', fontSize: '0.8rem', cursor: 'pointer', padding: '0.4rem 0.5rem', fontWeight: 600 }}>Clear</button>
+             </div>
+         </div>
+      </div>
+
+      {/* Main Results Grid (Full Width) */}
+      <div style={{ padding: '3rem', background: '#f8faf9', minHeight: '60vh' }}>
+          <div className="tournaments-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))' }}>
             {filteredTournaments.map((t, i) => (
               <Link href={`/tournaments/${t.id}`} key={t.id} className="t-card" style={{ textDecoration: 'none' }}>
                 <div className="t-card-cover">
@@ -307,14 +365,14 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
             ))}
           </div>
           {filteredTournaments.length === 0 && (
-            <div style={{ padding: '4rem 2rem', textAlign: 'center', background: 'rgba(26,46,26,0.02)', borderRadius: 'var(--radius-lg)', border: '1px dashed rgba(26,46,26,0.1)' }}>
-               <span style={{ fontSize: '2rem', display: 'block', marginBottom: '1rem' }}>⛳</span>
-               <h3 style={{ fontSize: '1.2rem', color: 'var(--forest)', marginBottom: '0.5rem' }}>No tournaments found</h3>
-               <p style={{ color: 'var(--mist)' }}>Try adjusting your filters or expanding your search radius to find events.</p>
+            <div style={{ padding: '6rem 2rem', textAlign: 'center', background: 'var(--white)', borderRadius: 'var(--radius-lg)', border: '1px dashed rgba(26,46,26,0.1)', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
+               <span style={{ fontSize: '2.5rem', display: 'block', marginBottom: '1rem' }}>⛳</span>
+               <h3 style={{ fontSize: '1.4rem', color: 'var(--forest)', marginBottom: '0.5rem', fontWeight: 600 }}>No tournaments found in database</h3>
+               <p style={{ color: 'var(--mist)' }}>Dial back your CSV filters or search a wider proximity to locate events.</p>
+               <button onClick={handleClearFilters} className="btn-hero-outline" style={{ marginTop: '1.5rem' }}>Reset All Filters</button>
             </div>
           )}
-        </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -35,7 +35,7 @@ export default function Hero() {
               <div className="hero-stat-label">Registered Players</div>
             </div>
             <div>
-              <div className="hero-stat-num">2,800+</div>
+              <div className="hero-stat-num">16,000+</div>
               <div className="hero-stat-label">Courses Nationwide</div>
             </div>
           </div>

@@ -2,6 +2,8 @@ import React from 'react';
 import { getTournamentById } from '@/lib/db';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import ContactHostWidget from '@/components/tournaments/ContactHostWidget';
+import MissingLinkWidget from '@/components/tournaments/MissingLinkWidget';
 
 export default async function TournamentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
@@ -26,15 +28,19 @@ export default async function TournamentDetailPage({ params }: { params: Promise
 
   return (
     <>
+      {/* Root-Level Floating Action Nav (Immune to parent relative overflow) */}
+      <div style={{ position: 'fixed', top: '100px', left: 'max(1rem, calc((100vw - 1200px) / 2))', zIndex: 9999 }}>
+        <Link href="/tournaments" className="btn-hero-outline" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', padding: '0.6rem 1.25rem', background: 'rgba(10,31,13,0.95)', border: '1px solid rgba(212,175,55,0.6)', color: 'var(--cream)', textDecoration: 'none', borderRadius: '40px', boxShadow: '0 8px 30px rgba(0,0,0,0.3)' }}>
+           ← Back to Tournaments
+        </Link>
+      </div>
+
       <div className="hero" style={{ minHeight: '60vh', padding: '6rem 0 0 0', display: 'block' }}>
         <div className="hero-bg"></div>
         <div className="hero-grid"></div>
         <div className="hero-dots"></div>
         
         <div className="hero-content" style={{ display: 'block', paddingTop: '4rem', paddingBottom: '2rem' }}>
-          <Link href="/" style={{ color: 'var(--mist)', textDecoration: 'none', display: 'inline-block', marginBottom: '2rem', fontSize: '0.9rem', fontWeight: 600 }}>
-             ← Back to Events
-          </Link>
           <div className="hero-eyebrow" style={{ marginTop: '0' }}>{tournament.format}</div>
           <h1 className="hero-headline" style={{ fontSize: 'clamp(2.5rem, 4vw, 4.5rem)', marginBottom: '1rem' }}>
             {tournament.name}
@@ -54,8 +60,21 @@ export default async function TournamentDetailPage({ params }: { params: Promise
       </div>
 
       <div style={{ background: 'var(--white)', position: 'relative', zIndex: 10 }}>
-        <div className="section-wrapper" style={{ paddingTop: '4rem' }}>
+        <div className="section-wrapper" style={{ paddingTop: '2.5rem' }}>
           
+          {/* CLAIM EVENT BRAND BANNER */}
+          <div style={{ background: 'linear-gradient(135deg, rgba(10,31,13,0.95), rgba(26,46,26,0.85))', border: '1px solid rgba(212,175,55,0.6)', borderRadius: 'var(--radius-lg)', padding: '2.5rem 3.5rem', marginBottom: '3rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '2rem', flexWrap: 'wrap', boxShadow: '0 15px 40px rgba(0,0,0,0.1), inset 0 0 40px rgba(212,175,55,0.05)' }}>
+            <div>
+              <h3 style={{ color: 'var(--gold)', fontSize: '1.6rem', marginBottom: '0.5rem', fontWeight: 600, textShadow: '0 2px 10px rgba(212,175,55,0.3)' }}>Are you the Tournament Director?</h3>
+              <p style={{ color: '#e0e5df', fontSize: '1rem', lineHeight: '1.6', maxWidth: '600px' }}>
+                Take ownership of your event. Claim this tournament to securely manage player registrations, execute automated blind-draw flighting, and collect gateway payments instantly.
+              </p>
+            </div>
+            <Link href="/host" className="btn-primary" style={{ padding: '1.2rem 2.5rem', fontSize: '1.1rem', whiteSpace: 'nowrap', boxShadow: '0 8px 30px rgba(212,175,55,0.4)', background: 'linear-gradient(135deg, #d4af37, #aa8529)', color: '#000', fontWeight: 700, border: 'none' }}>
+              Claim Your Event 🚀
+            </Link>
+          </div>
+
           <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '3rem' }}>
             {/* Top Details Grid */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
@@ -130,45 +149,9 @@ export default async function TournamentDetailPage({ params }: { params: Promise
 
               {/* Sidebar Area */}
               <div>
-                <div style={{ background: 'rgba(26,46,26,0.02)', border: '1px solid rgba(26,46,26,0.06)', borderRadius: 'var(--radius-lg)', padding: '2rem', marginBottom: '1.5rem' }}>
-                  <h3 className="section-eyebrow">Organizer</h3>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1.5rem' }}>
-                    {tournament.organizerName && (
-                      <div>
-                        <div className="t-detail-label">Name</div>
-                        <div className="t-detail-val">{tournament.organizerName}</div>
-                      </div>
-                    )}
-                    {tournament.organizerEmail && (
-                      <div>
-                        <div className="t-detail-label">Email</div>
-                        <a href={`mailto:${tournament.organizerEmail}`} style={{ color: 'var(--grass)', textDecoration: 'none', fontWeight: 500 }}>{tournament.organizerEmail}</a>
-                      </div>
-                    )}
-                    {tournament.organizerPhone && (
-                      <div>
-                        <div className="t-detail-label">Phone</div>
-                        <a href={`tel:${tournament.organizerPhone}`} style={{ color: 'var(--grass)', textDecoration: 'none', fontWeight: 500 }}>{tournament.organizerPhone}</a>
-                      </div>
-                    )}
-                    {!tournament.organizerName && !tournament.organizerEmail && !tournament.organizerPhone && (
-                       <span style={{ fontStyle: 'italic', color: 'var(--mist)' }}>No organizer info.</span>
-                    )}
-                  </div>
-                </div>
+                <ContactHostWidget tournament={tournament as any} />
 
-                <div style={{ background: 'var(--white)', border: '1px solid rgba(201,168,76,0.3)', borderRadius: 'var(--radius-lg)', padding: '2rem', marginBottom: '1.5rem', boxShadow: 'var(--shadow-glow)' }}>
-                  <h3 className="section-eyebrow" style={{ color: 'var(--forest)' }}>Manage Event</h3>
-                  <p style={{ fontSize: '0.9rem', color: 'var(--mist)', marginBottom: '1.5rem', lineHeight: '1.5' }}>
-                    Are you the host? Claim this tournament to manage registrations and collect payments on TourneyLinks.
-                  </p>
-                  <Link href="/host" className="btn-primary" style={{ width: '100%', textAlign: 'center', display: 'block', padding: '0.9rem' }}>
-                    Claim Tournament
-                  </Link>
-                  <p style={{ fontSize: '0.8rem', color: 'var(--mist)', marginTop: '1.25rem', fontStyle: 'italic', textAlign: 'center' }}>
-                    Know the host? <Link href="#" style={{ color: 'var(--grass)', textDecoration: 'none', fontWeight: 600 }}>Share this page</Link> with them.
-                  </p>
-                </div>
+                {/* Sidebar Claim Tool Removed - Promoted to Header Banner */}
 
                 {tournament.sourceUrl && (
                   <div style={{ textAlign: 'center', marginTop: '1rem' }}>

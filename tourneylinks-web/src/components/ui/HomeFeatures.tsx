@@ -37,7 +37,7 @@ export default function HomeFeatures() {
             <div className="feature-card">
               <div className="feature-icon">⛳</div>
               <div className="feature-title">Course Database</div>
-              <div className="feature-desc">2,800+ golf courses nationwide. Direct communication tools to coordinate scheduling, tee times, and logistics with course staff.</div>
+              <div className="feature-desc">16,000+ golf courses nationwide. Direct communication tools to coordinate scheduling, tee times, and logistics with course staff.</div>
             </div>
             <div className="feature-card">
               <div className="feature-icon">🖼️</div>

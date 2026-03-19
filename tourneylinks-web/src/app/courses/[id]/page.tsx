@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { db, courses } from '@/lib/db';
 import { eq } from 'drizzle-orm';
+import MissingCourseLinkWidget from '@/components/courses/MissingCourseLinkWidget';
 
 export const dynamic = 'force-dynamic';
 
@@ -52,7 +53,7 @@ export default async function CoursePage(props: { params: Promise<{ id: string }
             <span style={{ background: 'var(--gold)', color: '#fff', padding: '0.2rem 0.6rem', fontSize: '0.75rem', fontWeight: 600, borderRadius: '4px' }}>
               {course.type || 'GOLF FACILITY'}
             </span>
-            {course.isEnriched || apiData ? (
+            {apiData ? (
               <span style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', padding: '0.2rem 0.6rem', fontSize: '0.75rem', borderRadius: '4px' }}>
                 ✨ Verified Data
               </span>
@@ -85,11 +86,26 @@ export default async function CoursePage(props: { params: Promise<{ id: string }
             <div>
               <div style={{ fontSize: '0.8rem', color: 'var(--mist)', marginBottom: '0.25rem' }}>Contact</div>
               <div style={{ fontWeight: 500 }}>{course.phone || (apiData?.phone) || 'N/A'}</div>
-              {course.website || apiData?.website ? (
-                <a href={course.website || apiData?.website} target="_blank" rel="noreferrer" style={{ color: 'var(--forest)', fontSize: '0.9rem', marginTop: '0.2rem', display: 'block' }}>
-                  Visit Website ↗
-                </a>
-              ) : null}
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
+                {course.website || apiData?.website ? (
+                  <a href={course.website || apiData?.website} target="_blank" rel="noreferrer" className="btn-primary" style={{ marginTop: '0.5rem', display: 'block', textAlign: 'center', padding: '0.8rem', fontSize: '0.9rem', width: '100%', boxShadow: 'none' }}>
+                    Visit Official Website ↗
+                  </a>
+                ) : (
+                  <>
+                    <a href={`https://www.google.com/search?q=${encodeURIComponent(`${course.name} ${course.state} golf course`)}`} target="_blank" rel="noreferrer" style={{ color: 'var(--forest)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.25rem', fontWeight: 500 }}>
+                      🔍 Search on Google ↗
+                    </a>
+                    
+                    <div style={{ background: 'rgba(26,46,26,0.03)', padding: '0.75rem', borderRadius: '4px', border: '1px solid rgba(26,46,26,0.08)', marginTop: '0.5rem' }}>
+                      <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--forest)', marginBottom: '0.25rem' }}>Is this your course?</div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--mist)', marginBottom: '0.5rem' }}>Help us maintain accurate data. Do you know the official website URL?</div>
+                      <MissingCourseLinkWidget courseId={course.id} courseName={course.name} />
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
 
             {teeBoxes.length > 0 && (

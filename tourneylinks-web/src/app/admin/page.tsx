@@ -1,12 +1,28 @@
 import React from 'react';
 import Link from 'next/link';
-import { db, registrations, tournaments } from '@/lib/db';
+import { db, registrations, tournaments, users, stripe_accounts } from '@/lib/db';
 import { eq, desc } from 'drizzle-orm';
+import { currentUser } from '@clerk/nextjs/server';
+import { redirect } from 'next/navigation';
 import FlightBuilder from '@/components/admin/FlightBuilder';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboard() {
+  const clerkUser = await currentUser();
+  if (!clerkUser) redirect('/sign-in');
+
+  const dbUserRow = await db.select().from(users).where(eq(users.clerkId, clerkUser.id)).limit(1);
+  const dbUser = dbUserRow[0];
+  if (!dbUser) redirect('/sign-in');
+
+  // ENFORCE REQUIRED STRIPE ONBOARDING (Phase 9)
+  const accountRow = await db.select().from(stripe_accounts).where(eq(stripe_accounts.userId, dbUser.id)).limit(1);
+  const existingAccount = accountRow[0];
+  if (!existingAccount || !existingAccount.chargesEnabled || !existingAccount.payoutsEnabled) {
+    redirect('/host/onboarding');
+  }
+
   // Hardcoded for the prototype to point to the first tournament matching our mock seed
   const tourneys = await db.select().from(tournaments).limit(1);
   const tournamentId = tourneys.length > 0 ? tourneys[0].id : 1;

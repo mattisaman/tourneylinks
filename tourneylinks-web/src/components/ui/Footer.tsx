@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 export default function Footer() {
   return (
@@ -7,7 +8,9 @@ export default function Footer() {
         <div className="footer-grid">
           <div>
             <div className="footer-brand-name">
-              <img src="/logo.png" alt="TourneyLinks Logo" style={{ height: '96px', objectFit: 'contain', marginBottom: '0.75rem', mixBlendMode: 'lighten', marginLeft: '-15px' }} />
+              <Link href="/system/login">
+                <img src="/logo.png" alt="TourneyLinks Logo" style={{ height: '96px', objectFit: 'contain', marginBottom: '0.75rem', mixBlendMode: 'lighten', marginLeft: '-15px' }} />
+              </Link>
             </div>
               The premier platform for golf tournament discovery, registration, and management. Built for players, loved by organizers.
             <div className="footer-social">

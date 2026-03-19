@@ -58,6 +58,7 @@ export const tournaments = pgTable('tournaments', {
   holes: integer('holes').default(18),
 
   entryFee: real('entry_fee'),
+  hostUserId: integer('host_user_id').references(() => users.id),
   maxPlayers: integer('max_players'),
   spotsRemaining: integer('spots_remaining'),
 
@@ -84,12 +85,63 @@ export const tournaments = pgTable('tournaments', {
 export const registrations = pgTable('registrations', {
   id: serial('id').primaryKey(),
   tournamentId: integer('tournament_id').references(() => tournaments.id).notNull(),
+  userId: integer('user_id'), // Links to the persistent user profile
   name: text('name').notNull(),
   email: text('email').notNull(),
   handicap: real('handicap'),
   paymentStatus: text('payment_status').default('COMPLETED'),
+  status: text('status').default('CONFIRMED').notNull(), // 'CONFIRMED', 'TRANSFERRED', 'CANCELLED'
+  transactionId: text('transaction_id'), // Future Stripe reference mapped mapping
   pairingRequest: text('pairing_request'),
   assignedTeam: integer('assigned_team'),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const registration_transfers = pgTable('registration_transfers', {
+  id: serial('id').primaryKey(),
+  registrationId: integer('registration_id').references(() => registrations.id).notNull(),
+  originalPlayerId: integer('original_player_id').references(() => users.id).notNull(),
+  recipientEmail: text('recipient_email').notNull(),
+  recipientPlayerId: integer('recipient_player_id').references(() => users.id), // Nullable until they claim
+  transferToken: text('transfer_token').notNull().unique(), // The magic link hash
+  status: text('status').default('PENDING').notNull(), // 'PENDING', 'COMPLETED', 'CANCELLED'
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  expiresAt: timestamp('expires_at').notNull(),
+});
+
+export const users = pgTable('users', {
+  id: serial('id').primaryKey(),
+  clerkId: text('clerk_id').notNull().unique(),
+  email: text('email').notNull(),
+  fullName: text('full_name').notNull(),
+  avatarUrl: text('avatar_url'),
+  role: text('role').default('PLAYER').notNull(), // 'PLAYER' or 'HOST'
+  verifiedGhin: text('verified_ghin'),
+  handicapIndex: real('handicap_index'),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const friendships = pgTable('friendships', {
+  id: serial('id').primaryKey(),
+  userId1: integer('user_id_1').notNull(), // The person who sent the request
+  userId2: integer('user_id_2').notNull(), // The person receiving the request
+  status: text('status').default('PENDING').notNull(), // 'PENDING' or 'ACCEPTED'
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const saved_searches = pgTable('saved_searches', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').notNull(),
+  criteria: text('criteria').notNull(), // Stored as massive JSON string arrays
+  isActive: boolean('is_active').default(true),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const referrals = pgTable('referrals', {
+  id: serial('id').primaryKey(),
+  referrerId: integer('referrer_id').notNull(), // The user whose link was clicked
+  refereeId: integer('referee_id').notNull(), // The new user who signed up
+  tournamentId: integer('tournament_id'), // The tournament they registered for (optional)
   createdAt: timestamp('created_at').defaultNow(),
 });
 
@@ -102,6 +154,42 @@ export const crawlLogs = pgTable('crawl_logs', {
   tournamentsFound: integer('tournaments_found').default(0),
   error: text('error'),
   crawledAt: timestamp('crawled_at').defaultNow(),
+});
+
+export const support_tickets = pgTable('support_tickets', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id'), // Optional, null if guest
+  email: text('email').notNull(),
+  type: text('type').notNull(), // 'BUG', 'FEATURE_REQUEST', 'GENERAL_SUPPORT'
+  message: text('message').notNull(),
+  status: text('status').default('OPEN').notNull(), // 'OPEN', 'RESOLVED'
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const tournament_inquiries = pgTable('tournament_inquiries', {
+  id: serial('id').primaryKey(),
+  tournamentId: integer('tournament_id').notNull().references(() => tournaments.id),
+  userId: text('user_id'), // Optional: Clerk ID of sender if logged in
+  senderEmail: text('sender_email').notNull(),
+  message: text('message').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const missing_links = pgTable('missing_links', {
+  id: serial('id').primaryKey(),
+  tournamentId: integer('tournament_id').references(() => tournaments.id),
+  courseId: integer('course_id').references(() => courses.id),
+  submittedUrl: text('submitted_url').notNull(),
+  status: text('status').default('PENDING').notNull(), // 'PENDING', 'APPROVED', 'REJECTED'
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const ghin_history = pgTable('ghin_history', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').notNull().references(() => users.id),
+  handicapIndex: real('handicap_index').notNull(),
+  proofImageUrl: text('proof_image_url'), // S3/Cloud storage URL of the screenshot
+  verifiedAt: timestamp('verified_at').defaultNow().notNull(),
 });
 
 const globalForDb = globalThis as unknown as {
@@ -135,3 +223,25 @@ export async function getTournamentById(id: number) {
   const rows = await db.select().from(tournaments).where(eq(tournaments.id, id));
   return rows[0] || null;
 }
+
+// PHASE 9: STRIPE CONNECT INFRASTRUCTURE
+
+export const stripe_accounts = pgTable('stripe_accounts', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').references(() => users.id).notNull(),
+  stripeAccountId: text('stripe_account_id').notNull().unique(),
+  payoutsEnabled: boolean('payouts_enabled').default(false).notNull(),
+  chargesEnabled: boolean('charges_enabled').default(false).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const payments = pgTable('payments', {
+  id: serial('id').primaryKey(),
+  registrationId: integer('registration_id').references(() => registrations.id).notNull(),
+  stripeSessionId: text('stripe_session_id').notNull().unique(),
+  stripePaymentIntentId: text('stripe_payment_intent_id'),
+  amount: integer('amount').notNull(), // captured strictly in cents
+  platformFee: integer('platform_fee').notNull(),
+  status: text('status').default('PENDING').notNull(), // 'PENDING', 'SUCCEEDED', 'FAILED', 'REFUNDED'
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
