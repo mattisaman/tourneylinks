@@ -72,7 +72,7 @@ export default async function TournamentGatewayPage({ params }: { params: Promis
         secondaryThemeColor={tournament.secondaryThemeColor}
       />
 
-      <div style={{ background: 'var(--stone)', position: 'relative', zIndex: 10, paddingBottom: '6rem' }}>
+      <div style={{ background: 'var(--stone)', position: 'relative', zIndex: 10 }} className="mobile-padding-block">
         <div className="section-wrapper" style={{ paddingTop: '3rem' }}>
           
           <style dangerouslySetInnerHTML={{__html: `
@@ -86,13 +86,24 @@ export default async function TournamentGatewayPage({ params }: { params: Promis
               .t-layout-grid {
                 grid-template-columns: 1fr;
               }
+              .desktop-sticky {
+                position: relative !important;
+                top: 0 !important;
+                display: grid !important;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+              }
+            }
+            @media (max-width: 600px) {
+              .mobile-pad { padding: 1.25rem !important; }
+              .mobile-gap { gap: 1.5rem !important; }
+              .mobile-padding-block { padding: 2rem 0 !important; }
             }
           `}} />
 
           <div className="t-layout-grid">
             
             {/* ---------------- 3 PREMIUM CTAS (STICKY LEFT SIDEBAR) ---------------- */}
-            <div style={{ position: 'sticky', top: '120px', display: 'flex', flexDirection: 'column', gap: '1.5rem', zIndex: 11 }}>
+            <div className="desktop-sticky" style={{ position: 'sticky', top: '120px', display: 'flex', flexDirection: 'column', gap: '1.5rem', zIndex: 11 }}>
 
               <Link href="/tournaments" className="btn-hero-outline" style={{ width: 'fit-content', padding: '0.6rem 1.2rem', fontSize: '0.85rem', marginBottom: '0.5rem', marginLeft: '0.5rem' }}>
                 <span style={{ fontSize: '1.1rem', lineHeight: 1 }}>←</span> Back to Tournaments
@@ -214,7 +225,7 @@ export default async function TournamentGatewayPage({ params }: { params: Promis
               )}
 
               {/* EVENT SPECS */}
-              <div style={{ background: '#fff', border: '1px solid rgba(223, 177, 75, 0.4)', borderRadius: '24px', padding: '2.5rem', boxShadow: '0 0 16px rgba(223, 177, 75, 0.15)', display: 'flex', flexWrap: 'wrap', gap: '3rem' }}>
+              <div className="mobile-pad mobile-gap" style={{ background: '#fff', border: '1px solid rgba(223, 177, 75, 0.4)', borderRadius: '24px', padding: '2.5rem', boxShadow: '0 0 16px rgba(223, 177, 75, 0.15)', display: 'flex', flexWrap: 'wrap', gap: '3rem' }}>
                 <div>
                   <div style={{ fontSize: '0.8rem', color: 'var(--mist)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>Format</div>
                   <div style={{ fontSize: '1.1rem', color: 'var(--ink)', fontWeight: 600, marginTop: '0.2rem' }}>{tournament.format || 'Standard'}</div>
@@ -244,7 +255,7 @@ export default async function TournamentGatewayPage({ params }: { params: Promis
               <div style={{ display: 'flex', flexDirection: 'column', gap: '3.5rem' }}>
                 
                 {/* 1. Main Overview */}
-                <div style={{ background: '#fff', padding: '3rem', borderRadius: '24px', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 15px 40px rgba(0,0,0,0.02)' }}>
+                <div className="mobile-pad" style={{ background: '#fff', padding: '3rem', borderRadius: '24px', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 15px 40px rgba(0,0,0,0.02)' }}>
                   <h2 style={{ fontSize: '1.8rem', marginBottom: '1.5rem', color: 'var(--forest)', fontWeight: 800, fontFamily: "'Playfair Display', serif" }}>Event Overview</h2>
                   <div style={{ fontSize: '1.15rem', lineHeight: '1.9', color: 'var(--ink)' }}>
                     {tournament.description ? (
@@ -256,7 +267,7 @@ export default async function TournamentGatewayPage({ params }: { params: Promis
                 </div>
 
                 {/* 2. Schedule of Events (Demo) */}
-                <div style={{ background: '#fff', padding: '3rem', borderRadius: '24px', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 15px 40px rgba(0,0,0,0.02)' }}>
+                <div className="mobile-pad" style={{ background: '#fff', padding: '3rem', borderRadius: '24px', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 15px 40px rgba(0,0,0,0.02)' }}>
                   <h2 style={{ fontSize: '1.8rem', marginBottom: '2rem', color: 'var(--forest)', fontWeight: 800, fontFamily: "'Playfair Display', serif" }}>Tournament Schedule</h2>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', position: 'relative' }}>
                     <div className="nav-accent-line" style={{ position: 'absolute', left: '2rem', top: '1rem', bottom: '1rem', width: '2px', height: 'auto', opacity: 0.6 }}></div>
@@ -284,7 +295,7 @@ export default async function TournamentGatewayPage({ params }: { params: Promis
                 {/* 3. Included & Prizes */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
                   
-                  <div style={{ background: '#f8faf9', padding: '2.5rem', borderRadius: '24px', border: '1px solid rgba(0,0,0,0.05)' }}>
+                  <div className="mobile-pad" style={{ background: '#f8faf9', padding: '2.5rem', borderRadius: '24px', border: '1px solid rgba(0,0,0,0.05)' }}>
                     <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>🛍️</div>
                     <h3 style={{ fontSize: '1.4rem', color: 'var(--forest)', fontWeight: 800, marginBottom: '1rem' }}>Player Swag Bag</h3>
                     <ul style={{ listStylePosition: 'outside', marginLeft: '1rem', fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--ink)' }}>
@@ -301,7 +312,7 @@ export default async function TournamentGatewayPage({ params }: { params: Promis
                     </ul>
                   </div>
 
-                  <div style={{ background: '#f8faf9', padding: '2.5rem', borderRadius: '24px', border: '1px solid rgba(0,0,0,0.05)' }}>
+                  <div className="mobile-pad" style={{ background: '#f8faf9', padding: '2.5rem', borderRadius: '24px', border: '1px solid rgba(0,0,0,0.05)' }}>
                     <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>🥇</div>
                     <h3 style={{ fontSize: '1.4rem', color: 'var(--forest)', fontWeight: 800, marginBottom: '1rem' }}>Contests & Prizes</h3>
                     <ul style={{ listStylePosition: 'outside', marginLeft: '1rem', fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--ink)' }}>
