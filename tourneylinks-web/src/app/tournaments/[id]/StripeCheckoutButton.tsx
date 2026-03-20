@@ -41,7 +41,7 @@ export default function StripeCheckoutButton({ tournamentId, entryFee }: { tourn
         cursor: loading ? 'wait' : 'pointer' 
       }}
     >
-      {loading ? 'Initializing...' : `Select Players`} 🎟️
+      {loading ? 'Initializing...' : `Register`} 🎟️
     </button>
   );
 }

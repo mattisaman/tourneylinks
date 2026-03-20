@@ -21,6 +21,9 @@ export default function HostWizard() {
   const [email, setEmail] = useState('');
   const [passFees, setPassFees] = useState(false);
 
+  const [themeColor, setThemeColor] = useState('#c9a84c');
+  const [secondaryThemeColor, setSecondaryThemeColor] = useState('#1a2e1a');
+
   const [rules, setRules] = useState([
     "All players must have a verified USGA Handicap Index.",
     "Each player must contribute at least 4 drives during the round."
@@ -45,7 +48,7 @@ export default function HostWizard() {
     'stableford': 'Stableford'
   };
 
-  const handleNext = () => setCurrentStep(prev => Math.min(prev + 1, 5));
+  const handleNext = () => setCurrentStep(prev => Math.min(prev + 1, 6));
   const handleBack = () => setCurrentStep(prev => Math.max(prev - 1, 1));
   const goToStep = (step: number) => setCurrentStep(step);
 
@@ -64,19 +67,20 @@ export default function HostWizard() {
 
   const renderStepNav = () => (
     <div className="wizard-steps">
-      {[1,2,3,4,5].map((step, index) => (
+      {[1,2,3,4,5,6].map((step, index) => (
         <React.Fragment key={step}>
           <div className={`wstep ${currentStep === step ? 'active' : ''} ${currentStep > step ? 'done' : ''}`} onClick={() => goToStep(step)}>
             <div className="wstep-circle">{step}</div>
             <div className="wstep-label">
               {step === 1 && 'Basics'}
-              {step === 2 && 'Format & Rules'}
-              {step === 3 && 'Pricing & Spots'}
+              {step === 2 && 'Format'}
+              {step === 3 && 'Pricing'}
               {step === 4 && 'Branding'}
-              {step === 5 && 'Review'}
+              {step === 5 && 'Visibility'}
+              {step === 6 && 'Review'}
             </div>
           </div>
-          {index < 4 && <div className={`wstep-line ${currentStep > step ? 'done' : ''}`}></div>}
+          {index < 5 && <div className={`wstep-line ${currentStep > step ? 'done' : ''}`}></div>}
         </React.Fragment>
       ))}
     </div>
@@ -167,7 +171,7 @@ export default function HostWizard() {
           </div>
           
           <div className="wizard-nav">
-            <div className="wizard-progress-text">Step 1 of 5</div>
+            <div className="wizard-progress-text">Step 1 of 6</div>
             <button className="btn-wnext" onClick={handleNext}>Format &amp; Rules →</button>
           </div>
         </div>
@@ -208,7 +212,7 @@ export default function HostWizard() {
 
           <div className="wizard-nav">
             <button className="btn-wback" onClick={handleBack}>← Back</button>
-            <div className="wizard-progress-text">Step 2 of 5</div>
+            <div className="wizard-progress-text">Step 2 of 6</div>
             <button className="btn-wnext" onClick={handleNext}>Pricing &amp; Spots →</button>
           </div>
         </div>
@@ -258,13 +262,63 @@ export default function HostWizard() {
 
           <div className="wizard-nav">
             <button className="btn-wback" onClick={handleBack}>← Back</button>
-            <div className="wizard-progress-text">Step 3 of 5</div>
-            <button className="btn-wnext" onClick={handleNext}>Branding →</button>
+            <div className="wizard-progress-text">Step 3 of 6</div>
+            <button className="btn-wnext" onClick={handleNext}>Branding &amp; Theming →</button>
           </div>
         </div>
 
-        {/* STEP 4 */}
+        {/* STEP 4: BRANDING */}
         <div className={`wizard-panel ${currentStep === 4 ? 'active' : ''}`}>
+          <div className="wizard-card" style={{ padding: '3.5rem' }}>
+            <div className="wizard-card-title">Event Branding & Theming</div>
+            <div className="wizard-card-sub" style={{ marginBottom: '2.5rem' }}>Customize the colors and imagery of your tournament page to match your brand.</div>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem', marginBottom: '3rem', paddingBottom: '3rem', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '1rem' }}>Primary Accent</label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <input type="color" value={themeColor} onChange={e => setThemeColor(e.target.value)} style={{ width: '48px', height: '48px', padding: 0, border: 'none', borderRadius: '50%', cursor: 'pointer', overflow: 'hidden', boxShadow: '0 4px 15px rgba(0,0,0,0.1)' }} />
+                  <span style={{ fontFamily: "'DM Mono', monospace", fontWeight: 600, fontSize: '1.1rem', color: 'var(--ink)' }}>{themeColor.toUpperCase()}</span>
+                </div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--mist)', marginTop: '0.8rem', lineHeight: 1.4 }}>Used for buttons, badges, and the primary gold-flare effects.</div>
+              </div>
+              
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '1rem' }}>Backdrop Tone</label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <input type="color" value={secondaryThemeColor} onChange={e => setSecondaryThemeColor(e.target.value)} style={{ width: '48px', height: '48px', padding: 0, border: 'none', borderRadius: '50%', cursor: 'pointer', overflow: 'hidden', boxShadow: '0 4px 15px rgba(0,0,0,0.1)' }} />
+                  <span style={{ fontFamily: "'DM Mono', monospace", fontWeight: 600, fontSize: '1.1rem', color: 'var(--ink)' }}>{secondaryThemeColor.toUpperCase()}</span>
+                </div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--mist)', marginTop: '0.8rem', lineHeight: 1.4 }}>Blends into the dark hero backdrop for a deep, 2-tone gradient.</div>
+              </div>
+            </div>
+
+            <div style={{ marginTop: '1rem' }}>
+              <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', fontSize: '0.9rem', fontWeight: 600, color: 'var(--forest)', marginBottom: '1rem' }}>
+                <span>Tournament Hero Gallery</span>
+                <span className="badge" style={{ background: 'rgba(212,175,55,0.1)', color: 'var(--gold)', fontSize: '0.75rem' }}>Up to 10 Images</span>
+              </label>
+              <div 
+                style={{ border: '2px dashed rgba(212,175,55,0.4)', borderRadius: '16px', padding: '4rem 2rem', textAlign: 'center', background: '#f8faf9', cursor: 'pointer', transition: 'all 0.2s', boxShadow: 'inset 0 0 30px rgba(0,0,0,0.01)' }} 
+                onClick={() => alert('Media Uploader Modal Triggered! (MVP)')}
+              >
+                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📸</div>
+                <div style={{ fontWeight: 700, color: 'var(--forest)', fontSize: '1.2rem', marginBottom: '0.5rem' }}>Drag & Drop high-res photos here</div>
+                <div style={{ color: 'var(--mist)', fontSize: '0.95rem' }}>or click to browse from your device</div>
+              </div>
+            </div>
+
+          </div>
+
+          <div className="wizard-nav">
+            <button className="btn-wback" onClick={handleBack}>← Back</button>
+            <div className="wizard-progress-text">Step 4 of 6</div>
+            <button className="btn-wnext" onClick={handleNext}>Visibility Settings →</button>
+          </div>
+        </div>
+
+        {/* STEP 5 */}
+        <div className={`wizard-panel ${currentStep === 5 ? 'active' : ''}`}>
           <div className="wizard-card">
             <div className="wizard-card-title">Visibility Settings</div>
             <div className="wizard-card-sub">Control who can see and register for your tournament</div>
@@ -290,13 +344,13 @@ export default function HostWizard() {
 
           <div className="wizard-nav">
             <button className="btn-wback" onClick={handleBack}>← Back</button>
-            <div className="wizard-progress-text">Step 4 of 5</div>
+            <div className="wizard-progress-text">Step 5 of 6</div>
             <button className="btn-wnext" onClick={handleNext}>Review &amp; Launch →</button>
           </div>
         </div>
 
-        {/* STEP 5 */}
-        <div className={`wizard-panel ${currentStep === 5 ? 'active' : ''}`}>
+        {/* STEP 6 */}
+        <div className={`wizard-panel ${currentStep === 6 ? 'active' : ''}`}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '2rem', alignItems: 'start' }}>
             <div>
               <div className="wizard-card">
@@ -320,23 +374,52 @@ export default function HostWizard() {
                 </div>
               </div>
               
-              <div style={{ background: 'linear-gradient(135deg, var(--forest), #112814)', border: '1px solid rgba(212,175,55,0.2)', borderRadius: 'var(--radius-lg)', padding: '2.5rem', textAlign: 'center', marginTop: '1.5rem', boxShadow: 'inset 0 0 40px rgba(0,0,0,0.2)' }}>
-                <div style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.6rem', fontWeight: 700, color: 'var(--gold)', marginBottom: '0.8rem' }}>Tournament Secured ✅</div>
-                <div style={{ fontSize: '1rem', color: 'var(--cream)', marginBottom: '1.5rem', maxWidth: '420px', margin: '0 auto 2rem auto', lineHeight: '1.6' }}>
-                  To start collecting the <strong style={{color: '#fff'}}>${price} entry fees</strong> from your players instantly, securely connect your payout account. TourneyLinks partners with Stripe to handle bank routing safely.
+              <div style={{ background: '#fff', border: '1px solid rgba(0,0,0,0.05)', borderRadius: 'var(--radius-lg)', padding: '2.5rem', marginTop: '1.5rem', boxShadow: '0 15px 40px rgba(0,0,0,0.02)' }}>
+                <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--forest)', marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span>Monetization Ledger</span>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--gold)', background: 'rgba(212,175,55,0.1)', padding: '0.4rem 0.8rem', borderRadius: '50px' }}>Powered by Stripe</span>
                 </div>
-                <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-                  <StripeOnboardButton />
-                  <button className="btn-hero-outline" onClick={handleBack}>← Go Back</button>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.95rem', color: 'var(--ink)', marginBottom: '1.5rem', background: '#f8faf9', padding: '1.5rem', borderRadius: '12px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--mist)' }}>Entry Fee</span>
+                    <strong>${fee.toFixed(2)}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--mist)' }}>Processing Fee (2.9% + 30¢)</span>
+                    <strong style={{ color: passFees ? 'var(--mist)' : '#e74c3c' }}>{passFees ? '+' : '-'}${stripeFee.toFixed(2)}</strong>
+                  </div>
+                  <div style={{ width: '100%', height: '1px', background: 'rgba(0,0,0,0.05)', margin: '0.5rem 0' }}></div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontWeight: 600 }}>Golfer Checkout Total</span>
+                    <strong style={{ fontSize: '1.1rem' }}>${totalFee.toFixed(2)}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontWeight: 600, color: 'var(--grass)' }}>Your Direct Payout</span>
+                    <strong style={{ fontSize: '1.1rem', color: 'var(--grass)' }}>${organizerRevenue.toFixed(2)}</strong>
+                  </div>
+                </div>
+
+                <div style={{ fontSize: '0.85rem', color: 'var(--mist)', lineHeight: 1.6, marginBottom: '2rem' }}>
+                  <strong>TourneyLinks takes 0% of your registration volume.</strong> To publish your event and activate secure Stripe Connect payouts directly to your bank, pay a single flat <strong style={{ color: 'var(--ink)' }}>$99.00 Platform Activation Fee</strong>.
+                </div>
+
+                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                  <button className="btn-primary" style={{ flex: 1, padding: '1rem', background: 'var(--gold)', color: '#000', fontWeight: 700, border: 'none' }}>
+                    Pay $99 &amp; Activate Launch 🚀
+                  </button>
+                  <button className="btn-hero-outline" onClick={handleBack} style={{ flex: 1, padding: '1rem' }}>
+                    ← Review Edits
+                  </button>
                 </div>
               </div>
             </div>
 
             <div>
               <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--gold)', marginBottom: '0.75rem', fontWeight: 600 }}>Live Preview</div>
-              <div className="preview-tournament-card">
-                <div className="preview-cover" style={{ background: 'linear-gradient(135deg, var(--forest), var(--fairway))' }}>
-                  <div className="preview-cover-overlay"></div>
+              <div className="preview-tournament-card" style={{ borderColor: themeColor }}>
+                <div className="preview-cover" style={{ background: `linear-gradient(135deg, ${secondaryThemeColor}, #112814)` }}>
+                  <div className="preview-cover-overlay" style={{ background: `radial-gradient(circle at top right, ${themeColor} 0%, transparent 60%)`, opacity: 0.3 }}></div>
                   <div className="preview-cover-content">
                     <div style={{ display: 'flex', gap: '0.4rem', marginBottom: '0.5rem' }}>
                       <span className="badge badge-format">{formatName}</span>

@@ -23,7 +23,8 @@ export default async function RegistrationGatePage({ params }: { params: Promise
     name: tournament.name,
     entryFee: tournament.entryFee,
     originalPrice: tournament.originalPrice,
-    passFeesToRegistrant: tournament.passFeesToRegistrant
+    passFeesToRegistrant: tournament.passFeesToRegistrant,
+    allowOfflinePayment: tournament.allowOfflinePayment
   };
 
   return (

@@ -82,7 +82,8 @@ export const tournaments = pgTable('tournaments', {
   extractedAt: text('extracted_at'),
 
   heroImages: text('hero_images'), // JSON array of urls
-  themeColor: text('theme_color'), // hex code
+  themeColor: text('theme_color'), // hex code primary
+  secondaryThemeColor: text('secondary_theme_color'), // hex code secondary
 
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),

@@ -159,6 +159,12 @@ export default function RegistrationClient({ tournament }: { tournament: any }) 
         {loading ? 'Initializing Secure Cart...' : `Proceed to Secure Checkout`} 🔒
       </button>
 
+      {tournament.allowOfflinePayment && (
+        <a href={`/tournaments/${tournament.id}/offline-register`} style={{ display: 'block', width: '100%', textAlign: 'center', padding: '1.2rem', fontSize: '1.1rem', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--forest)', fontWeight: 700, marginTop: '1rem', textDecoration: 'none', transition: 'all 0.2s', boxShadow: '0 4px 15px rgba(0,0,0,0.03)' }}>
+            Pay Cash On-Site
+        </a>
+      )}
+
     </div>
   );
 }
