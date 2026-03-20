@@ -86,12 +86,23 @@ export default async function TournamentGatewayPage({ params }: { params: Promis
                 grid-template-columns: 1fr;
               }
             }
+            .back-link {
+              display: inline-flex; align-items: center; gap: 0.5rem;
+              color: var(--mist); font-size: 0.85rem; font-weight: 700;
+              text-transform: uppercase; letter-spacing: 1px; text-decoration: none;
+              margin-bottom: 0.5rem; transition: color 0.2s; margin-left: 0.5rem;
+            }
+            .back-link:hover { color: var(--gold); }
           `}} />
 
           <div className="t-layout-grid">
             
             {/* ---------------- 3 PREMIUM CTAS (STICKY LEFT SIDEBAR) ---------------- */}
             <div style={{ position: 'sticky', top: '120px', display: 'flex', flexDirection: 'column', gap: '1.5rem', zIndex: 11 }}>
+
+              <Link href="/tournaments" className="back-link">
+                <span style={{ fontSize: '1.2rem', lineHeight: 1 }}>←</span> Back to Tournaments
+              </Link>
               
               {/* CTA 1: REGISTER NOW */}
               <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: 'linear-gradient(145deg, rgba(16,36,20,0.98), #051007)', backdropFilter: 'blur(10px)', border: '1px solid var(--gold)', borderRadius: '12px', padding: '1.5rem 1.5rem', boxShadow: '0 0 16px rgba(223, 177, 75, 0.35)', position: 'relative', overflow: 'hidden' }}>
