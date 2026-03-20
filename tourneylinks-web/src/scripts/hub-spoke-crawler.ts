@@ -11,7 +11,7 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 const SERPAPI_KEY = process.env.SERPAPI_KEY;
 
 const TARGET_REGIONS = [
-  "Austin, TX"
+  "Dallas, TX"
 ];
 
 // Phase 36: The $86/mo "Perfect Efficiency" Hack
@@ -67,7 +67,7 @@ async function processDeepLink(url: string, depth: number = 0) {
       .substring(0, 45000);
 
     const prompt = `You are a professional Golf Tournament Extractor API. 
-Analyze this website text thoroughly. 
+Analyze this website text thoroughly. The event description is often obfuscated behind "Read More" frontend buttons, meaning the true description text is hidden deep inside massive <script> tags or __SERVER_DATA__ JSON payload blocks within this raw HTML. You must systematically scour the entire payload including all JSON schema nodes to extract the full description and bypass this obfuscation.
 First, determine if this page is a "DIRECTORY" (meaning it lists multiple golf tournaments with links to click into them) or a "SINGLE_EVENT" (meaning this page is dedicated to one specific tournament).
 
 1. If it is a DIRECTORY: Find and extract the full http URLs pointing to the individual tournament pages.
@@ -78,15 +78,18 @@ CRITICAL INSTRUCTIONS:
 - If a field is not explicitly stated, use null.
 - Extract absolute maximum detail for description and format rules.
 - **TEMPORAL CONSTRAINT:** Today is the year 2026. If a tournament year is omitted on the page, you MUST map it to 2026 or 2027 depending on the month context. NEVER output historical years such as 1999 or 2001.
+- **PAST EVENT GATE:** If the tournament has explicitly occurred in the past (e.g., year 2025, 2024), or physically states "Sales Ended" or "Past Event", YOU MUST structurally set "pageType" strictly to "PAST_EVENT" and abort extraction.
+- **SCHEDULE GATE:** DO NOT guess or hallucinate schedule times. If explicit times for an events agenda are not written clearly on the page, YOU MUST SET "schedule" to exactly null.
 
 JSON SCHEMA:
 {
-  "pageType": "DIRECTORY" or "SINGLE_EVENT" or "UNKNOWN",
+  "pageType": "DIRECTORY" or "SINGLE_EVENT" or "UNKNOWN" or "PAST_EVENT",
   "directoryLinks": ["https://example.com/tourney1", "https://example.com/tourney2"] (only if DIRECTORY, else empty array),
   "tournamentData": {
     "name": "string (Tournament Name)",
     "dateStart": "string (YYYY-MM-DD or formal text. MUST belong to 2026 or 2027 context)",
     "courseName": "string",
+    "courseAddress": "string (Street address if explicitly provided)",
     "courseCity": "string",
     "courseState": "string (2-letters)",
     "format": "string (e.g., 4-Person Scramble, Best Ball)",
@@ -98,9 +101,10 @@ JSON SCHEMA:
     "organizerEmail": "string",
     "organizerPhone": "string",
     "registrationUrl": "string or null",
-    "includes": "string (e.g., dinner, cart, 18 holes)",
+    "includes": "string (e.g., green fees, dinner, cart, 18 holes)",
     "schedule": [{"time": "string (e.g. 10:00 AM)", "event": "string"}] (Extract the timeline/agenda if available, else null),
-    "prizes": ["string (e.g. 1st Place Team: $1000 Pro Shop Credit)", "string (e.g. Grand Prize: Scotty Cameron Putter)"] (Extract detailed prizes/contests if available, else null)
+    "prizes": ["string (e.g. 1st Place Team: $1000 Pro Shop Credit)", "string (e.g. Grand Prize: Scotty Cameron Putter)"] (Extract detailed prizes/contests if available, else null),
+    "sponsors": ["string (e.g. Title Sponsor: Nike)", "string (e.g. Breakfast Sponsor: Torchy's Tacos)"] (Extract named sponsors/partners if available, else null)
   } (null if DIRECTORY or UNKNOWN)
 }
 RAW TEXT: ${cleanText}`;
@@ -115,7 +119,10 @@ RAW TEXT: ${cleanText}`;
     const parsed = JSON.parse(completion.text || "{}");
     
     // Hub Branching Execution
-    if (parsed.pageType === "DIRECTORY" && parsed.directoryLinks?.length > 0) {
+    if (parsed.pageType === "PAST_EVENT") {
+      console.log(`⏭️ Skipping (AI determined this is a Past Event / Sales Ended).`);
+      return;
+    } else if (parsed.pageType === "DIRECTORY" && parsed.directoryLinks?.length > 0) {
       console.log(`🔀 AI identified ${parsed.directoryLinks.length} child events. Launching Spokes...`);
       for (const childUrl of parsed.directoryLinks) {
         // Recursively crawl the spokes
@@ -142,12 +149,12 @@ RAW TEXT: ${cleanText}`;
 
       // Automatically link to an existing Course ID
       let courseZip = null;
-      let hostMatch = null;
+      let courseId = null;
       if (t.courseName) {
         const matchingCourses = await db.select().from(courses).where(ilike(courses.name, `%${t.courseName}%`)).limit(1);
         if (matchingCourses.length > 0) {
+            courseId = matchingCourses[0].id; // The literal fix to the hardcoded null gap!
             courseZip = matchingCourses[0].zip;
-            // Optionally set the host user or linked reference
         }
       }
 
@@ -160,6 +167,8 @@ RAW TEXT: ${cleanText}`;
         
         dateStart: t.dateStart || '',
         courseName: t.courseName || 'Unknown Course',
+        courseId: courseId,
+        courseAddress: t.courseAddress || null,
         courseCity: t.courseCity || '',
         courseState: t.courseState || '',
         courseZip: courseZip,
@@ -177,6 +186,7 @@ RAW TEXT: ${cleanText}`;
         includes: t.includes,
         schedule: t.schedule ? JSON.stringify(t.schedule) : null,
         prizes: t.prizes ? JSON.stringify(t.prizes) : null,
+        sponsors: t.sponsors ? JSON.stringify(t.sponsors) : null,
         
         createdAt: new Date(),
         updatedAt: new Date(),

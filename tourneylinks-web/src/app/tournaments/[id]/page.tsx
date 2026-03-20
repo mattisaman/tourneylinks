@@ -72,6 +72,24 @@ export default async function TournamentGatewayPage({ params }: { params: Promis
     }
   }
 
+  let parsedPrizes: string[] | null = null;
+  if (tournament.prizes) {
+    try {
+      parsedPrizes = typeof tournament.prizes === 'string' ? JSON.parse(tournament.prizes) : tournament.prizes;
+    } catch (e) {
+      console.error("Failed to parse prizes", e);
+    }
+  }
+
+  let parsedSponsors: string[] | null = null;
+  if (tournament.sponsors) {
+    try {
+      parsedSponsors = typeof tournament.sponsors === 'string' ? JSON.parse(tournament.sponsors) : tournament.sponsors;
+    } catch (e) {
+      console.error("Failed to parse sponsors", e);
+    }
+  }
+
   return (
     <>
       <HeroCarousel 
@@ -316,17 +334,12 @@ export default async function TournamentGatewayPage({ params }: { params: Promis
                   
                   <div className="mobile-pad" style={{ background: '#f8faf9', padding: '2.5rem', borderRadius: '24px', border: '1px solid rgba(0,0,0,0.05)' }}>
                     <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>🛍️</div>
-                    <h3 style={{ fontSize: '1.4rem', color: 'var(--forest)', fontWeight: 800, marginBottom: '1rem' }}>Player Swag Bag</h3>
+                    <h3 style={{ fontSize: '1.4rem', color: 'var(--forest)', fontWeight: 800, marginBottom: '1rem' }}>What's Included</h3>
                     <ul style={{ listStylePosition: 'outside', marginLeft: '1rem', fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--ink)' }}>
                       {tournament.includes ? (
                         tournament.includes.split('\n').filter(Boolean).map((inc: string, i: number) => <li key={i}>{inc.replace(/^- /, '')}</li>)
                       ) : (
-                        <>
-                          <li>Premium FootJoy Golf Polo</li>
-                          <li>Sleeve of Titleist Pro V1x</li>
-                          <li>Custom Tournament Divot Tool</li>
-                          <li>Breakfast, Lunch, & Open Bar</li>
-                        </>
+                        <li style={{ color: 'var(--mist)', fontStyle: 'italic' }}>Standard tournament inclusions apply.</li>
                       )}
                     </ul>
                   </div>
@@ -335,10 +348,23 @@ export default async function TournamentGatewayPage({ params }: { params: Promis
                     <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>🥇</div>
                     <h3 style={{ fontSize: '1.4rem', color: 'var(--forest)', fontWeight: 800, marginBottom: '1rem' }}>Contests & Prizes</h3>
                     <ul style={{ listStylePosition: 'outside', marginLeft: '1rem', fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--ink)' }}>
-                      <li>1st Place Team: $1,000 Pro Shop Credit</li>
-                      <li>Closest to the Pin (Hole 4)</li>
-                      <li>Longest Drive (Hole 18)</li>
-                      <li>Hole-in-One: Win a 2025 Porsche Macan</li>
+                      {parsedPrizes && parsedPrizes.length > 0 ? (
+                        parsedPrizes.map((prize: string, i: number) => <li key={i}>{prize}</li>)
+                      ) : (
+                        <li style={{ fontStyle: 'italic', color: 'var(--mist)' }}>Prizes to be determined. Contact host for details.</li>
+                      )}
+                    </ul>
+                  </div>
+
+                  <div className="mobile-pad" style={{ background: '#f8faf9', padding: '2.5rem', borderRadius: '24px', border: '1px solid rgba(0,0,0,0.05)' }}>
+                    <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>🤝</div>
+                    <h3 style={{ fontSize: '1.4rem', color: 'var(--forest)', fontWeight: 800, marginBottom: '1rem' }}>Event Sponsors</h3>
+                    <ul style={{ listStylePosition: 'outside', marginLeft: '1rem', fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--ink)' }}>
+                      {parsedSponsors && parsedSponsors.length > 0 ? (
+                        parsedSponsors.map((sponsor: string, i: number) => <li key={i}>{sponsor}</li>)
+                      ) : (
+                        <li style={{ fontStyle: 'italic', color: 'var(--mist)' }}>Partnerships pending. Contact host to sponsor.</li>
+                      )}
                     </ul>
                   </div>
                 </div>

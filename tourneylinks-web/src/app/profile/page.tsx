@@ -1,9 +1,9 @@
 import React from 'react';
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
-import { db, users, registrations, tournaments } from '@/lib/db';
-import { eq, desc } from 'drizzle-orm';
-import { UserPlus, Search, Trophy, Link as LinkIcon, Edit3 } from 'lucide-react';
+import { db, users, registrations, tournaments, saved_courses, courses } from '@/lib/db';
+import { eq, desc, and } from 'drizzle-orm';
+import { UserPlus, Search, Trophy, Link as LinkIcon, Edit3, MapPin } from 'lucide-react';
 import TransferTicketModal from '@/components/profile/TransferTicketModal';
 
 export default async function ProfilePage() {
@@ -45,6 +45,15 @@ export default async function ProfilePage() {
     .innerJoin(tournaments, eq(registrations.tournamentId, tournaments.id))
     .where(eq(registrations.userId, dbUser.id))
     .orderBy(desc(registrations.createdAt));
+
+  // Phase 43: Fetch the Player's Tracked Radar Courses
+  const userRadars = await db.select({
+    radar: saved_courses,
+    course: courses
+  }).from(saved_courses)
+    .innerJoin(courses, eq(saved_courses.courseId, courses.id))
+    .where(eq(saved_courses.userId, userId))
+    .orderBy(desc(saved_courses.createdAt));
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#071510', color: 'var(--cream)' }}>
@@ -172,17 +181,35 @@ export default async function ProfilePage() {
           {/* Right Column: Widgets */}
           <div className="space-y-8">
             
-            {/* Automatic Saved Searches */}
-            <div className="p-6 rounded-2xl border border-[rgba(78,201,160,0.1)] shadow-inner" style={{ background: 'rgba(12,31,23,0.4)' }}>
-               <h3 className="text-xl font-bold mb-4 flex items-center gap-2" style={{ fontFamily: 'var(--font-serif), serif' }}>
-                 <Search className="text-[var(--gold)]" size={20} /> Saved Radars
+            {/* Phase 43: The Active Course Radar */}
+            <div className="p-6 rounded-2xl border border-[var(--gold)] shadow-[0_0_15px_rgba(212,175,55,0.15)] relative overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(12,31,23,0.95), rgba(7,21,16,1))' }}>
+               <div className="absolute inset-0 bg-gradient-to-br from-[var(--gold)] via-transparent to-transparent opacity-[0.05] pointer-events-none"></div>
+               <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-[var(--gold)]" style={{ fontFamily: 'var(--font-serif), serif' }}>
+                 <MapPin size={20} /> Saved Radars
                </h3>
-               <p className="text-sm text-[var(--mist)] mb-6 leading-relaxed">
-                 Configure a radar to automatically alert your email when our crawlers discover a tournament matching your filters.
-               </p>
-               <button className="btn-hero-outline w-full justify-center">
-                 + Create Radar
-               </button>
+               
+               {userRadars.length === 0 ? (
+                 <div className="text-center py-6 border border-dashed border-[rgba(212,175,55,0.3)] rounded-lg" style={{ background: 'rgba(255,255,255,0.02)' }}>
+                   <p className="text-sm text-[var(--mist)] mb-3">No courses actively tracked.</p>
+                   <a href="/courses" className="text-xs font-bold uppercase tracking-widest text-[var(--gold)] hover:underline">Explore Directory</a>
+                 </div>
+               ) : (
+                 <div className="space-y-3 relative z-10">
+                   {userRadars.map((row) => (
+                     <a href={`/courses/${row.course.id}`} key={row.radar.id} className="block group">
+                       <div className="p-3 rounded-lg border border-[rgba(255,255,255,0.05)] bg-[rgba(255,255,255,0.02)] hover:bg-[rgba(212,175,55,0.1)] hover:border-[rgba(212,175,55,0.3)] transition-all flex items-center justify-between">
+                         <div className="truncate">
+                           <div className="text-sm font-bold text-[var(--white)] truncate group-hover:text-[var(--gold)] transition-colors">{row.course.name}</div>
+                           <div className="text-xs text-[var(--mist)] mt-0.5">{row.course.city}, {row.course.state}</div>
+                         </div>
+                         {row.radar.notifyOnNewTournament && (
+                           <div className="flex-shrink-0 w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]" title="Alerts Active"></div>
+                         )}
+                       </div>
+                     </a>
+                   ))}
+                 </div>
+               )}
             </div>
 
             {/* Referral / Affiliate Architecture */}

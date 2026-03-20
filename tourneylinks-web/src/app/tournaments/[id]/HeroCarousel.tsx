@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 interface HeroCarouselProps {
   tournament: any;
@@ -86,9 +87,27 @@ export default function HeroCarousel({ tournament, heroImages, themeColor, secon
         </h1>
         <div className="hero-sub" style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap', alignItems: 'center', textShadow: '0 2px 10px rgba(0,0,0,0.8)', color: '#f8faf9', marginTop: '1rem' }}>
           
-          <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.9rem', fontWeight: 500, background: 'rgba(255,255,255,0.06)', padding: '0.4rem 1rem', borderRadius: '50px', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.12)' }}>
-            <span style={{ color: isCustomTheme ? `rgb(${themeRgb})` : 'var(--gold)', fontSize: '1rem' }}>📍</span> {tournament.courseName}
-          </span>
+          {tournament.courseId ? (
+            <Link href={`/courses/${tournament.courseId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.9rem', fontWeight: 500, background: 'rgba(255,255,255,0.06)', padding: '0.4rem 1rem', borderRadius: '50px', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.12)', cursor: 'pointer', transition: 'all 0.2s ease' }} className="hover-highlight">
+                <span style={{ color: isCustomTheme ? `rgb(${themeRgb})` : 'var(--gold)', fontSize: '1rem' }}>📍</span> 
+                {tournament.courseAddress 
+                  ? `${tournament.courseName} • ${tournament.courseAddress}, ${tournament.courseCity}, ${tournament.courseState} ${tournament.courseZip || ''}`.trim()
+                  : `${tournament.courseName} • ${tournament.courseCity}, ${tournament.courseState} ${tournament.courseZip || ''}`.trim()
+                }
+              </span>
+            </Link>
+          ) : (
+            <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${tournament.courseName} ${tournament.courseCity} ${tournament.courseState}`)}`} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.9rem', fontWeight: 500, background: 'rgba(255,255,255,0.06)', padding: '0.4rem 1rem', borderRadius: '50px', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.12)', cursor: 'pointer', transition: 'all 0.2s ease' }} className="hover-highlight">
+                <span style={{ color: isCustomTheme ? `rgb(${themeRgb})` : 'var(--gold)', fontSize: '1rem' }}>📍</span> 
+                {tournament.courseAddress 
+                  ? `${tournament.courseName} • ${tournament.courseAddress}, ${tournament.courseCity}, ${tournament.courseState} ${tournament.courseZip || ''}`.trim()
+                  : `${tournament.courseName} • ${tournament.courseCity}, ${tournament.courseState} ${tournament.courseZip || ''}`.trim()
+                }
+              </span>
+            </a>
+          )}
           
           <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.9rem', fontWeight: 500, background: 'rgba(255,255,255,0.06)', padding: '0.4rem 1rem', borderRadius: '50px', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.12)' }}>
             <span style={{ color: isCustomTheme ? `rgb(${themeRgb})` : 'var(--gold)', fontSize: '1rem' }}>🗓️</span> {formatDate(tournament.dateStart)}

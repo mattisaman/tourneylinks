@@ -48,6 +48,8 @@ export const tournaments = pgTable('tournaments', {
   registrationDeadline: text('registration_deadline'),
 
   courseName: text('course_name').notNull(),
+  courseId: integer('course_id').references(() => courses.id, { onDelete: 'set null' }),
+  courseAddress: text('course_address'),
   courseCity: text('course_city').notNull(),
   courseState: text('course_state').notNull(),
   courseZip: text('course_zip'),
@@ -80,6 +82,7 @@ export const tournaments = pgTable('tournaments', {
   includes: text('includes'),
   schedule: text('schedule'), // Stored structurally as JSON string array [{time: string, event: string}]
   prizes: text('prizes'), // Stored structurally as JSON string array ["1st Place: $500", "Long Drive: Scotty Cameron Putter"]
+  sponsors: text('sponsors'), // Stored structurally as JSON string array ["Title Sponsor: Ford", "Beverage Sponsor: Torchy's Tacos"]
 
   extractionConfidence: real('extraction_confidence').default(0),
   extractedAt: text('extracted_at'),
@@ -295,5 +298,13 @@ export const split_invites = pgTable('split_invites', {
   token: text('token').notNull().unique(), // The magic link hash
   recipientEmail: text('recipient_email'), // Optional
   status: text('status').default('PENDING').notNull(), // 'PENDING', 'CLAIMED'
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const saved_courses = pgTable('saved_courses', {
+  id: serial('id').primaryKey(),
+  userId: text('user_id').notNull(),
+  courseId: integer('course_id').references(() => courses.id, { onDelete: 'cascade' }).notNull(),
+  notifyOnNewTournament: boolean('notify_on_new_tournament').default(true),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });

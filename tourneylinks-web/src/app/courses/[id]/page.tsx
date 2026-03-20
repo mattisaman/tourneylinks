@@ -1,11 +1,14 @@
 import React from 'react';
-import { db, courses } from '@/lib/db';
-import { eq } from 'drizzle-orm';
+import { db, courses, tournaments } from '@/lib/db';
+import { eq, asc } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import Navbar from '@/components/ui/Navbar';
 import Footer from '@/components/ui/Footer';
 import Link from 'next/link';
 import { MapPin, Phone, Globe, ChevronLeft, Map, Flag } from 'lucide-react';
+import FavoriteButton from './FavoriteButton';
+import { getIsFavorited } from '@/app/actions/favoriteCourse';
+import { auth } from '@clerk/nextjs/server';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,6 +21,16 @@ export default async function CourseDetailPage(props: { params: Promise<{ id: st
   const course = courseRows[0];
 
   if (!course) notFound();
+
+  // Fetch upcoming tournaments at this course natively!
+  const hostedTournaments = await db.select()
+    .from(tournaments)
+    .where(eq(tournaments.courseId, courseId))
+    .orderBy(asc(tournaments.dateStart));
+
+  // Player Radar Tracking
+  const { userId } = await auth();
+  const isFavorited = await getIsFavorited(courseId);
 
   return (
     <div style={{ background: 'var(--ink)', minHeight: '100vh', display: 'flex', flexDirection: 'column', paddingTop: '80px' }}>
@@ -36,9 +49,13 @@ export default async function CourseDetailPage(props: { params: Promise<{ id: st
              </div>
              
              <div style={{ padding: '2.5rem', marginTop: '-60px', position: 'relative', zIndex: 10 }}>
-                <span style={{ background: 'var(--gold)', color: 'var(--ink)', padding: '0.4rem 1rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', boxShadow: '0 4px 12px rgba(201,168,76,0.3)', display: 'inline-block', marginBottom: '1rem' }}>
-                   {course.type || 'Public Course'}
-                </span>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
+                  <span style={{ background: 'var(--gold)', color: 'var(--ink)', padding: '0.4rem 1rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', boxShadow: '0 4px 12px rgba(201,168,76,0.3)', display: 'inline-block' }}>
+                     {course.type || 'Public Course'}
+                  </span>
+                  
+                  <FavoriteButton courseId={course.id} initialFavorited={isFavorited} isSignedIn={!!userId} />
+                </div>
                 
                 <h1 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontFamily: "'Clash Display', sans-serif", fontWeight: 600, color: 'var(--white)', marginBottom: '0.5rem', lineHeight: 1.1 }}>
                   {course.name}
@@ -135,6 +152,41 @@ export default async function CourseDetailPage(props: { params: Promise<{ id: st
                 </Link>
              </div>
           </div>
+
+          {/* PHASE 41: THE LOCAL ECOSYSTEM LOOP */}
+          {hostedTournaments.length > 0 && (
+            <div style={{ marginTop: '4rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
+                <h2 style={{ fontSize: '1.8rem', color: 'var(--white)', fontWeight: 600, fontFamily: "'Clash Display', sans-serif" }}>
+                  Active Tournaments
+                </h2>
+                <span style={{ background: 'rgba(212,175,55,0.1)', color: 'var(--gold)', padding: '0.4rem 1rem', borderRadius: '50px', fontSize: '0.8rem', fontWeight: 700 }}>
+                  {hostedTournaments.length} Event{hostedTournaments.length !== 1 ? 's' : ''}
+                </span>
+              </div>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
+                {hostedTournaments.map((t) => (
+                  <Link href={`/tournaments/${t.id}`} key={t.id} style={{ textDecoration: 'none' }}>
+                    <div style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px', padding: '1.5rem', cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }} 
+                         onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-3px)'} 
+                         onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--gold)', fontWeight: 600, marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                        {new Date(t.dateStart).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </div>
+                      <h3 style={{ color: 'var(--white)', fontSize: '1.1rem', marginBottom: '1rem', lineHeight: 1.3, fontWeight: 600 }}>
+                        {t.name}
+                      </h3>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '1rem' }}>
+                        <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem' }}>{t.format || 'Standard Format'}</span>
+                        <span style={{ color: 'var(--gold)', fontWeight: 700, fontSize: '0.9rem' }}>View Event &rarr;</span>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
 
         </div>
       </div>

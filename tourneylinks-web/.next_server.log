@@ -1096,3 +1096,803 @@ params: 3338
  GET /tournaments/3338 200 in 380ms (compile: 14ms, proxy.ts: 26ms, render: 339ms)
  GET /courses/11134 200 in 560ms (compile: 19ms, proxy.ts: 13ms, render: 528ms)
  GET /courses/11134 200 in 523ms (compile: 178ms, proxy.ts: 33ms, render: 312ms)
+✓ Compiled in 100ms
+ GET /courses/11134 200 in 824ms (compile: 519ms, proxy.ts: 36ms, render: 269ms)
+⨯ Error: useUser can only be used within the <ClerkProvider /> component.
+
+Possible fixes:
+1. Ensure that the <ClerkProvider /> is correctly wrapping your application where this component is used.
+2. Check for multiple versions of the `@clerk/shared` package in your project. Use a tool like `npm ls @clerk/shared` to identify multiple versions, and update your dependencies to only rely on one.
+
+Learn more: https://clerk.com/docs/components/clerk-provider
+    at StripeCheckoutButton (src/app/tournaments/[id]/StripeCheckoutButton.tsx:7:33)
+   5 |
+   6 | export default function StripeCheckoutButton({ tournamentId, entryFee }: { tournamentId: number, entryFee: number }) {
+>  7 |   const { isSignedIn } = useUser();
+     |                                 ^
+   8 |   const router = useRouter();
+   9 |   const [loading, setLoading] = useState(false);
+  10 | {
+  digest: '2204467956'
+}
+⨯ Error: @clerk/react: useAuth can only be used within the <ClerkProvider /> component. Learn more: https://clerk.com/docs/components/clerk-provider
+    at TournamentDirectory (src/components/ui/TournamentDirectory.tsx:36:29)
+  34 |
+  35 | export default function TournamentDirectory({ initialTournaments }: { initialTournaments: Tournament[] }) {
+> 36 |   const { userId } = useAuth();
+     |                             ^
+  37 |   
+  38 |   const [keyword, setKeyword] = useState('');
+  39 |   const [startDate, setStartDate] = useState(''); {
+  digest: '3937390810'
+}
+ GET /tournaments 500 in 1418ms (compile: 23ms, proxy.ts: 36ms, render: 1359ms)
+ GET /tournaments/3338 200 in 1490ms (compile: 497ms, proxy.ts: 39ms, render: 954ms)
+ GET /tournaments/3027 500 in 1601ms (compile: 319ms, proxy.ts: 154ms, render: 1128ms)
+ GET /tournaments/3338 200 in 546ms (compile: 25ms, proxy.ts: 81ms, render: 440ms)
+ GET /courses/11134 200 in 829ms (compile: 19ms, proxy.ts: 423ms, render: 387ms)
+ GET /tournaments 200 in 366ms (compile: 11ms, proxy.ts: 13ms, render: 342ms)
+✓ Compiled in 137ms
+⨯ Error: Failed query: select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where ("tournaments"."is_active" = $1 and "tournaments"."date_start" >= $2) order by "tournaments"."date_start" asc
+params: true,2026-03-20
+    at async getExistingTournaments (src/lib/db.ts:227:16)
+    at async TournamentsPage (src/app/tournaments/page.tsx:8:23)
+  225 |
+  226 | export async function getExistingTournaments() {
+> 227 |   const rows = await db.select().from(tournaments)
+      |                ^
+  228 |     .where(and(
+  229 |       eq(tournaments.isActive, true),
+  230 |       gte(tournaments.dateStart, new Date().toISOString().split('T')[0]) {
+  query: 'select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where ("tournaments"."is_active" = $1 and "tournaments"."date_start" >= $2) order by "tournaments"."date_start" asc',
+  params: [Array],
+  digest: '3429404521',
+  [cause]: error: column "sponsors" does not exist
+      at async getExistingTournaments (src/lib/db.ts:227:16)
+      at async TournamentsPage (src/app/tournaments/page.tsx:8:23)
+    225 |
+    226 | export async function getExistingTournaments() {
+  > 227 |   const rows = await db.select().from(tournaments)
+        |                ^
+    228 |     .where(and(
+    229 |       eq(tournaments.isActive, true),
+    230 |       gte(tournaments.dateStart, new Date().toISOString().split('T')[0]) {
+    length: 109,
+    severity: 'ERROR',
+    code: '42703',
+    detail: undefined,
+    hint: undefined,
+    position: '570',
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: 'parse_relation.c',
+    line: '3716',
+    routine: 'errorMissingColumn'
+  }
+}
+ GET /tournaments 200 in 1060ms (compile: 333ms, proxy.ts: 43ms, render: 684ms)
+⨯ Error: Failed query: select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."id" = $1
+params: 3027
+    at async TournamentGatewayPage (src/app/tournaments/[id]/page.tsx:19:26)
+  17 |   }
+  18 |
+> 19 |   const tournamentList = await db.select().from(tournaments).where(eq(tournaments.id, tournamentId));
+     |                          ^
+  20 |   const tournament = tournamentList[0];
+  21 |
+  22 |   if (!tournament) { {
+  query: 'select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."id" = $1',
+  params: [Array],
+  digest: '3412083545',
+  [cause]: error: column "sponsors" does not exist
+      at async TournamentGatewayPage (src/app/tournaments/[id]/page.tsx:19:26)
+    17 |   }
+    18 |
+  > 19 |   const tournamentList = await db.select().from(tournaments).where(eq(tournaments.id, tournamentId));
+       |                          ^
+    20 |   const tournament = tournamentList[0];
+    21 |
+    22 |   if (!tournament) { {
+    length: 109,
+    severity: 'ERROR',
+    code: '42703',
+    detail: undefined,
+    hint: undefined,
+    position: '570',
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: 'parse_relation.c',
+    line: '3716',
+    routine: 'errorMissingColumn'
+  }
+}
+ GET /tournaments/3027 200 in 1111ms (compile: 572ms, proxy.ts: 39ms, render: 500ms)
+⨯ Error: Failed query: select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."id" = $1
+params: 3027
+    at async TournamentGatewayPage (src/app/tournaments/[id]/page.tsx:19:26)
+  17 |   }
+  18 |
+> 19 |   const tournamentList = await db.select().from(tournaments).where(eq(tournaments.id, tournamentId));
+     |                          ^
+  20 |   const tournament = tournamentList[0];
+  21 |
+  22 |   if (!tournament) { {
+  query: 'select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."id" = $1',
+  params: [Array],
+  digest: '3412083545',
+  [cause]: error: column "sponsors" does not exist
+      at async TournamentGatewayPage (src/app/tournaments/[id]/page.tsx:19:26)
+    17 |   }
+    18 |
+  > 19 |   const tournamentList = await db.select().from(tournaments).where(eq(tournaments.id, tournamentId));
+       |                          ^
+    20 |   const tournament = tournamentList[0];
+    21 |
+    22 |   if (!tournament) { {
+    length: 109,
+    severity: 'ERROR',
+    code: '42703',
+    detail: undefined,
+    hint: undefined,
+    position: '570',
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: 'parse_relation.c',
+    line: '3716',
+    routine: 'errorMissingColumn'
+  }
+}
+⨯ Error: Failed query: select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."id" = $1
+params: 3027
+    at async TournamentGatewayPage (src/app/tournaments/[id]/page.tsx:19:26)
+  17 |   }
+  18 |
+> 19 |   const tournamentList = await db.select().from(tournaments).where(eq(tournaments.id, tournamentId));
+     |                          ^
+  20 |   const tournament = tournamentList[0];
+  21 |
+  22 |   if (!tournament) { {
+  query: 'select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."id" = $1',
+  params: [Array],
+  digest: '3412083545',
+  [cause]: error: column "sponsors" does not exist
+      at async TournamentGatewayPage (src/app/tournaments/[id]/page.tsx:19:26)
+    17 |   }
+    18 |
+  > 19 |   const tournamentList = await db.select().from(tournaments).where(eq(tournaments.id, tournamentId));
+       |                          ^
+    20 |   const tournament = tournamentList[0];
+    21 |
+    22 |   if (!tournament) { {
+    length: 109,
+    severity: 'ERROR',
+    code: '42703',
+    detail: undefined,
+    hint: undefined,
+    position: '570',
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: 'parse_relation.c',
+    line: '3716',
+    routine: 'errorMissingColumn'
+  }
+}
+ GET /tournaments/3027 200 in 478ms (compile: 4ms, proxy.ts: 5ms, render: 469ms)
+ GET /tournaments/3027 200 in 456ms (compile: 3ms, proxy.ts: 5ms, render: 447ms)
+ GET /tournaments 200 in 815ms (compile: 41ms, proxy.ts: 92ms, render: 682ms)
+ GET /tournaments 200 in 819ms (compile: 25ms, proxy.ts: 93ms, render: 701ms)
+ GET /tournaments 200 in 822ms (compile: 51ms, proxy.ts: 48ms, render: 723ms)
+ GET /tournaments 200 in 837ms (compile: 12ms, proxy.ts: 59ms, render: 765ms)
+✓ Compiled in 307ms
+ GET /tournaments/3027 200 in 823ms (compile: 168ms, proxy.ts: 34ms, render: 620ms)
+ GET /tournaments 200 in 399ms (compile: 11ms, proxy.ts: 25ms, render: 363ms)
+ GET /tournaments 200 in 601ms (compile: 69ms, proxy.ts: 9ms, render: 523ms)
+ GET /tournaments/3344 200 in 827ms (compile: 36ms, proxy.ts: 380ms, render: 410ms)
+✓ Compiled in 337ms
+✓ Compiled in 95ms
+ GET /tournaments/3344 200 in 1168ms (compile: 375ms, proxy.ts: 477ms, render: 317ms)
+ GET /tournaments/3344 200 in 393ms (compile: 22ms, proxy.ts: 31ms, render: 340ms)
+ GET /tournaments/3027 200 in 1248ms (compile: 276ms, proxy.ts: 452ms, render: 520ms)
+ GET /tournaments/3344 200 in 136ms (compile: 4ms, proxy.ts: 3ms, render: 128ms)
+ GET /tournaments/3027 200 in 470ms (compile: 4ms, proxy.ts: 34ms, render: 432ms)
+ GET /tournaments/3027 200 in 454ms (compile: 5ms, proxy.ts: 9ms, render: 441ms)
+ GET /tournaments 200 in 833ms (compile: 217ms, proxy.ts: 41ms, render: 575ms)
+ GET /tournaments 200 in 808ms (compile: 312ms, proxy.ts: 23ms, render: 472ms)
+ GET /tournaments 200 in 799ms (compile: 51ms, proxy.ts: 294ms, render: 453ms)
+ GET /tournaments 200 in 807ms (compile: 319ms, proxy.ts: 22ms, render: 465ms)
+ GET /tournaments 200 in 817ms (compile: 288ms, proxy.ts: 23ms, render: 506ms)
+ GET /tournaments 200 in 232ms (compile: 2ms, proxy.ts: 9ms, render: 221ms)
+✓ Compiled in 112ms
+ GET /tournaments/3344 200 in 387ms (compile: 115ms, proxy.ts: 54ms, render: 218ms)
+ GET /tournaments/3027 200 in 507ms (compile: 71ms, proxy.ts: 57ms, render: 379ms)
+ GET /tournaments 200 in 467ms (compile: 13ms, proxy.ts: 21ms, render: 433ms)
+ GET /tournaments 200 in 470ms (compile: 33ms, proxy.ts: 15ms, render: 422ms)
+✓ Compiled in 83ms
+⨯ Error: Failed query: select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_id", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."id" = $1
+params: 3027
+    at async TournamentGatewayPage (src/app/tournaments/[id]/page.tsx:19:26)
+  17 |   }
+  18 |
+> 19 |   const tournamentList = await db.select().from(tournaments).where(eq(tournaments.id, tournamentId));
+     |                          ^
+  20 |   const tournament = tournamentList[0];
+  21 |
+  22 |   if (!tournament) { {
+  query: 'select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_id", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."id" = $1',
+  params: [Array],
+  digest: '3870352316',
+  [cause]: error: column "course_id" does not exist
+      at async TournamentGatewayPage (src/app/tournaments/[id]/page.tsx:19:26)
+    17 |   }
+    18 |
+  > 19 |   const tournamentList = await db.select().from(tournaments).where(eq(tournaments.id, tournamentId));
+       |                          ^
+    20 |   const tournament = tournamentList[0];
+    21 |
+    22 |   if (!tournament) { {
+    length: 217,
+    severity: 'ERROR',
+    code: '42703',
+    detail: undefined,
+    hint: 'Perhaps you meant to reference the column "tournaments.source_id" or the column "tournaments.course_zip".',
+    position: '125',
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: 'parse_relation.c',
+    line: '3737',
+    routine: 'errorMissingColumn'
+  }
+}
+⨯ Error: Failed query: select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_id", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."id" = $1
+params: 3344
+    at async TournamentGatewayPage (src/app/tournaments/[id]/page.tsx:19:26)
+  17 |   }
+  18 |
+> 19 |   const tournamentList = await db.select().from(tournaments).where(eq(tournaments.id, tournamentId));
+     |                          ^
+  20 |   const tournament = tournamentList[0];
+  21 |
+  22 |   if (!tournament) { {
+  query: 'select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_id", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."id" = $1',
+  params: [Array],
+  digest: '2631742908',
+  [cause]: error: column "course_id" does not exist
+      at async TournamentGatewayPage (src/app/tournaments/[id]/page.tsx:19:26)
+    17 |   }
+    18 |
+  > 19 |   const tournamentList = await db.select().from(tournaments).where(eq(tournaments.id, tournamentId));
+       |                          ^
+    20 |   const tournament = tournamentList[0];
+    21 |
+    22 |   if (!tournament) { {
+    length: 217,
+    severity: 'ERROR',
+    code: '42703',
+    detail: undefined,
+    hint: 'Perhaps you meant to reference the column "tournaments.source_id" or the column "tournaments.course_zip".',
+    position: '125',
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: 'parse_relation.c',
+    line: '3737',
+    routine: 'errorMissingColumn'
+  }
+}
+ GET /tournaments/3344 200 in 570ms (compile: 413ms, proxy.ts: 19ms, render: 138ms)
+ GET /tournaments/3027 200 in 599ms (compile: 241ms, proxy.ts: 17ms, render: 340ms)
+⨯ Error: Failed query: select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_id", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."id" = $1
+params: 3344
+    at async TournamentGatewayPage (src/app/tournaments/[id]/page.tsx:19:26)
+  17 |   }
+  18 |
+> 19 |   const tournamentList = await db.select().from(tournaments).where(eq(tournaments.id, tournamentId));
+     |                          ^
+  20 |   const tournament = tournamentList[0];
+  21 |
+  22 |   if (!tournament) { {
+  query: 'select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_id", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."id" = $1',
+  params: [Array],
+  digest: '2631742908',
+  [cause]: error: column "course_id" does not exist
+      at async TournamentGatewayPage (src/app/tournaments/[id]/page.tsx:19:26)
+    17 |   }
+    18 |
+  > 19 |   const tournamentList = await db.select().from(tournaments).where(eq(tournaments.id, tournamentId));
+       |                          ^
+    20 |   const tournament = tournamentList[0];
+    21 |
+    22 |   if (!tournament) { {
+    length: 217,
+    severity: 'ERROR',
+    code: '42703',
+    detail: undefined,
+    hint: 'Perhaps you meant to reference the column "tournaments.source_id" or the column "tournaments.course_zip".',
+    position: '125',
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: 'parse_relation.c',
+    line: '3737',
+    routine: 'errorMissingColumn'
+  }
+}
+⨯ Error: Failed query: select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_id", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."id" = $1
+params: 3027
+    at async TournamentGatewayPage (src/app/tournaments/[id]/page.tsx:19:26)
+  17 |   }
+  18 |
+> 19 |   const tournamentList = await db.select().from(tournaments).where(eq(tournaments.id, tournamentId));
+     |                          ^
+  20 |   const tournament = tournamentList[0];
+  21 |
+  22 |   if (!tournament) { {
+  query: 'select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_id", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."id" = $1',
+  params: [Array],
+  digest: '3870352316',
+  [cause]: error: column "course_id" does not exist
+      at async TournamentGatewayPage (src/app/tournaments/[id]/page.tsx:19:26)
+    17 |   }
+    18 |
+  > 19 |   const tournamentList = await db.select().from(tournaments).where(eq(tournaments.id, tournamentId));
+       |                          ^
+    20 |   const tournament = tournamentList[0];
+    21 |
+    22 |   if (!tournament) { {
+    length: 217,
+    severity: 'ERROR',
+    code: '42703',
+    detail: undefined,
+    hint: 'Perhaps you meant to reference the column "tournaments.source_id" or the column "tournaments.course_zip".',
+    position: '125',
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: 'parse_relation.c',
+    line: '3737',
+    routine: 'errorMissingColumn'
+  }
+}
+ GET /tournaments/3344 200 in 394ms (compile: 66ms, proxy.ts: 8ms, render: 320ms)
+ GET /tournaments/3027 200 in 396ms (compile: 12ms, proxy.ts: 7ms, render: 377ms)
+⨯ Error: Failed query: select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_id", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."id" = $1
+params: 3344
+    at async TournamentGatewayPage (src/app/tournaments/[id]/page.tsx:19:26)
+  17 |   }
+  18 |
+> 19 |   const tournamentList = await db.select().from(tournaments).where(eq(tournaments.id, tournamentId));
+     |                          ^
+  20 |   const tournament = tournamentList[0];
+  21 |
+  22 |   if (!tournament) { {
+  query: 'select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_id", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."id" = $1',
+  params: [Array],
+  digest: '2631742908',
+  [cause]: error: column "course_id" does not exist
+      at async TournamentGatewayPage (src/app/tournaments/[id]/page.tsx:19:26)
+    17 |   }
+    18 |
+  > 19 |   const tournamentList = await db.select().from(tournaments).where(eq(tournaments.id, tournamentId));
+       |                          ^
+    20 |   const tournament = tournamentList[0];
+    21 |
+    22 |   if (!tournament) { {
+    length: 217,
+    severity: 'ERROR',
+    code: '42703',
+    detail: undefined,
+    hint: 'Perhaps you meant to reference the column "tournaments.source_id" or the column "tournaments.course_zip".',
+    position: '125',
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: 'parse_relation.c',
+    line: '3737',
+    routine: 'errorMissingColumn'
+  }
+}
+⨯ Error: Failed query: select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_id", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."id" = $1
+params: 3027
+    at async TournamentGatewayPage (src/app/tournaments/[id]/page.tsx:19:26)
+  17 |   }
+  18 |
+> 19 |   const tournamentList = await db.select().from(tournaments).where(eq(tournaments.id, tournamentId));
+     |                          ^
+  20 |   const tournament = tournamentList[0];
+  21 |
+  22 |   if (!tournament) { {
+  query: 'select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_id", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."id" = $1',
+  params: [Array],
+  digest: '3870352316',
+  [cause]: error: column "course_id" does not exist
+      at async TournamentGatewayPage (src/app/tournaments/[id]/page.tsx:19:26)
+    17 |   }
+    18 |
+  > 19 |   const tournamentList = await db.select().from(tournaments).where(eq(tournaments.id, tournamentId));
+       |                          ^
+    20 |   const tournament = tournamentList[0];
+    21 |
+    22 |   if (!tournament) { {
+    length: 217,
+    severity: 'ERROR',
+    code: '42703',
+    detail: undefined,
+    hint: 'Perhaps you meant to reference the column "tournaments.source_id" or the column "tournaments.course_zip".',
+    position: '125',
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: 'parse_relation.c',
+    line: '3737',
+    routine: 'errorMissingColumn'
+  }
+}
+ GET /tournaments/3344 200 in 311ms (compile: 9ms, proxy.ts: 11ms, render: 291ms)
+ GET /tournaments/3027 200 in 382ms (compile: 11ms, proxy.ts: 34ms, render: 336ms)
+ GET /tournaments 200 in 795ms (compile: 133ms, proxy.ts: 30ms, render: 632ms)
+ GET /tournaments 200 in 956ms (compile: 191ms, proxy.ts: 19ms, render: 746ms)
+ GET /tournaments 200 in 954ms (compile: 204ms, proxy.ts: 19ms, render: 731ms)
+ GET /tournaments 200 in 947ms (compile: 40ms, proxy.ts: 197ms, render: 710ms)
+ GET /tournaments 200 in 242ms (compile: 4ms, proxy.ts: 10ms, render: 229ms)
+ GET /tournaments 200 in 1219ms (compile: 215ms, proxy.ts: 18ms, render: 987ms)
+✓ Compiled in 291ms
+ GET /tournaments/3344 200 in 812ms (compile: 65ms, proxy.ts: 42ms, render: 704ms)
+ GET /tournaments/3027 200 in 953ms (compile: 324ms, proxy.ts: 39ms, render: 590ms)
+✓ Compiled in 60ms
+ GET /tournaments/3344 200 in 388ms (compile: 14ms, proxy.ts: 29ms, render: 344ms)
+ GET /tournaments/3027 200 in 445ms (compile: 73ms, proxy.ts: 24ms, render: 348ms)
+ GET /tournaments 200 in 444ms (compile: 5ms, proxy.ts: 5ms, render: 433ms)
+ GET /tournaments 200 in 411ms (compile: 3ms, proxy.ts: 4ms, render: 405ms)
+✓ Compiled in 131ms
+ GET /tournaments/3344 200 in 162ms (compile: 5ms, proxy.ts: 9ms, render: 148ms)
+ GET /tournaments/3027 200 in 263ms (compile: 19ms, proxy.ts: 9ms, render: 236ms)
+ GET /tournaments 200 in 511ms (compile: 25ms, proxy.ts: 89ms, render: 397ms)
+ GET /tournaments 200 in 435ms (compile: 69ms, proxy.ts: 12ms, render: 354ms)
+ GET /tournaments 200 in 368ms (compile: 24ms, proxy.ts: 6ms, render: 339ms)
+ GET /tournaments 200 in 371ms (compile: 5ms, proxy.ts: 6ms, render: 360ms)
+ GET /tournaments 200 in 1186ms (compile: 19ms, proxy.ts: 571ms, render: 596ms)
+ GET /tournaments/2337 200 in 454ms (compile: 21ms, proxy.ts: 26ms, render: 407ms)
+ GET /host 200 in 58ms (compile: 8ms, proxy.ts: 18ms, render: 32ms)
+ GET /courses 200 in 540ms (compile: 40ms, proxy.ts: 464ms, render: 36ms)
+ GET /api/courses/search?q= 200 in 737ms (compile: 118ms, proxy.ts: 20ms, render: 599ms)
+ GET /api/courses/search?q=wildwood%20 200 in 471ms (compile: 5ms, proxy.ts: 11ms, render: 455ms)
+ GET /api/courses/search?q=wildwood 200 in 463ms (compile: 4ms, proxy.ts: 12ms, render: 446ms)
+ GET /api/courses/search?q=wildwood%20gree 200 in 214ms (compile: 5ms, proxy.ts: 11ms, render: 199ms)
+ GET /api/courses/search?q=wildwood%20green 200 in 208ms (compile: 4ms, proxy.ts: 12ms, render: 192ms)
+ GET /courses/9237 200 in 647ms (compile: 292ms, proxy.ts: 76ms, render: 280ms)
+✓ Compiled in 81ms
+⨯ Error: Failed query: select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_id", "course_address", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."id" = $1
+params: 3027
+    at async TournamentGatewayPage (src/app/tournaments/[id]/page.tsx:19:26)
+  17 |   }
+  18 |
+> 19 |   const tournamentList = await db.select().from(tournaments).where(eq(tournaments.id, tournamentId));
+     |                          ^
+  20 |   const tournament = tournamentList[0];
+  21 |
+  22 |   if (!tournament) { {
+  query: 'select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_id", "course_address", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."id" = $1',
+  params: [Array],
+  digest: '1251340765',
+  [cause]: error: column "course_address" does not exist
+      at async TournamentGatewayPage (src/app/tournaments/[id]/page.tsx:19:26)
+    17 |   }
+    18 |
+  > 19 |   const tournamentList = await db.select().from(tournaments).where(eq(tournaments.id, tournamentId));
+       |                          ^
+    20 |   const tournament = tournamentList[0];
+    21 |
+    22 |   if (!tournament) { {
+    length: 115,
+    severity: 'ERROR',
+    code: '42703',
+    detail: undefined,
+    hint: undefined,
+    position: '138',
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: 'parse_relation.c',
+    line: '3716',
+    routine: 'errorMissingColumn'
+  }
+}
+⨯ Error: Failed query: select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_id", "course_address", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."course_id" = $1 order by "tournaments"."date_start" asc
+params: 9237
+    at async CourseDetailPage (src/app/courses/[id]/page.tsx:26:29)
+  24 |
+  25 |   // Fetch upcoming tournaments at this course natively!
+> 26 |   const hostedTournaments = await db.select()
+     |                             ^
+  27 |     .from(tournaments)
+  28 |     .where(eq(tournaments.courseId, courseId))
+  29 |     .orderBy(asc(tournaments.dateStart)); {
+  query: 'select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_id", "course_address", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."course_id" = $1 order by "tournaments"."date_start" asc',
+  params: [Array],
+  digest: '4071382420',
+  [cause]: error: column "course_address" does not exist
+      at async CourseDetailPage (src/app/courses/[id]/page.tsx:26:29)
+    24 |
+    25 |   // Fetch upcoming tournaments at this course natively!
+  > 26 |   const hostedTournaments = await db.select()
+       |                             ^
+    27 |     .from(tournaments)
+    28 |     .where(eq(tournaments.courseId, courseId))
+    29 |     .orderBy(asc(tournaments.dateStart)); {
+    length: 115,
+    severity: 'ERROR',
+    code: '42703',
+    detail: undefined,
+    hint: undefined,
+    position: '138',
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: 'parse_relation.c',
+    line: '3716',
+    routine: 'errorMissingColumn'
+  }
+}
+⨯ Error: Failed query: select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_id", "course_address", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."id" = $1
+params: 3027
+    at async TournamentGatewayPage (src/app/tournaments/[id]/page.tsx:19:26)
+  17 |   }
+  18 |
+> 19 |   const tournamentList = await db.select().from(tournaments).where(eq(tournaments.id, tournamentId));
+     |                          ^
+  20 |   const tournament = tournamentList[0];
+  21 |
+  22 |   if (!tournament) { {
+  query: 'select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_id", "course_address", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."id" = $1',
+  params: [Array],
+  digest: '1251340765',
+  [cause]: error: column "course_address" does not exist
+      at async TournamentGatewayPage (src/app/tournaments/[id]/page.tsx:19:26)
+    17 |   }
+    18 |
+  > 19 |   const tournamentList = await db.select().from(tournaments).where(eq(tournaments.id, tournamentId));
+       |                          ^
+    20 |   const tournament = tournamentList[0];
+    21 |
+    22 |   if (!tournament) { {
+    length: 115,
+    severity: 'ERROR',
+    code: '42703',
+    detail: undefined,
+    hint: undefined,
+    position: '138',
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: 'parse_relation.c',
+    line: '3716',
+    routine: 'errorMissingColumn'
+  }
+}
+⨯ Error: Failed query: select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_id", "course_address", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."course_id" = $1 order by "tournaments"."date_start" asc
+params: 9237
+    at async CourseDetailPage (src/app/courses/[id]/page.tsx:26:29)
+  24 |
+  25 |   // Fetch upcoming tournaments at this course natively!
+> 26 |   const hostedTournaments = await db.select()
+     |                             ^
+  27 |     .from(tournaments)
+  28 |     .where(eq(tournaments.courseId, courseId))
+  29 |     .orderBy(asc(tournaments.dateStart)); {
+  query: 'select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_id", "course_address", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."course_id" = $1 order by "tournaments"."date_start" asc',
+  params: [Array],
+  digest: '4071382420',
+  [cause]: error: column "course_address" does not exist
+      at async CourseDetailPage (src/app/courses/[id]/page.tsx:26:29)
+    24 |
+    25 |   // Fetch upcoming tournaments at this course natively!
+  > 26 |   const hostedTournaments = await db.select()
+       |                             ^
+    27 |     .from(tournaments)
+    28 |     .where(eq(tournaments.courseId, courseId))
+    29 |     .orderBy(asc(tournaments.dateStart)); {
+    length: 115,
+    severity: 'ERROR',
+    code: '42703',
+    detail: undefined,
+    hint: undefined,
+    position: '138',
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: 'parse_relation.c',
+    line: '3716',
+    routine: 'errorMissingColumn'
+  }
+}
+ GET /tournaments/3027 200 in 898ms (compile: 353ms, proxy.ts: 152ms, render: 394ms)
+ GET /tournaments/3027 200 in 330ms (compile: 25ms, proxy.ts: 10ms, render: 295ms)
+ GET /courses/9237 200 in 915ms (compile: 353ms, proxy.ts: 20ms, render: 542ms)
+ GET /courses/9237 200 in 366ms (compile: 6ms, proxy.ts: 10ms, render: 350ms)
+⨯ Error: Failed query: select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_id", "course_address", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."course_id" = $1 order by "tournaments"."date_start" asc
+params: 9237
+    at async CourseDetailPage (src/app/courses/[id]/page.tsx:26:29)
+  24 |
+  25 |   // Fetch upcoming tournaments at this course natively!
+> 26 |   const hostedTournaments = await db.select()
+     |                             ^
+  27 |     .from(tournaments)
+  28 |     .where(eq(tournaments.courseId, courseId))
+  29 |     .orderBy(asc(tournaments.dateStart)); {
+  query: 'select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_id", "course_address", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."course_id" = $1 order by "tournaments"."date_start" asc',
+  params: [Array],
+  digest: '4071382420',
+  [cause]: error: column "course_address" does not exist
+      at async CourseDetailPage (src/app/courses/[id]/page.tsx:26:29)
+    24 |
+    25 |   // Fetch upcoming tournaments at this course natively!
+  > 26 |   const hostedTournaments = await db.select()
+       |                             ^
+    27 |     .from(tournaments)
+    28 |     .where(eq(tournaments.courseId, courseId))
+    29 |     .orderBy(asc(tournaments.dateStart)); {
+    length: 115,
+    severity: 'ERROR',
+    code: '42703',
+    detail: undefined,
+    hint: undefined,
+    position: '138',
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: 'parse_relation.c',
+    line: '3716',
+    routine: 'errorMissingColumn'
+  }
+}
+ GET /courses/9237 200 in 436ms (compile: 3ms, proxy.ts: 28ms, render: 405ms)
+⨯ Error: Failed query: select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_id", "course_address", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."id" = $1
+params: 3027
+    at async TournamentGatewayPage (src/app/tournaments/[id]/page.tsx:19:26)
+  17 |   }
+  18 |
+> 19 |   const tournamentList = await db.select().from(tournaments).where(eq(tournaments.id, tournamentId));
+     |                          ^
+  20 |   const tournament = tournamentList[0];
+  21 |
+  22 |   if (!tournament) { {
+  query: 'select "id", "name", "source_url", "source_id", "source", "date_start", "date_end", "registration_deadline", "course_name", "course_id", "course_address", "course_city", "course_state", "course_zip", "latitude", "longitude", "format", "format_detail", "holes", "entry_fee", "original_price", "pass_fees_to_registrant", "allow_offline_payment", "host_user_id", "max_players", "spots_remaining", "handicap_max", "is_charity", "accepts_donations", "charity_name", "is_private", "organizer_name", "organizer_email", "organizer_phone", "registration_url", "description", "includes", "schedule", "prizes", "sponsors", "extraction_confidence", "extracted_at", "hero_images", "theme_color", "secondary_theme_color", "created_at", "updated_at", "last_verified_at", "is_active" from "tournaments" where "tournaments"."id" = $1',
+  params: [Array],
+  digest: '1251340765',
+  [cause]: error: column "course_address" does not exist
+      at async TournamentGatewayPage (src/app/tournaments/[id]/page.tsx:19:26)
+    17 |   }
+    18 |
+  > 19 |   const tournamentList = await db.select().from(tournaments).where(eq(tournaments.id, tournamentId));
+       |                          ^
+    20 |   const tournament = tournamentList[0];
+    21 |
+    22 |   if (!tournament) { {
+    length: 115,
+    severity: 'ERROR',
+    code: '42703',
+    detail: undefined,
+    hint: undefined,
+    position: '138',
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: 'parse_relation.c',
+    line: '3716',
+    routine: 'errorMissingColumn'
+  }
+}
+ GET /tournaments/3027 200 in 351ms (compile: 34ms, proxy.ts: 5ms, render: 312ms)
+ GET /tournaments 200 in 992ms (compile: 166ms, proxy.ts: 21ms, render: 805ms)
+ GET /tournaments 200 in 1005ms (compile: 106ms, proxy.ts: 25ms, render: 873ms)
+ GET /tournaments 200 in 1057ms (compile: 154ms, proxy.ts: 23ms, render: 880ms)
+ GET /tournaments 200 in 1042ms (compile: 42ms, proxy.ts: 159ms, render: 841ms)
+ GET /tournaments 200 in 145ms (compile: 3ms, proxy.ts: 29ms, render: 112ms)
+ GET /tournaments 200 in 1138ms (compile: 173ms, proxy.ts: 20ms, render: 945ms)
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+✓ Compiled in 83ms
+ GET /courses/9237 200 in 759ms (compile: 40ms, proxy.ts: 30ms, render: 689ms)
+ GET /tournaments/3027 200 in 1224ms (compile: 311ms, proxy.ts: 47ms, render: 866ms)
+ GET /courses 200 in 116ms (compile: 13ms, proxy.ts: 67ms, render: 36ms)
+ GET /api/courses/search?q= 200 in 616ms (compile: 78ms, proxy.ts: 21ms, render: 517ms)
+ GET /api/courses/search?q=sea%20mountain 200 in 370ms (compile: 5ms, proxy.ts: 13ms, render: 352ms)
+ GET /courses/19 200 in 216ms (compile: 22ms, proxy.ts: 12ms, render: 182ms)
+ POST /courses/19 200 in 918ms (compile: 25ms, proxy.ts: 574ms, render: 320ms)
+ GET /profile 200 in 1109ms (compile: 678ms, proxy.ts: 58ms, render: 373ms)
+ GET /profile 200 in 940ms (compile: 14ms, proxy.ts: 71ms, render: 856ms)
+ GET /tournaments 200 in 722ms (compile: 25ms, proxy.ts: 28ms, render: 669ms)
+ GET /tournaments 200 in 898ms (compile: 9ms, proxy.ts: 19ms, render: 871ms)
+ GET /tournaments/3349 200 in 910ms (compile: 98ms, proxy.ts: 387ms, render: 425ms)
+ GET /tournaments 200 in 628ms (compile: 89ms, proxy.ts: 28ms, render: 511ms)
+✓ Compiled in 272ms
+ GET /tournaments/3027 200 in 380ms (compile: 25ms, proxy.ts: 29ms, render: 326ms)
+ GET /tournaments 200 in 507ms (compile: 31ms, proxy.ts: 87ms, render: 389ms)
+ GET /tournaments 200 in 787ms (compile: 148ms, proxy.ts: 74ms, render: 566ms)
+ GET /tournaments 200 in 816ms (compile: 95ms, proxy.ts: 90ms, render: 631ms)
+ GET /profile 200 in 1507ms (compile: 254ms, proxy.ts: 489ms, render: 764ms)
