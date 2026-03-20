@@ -1,0 +1,115 @@
+
+> tourneylinks-web@0.1.0 dev
+> next dev
+
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.4.22:3000
+- Environments: .env.local
+
+✓ Starting...
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+✓ Ready in 903ms
+ GET /tournaments/3027 200 in 2.7s (compile: 1818ms, proxy.ts: 9ms, render: 911ms)
+ GET /tournaments 200 in 1556ms (compile: 405ms, proxy.ts: 16ms, render: 1135ms)
+ GET /host 200 in 527ms (compile: 460ms, proxy.ts: 11ms, render: 55ms)
+ GET /courses 200 in 370ms (compile: 325ms, proxy.ts: 18ms, render: 26ms)
+ GET /api/courses/search?q= 200 in 587ms (compile: 276ms, proxy.ts: 6ms, render: 304ms)
+Error: Route "/courses/[id]" used `params.id`. `params` is a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at CourseDetailPage (src/app/courses/[id]/page.tsx:13:36)
+  11 |
+  12 | export default async function CourseDetailPage({ params }: { params: { id: string } }) {
+> 13 |   const courseId = parseInt(params.id);
+     |                                    ^
+  14 |   if (isNaN(courseId)) notFound();
+  15 |
+  16 |   const courseRows = await db.select().from(courses).where(eq(courses.id, courseId)).limit(1);
+ GET /courses/4 200 in 698ms (compile: 635ms, proxy.ts: 17ms, render: 45ms)
+ GET /api/courses/search?q= 200 in 420ms (compile: 7ms, proxy.ts: 15ms, render: 398ms)
+Error: Route "/courses/[id]" used `params.id`. `params` is a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at CourseDetailPage (src/app/courses/[id]/page.tsx:13:36)
+  11 |
+  12 | export default async function CourseDetailPage({ params }: { params: { id: string } }) {
+> 13 |   const courseId = parseInt(params.id);
+     |                                    ^
+  14 |   if (isNaN(courseId)) notFound();
+  15 |
+  16 |   const courseRows = await db.select().from(courses).where(eq(courses.id, courseId)).limit(1);
+ GET /courses/4 200 in 591ms (compile: 26ms, proxy.ts: 518ms, render: 48ms)
+ GET /api/courses/search?q= 200 in 774ms (compile: 6ms, proxy.ts: 15ms, render: 753ms)
+✓ Compiled in 105ms
+ GET /host 200 in 158ms (compile: 37ms, proxy.ts: 16ms, render: 105ms)
+ GET /courses 200 in 168ms (compile: 13ms, proxy.ts: 21ms, render: 134ms)
+ GET /tournaments/3027 200 in 714ms (compile: 87ms, proxy.ts: 16ms, render: 611ms)
+ GET /tournaments 200 in 1047ms (compile: 50ms, proxy.ts: 19ms, render: 978ms)
+ GET /api/courses/search?q=victor 200 in 1304ms (compile: 8ms, proxy.ts: 510ms, render: 785ms)
+ GET /courses/11134 200 in 261ms (compile: 112ms, proxy.ts: 14ms, render: 135ms)
+ GET /courses/11134 200 in 452ms (compile: 12ms, proxy.ts: 11ms, render: 429ms)
+ GET /courses/11134 200 in 186ms (compile: 16ms, proxy.ts: 56ms, render: 113ms)
+ GET /host 200 in 35ms (compile: 9ms, proxy.ts: 12ms, render: 13ms)
+ GET /courses 200 in 45ms (compile: 10ms, proxy.ts: 19ms, render: 16ms)
+ GET /api/courses/search?q= 200 in 274ms (compile: 2ms, proxy.ts: 8ms, render: 264ms)
+ GET /api/courses/search?q= 200 in 283ms (compile: 8ms, proxy.ts: 11ms, render: 264ms)
+ GET /api/courses/search?q= 200 in 212ms (compile: 6ms, proxy.ts: 14ms, render: 192ms)
+ GET /api/courses/search?q=bi 200 in 163ms (compile: 6ms, proxy.ts: 12ms, render: 144ms)
+ GET /api/courses/search?q= 200 in 201ms (compile: 3ms, proxy.ts: 14ms, render: 184ms)
+ GET /api/courses/search?q=vicgto 200 in 215ms (compile: 4ms, proxy.ts: 9ms, render: 202ms)
+ GET /api/courses/search?q=victor%20hills 200 in 217ms (compile: 5ms, proxy.ts: 11ms, render: 201ms)
+ GET /courses/11134 200 in 93ms (compile: 12ms, proxy.ts: 13ms, render: 68ms)
+ GET /host 200 in 59ms (compile: 19ms, proxy.ts: 21ms, render: 19ms)
+✓ Compiled in 79ms
+ GET /host 200 in 109ms (compile: 7ms, proxy.ts: 12ms, render: 89ms)
+ GET /host 200 in 38ms (compile: 6ms, proxy.ts: 9ms, render: 24ms)
+ GET /tournaments/3027 200 in 557ms (compile: 48ms, proxy.ts: 18ms, render: 492ms)
+ GET /tournaments 200 in 714ms (compile: 24ms, proxy.ts: 13ms, render: 677ms)
+ GET /courses 200 in 75ms (compile: 19ms, proxy.ts: 33ms, render: 23ms)
+ GET /api/courses/search?q= 200 in 310ms (compile: 4ms, proxy.ts: 6ms, render: 300ms)
+✓ Compiled in 202ms
+ GET /api/courses/search?q=victor%20hills 200 in 982ms (compile: 13ms, proxy.ts: 534ms, render: 435ms)
+ GET /courses/11134 200 in 236ms (compile: 108ms, proxy.ts: 6ms, render: 123ms)
+ GET /courses/11134 200 in 197ms (compile: 7ms, proxy.ts: 8ms, render: 182ms)
+ GET /courses/11134 200 in 102ms (compile: 8ms, proxy.ts: 10ms, render: 84ms)
+ GET /courses 200 in 23ms (compile: 5ms, proxy.ts: 7ms, render: 11ms)
+ GET /api/courses/search?q= 200 in 279ms (compile: 3ms, proxy.ts: 9ms, render: 267ms)
+ GET /api/courses/search?q=victor%20hills 200 in 200ms (compile: 4ms, proxy.ts: 8ms, render: 188ms)
+ GET /courses/11134 200 in 113ms (compile: 10ms, proxy.ts: 13ms, render: 90ms)
+ GET /host?courseId=11134&courseName=Victor+Hills+Country+Club&courseCity=Victor&courseState=NY&courseZip=14564-9344 200 in 158ms (compile: 95ms, proxy.ts: 21ms, render: 43ms)
+✓ Compiled in 121ms
+ GET /host 200 in 307ms (compile: 24ms, proxy.ts: 23ms, render: 260ms)
+ GET /courses/11134 200 in 511ms (compile: 156ms, proxy.ts: 39ms, render: 316ms)
+ GET /tournaments/3027 200 in 704ms (compile: 206ms, proxy.ts: 34ms, render: 463ms)
+ GET /tournaments 200 in 749ms (compile: 44ms, proxy.ts: 30ms, render: 676ms)
+ GET /courses 200 in 54ms (compile: 8ms, proxy.ts: 29ms, render: 17ms)
+ GET /api/courses/search?q= 200 in 471ms (compile: 4ms, proxy.ts: 7ms, render: 460ms)
+✓ Compiled in 93ms
+ GET /host 200 in 738ms (compile: 5ms, proxy.ts: 350ms, render: 383ms)
+ GET /courses 200 in 754ms (compile: 8ms, proxy.ts: 389ms, render: 357ms)
+ GET /host 200 in 372ms (compile: 156ms, proxy.ts: 26ms, render: 190ms)
+ GET /courses 200 in 227ms (compile: 4ms, proxy.ts: 168ms, render: 56ms)
+ GET /host 200 in 71ms (compile: 2ms, proxy.ts: 21ms, render: 47ms)
+ GET /courses 200 in 39ms (compile: 5ms, proxy.ts: 18ms, render: 16ms)
+ GET /tournaments/3027 200 in 1192ms (compile: 278ms, proxy.ts: 369ms, render: 545ms)
+ GET /tournaments/3027 200 in 546ms (compile: 7ms, proxy.ts: 17ms, render: 522ms)
+ GET /tournaments/3027 200 in 487ms (compile: 7ms, proxy.ts: 25ms, render: 455ms)
+ GET /tournaments 200 in 634ms (compile: 3ms, proxy.ts: 7ms, render: 624ms)
+ GET /tournaments 200 in 1437ms (compile: 102ms, proxy.ts: 365ms, render: 969ms)
+ GET /tournaments 200 in 729ms (compile: 5ms, proxy.ts: 7ms, render: 717ms)
+✓ Compiled in 73ms
+ GET /host 200 in 115ms (compile: 22ms, proxy.ts: 33ms, render: 61ms)
+ GET /courses 200 in 120ms (compile: 9ms, proxy.ts: 33ms, render: 79ms)
+ GET /tournaments/3027 200 in 314ms (compile: 49ms, proxy.ts: 32ms, render: 233ms)
+ GET /tournaments 200 in 271ms (compile: 2ms, proxy.ts: 6ms, render: 263ms)
+ GET /api/courses/search?q=victor 200 in 821ms (compile: 121ms, proxy.ts: 47ms, render: 653ms)
+ GET /api/courses/search?q=victor%20hills 200 in 216ms (compile: 4ms, proxy.ts: 10ms, render: 202ms)
+ GET /courses/11134 200 in 320ms (compile: 186ms, proxy.ts: 11ms, render: 124ms)
+ GET /courses/11134 200 in 412ms (compile: 15ms, proxy.ts: 18ms, render: 379ms)
+ GET /courses 200 in 37ms (compile: 8ms, proxy.ts: 12ms, render: 17ms)
+ GET /api/courses/search?q= 200 in 309ms (compile: 10ms, proxy.ts: 11ms, render: 288ms)
+ GET /api/courses/search?q=victor%20hills 200 in 200ms (compile: 3ms, proxy.ts: 7ms, render: 190ms)
+ GET /courses/11134 200 in 99ms (compile: 15ms, proxy.ts: 14ms, render: 69ms)
+✓ Compiled in 251ms
+ GET /host 200 in 594ms (compile: 47ms, proxy.ts: 65ms, render: 482ms)
+ GET /courses/11134 200 in 853ms (compile: 425ms, proxy.ts: 101ms, render: 328ms)
+ GET /tournaments/3027 200 in 1092ms (compile: 473ms, proxy.ts: 70ms, render: 549ms)
+ GET /tournaments 200 in 1160ms (compile: 228ms, proxy.ts: 62ms, render: 871ms)
+ GET /courses/11134 200 in 909ms (compile: 22ms, proxy.ts: 471ms, render: 415ms)

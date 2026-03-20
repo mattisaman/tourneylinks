@@ -14,6 +14,18 @@ export default function HostWizard() {
   const [course, setCourse] = useState('');
   const [city, setCity] = useState('');
   const [desc, setDesc] = useState('');
+
+  // Hydrate form from incoming Directory URL parameters
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const p = new URLSearchParams(window.location.search);
+      if (p.get('courseName')) setCourse(p.get('courseName') || '');
+      const ct = p.get('courseCity');
+      const st = p.get('courseState');
+      if (ct && st) setCity(`${ct}, ${st}`);
+      else if (ct) setCity(ct);
+    }
+  }, []);
   const [price, setPrice] = useState(125);
   const [maxPlayers, setMaxPlayers] = useState(80);
   const [holes, setHoles] = useState('18 Holes');

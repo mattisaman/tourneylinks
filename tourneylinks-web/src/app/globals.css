@@ -49,10 +49,25 @@ body {
   max-width: 100%;
 }
 
+/* ========== FLUID CONTAINER ========== */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
 /* ========== ANIMATIONS ========== */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slow-gold-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201,168,76,0), inset 0 0 0 1px rgba(255,255,255,0.05); }
+  50% { box-shadow: 0 0 40px 0 rgba(201,168,76,0.15), inset 0 0 0 1px rgba(201,168,76,0.6); }
+}
+.animated-gold-border {
+  animation: slow-gold-pulse 5s ease-in-out infinite;
 }
 @keyframes shimmer {
   0% { background-position: -200% center; }
@@ -193,7 +208,7 @@ nav {
   display: inline-block;
   white-space: nowrap;
   position: relative;
-  overflow: visible;
+  overflow: hidden;
   z-index: 1;
 }
 

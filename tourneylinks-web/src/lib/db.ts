@@ -15,6 +15,7 @@ export const courses = pgTable('courses', {
   
   website: text('website'),
   phone: text('phone'),
+  email: text('email'),
   type: text('type'), // Public, Private, Semi-Private, Resort, Municipal
   holes: integer('holes').default(18),
   par: integer('par').default(72),
