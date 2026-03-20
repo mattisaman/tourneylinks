@@ -25,9 +25,14 @@ export default function Navbar() {
       <div className="site-header">
         <nav>
           <Link className="nav-logo" href="/">
-            <img src="/logo_horizontal.png" alt="TourneyLinks Logo" style={{ width: '240px', height: 'auto', objectFit: 'contain', mixBlendMode: 'lighten', margin: '4px 0 0 0' }} />
+            <img src="/logo_horizontal_transparent.png" alt="TourneyLinks Logo" style={{ width: '240px', height: 'auto', objectFit: 'contain', margin: '4px 0 0 0' }} />
           </Link>
         <div className="nav-actions">
+          {/* Mobile Hamburg Toggle */}
+          <button className="md:hidden" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} style={{ background: 'none', border: 'none', color: 'var(--gold)', cursor: 'pointer', marginRight: '0.75rem', display: 'flex', alignItems: 'center' }}>
+            {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+          </button>
+          
           <Link href="/support" className="btn-ghost" style={{ marginRight: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
              <HelpCircle size={15} /> Support
           </Link>
@@ -47,11 +52,6 @@ export default function Navbar() {
               />
             </>
           )}
-          
-          {/* Mobile Hamburg Toggle */}
-          <button className="md:hidden" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} style={{ background: 'none', border: 'none', color: 'var(--gold)', cursor: 'pointer', marginLeft: '0.5rem', display: 'flex', alignItems: 'center' }}>
-            {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
-          </button>
         </div>
       </nav>
 

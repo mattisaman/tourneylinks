@@ -9,7 +9,7 @@ export default function Footer() {
           <div>
             <div className="footer-brand-name">
               <Link href="/system/login">
-                <img src="/logo.png" alt="TourneyLinks Logo" style={{ height: '96px', objectFit: 'contain', marginBottom: '0.75rem', mixBlendMode: 'lighten', marginLeft: '-15px' }} />
+                <img src="/logo_transparent.png" alt="TourneyLinks Logo" style={{ height: '96px', objectFit: 'contain', marginBottom: '0.75rem', marginLeft: '-15px' }} />
               </Link>
             </div>
               The premier platform for golf tournament discovery, registration, and management. Built for players, loved by organizers.

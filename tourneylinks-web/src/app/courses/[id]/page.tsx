@@ -1,217 +1,117 @@
 import React from 'react';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
 import { db, courses } from '@/lib/db';
 import { eq } from 'drizzle-orm';
-import MissingCourseLinkWidget from '@/components/courses/MissingCourseLinkWidget';
+import { notFound } from 'next/navigation';
+import Navbar from '@/components/ui/Navbar';
+import Footer from '@/components/ui/Footer';
+import Link from 'next/link';
+import { MapPin, Phone, Globe, ChevronLeft, Map, Flag } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
-export default async function CoursePage(props: { params: Promise<{ id: string }> | { id: string } }) {
-  const rawParams = await props.params;
-  const courseId = parseInt(rawParams.id, 10);
+export default async function CourseDetailPage({ params }: { params: { id: string } }) {
+  const courseId = parseInt(params.id);
+  if (isNaN(courseId)) notFound();
 
-  if (isNaN(courseId)) {
-    notFound();
-  }
-
-  const courseRows = await db.select().from(courses).where(eq(courses.id, courseId));
+  const courseRows = await db.select().from(courses).where(eq(courses.id, courseId)).limit(1);
   const course = courseRows[0];
 
-  if (!course) {
-    notFound();
-  }
-
-  // Attempt to parse RapidAPI JSON
-  let apiData: any = null;
-  if (course.rawMetadata && course.rawMetadata.trim().startsWith('{')) {
-    try {
-      apiData = JSON.parse(course.rawMetadata);
-    } catch (e) {
-      console.error('Failed to parse rawMetadata JSON for course', courseId);
-    }
-  }
-
-  const scorecard = apiData?.scorecard || [];
-  const teeBoxes = apiData?.teeBoxes || [];
+  if (!course) notFound();
 
   return (
-    <div style={{ background: 'var(--white)', minHeight: '100vh', paddingBottom: '4rem' }}>
-      
-      {/* Header / Hero */}
-      <div style={{ 
-        background: 'linear-gradient(to right, #1a2e1a, #2d4a2d)', 
-        color: '#fff', 
-        padding: '5rem 3rem 3rem 3rem',
-        position: 'relative'
-      }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <Link href="/courses" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.9rem', marginBottom: '1rem', display: 'inline-block' }}>
-            ← Back to Directory
-          </Link>
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1rem' }}>
-            <span style={{ background: 'var(--gold)', color: '#fff', padding: '0.2rem 0.6rem', fontSize: '0.75rem', fontWeight: 600, borderRadius: '4px' }}>
-              {course.type || 'GOLF FACILITY'}
-            </span>
-            {apiData ? (
-              <span style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', padding: '0.2rem 0.6rem', fontSize: '0.75rem', borderRadius: '4px' }}>
-                ✨ Verified Data
-              </span>
-            ) : null}
-          </div>
-          <h1 style={{ fontSize: '3.5rem', fontFamily: 'Playfair Display, serif', fontWeight: 700, margin: '0 0 0.5rem 0', lineHeight: 1.1 }}>
-            {course.name}
-          </h1>
-          <div style={{ fontSize: '1.2rem', color: 'rgba(255,255,255,0.8)', display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-            <span>📍 {course.city}, {course.state}</span>
-            <span>⛳ {course.holes || (apiData?.holes) || '18'} Holes</span>
-            <span>{course.par ? `Par ${course.par}` : ''}</span>
-          </div>
-        </div>
-      </div>
+    <div style={{ background: '#fafaf5', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <Navbar />
 
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '3rem', display: 'grid', gridTemplateColumns: 'minmax(300px, 350px) 1fr', gap: '3rem', alignItems: 'start' }}>
-        
-        {/* Left Sidebar Info */}
-        <div style={{ background: '#fff', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', padding: '2rem', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
-          <h3 style={{ fontSize: '1.2rem', color: 'var(--forest)', marginBottom: '1.5rem', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '0.75rem' }}>Course Details</h3>
+      <div style={{ flex: 1, paddingTop: '100px', paddingBottom: '6rem' }}>
+        <div className="container" style={{ maxWidth: '900px', margin: '0 auto' }}>
           
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-            <div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--mist)', marginBottom: '0.25rem' }}>Address</div>
-              <div style={{ fontWeight: 500 }}>{course.address || (apiData?.address)}</div>
-              <div style={{ color: 'var(--mist)', fontSize: '0.9rem' }}>{course.city}, {course.state} {course.zip || apiData?.zip}</div>
-            </div>
+          <Link href="/courses" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', color: 'var(--mist)', textDecoration: 'none', fontSize: '0.9rem', marginBottom: '2rem', transition: 'color 0.2s' }}>
+            <ChevronLeft size={16} /> Back to Directory
+          </Link>
 
-            <div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--mist)', marginBottom: '0.25rem' }}>Contact</div>
-              <div style={{ fontWeight: 500 }}>{course.phone || (apiData?.phone) || 'N/A'}</div>
-              
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
-                {course.website || apiData?.website ? (
-                  <a href={course.website || apiData?.website} target="_blank" rel="noreferrer" className="btn-primary" style={{ marginTop: '0.5rem', display: 'block', textAlign: 'center', padding: '0.8rem', fontSize: '0.9rem', width: '100%', boxShadow: 'none' }}>
-                    Visit Official Website ↗
-                  </a>
-                ) : (
-                  <>
-                    <a href={`https://www.google.com/search?q=${encodeURIComponent(`${course.name} ${course.state} golf course`)}`} target="_blank" rel="noreferrer" style={{ color: 'var(--forest)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.25rem', fontWeight: 500 }}>
-                      🔍 Search on Google ↗
-                    </a>
-                    
-                    <div style={{ background: 'rgba(26,46,26,0.03)', padding: '0.75rem', borderRadius: '4px', border: '1px solid rgba(26,46,26,0.08)', marginTop: '0.5rem' }}>
-                      <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--forest)', marginBottom: '0.25rem' }}>Is this your course?</div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--mist)', marginBottom: '0.5rem' }}>Help us maintain accurate data. Do you know the official website URL?</div>
-                      <MissingCourseLinkWidget courseId={course.id} courseName={course.name} />
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-
-            {teeBoxes.length > 0 && (
-              <div style={{ marginTop: '1rem' }}>
-                <div style={{ fontSize: '0.8rem', color: 'var(--mist)', marginBottom: '0.5rem' }}>Tee Box Difficulty Index</div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  {teeBoxes.map((tee: any, i: number) => (
-                    <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem', background: 'rgba(0,0,0,0.02)', borderRadius: '4px', fontSize: '0.85rem' }}>
-                      <span style={{ fontWeight: 600 }}>{tee.tee} Tees</span>
-                      <span style={{ color: 'var(--mist)' }}>Slope {tee.slope || '--'} / Ratio {tee.handicap || '--'}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Right Content */}
-        <div>
-          {scorecard.length > 0 ? (
-            <div>
-              <h2 style={{ fontSize: '2rem', color: 'var(--forest)', fontFamily: 'Playfair Display, serif', marginBottom: '1.5rem' }}>Course Scorecard Matrix</h2>
-              
-              <div style={{ width: '100%', overflowX: 'auto', background: '#fff', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center', minWidth: '800px' }}>
-                  <thead>
-                    <tr>
-                      <th style={{ padding: '1rem', background: 'rgba(26,46,26,0.03)', borderBottom: '2px solid rgba(26,46,26,0.1)', ...holeLabelStyle }}>HOLE</th>
-                      {scorecard.map((h: any) => (
-                        <th key={h.Hole} style={{ padding: '1rem 0.5rem', background: 'rgba(26,46,26,0.03)', borderBottom: '2px solid rgba(26,46,26,0.1)', color: 'var(--forest)', fontWeight: 700 }}>
-                          {h.Hole}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {/* Par Row */}
-                    <tr>
-                      <td style={rowLabelStyle}>Par</td>
-                      {scorecard.map((h: any) => (
-                        <td key={h.Hole} style={cellStyle}>{h.Par || '-'}</td>
-                      ))}
-                    </tr>
-                    
-                    {/* Handicap Row */}
-                    <tr>
-                      <td style={rowLabelStyle}>HCP</td>
-                      {scorecard.map((h: any) => (
-                        <td key={h.Hole} style={cellStyle}>{h.Handicap || '-'}</td>
-                      ))}
-                    </tr>
-
-                    {/* Yardage Rows (Extracted from nested tees) */}
-                    {Object.keys(scorecard[0]?.tees || {}).map((teeKey) => {
-                       const teeColor = scorecard[0].tees[teeKey].color;
-                       return (
-                         <tr key={teeKey}>
-                           <td style={rowLabelStyle}>{teeColor} Yds</td>
-                           {scorecard.map((h: any) => (
-                             <td key={h.Hole} style={cellStyle}>{h.tees?.[teeKey]?.yards || '-'}</td>
-                           ))}
-                         </tr>
-                       );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          ) : (
-             <div style={{ padding: '4rem 2rem', textAlign: 'center', background: 'rgba(26,46,26,0.02)', borderRadius: 'var(--radius-lg)', border: '1px dashed rgba(26,46,26,0.1)' }}>
-               <span style={{ fontSize: '2rem', display: 'block', marginBottom: '1rem' }}>⛳</span>
-               <h3 style={{ fontSize: '1.2rem', color: 'var(--forest)', marginBottom: '0.5rem' }}>Detailed course layout unavailable</h3>
-               <p style={{ color: 'var(--mist)' }}>This course has not yet been enriched with hole-by-hole analytics.</p>
+          {/* Hero Premium Card */}
+          <div style={{ background: 'white', borderRadius: '16px', border: '1px solid rgba(26,46,26,0.08)', overflow: 'hidden', boxShadow: '0 12px 30px rgba(0,0,0,0.03)' }}>
+             <div style={{ background: 'linear-gradient(135deg, var(--forest) 0%, #153928 100%)', height: '160px', position: 'relative' }}>
+                <div style={{ position: 'absolute', inset: 0, opacity: 0.1, backgroundImage: 'radial-gradient(circle at 100% 0%, var(--gold) 0%, transparent 60%)' }} />
              </div>
-          )}
-        </div>
+             
+             <div style={{ padding: '2.5rem', marginTop: '-60px', position: 'relative', zIndex: 10 }}>
+                <span style={{ background: 'var(--gold)', color: 'var(--white)', padding: '0.4rem 1rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', boxShadow: '0 4px 12px rgba(201,168,76,0.3)', display: 'inline-block', marginBottom: '1rem' }}>
+                   {course.type || 'Public Course'}
+                </span>
+                
+                <h1 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontFamily: "'Clash Display', sans-serif", fontWeight: 600, color: 'var(--forest)', marginBottom: '0.5rem', lineHeight: 1.1 }}>
+                  {course.name}
+                </h1>
+                
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--mist)', fontSize: '1rem', marginBottom: '2rem' }}>
+                  <MapPin size={18} />
+                  <span>{course.city}, {course.state} {course.zip}</span>
+                </div>
 
+                {/* KPI Grid */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem', marginBottom: '3rem' }}>
+                  <div style={{ background: '#f8fdfa', border: '1px solid rgba(26,46,26,0.05)', padding: '1.25rem', borderRadius: '12px' }}>
+                     <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--mist)', marginBottom: '0.4rem' }}>Holes</div>
+                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600, color: 'var(--forest)', fontSize: '1.5rem' }}>
+                       <Flag size={20} color="var(--gold)" />
+                       {course.holes || '18'}
+                     </div>
+                  </div>
+                  <div style={{ background: '#f8fdfa', border: '1px solid rgba(26,46,26,0.05)', padding: '1.25rem', borderRadius: '12px' }}>
+                     <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--mist)', marginBottom: '0.4rem' }}>Par</div>
+                     <div style={{ fontWeight: 600, color: 'var(--forest)', fontSize: '1.5rem' }}>
+                       {course.par || '72'}
+                     </div>
+                  </div>
+                  <div style={{ background: '#f8fdfa', border: '1px solid rgba(26,46,26,0.05)', padding: '1.25rem', borderRadius: '12px' }}>
+                     <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--mist)', marginBottom: '0.4rem' }}>Architect</div>
+                     <div style={{ fontWeight: 600, color: 'var(--forest)', fontSize: '1.1rem' }}>
+                       {course.architect || 'Unknown'}
+                     </div>
+                  </div>
+                </div>
+
+                {/* Contact Banner */}
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', alignItems: 'center', padding: '1.5rem', background: '#fafaf5', borderRadius: '12px', border: '1px solid rgba(26,46,26,0.05)' }}>
+                   {course.phone && (
+                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--forest)', fontWeight: 500 }}>
+                        <Phone size={18} color="var(--gold)" />
+                        {course.phone}
+                     </div>
+                   )}
+                   {course.website && (
+                     <a href={course.website} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--forest)', fontWeight: 500, textDecoration: 'none' }}>
+                        <Globe size={18} color="var(--gold)" />
+                        Visit Official Website
+                     </a>
+                   )}
+                   {course.address && (
+                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--forest)', fontWeight: 500 }}>
+                        <Map size={18} color="var(--gold)" />
+                        {course.address}
+                     </div>
+                   )}
+                </div>
+
+             </div>
+
+             {/* Action Bar */}
+             <div style={{ background: 'var(--forest)', padding: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+                <div style={{ color: 'var(--white)' }}>
+                   <h3 style={{ fontSize: '1.25rem', marginBottom: '0.2rem', fontWeight: 600 }}>Host a Tournament Here</h3>
+                   <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', margin: 0 }}>Register and manage your next event at this venue.</p>
+                </div>
+                <Link href="/host" className="btn-primary" style={{ background: 'var(--gold)', color: 'var(--white)', border: 'none', padding: '0.8rem 2rem' }}>
+                   Plan Event Setup
+                </Link>
+             </div>
+          </div>
+
+        </div>
       </div>
+      
+      <Footer />
     </div>
   );
 }
-
-const holeLabelStyle: React.CSSProperties = {
-  textAlign: 'left',
-  fontWeight: 700,
-  color: 'var(--forest)',
-  textTransform: 'uppercase',
-  fontSize: '0.85rem',
-  letterSpacing: '1px'
-};
-
-const rowLabelStyle: React.CSSProperties = {
-  padding: '1rem',
-  textAlign: 'left',
-  fontWeight: 600,
-  color: 'var(--mist)',
-  borderBottom: '1px solid rgba(0,0,0,0.05)',
-  borderRight: '1px solid rgba(0,0,0,0.05)',
-  fontSize: '0.9rem'
-};
-
-const cellStyle: React.CSSProperties = {
-  padding: '1rem 0.5rem',
-  borderBottom: '1px solid rgba(0,0,0,0.05)',
-  borderRight: '1px solid rgba(0,0,0,0.02)',
-  fontSize: '0.9rem',
-  color: '#333'
-};

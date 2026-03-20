@@ -137,6 +137,7 @@ export default async function AdminDashboard() {
                     <button className="btn-primary" style={{ padding: '0.4rem 0.75rem', fontSize: '0.8rem' }}>Export CSV</button>
                   </div>
                 </div>
+                <div style={{ overflowX: 'auto', width: '100%', WebkitOverflowScrolling: 'touch' }}>
                 <table className="registrant-table">
                   <thead>
                     <tr>
@@ -174,6 +175,7 @@ export default async function AdminDashboard() {
                     )}
                   </tbody>
                 </table>
+                </div>
               </div>
 
               {/* Private Link Panel */}

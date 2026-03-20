@@ -224,20 +224,26 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
         display: 'flex', flexDirection: 'column', gap: '1rem'
       }}>
          {/* Top Row: Primary Search & Actions */}
-         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
-               <div className="wfield" style={{ flex: 2, marginBottom: 0 }}>
-                  <input type="text" placeholder="Search by event name, details, or swag..." value={keyword} onChange={e => setKeyword(e.target.value)} style={{ padding: '0.75rem 1rem', background: '#f4f7f5', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px' }}/>
+         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 1 100%', flexWrap: 'wrap' }}>
+               <div className="wfield" style={{ flex: '1 1 300px', marginBottom: 0 }}>
+                  <input type="text" placeholder="Search by event name, details, or swag..." value={keyword} onChange={e => setKeyword(e.target.value)} style={{ padding: '0.75rem 1rem', background: '#f4f7f5', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', width: '100%' }}/>
                </div>
-               <div className="wfield" style={{ flex: 1, marginBottom: 0 }}>
-                 <select value={courseFilter} onChange={e => setCourseFilter(e.target.value)} style={{ padding: '0.75rem 1rem', background: '#f4f7f5', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px' }}>
-                   <option value="All">All Courses</option>
-                   {uniqueCourses.map(c => <option key={c} value={c}>{c}</option>)}
-                 </select>
+               <div className="wfield" style={{ flex: '1 1 200px', marginBottom: 0 }}>
+                 <input 
+                   list="course-list" 
+                   placeholder="All Courses" 
+                   value={courseFilter === 'All' ? '' : courseFilter}
+                   onChange={e => setCourseFilter(e.target.value || 'All')}
+                   style={{ padding: '0.75rem 1rem', background: '#f4f7f5', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', width: '100%' }}
+                 />
+                 <datalist id="course-list">
+                   {uniqueCourses.map(c => <option key={c} value={c} />)}
+                 </datalist>
                </div>
-               <div className="wfield" style={{ flex: 1, marginBottom: 0, display: 'flex', gap: '0.5rem' }}>
-                 <input type="text" placeholder="Zip or City" value={zipCode} onChange={e => setZipCode(e.target.value)} style={{ padding: '0.75rem 1rem', background: '#f4f7f5', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px' }}/>
-                 <select value={radius} onChange={e => setRadius(Number(e.target.value))} style={{ padding: '0.75rem 1rem', background: '#f4f7f5', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', width: 'auto' }}>
+               <div className="wfield" style={{ flex: '1 1 200px', marginBottom: 0, display: 'flex', gap: '0.5rem' }}>
+                 <input type="text" placeholder="Zip or City" value={zipCode} onChange={e => setZipCode(e.target.value)} style={{ padding: '0.75rem 1rem', background: '#f4f7f5', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', flex: 1, minWidth: '80px' }}/>
+                 <select value={radius} onChange={e => setRadius(Number(e.target.value))} style={{ padding: '0.75rem 1rem', background: '#f4f7f5', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', width: '90px' }}>
                    <option value={5}>5 mi</option>
                    <option value={20}>20 mi</option>
                    <option value={50}>50 mi</option>
@@ -305,7 +311,7 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
                <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--forest)', padding: '0.4rem 1rem', background: 'rgba(26,46,26,0.06)', borderRadius: '6px' }}>
                   {filteredTournaments.length} Matches Found
                </span>
-               <button onClick={handleApplyFilters} className="btn-primary" style={{ padding: '0.4rem 1.2rem', fontSize: '0.8rem', borderRadius: '6px' }}>Apply DB Sync</button>
+               <button onClick={handleApplyFilters} className="btn-primary" style={{ padding: '0.4rem 1.2rem', fontSize: '0.8rem', borderRadius: '6px' }}>Apply Filters</button>
                <button onClick={handleClearFilters} style={{ background: 'none', border: 'none', color: '#f44336', fontSize: '0.8rem', cursor: 'pointer', padding: '0.4rem 0.5rem', fontWeight: 600 }}>Clear</button>
              </div>
          </div>
