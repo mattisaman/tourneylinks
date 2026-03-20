@@ -63,6 +63,15 @@ export default async function TournamentGatewayPage({ params }: { params: Promis
     }
   }
 
+  let parsedSchedule: {time: string, event: string}[] | null = null;
+  if (tournament.schedule) {
+    try {
+      parsedSchedule = typeof tournament.schedule === 'string' ? JSON.parse(tournament.schedule) : tournament.schedule;
+    } catch (e) {
+      console.error("Failed to parse schedule", e);
+    }
+  }
+
   return (
     <>
       <HeroCarousel 
@@ -266,29 +275,39 @@ export default async function TournamentGatewayPage({ params }: { params: Promis
                   </div>
                 </div>
 
-                {/* 2. Schedule of Events (Demo) */}
+                {/* 2. Schedule of Events */}
                 <div className="mobile-pad" style={{ background: '#fff', padding: '3rem', borderRadius: '24px', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 15px 40px rgba(0,0,0,0.02)' }}>
                   <h2 style={{ fontSize: '1.8rem', marginBottom: '2rem', color: 'var(--forest)', fontWeight: 800, fontFamily: "'Playfair Display', serif" }}>Tournament Schedule</h2>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', position: 'relative' }}>
                     <div className="nav-accent-line" style={{ position: 'absolute', left: '2rem', top: '1rem', bottom: '1rem', width: '2px', height: 'auto', opacity: 0.6 }}></div>
                     
-                    {[
-                      { time: '8:00 AM', title: 'Registration & Breakfast', icon: '☕' },
-                      { time: '9:00 AM', title: 'Driving Range Opens', icon: '🏌️' },
-                      { time: '10:00 AM', title: 'Shotgun Start', icon: '⛳' },
-                      { time: '3:00 PM', title: 'Cocktail Hour & Networking', icon: '🍸' },
-                      { time: '4:30 PM', title: 'Dinner & Awards Reception', icon: '🏆' },
-                    ].map((item, idx) => (
+                    {(parsedSchedule || [
+                      { time: '8:00 AM', event: 'Registration & Breakfast' },
+                      { time: '10:00 AM', event: 'Shotgun Start' },
+                      { time: '4:30 PM', event: 'Dinner & Awards Reception' },
+                    ]).map((item: any, idx: number) => {
+                      
+                      // Auto-resolve icons based on keywords
+                      let icon = '🕒';
+                      const lowerEvent = (item.event || '').toLowerCase();
+                      if (lowerEvent.includes('golf') || lowerEvent.includes('shotgun') || lowerEvent.includes('tee')) icon = '⛳';
+                      else if (lowerEvent.includes('dinner') || lowerEvent.includes('lunch') || lowerEvent.includes('breakfast') || lowerEvent.includes('food')) icon = '🍽️';
+                      else if (lowerEvent.includes('award') || lowerEvent.includes('prize') || lowerEvent.includes('ceremony')) icon = '🏆';
+                      else if (lowerEvent.includes('drink') || lowerEvent.includes('cocktail') || lowerEvent.includes('bar')) icon = '🍸';
+                      else if (lowerEvent.includes('registration') || lowerEvent.includes('check-in') || lowerEvent.includes('sign')) icon = '📋';
+
+                      return (
                       <div key={idx} style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start', position: 'relative', zIndex: 1 }}>
                         <div style={{ width: '4rem', height: '4rem', background: '#fff', border: '2px solid var(--gold)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.8rem', flexShrink: 0 }}>
-                          {item.icon}
+                          {item.icon || icon}
                         </div>
                         <div style={{ paddingTop: '0.8rem' }}>
                           <div style={{ fontSize: '1rem', color: 'var(--mist)', fontWeight: 700, fontFamily: "'DM Mono', monospace", marginBottom: '0.2rem' }}>{item.time}</div>
-                          <div style={{ fontSize: '1.25rem', color: 'var(--ink)', fontWeight: 700 }}>{item.title}</div>
+                          <div style={{ fontSize: '1.25rem', color: 'var(--ink)', fontWeight: 700 }}>{item.event}</div>
                         </div>
                       </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
 

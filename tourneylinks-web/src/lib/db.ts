@@ -78,6 +78,8 @@ export const tournaments = pgTable('tournaments', {
   registrationUrl: text('registration_url'),
   description: text('description'),
   includes: text('includes'),
+  schedule: text('schedule'), // Stored structurally as JSON string array [{time: string, event: string}]
+  prizes: text('prizes'), // Stored structurally as JSON string array ["1st Place: $500", "Long Drive: Scotty Cameron Putter"]
 
   extractionConfidence: real('extraction_confidence').default(0),
   extractedAt: text('extracted_at'),
