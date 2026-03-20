@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation';
 import StripeCheckoutButton from './StripeCheckoutButton';
 import Link from 'next/link';
 import HeroCarousel from './HeroCarousel';
+import ContactHostModal from './ContactHostModal';
 
 export default async function TournamentGatewayPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
@@ -86,13 +87,6 @@ export default async function TournamentGatewayPage({ params }: { params: Promis
                 grid-template-columns: 1fr;
               }
             }
-            .back-link {
-              display: inline-flex; align-items: center; gap: 0.5rem;
-              color: var(--mist); font-size: 0.85rem; font-weight: 700;
-              text-transform: uppercase; letter-spacing: 1px; text-decoration: none;
-              margin-bottom: 0.5rem; transition: color 0.2s; margin-left: 0.5rem;
-            }
-            .back-link:hover { color: var(--gold); }
           `}} />
 
           <div className="t-layout-grid">
@@ -100,8 +94,8 @@ export default async function TournamentGatewayPage({ params }: { params: Promis
             {/* ---------------- 3 PREMIUM CTAS (STICKY LEFT SIDEBAR) ---------------- */}
             <div style={{ position: 'sticky', top: '120px', display: 'flex', flexDirection: 'column', gap: '1.5rem', zIndex: 11 }}>
 
-              <Link href="/tournaments" className="back-link">
-                <span style={{ fontSize: '1.2rem', lineHeight: 1 }}>←</span> Back to Tournaments
+              <Link href="/tournaments" className="btn-hero-outline" style={{ width: 'fit-content', padding: '0.6rem 1.2rem', fontSize: '0.85rem', marginBottom: '0.5rem', marginLeft: '0.5rem' }}>
+                <span style={{ fontSize: '1.1rem', lineHeight: 1 }}>←</span> Back to Tournaments
               </Link>
               
               {/* CTA 1: REGISTER NOW */}
@@ -212,7 +206,7 @@ export default async function TournamentGatewayPage({ params }: { params: Promis
                     </div>
                     <div>
                       {hostUser.email && (
-                        <a href={`mailto:${hostUser.email}`} style={{ padding: '0.8rem 1.5rem', borderRadius: '8px', border: '1px solid var(--gold)', color: 'var(--gold)', fontWeight: 700, textDecoration: 'none', transition: 'all 0.2s', display: 'inline-block' }}>Contact Host</a>
+                        <ContactHostModal tournamentId={tournament.id} />
                       )}
                     </div>
                   </div>
