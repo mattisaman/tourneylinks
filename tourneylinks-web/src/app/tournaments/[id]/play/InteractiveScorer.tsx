@@ -14,6 +14,9 @@ type ScoreMeta = {
   registrationId: number;
   holeNumber: number;
   grossScore: number;
+  putts?: number;
+  fir?: boolean;
+  gir?: boolean;
 };
 
 export default function InteractiveScorer({ 
@@ -38,6 +41,10 @@ export default function InteractiveScorer({
   
   // Active Hole Score State
   const [currentHoleScore, setCurrentHoleScore] = useState<number>(4);
+  const [currentPutts, setCurrentPutts] = useState<number>(2);
+  const [currentFIR, setCurrentFIR] = useState<boolean>(false);
+  const [currentGIR, setCurrentGIR] = useState<boolean>(false);
+  const [holePar, setHolePar] = useState<number>(4);
   const [saving, setSaving] = useState<boolean>(false);
 
   // Phase 7: Haversine GPS State
@@ -64,15 +71,21 @@ export default function InteractiveScorer({
               // Find my team's specific score for the Active Hole from DB
               const myHoleScore = scoresData.find(s => s.registrationId === myTeam.id && s.holeNumber === currentHole);
               setCurrentHoleScore(myHoleScore ? myHoleScore.grossScore : 4);
+              setCurrentPutts(myHoleScore?.putts ?? 2);
+              setCurrentFIR(myHoleScore?.fir ?? false);
+              setCurrentGIR(myHoleScore?.gir ?? false);
 
               // Pull physical Pin location from PostgreSQL Database
               if (courseRes.ok) {
                  const cData = await courseRes.json();
                  const holeLayout = cData.find((h: any) => h.holeNumber === currentHole);
-                 if (holeLayout && holeLayout.pinLat && holeLayout.pinLng) {
-                     setPinTarget({ lat: holeLayout.pinLat, lng: holeLayout.pinLng });
-                 } else {
-                     setGpsStatus('UNMAPPED TARGET');
+                 if (holeLayout) {
+                     setHolePar(holeLayout.par || 4);
+                     if (holeLayout.pinLat && holeLayout.pinLng) {
+                         setPinTarget({ lat: holeLayout.pinLat, lng: holeLayout.pinLng });
+                     } else {
+                         setGpsStatus('UNMAPPED TARGET');
+                     }
                  }
               }
 
@@ -145,11 +158,8 @@ export default function InteractiveScorer({
      return () => navigator.geolocation.clearWatch(watchId);
   }, [pinTarget]);
 
-  const updateScore = async (delta: number) => {
+  const saveInteraction = async (newScore: number, newPutts: number, newFIR: boolean, newGIR: boolean) => {
      if (!activeTeam) return;
-     const newScore = Math.max(1, currentHoleScore + delta); // minimum score is 1
-     setCurrentHoleScore(newScore);
-
      setSaving(true);
      try {
        await fetch(`/api/tournaments/${tournamentId}/scores`, {
@@ -158,13 +168,12 @@ export default function InteractiveScorer({
          body: JSON.stringify({
             registrationId: activeTeam.id,
             holeNumber: currentHole,
-            grossScore: newScore
+            grossScore: newScore,
+            putts: newPutts,
+            fir: newFIR,
+            gir: newGIR
          })
        });
-       // Instantly pseudo-update the local HUD math!
-       setRelativePar(prev => prev + delta);
-       setTotalStrokes(prev => prev + delta);
-       
        // Force sibling layouts (Traditional Grid) to autonomously re-sync visual calculations
        window.dispatchEvent(new CustomEvent('scoreSaved'));
      } catch (err) {
@@ -173,6 +182,32 @@ export default function InteractiveScorer({
        setSaving(false);
      }
   };
+
+  const updateScore = (delta: number) => {
+      const newScore = Math.max(1, currentHoleScore + delta);
+      setCurrentHoleScore(newScore);
+      setRelativePar(prev => prev + delta);
+      setTotalStrokes(prev => prev + delta);
+      saveInteraction(newScore, currentPutts, currentFIR, currentGIR);
+  };
+
+  const toggleFIR = () => {
+      const nw = !currentFIR;
+      setCurrentFIR(nw);
+      saveInteraction(currentHoleScore, currentPutts, nw, currentGIR);
+  }
+  
+  const toggleGIR = () => {
+      const nw = !currentGIR;
+      setCurrentGIR(nw);
+      saveInteraction(currentHoleScore, currentPutts, currentFIR, nw);
+  }
+  
+  const updatePutts = (delta: number) => {
+      const nw = Math.max(0, currentPutts + delta);
+      setCurrentPutts(nw);
+      saveInteraction(currentHoleScore, nw, currentFIR, currentGIR);
+  }
 
   const handleNextHole = () => {
       let next = currentHole + 1;
@@ -251,9 +286,36 @@ export default function InteractiveScorer({
                 >
                   +
                 </button>
+              </div>
+           </div>
+
+           {/* ADVANCED STATS INTERFACE */}
+           <div style={{ marginTop: '0.5rem', paddingTop: '1.25rem', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+             
+             {/* Putts */}
+             <div style={{ background: 'rgba(0,0,0,0.3)', padding: '0.75rem', borderRadius: '8px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+                 <div style={{ fontSize: '0.65rem', color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Putts</div>
+                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                     <button onClick={() => updatePutts(-1)} style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>-</button>
+                     <div style={{ fontSize: '1.2rem', fontWeight: 800 }}>{currentPutts}</div>
+                     <button onClick={() => updatePutts(1)} style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+                 </div>
              </div>
-          </div>
-       </div>
+
+             {/* FIR / GIR */}
+             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                 {holePar > 3 && (
+                     <button onClick={toggleFIR} style={{ flex: 1, background: currentFIR ? 'rgba(78,201,160,0.1)' : 'rgba(0,0,0,0.3)', border: currentFIR ? '1px solid #4ec9a0' : '1px solid rgba(255,255,255,0.05)', color: currentFIR ? '#4ec9a0' : 'var(--mist)', borderRadius: '8px', padding: '0.5rem', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                         {currentFIR ? '✓ Fairway Hit' : 'Fairway Hit?'}
+                     </button>
+                 )}
+                 <button onClick={toggleGIR} style={{ flex: 1, background: currentGIR ? 'rgba(78,201,160,0.1)' : 'rgba(0,0,0,0.3)', border: currentGIR ? '1px solid #4ec9a0' : '1px solid rgba(255,255,255,0.05)', color: currentGIR ? '#4ec9a0' : 'var(--mist)', borderRadius: '8px', padding: '0.5rem', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s', textTransform: 'uppercase', letterSpacing: '0.05em', height: holePar <= 3 ? '100%' : 'auto' }}>
+                     {currentGIR ? '✓ Green in Reg' : 'Green in Reg?'}
+                 </button>
+             </div>
+           </div>
+
+        </div>
 
        <div style={{ textAlign: 'center', marginTop: '1rem' }}>
            <button onClick={handleNextHole} style={{ background: 'var(--gold)', color: '#05120c', border: 'none', padding: '1rem 3rem', borderRadius: '30px', fontWeight: 800, letterSpacing: '0.1em', cursor: 'pointer', fontSize: '1rem', textTransform: 'uppercase' }}>

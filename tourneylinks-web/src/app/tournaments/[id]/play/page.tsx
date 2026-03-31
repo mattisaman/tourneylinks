@@ -102,7 +102,7 @@ export default async function LiveScoringApp({ params, searchParams }: { params:
       </div>
 
       {/* FIXED BOTTOM NAVIGATION */}
-      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, height: '80px', background: 'rgba(5, 18, 12, 0.95)', backdropFilter: 'blur(10px)', borderTop: '1px solid rgba(255,255,255,0.1)', display: 'grid', gridTemplateColumns: '1fr 1fr', paddingBottom: '20px' }}>
+      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, height: '80px', background: 'rgba(5, 18, 12, 0.95)', backdropFilter: 'blur(10px)', borderTop: '1px solid rgba(255,255,255,0.1)', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', paddingBottom: '20px' }}>
          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderTop: '3px solid var(--gold)', marginTop: '-1px' }}>
             <div style={{ fontSize: '1.5rem', marginBottom: '0.2rem' }}>📝</div>
             <div style={{ color: 'var(--gold)', textAlign: 'center', fontSize: '0.75rem', fontWeight: 800 }}>Score</div>
@@ -110,6 +110,10 @@ export default async function LiveScoringApp({ params, searchParams }: { params:
          <Link href={`/tournaments/${tourneyId}/play/leaderboard?hole=${currentHole}`} prefetch={true} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textDecoration: 'none' }}>
             <div style={{ fontSize: '1.5rem', marginBottom: '0.2rem' }}>🏆</div>
             <div style={{ color: 'var(--mist)', textAlign: 'center', fontSize: '0.75rem', fontWeight: 600 }}>Leaderboard</div>
+         </Link>
+         <Link href={`/tournaments/${tourneyId}/play/stats?hole=${currentHole}`} prefetch={true} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textDecoration: 'none' }}>
+            <div style={{ fontSize: '1.5rem', marginBottom: '0.2rem' }}>📊</div>
+            <div style={{ color: 'var(--mist)', textAlign: 'center', fontSize: '0.75rem', fontWeight: 600 }}>Stats</div>
          </Link>
       </div>
 

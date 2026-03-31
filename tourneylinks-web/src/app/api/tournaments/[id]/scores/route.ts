@@ -9,7 +9,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     if (isNaN(tournamentId)) return NextResponse.json({ error: 'Invalid config' }, { status: 400 });
 
     const body = await req.json();
-    const { registrationId, holeNumber, grossScore } = body;
+    const { registrationId, holeNumber, grossScore, putts, gir, fir } = body;
     let { tournamentRoundId } = body;
 
     // Failsafe: If no Round ID was passed from the client, find the first round for this tournament
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     if (existing.length > 0) {
         // Update existing score
         const updated = await db.update(player_scores)
-          .set({ grossScore, updatedAt: new Date() })
+          .set({ grossScore, putts, gir, fir, updatedAt: new Date() })
           .where(eq(player_scores.id, existing[0].id))
           .returning();
         return NextResponse.json({ success: true, score: updated[0] });
@@ -55,7 +55,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
             registrationId,
             tournamentRoundId,
             holeNumber,
-            grossScore
+            grossScore,
+            putts,
+            gir,
+            fir
         }).returning();
         return NextResponse.json({ success: true, score: inserted[0] });
     }

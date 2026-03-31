@@ -60,7 +60,7 @@ async function extractFromWebsite(url: string) {
     `;
 
     const response = await ai.models.generateContent({
-      model: 'gemini-pro',
+      model: 'gemini-1.5-flash',
       contents: prompt,
     });
 

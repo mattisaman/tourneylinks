@@ -67,7 +67,7 @@ export default function ComparePage() {
     },
     {
       name: 'Printable Scorecards & Signs',
-      tl: 'Coming Soon',
+      tl: 'Yes (Dynamic)',
       gg: 'Yes',
       ec: 'Printed',
       gp: 'Printed',
@@ -75,7 +75,7 @@ export default function ComparePage() {
     },
     {
       name: 'Live QR Code Onboarding',
-      tl: 'Coming Soon',
+      tl: 'Yes (Instant)',
       gg: 'No',
       ec: 'Manual',
       gp: 'Manual',
@@ -83,7 +83,7 @@ export default function ComparePage() {
     },
     {
       name: 'Sponsor & Hole Integration',
-      tl: 'Coming Soon',
+      tl: 'Yes (Native Checkout)',
       gg: 'Yes',
       ec: 'Yes',
       gp: 'Yes',
@@ -107,7 +107,7 @@ export default function ComparePage() {
     },
     {
       name: 'Multi-Round / Multi-Course',
-      tl: 'Coming Soon',
+      tl: 'Yes (PGA Rotations)',
       gg: 'Yes',
       ec: 'No',
       gp: 'Yes',

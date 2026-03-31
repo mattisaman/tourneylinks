@@ -358,6 +358,12 @@ export const player_scores = pgTable('player_scores', {
   holeNumber: integer('hole_number').notNull(), // 1 through 18
   grossScore: integer('gross_score').notNull(),
   netScore: integer('net_score'), // Calculated dynamically or stored after format applied
+
+  // Phase 2: Detailed Analytics
+  putts: integer('putts'),
+  gir: boolean('gir').default(false), // Green in Regulation
+  fir: boolean('fir').default(false), // Fairway in Regulation
+  
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
