@@ -1,5 +1,6 @@
 import React from 'react';
-import { db, tournaments, registrations, player_scores } from '@/lib/db';
+import { db, tournaments, registrations, player_scores, tournament_rounds, course_holes } from '@/lib/db';
+import { FormatEngine } from '@/lib/scoring-engine';
 import { eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
@@ -37,34 +38,25 @@ export default async function MobileLeaderboardPage({
       return { id: p.id, name: teamName, handicap: p.handicap || 0 };
   });
 
-  // 2) Fetch massive dump of all Scores
-  const scores = await db.select().from(player_scores); // Realistically we'd filter by round, but we don't know the round ID yet
+  // 2) Fetch Course Architecture to power the Format Engine
+  const holesData = await db.select().from(course_holes).where(eq(course_holes.courseId, tournament.courseId!));
 
-  // 3) Perform Arithmetic
-  const leaderboard = mappedPlayers.map(p => {
-    const pScores = scores.filter(s => s.registrationId === p.id);
-    const totalStrokes = pScores.reduce((sum, current) => sum + current.grossScore, 0);
-    const holesPlayed = pScores.length;
+  // 3) Fetch the active Round format
+  const roundData = await db.select().from(tournament_rounds).where(eq(tournament_rounds.tournamentId, tourneyId)).limit(1);
+  const activeFormat = roundData.length > 0 ? roundData[0].scoringFormat : 'STROKE_GROSS';
 
-    // Relative to Par (assuming Par 4 everywhere for demo)
-    const relativePar = holesPlayed > 0 ? totalStrokes - (holesPlayed * 4) : 0;
-    
-    let displayScore = holesPlayed === 0 ? 'E' : relativePar > 0 ? `+${relativePar}` : relativePar === 0 ? 'E' : `${relativePar}`;
+  // 4) Fetch massive dump of all Scores
+  const scores = await db.select().from(player_scores);
 
-    return {
-       ...p,
-       totalStrokes,
-       holesPlayed,
-       relativePar,
-       displayScore
-    };
-  }).sort((a, b) => {
-     // Sort by lowest relative par, and then most holes played
-     if (a.relativePar === b.relativePar) {
-         return b.holesPlayed - a.holesPlayed; 
-     }
-     return a.relativePar - b.relativePar;
-  });
+  // 5) Hydrate and Ignite the 30+ Scoring Formats Engine
+  const engine = new FormatEngine(
+      activeFormat,
+      holesData as any,
+      mappedPlayers as any,
+      scores as any
+  );
+
+  const leaderboard = engine.computeLeaderboard();
 
   return (
     <div style={{ background: '#05120c', minHeight: '100vh', color: 'white', fontFamily: 'sans-serif', paddingBottom: '90px' }}>
@@ -82,7 +74,7 @@ export default async function MobileLeaderboardPage({
            {leaderboard.length === 0 ? (
                <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--mist)' }}>Awaiting Scores...</div>
            ) : leaderboard.map((player, index) => (
-             <div key={player.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', background: index === 0 ? 'rgba(201,168,76,0.1)' : 'rgba(255,255,255,0.03)', border: index === 0 ? '1px solid var(--gold)' : '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', alignItems: 'center' }}>
+             <div key={player.registrationId} style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', background: index === 0 ? 'rgba(201,168,76,0.1)' : 'rgba(255,255,255,0.03)', border: index === 0 ? '1px solid var(--gold)' : '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <div style={{ width: '25px', fontSize: '1.2rem', fontWeight: 900, color: index === 0 ? 'var(--gold)' : 'var(--mist)', textAlign: 'right' }}>{index + 1}</div>
                     <div>
@@ -91,7 +83,7 @@ export default async function MobileLeaderboardPage({
                     </div>
                 </div>
                 
-                <div style={{ fontSize: '1.5rem', fontWeight: 900, color: player.relativePar < 0 ? '#ff4d4f' : player.relativePar > 0 ? 'var(--mist)' : 'white' }}>
+                <div style={{ fontSize: '1.5rem', fontWeight: 900, color: player.displayScore.startsWith('+') ? '#ff4d4f' : player.displayScore === 'E' || player.displayScore === '--' ? 'white' : 'var(--mist)' }}>
                    {player.displayScore}
                 </div>
              </div>

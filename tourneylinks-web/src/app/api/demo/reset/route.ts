@@ -40,9 +40,8 @@ export async function POST() {
      const courseOut = await db.insert(courses).values({
         name: 'Pebble Beach Golf Links',
         city: 'Pebble Beach',
-        stateCode: 'CA',
-        zipCode: '93953',
-        description: 'A 5-Star pristine Demo Scramble ready for testing exactly how the system behaves.',
+        state: 'CA',
+        zip: '93953',
         holes: 18,
      }).returning({ id: courses.id });
      const courseId = courseOut[0].id;
@@ -63,6 +62,12 @@ export async function POST() {
         courseId,
         hostUserId: hostId,
         name: 'The Lighthouse Charity Scramble',
+        sourceUrl: 'https://demo.tourneylinks.com',
+        sourceId: 'demo-tgt-01',
+        source: 'demo',
+        courseName: 'Pebble Beach Golf Links',
+        courseCity: 'Pebble Beach',
+        courseState: 'CA',
         dateStart: new Date(new Date().getTime() + (7 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0],
         entryFee: 150,
         originalPrice: 200,

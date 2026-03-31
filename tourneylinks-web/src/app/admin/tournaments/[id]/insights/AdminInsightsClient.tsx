@@ -65,7 +65,7 @@ export default function AdminInsightsClient({ tournamentId, tourneyName }: { tou
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" vertical={false} />
                     <XAxis dataKey="holeNumber" stroke="rgba(255,255,255,0.5)" tick={{fill: 'var(--mist)'}} />
                     <YAxis stroke="rgba(255,255,255,0.5)" tick={{fill: 'var(--mist)'}} />
-                    <Tooltip cursor={{fill: 'rgba(255,255,255,0.05)'}} contentStyle={{ backgroundColor: '#05120c', border: '1px solid var(--gold)', borderRadius: '8px', color: 'white' }} formatter={(value: number) => [value > 0 ? `+${value.toFixed(2)}` : value.toFixed(2), "Avg to Par"]} />
+                    <Tooltip cursor={{fill: 'rgba(255,255,255,0.05)'}} contentStyle={{ backgroundColor: '#05120c', border: '1px solid var(--gold)', borderRadius: '8px', color: 'white' }} formatter={(value: any) => [value > 0 ? `+${value.toFixed(2)}` : value.toFixed(2), "Avg to Par"]} />
                     <Bar dataKey="avgToPar" radius={[4, 4, 0, 0]}>
                        {
                          data.holeDifficulties.map((entry: any, index: number) => (

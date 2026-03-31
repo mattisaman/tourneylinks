@@ -16,7 +16,7 @@ export default async function CampaignBuilderPage({ params }: { params: Promise<
 
   const tourney = tRow[0];
 
-  const cRow = await db.select().from(courses).where(eq(courses.id, tourney.courseId)).limit(1);
+  const cRow = await db.select().from(courses).where(eq(courses.id, tourney.courseId || -1)).limit(1);
   const course = cRow[0] || { name: 'Unknown Course' };
 
   // Fetch all related entities for the Editor

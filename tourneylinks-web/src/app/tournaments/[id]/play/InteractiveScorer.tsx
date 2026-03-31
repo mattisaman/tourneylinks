@@ -37,7 +37,7 @@ export default function InteractiveScorer({
   const [totalStrokes, setTotalStrokes] = useState(0);
   const [holesPlayed, setHolesPlayed] = useState(0);
   const [currentRank, setCurrentRank] = useState<string>('T-1st');
-  const [relativePar, setRelativePar] = useState<number>(0);
+  const [displayScore, setDisplayScore] = useState<string>('E');
   
   // Active Hole Score State
   const [currentHoleScore, setCurrentHoleScore] = useState<number>(4);
@@ -55,14 +55,16 @@ export default function InteractiveScorer({
   useEffect(() => {
      const fetchData = async () => {
         try {
-           const [playersRes, scoresRes, courseRes] = await Promise.all([
+           const [playersRes, scoresRes, courseRes, leaderboardRes] = await Promise.all([
              fetch(`/api/admin/tournaments/${tournamentId}/registrants`),
              fetch(`/api/tournaments/${tournamentId}/scores`),
-             fetch(`/api/courses/${courseId}`)
+             fetch(`/api/courses/${courseId}`),
+             fetch(`/api/tournaments/${tournamentId}/leaderboard`)
            ]);
            
            const playersData: PlayerConfig[] = await playersRes.json();
            const scoresData: ScoreMeta[] = await scoresRes.json();
+           const leaderboardData = leaderboardRes.ok ? await leaderboardRes.json() : null;
 
            if (playersData.length > 0) {
               const myTeam = playersData[0]; // Simulating "Team Woods" phone
@@ -89,28 +91,22 @@ export default function InteractiveScorer({
                  }
               }
 
-              // Calculate All Leaderboard Stats to find Rank
-              const leaderboardMath = playersData.map(p => {
-                 const pScores = scoresData.filter(s => s.registrationId === p.id);
-                 const strokes = pScores.reduce((sum, s) => sum + s.grossScore, 0);
-                 const pPlayed = pScores.length;
-                 const pRelPar = pPlayed > 0 ? strokes - (pPlayed * 4) : 0;
-                 return { id: p.id, pRelPar, strokes, pPlayed };
-              }).sort((a, b) => a.pRelPar - b.pRelPar);
-
-              // Determine My HUD Stats
-              const myStats = leaderboardMath.find(l => l.id === myTeam.id);
-              if (myStats) {
-                 setTotalStrokes(myStats.strokes);
-                 setHolesPlayed(myStats.pPlayed);
-                 setRelativePar(myStats.pRelPar);
-                 
-                 // Rank Logic
-                 const rankIndex = leaderboardMath.findIndex(l => l.pRelPar === myStats.pRelPar);
-                 const tiedCount = leaderboardMath.filter(l => l.pRelPar === myStats.pRelPar).length;
-                 const rank = rankIndex + 1;
-                 
-                 setCurrentRank(tiedCount > 1 ? `T-${rank}` : `${rank}`);
+              // Pull live telemetry from the multi-format FormatEngine Backend
+              if (leaderboardData && leaderboardData.leaderboard) {
+                 const lbRaw = leaderboardData.leaderboard;
+                 const myStats = lbRaw.find((l: any) => l.registrationId === myTeam.id);
+                 if (myStats) {
+                     setTotalStrokes(myStats.totalStrokes);
+                     setHolesPlayed(myStats.holesPlayed);
+                     setDisplayScore(myStats.displayScore);
+                     
+                     // Rank Logic 
+                     const rankIndex = lbRaw.findIndex((l: any) => l.sortValue === myStats.sortValue);
+                     const tiedCount = lbRaw.filter((l: any) => l.sortValue === myStats.sortValue).length;
+                     const rank = rankIndex + 1;
+                     
+                     setCurrentRank(tiedCount > 1 ? `T-${rank}` : `${rank}`);
+                 }
               }
            }
         } catch (err) {}
@@ -186,7 +182,6 @@ export default function InteractiveScorer({
   const updateScore = (delta: number) => {
       const newScore = Math.max(1, currentHoleScore + delta);
       setCurrentHoleScore(newScore);
-      setRelativePar(prev => prev + delta);
       setTotalStrokes(prev => prev + delta);
       saveInteraction(newScore, currentPutts, currentFIR, currentGIR);
   };
@@ -223,7 +218,6 @@ export default function InteractiveScorer({
       );
   }
 
-  const displayScore = holesPlayed === 0 ? 'E' : relativePar > 0 ? `+${relativePar}` : relativePar === 0 ? 'E' : `${relativePar}`;
 
   return (
     <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -235,6 +229,12 @@ export default function InteractiveScorer({
              <div>
                 <div style={{ fontWeight: 800, fontSize: '1.3rem', color: 'var(--cream)' }}>{activeTeam.firstName} {activeTeam.lastName}</div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Captain: HDCP {activeTeam.handicapIndex}</div>
+                <button 
+                  onClick={() => router.push(`/tournaments/${tournamentId}/play/watch?hole=${currentHole}`)}
+                  style={{ marginTop: '0.5rem', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '20px', padding: '0.25rem 0.75rem', color: 'var(--gold)', fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.05em', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
+                >
+                  ⌚ WATCH MODE
+                </button>
              </div>
              
              <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center' }}>
@@ -257,7 +257,7 @@ export default function InteractiveScorer({
              </div>
              <div style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: '0.65rem', color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Score</div>
-                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: relativePar < 0 ? '#ff4d4f' : relativePar > 0 ? 'var(--mist)' : 'white' }}>{displayScore}</div>
+                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: displayScore.startsWith('+') ? '#ff4d4f' : displayScore === 'E' || displayScore === '--' ? 'white' : 'var(--mist)' }}>{displayScore}</div>
              </div>
              <div style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: '0.65rem', color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Thru</div>
