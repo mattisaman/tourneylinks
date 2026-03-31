@@ -11,6 +11,11 @@ export default function Navbar() {
   const { userId } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // Instantly detach the Global Marketing Chrome if we are inside a Live Utility Route
+  if (pathname?.includes('/tv') || pathname?.includes('/play') || pathname?.includes('/print')) {
+    return null;
+  }
+
   return (
     <>
       <style dangerouslySetInnerHTML={{__html: `
@@ -29,7 +34,7 @@ export default function Navbar() {
           </Link>
         <div className="nav-actions">
           {/* Mobile Hamburg Toggle */}
-          <button className="md:hidden" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} style={{ background: 'none', border: 'none', color: 'var(--gold)', cursor: 'pointer', marginRight: '0.75rem', display: 'flex', alignItems: 'center' }}>
+          <button className="flex md:hidden items-center" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} style={{ background: 'none', border: 'none', color: 'var(--gold)', cursor: 'pointer', marginRight: '0.75rem' }}>
             {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
           
@@ -38,7 +43,7 @@ export default function Navbar() {
           </Link>
           {!userId ? (
             <SignInButton mode="modal">
-              <button className="btn-primary" style={{ cursor: 'pointer', fontFamily: "'DM Sans', sans-serif" }}>Get Started</button>
+              <button className="btn-primary" style={{ cursor: 'pointer', fontFamily: "'DM Sans', sans-serif" }}>Join the Club</button>
             </SignInButton>
           ) : (
             <>

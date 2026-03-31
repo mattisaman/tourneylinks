@@ -44,7 +44,7 @@ export default function CourseDirectory() {
              <input 
                className="search-input"
                type="text" 
-               placeholder="search by name, course, city, or zip" 
+               placeholder="search by name, city, state, or zip" 
                value={query}
                onChange={(e) => setQuery(e.target.value)}
                style={{ width: '100%', padding: '1.25rem 1.25rem 1.25rem 3.5rem', background: '#FDFBF7', border: '2px solid rgba(201,168,76,0.3)', borderRadius: '12px', fontSize: '1.1rem', color: 'var(--forest)', fontWeight: 600, outline: 'none', transition: 'all 0.2s', boxShadow: 'inset 0 2px 10px rgba(0,0,0,0.05)' }}

@@ -171,9 +171,7 @@ export async function POST(req: Request) {
 
         // FINALIZE: Compute Platform Ledger Math
         const amountTotalCents = session.amount_total || 0;
-        const applicationFeeAmountCents = session.payment_intent 
-          ? Math.round(amountTotalCents * 0.02) 
-          : 0;
+        const applicationFeeAmountCents = 0; // Phase 8: Hardcoded to 0% transparent Direct Charge bypassing TourneyLinks completely
 
         await db.insert(payments).values({
           registrationId,

@@ -1,6 +1,6 @@
 
 import Hero from "@/components/ui/Hero";
-import Tournaments from "@/components/ui/Tournaments";
+import ExplainerVideo from "@/components/ui/ExplainerVideo";
 import HomeFeatures from "@/components/ui/HomeFeatures";
 
 export const dynamic = 'force-dynamic';
@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       <Hero />
-      <Tournaments />
+      <ExplainerVideo />
       <HomeFeatures />
     </main>
   );

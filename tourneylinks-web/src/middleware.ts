@@ -9,6 +9,7 @@ const isPublicRoute = createRouteMatcher([
   '/verify(.*)',
   '/api/(.*)', 
   '/system/(.*)', // Custom founders Super Admin platform
+  '/compare(.*)', // Public marketing matrix
 ]);
 
 export default clerkMiddleware(async (auth, req) => {

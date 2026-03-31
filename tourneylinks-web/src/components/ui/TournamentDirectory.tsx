@@ -219,10 +219,10 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
         background: 'rgba(255, 255, 255, 0.98)', backdropFilter: 'blur(10px)',
         borderBottom: '1px solid rgba(212,175,55,0.4)',
         borderTop: '2px solid rgba(212,175,55,0.8)',
-        padding: '1.25rem 3rem',
-        boxShadow: '0 4px 30px rgba(0,0,0,0.06)',
-        display: 'flex', flexDirection: 'column', gap: '1rem'
+        padding: '1.25rem 0',
+        boxShadow: '0 4px 30px rgba(0,0,0,0.06)'
       }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 2rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
          {/* Top Row: Primary Search & Actions */}
          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', flexWrap: 'wrap' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 1 100%', flexWrap: 'wrap' }}>
@@ -315,11 +315,12 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
                <button onClick={handleClearFilters} style={{ background: 'none', border: 'none', color: '#f44336', fontSize: '0.8rem', cursor: 'pointer', padding: '0.4rem 0.5rem', fontWeight: 600 }}>Clear</button>
              </div>
          </div>
+        </div>
       </div>
 
-      {/* Main Results Grid (Full Width) */}
-      <div style={{ padding: '3rem', background: '#f8faf9', minHeight: '60vh' }}>
-          <div className="tournaments-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))' }}>
+      {/* Main Results Grid (1400px Width) */}
+      <div style={{ padding: '4rem 2rem', background: '#f8faf9', minHeight: '60vh' }}>
+          <div className="tournaments-grid" style={{ maxWidth: '1400px', margin: '0 auto', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2rem' }}>
             {filteredTournaments.map((t, i) => (
               <Link href={`/tournaments/${t.id}`} key={t.id} className="t-card" style={{ textDecoration: 'none' }}>
                 <div className="t-card-cover">

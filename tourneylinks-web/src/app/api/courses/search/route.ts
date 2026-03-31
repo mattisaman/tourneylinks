@@ -10,7 +10,11 @@ export async function GET(request: Request) {
   const offset = (page - 1) * limit;
 
   try {
-    const conditions = query ? or(ilike(courses.name, `%${query}%`), ilike(courses.city, `%${query}%`)) : undefined;
+    const conditions = query ? or(
+      ilike(courses.name, `%${query}%`), 
+      ilike(courses.city, `%${query}%`),
+      ilike(courses.state, `%${query}%`)
+    ) : undefined;
 
     const results = await db.select()
       .from(courses)

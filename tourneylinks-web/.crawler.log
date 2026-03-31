@@ -23832,3 +23832,1290 @@ DuckDuckGo Search Failed: TypeError: fetch failed
 🎯 TARGET: Muskeg Meadows Golf Course (Wrangell, AK)
 
 🔍 Searching DuckDuckGo for: Muskeg Meadows Golf Course Wrangell AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Albertville Golf & Country Club (Albertville, AL)
+
+🔍 Searching DuckDuckGo for: Albertville Golf & Country Club Albertville AL official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Willow Brook Golf Corp (Albertville, AL)
+
+🔍 Searching DuckDuckGo for: Willow Brook Golf Corp Albertville AL official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+⏳ Batch completed. Sleeping for 15 seconds to flush IP Cloudflare buffers...
+
+
+[System] Pulling Database Block...
+
+================================
+🎯 TARGET: Mendenhall Golf Course (Juneau, AK)
+
+🔍 Searching DuckDuckGo for: Mendenhall Golf Course Juneau AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Bear Valley Golf Course (Kodiak, AK)
+
+🔍 Searching DuckDuckGo for: Bear Valley Golf Course Kodiak AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Cottonwood Country Club (Nikiski, AK)
+
+🔍 Searching DuckDuckGo for: Cottonwood Country Club Nikiski AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Birch Ridge Golf Course Inc (Soldotna, AK)
+
+🔍 Searching DuckDuckGo for: Birch Ridge Golf Course Inc Soldotna AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Bird Homestead Golf Course (Soldotna, AK)
+
+🔍 Searching DuckDuckGo for: Bird Homestead Golf Course Soldotna AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Settlers Bay Golf Course (Wasilla, AK)
+
+🔍 Searching DuckDuckGo for: Settlers Bay Golf Course Wasilla AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Sleepy Hollow Golf Course (Wasilla, AK)
+
+🔍 Searching DuckDuckGo for: Sleepy Hollow Golf Course Wasilla AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Muskeg Meadows Golf Course (Wrangell, AK)
+
+🔍 Searching DuckDuckGo for: Muskeg Meadows Golf Course Wrangell AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Albertville Golf & Country Club (Albertville, AL)
+
+🔍 Searching DuckDuckGo for: Albertville Golf & Country Club Albertville AL official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Willow Brook Golf Corp (Albertville, AL)
+
+🔍 Searching DuckDuckGo for: Willow Brook Golf Corp Albertville AL official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+⏳ Batch completed. Sleeping for 15 seconds to flush IP Cloudflare buffers...
+
+
+[System] Pulling Database Block...
+
+================================
+🎯 TARGET: Mendenhall Golf Course (Juneau, AK)
+
+🔍 Searching DuckDuckGo for: Mendenhall Golf Course Juneau AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Bear Valley Golf Course (Kodiak, AK)
+
+🔍 Searching DuckDuckGo for: Bear Valley Golf Course Kodiak AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Cottonwood Country Club (Nikiski, AK)
+
+🔍 Searching DuckDuckGo for: Cottonwood Country Club Nikiski AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Birch Ridge Golf Course Inc (Soldotna, AK)
+
+🔍 Searching DuckDuckGo for: Birch Ridge Golf Course Inc Soldotna AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Bird Homestead Golf Course (Soldotna, AK)
+
+🔍 Searching DuckDuckGo for: Bird Homestead Golf Course Soldotna AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Settlers Bay Golf Course (Wasilla, AK)
+
+🔍 Searching DuckDuckGo for: Settlers Bay Golf Course Wasilla AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Sleepy Hollow Golf Course (Wasilla, AK)
+
+🔍 Searching DuckDuckGo for: Sleepy Hollow Golf Course Wasilla AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Muskeg Meadows Golf Course (Wrangell, AK)
+
+🔍 Searching DuckDuckGo for: Muskeg Meadows Golf Course Wrangell AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Albertville Golf & Country Club (Albertville, AL)
+
+🔍 Searching DuckDuckGo for: Albertville Golf & Country Club Albertville AL official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Willow Brook Golf Corp (Albertville, AL)
+
+🔍 Searching DuckDuckGo for: Willow Brook Golf Corp Albertville AL official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+⏳ Batch completed. Sleeping for 15 seconds to flush IP Cloudflare buffers...
+
+
+[System] Pulling Database Block...
+
+================================
+🎯 TARGET: Mendenhall Golf Course (Juneau, AK)
+
+🔍 Searching DuckDuckGo for: Mendenhall Golf Course Juneau AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Bear Valley Golf Course (Kodiak, AK)
+
+🔍 Searching DuckDuckGo for: Bear Valley Golf Course Kodiak AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Cottonwood Country Club (Nikiski, AK)
+
+🔍 Searching DuckDuckGo for: Cottonwood Country Club Nikiski AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Birch Ridge Golf Course Inc (Soldotna, AK)
+
+🔍 Searching DuckDuckGo for: Birch Ridge Golf Course Inc Soldotna AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Bird Homestead Golf Course (Soldotna, AK)
+
+🔍 Searching DuckDuckGo for: Bird Homestead Golf Course Soldotna AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Settlers Bay Golf Course (Wasilla, AK)
+
+🔍 Searching DuckDuckGo for: Settlers Bay Golf Course Wasilla AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Sleepy Hollow Golf Course (Wasilla, AK)
+
+🔍 Searching DuckDuckGo for: Sleepy Hollow Golf Course Wasilla AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Muskeg Meadows Golf Course (Wrangell, AK)
+
+🔍 Searching DuckDuckGo for: Muskeg Meadows Golf Course Wrangell AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Albertville Golf & Country Club (Albertville, AL)
+
+🔍 Searching DuckDuckGo for: Albertville Golf & Country Club Albertville AL official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Willow Brook Golf Corp (Albertville, AL)
+
+🔍 Searching DuckDuckGo for: Willow Brook Golf Corp Albertville AL official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+⏳ Batch completed. Sleeping for 15 seconds to flush IP Cloudflare buffers...
+
+
+[System] Pulling Database Block...
+
+================================
+🎯 TARGET: Mendenhall Golf Course (Juneau, AK)
+
+🔍 Searching DuckDuckGo for: Mendenhall Golf Course Juneau AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Bear Valley Golf Course (Kodiak, AK)
+
+🔍 Searching DuckDuckGo for: Bear Valley Golf Course Kodiak AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Cottonwood Country Club (Nikiski, AK)
+
+🔍 Searching DuckDuckGo for: Cottonwood Country Club Nikiski AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Birch Ridge Golf Course Inc (Soldotna, AK)
+
+🔍 Searching DuckDuckGo for: Birch Ridge Golf Course Inc Soldotna AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Bird Homestead Golf Course (Soldotna, AK)
+
+🔍 Searching DuckDuckGo for: Bird Homestead Golf Course Soldotna AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Settlers Bay Golf Course (Wasilla, AK)
+
+🔍 Searching DuckDuckGo for: Settlers Bay Golf Course Wasilla AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Sleepy Hollow Golf Course (Wasilla, AK)
+
+🔍 Searching DuckDuckGo for: Sleepy Hollow Golf Course Wasilla AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Muskeg Meadows Golf Course (Wrangell, AK)
+
+🔍 Searching DuckDuckGo for: Muskeg Meadows Golf Course Wrangell AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Albertville Golf & Country Club (Albertville, AL)
+
+🔍 Searching DuckDuckGo for: Albertville Golf & Country Club Albertville AL official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Willow Brook Golf Corp (Albertville, AL)
+
+🔍 Searching DuckDuckGo for: Willow Brook Golf Corp Albertville AL official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+⏳ Batch completed. Sleeping for 15 seconds to flush IP Cloudflare buffers...
+
+
+[System] Pulling Database Block...
+
+================================
+🎯 TARGET: Mendenhall Golf Course (Juneau, AK)
+
+🔍 Searching DuckDuckGo for: Mendenhall Golf Course Juneau AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Bear Valley Golf Course (Kodiak, AK)
+
+🔍 Searching DuckDuckGo for: Bear Valley Golf Course Kodiak AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Cottonwood Country Club (Nikiski, AK)
+
+🔍 Searching DuckDuckGo for: Cottonwood Country Club Nikiski AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Birch Ridge Golf Course Inc (Soldotna, AK)
+
+🔍 Searching DuckDuckGo for: Birch Ridge Golf Course Inc Soldotna AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Bird Homestead Golf Course (Soldotna, AK)
+
+🔍 Searching DuckDuckGo for: Bird Homestead Golf Course Soldotna AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Settlers Bay Golf Course (Wasilla, AK)
+
+🔍 Searching DuckDuckGo for: Settlers Bay Golf Course Wasilla AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Sleepy Hollow Golf Course (Wasilla, AK)
+
+🔍 Searching DuckDuckGo for: Sleepy Hollow Golf Course Wasilla AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Muskeg Meadows Golf Course (Wrangell, AK)
+
+🔍 Searching DuckDuckGo for: Muskeg Meadows Golf Course Wrangell AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Albertville Golf & Country Club (Albertville, AL)
+
+🔍 Searching DuckDuckGo for: Albertville Golf & Country Club Albertville AL official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Willow Brook Golf Corp (Albertville, AL)
+
+🔍 Searching DuckDuckGo for: Willow Brook Golf Corp Albertville AL official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+⏳ Batch completed. Sleeping for 15 seconds to flush IP Cloudflare buffers...
+
+
+[System] Pulling Database Block...
+
+================================
+🎯 TARGET: Mendenhall Golf Course (Juneau, AK)
+
+🔍 Searching DuckDuckGo for: Mendenhall Golf Course Juneau AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Bear Valley Golf Course (Kodiak, AK)
+
+🔍 Searching DuckDuckGo for: Bear Valley Golf Course Kodiak AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Cottonwood Country Club (Nikiski, AK)
+
+🔍 Searching DuckDuckGo for: Cottonwood Country Club Nikiski AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Birch Ridge Golf Course Inc (Soldotna, AK)
+
+🔍 Searching DuckDuckGo for: Birch Ridge Golf Course Inc Soldotna AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Bird Homestead Golf Course (Soldotna, AK)
+
+🔍 Searching DuckDuckGo for: Bird Homestead Golf Course Soldotna AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Settlers Bay Golf Course (Wasilla, AK)
+
+🔍 Searching DuckDuckGo for: Settlers Bay Golf Course Wasilla AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Sleepy Hollow Golf Course (Wasilla, AK)
+
+🔍 Searching DuckDuckGo for: Sleepy Hollow Golf Course Wasilla AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Muskeg Meadows Golf Course (Wrangell, AK)
+
+🔍 Searching DuckDuckGo for: Muskeg Meadows Golf Course Wrangell AK official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Albertville Golf & Country Club (Albertville, AL)
+
+🔍 Searching DuckDuckGo for: Albertville Golf & Country Club Albertville AL official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+================================
+🎯 TARGET: Willow Brook Golf Corp (Albertville, AL)
+
+🔍 Searching DuckDuckGo for: Willow Brook Golf Corp Albertville AL official golf website
+DuckDuckGo Search Failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async searchDuckDuckGo (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:17:17)
+    at async run (/Users/matthewisaman/Desktop/Golf Tournament Site/tourneylinks-web/src/scripts/bulk-ingest.ts:110:15) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: html.duckduckgo.com:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2718:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2699:11)
+      at process.processImmediate (node:internal/timers:484:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT',
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_CONNECT_TIMEOUT)]: true
+  }
+}
+❌ Could not discover URL via DuckDuckGo.
+
+⏳ Batch completed. Sleeping for 15 seconds to flush IP Cloudflare buffers...

@@ -10,7 +10,9 @@
     "crawl": "tsx src/index.ts --run-cycle",
     "crawl:source": "tsx src/index.ts --source",
     "test": "vitest run",
-    "lint": "eslint src/"
+    "lint": "eslint src/",
+    "add-email": "tsx scripts/add-email-column.ts",
+    "enrich-ny": "tsx scripts/enrich-ny-courses.ts"
   },
   "dependencies": {
     "@google/genai": "^1.45.0",

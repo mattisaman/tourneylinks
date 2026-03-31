@@ -2,17 +2,26 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function RegistrationClient({ tournament }: { tournament: any }) {
+export default function RegistrationClient({ tournament, storeInventory = [] }: { tournament: any, storeInventory?: any[] }) {
   const router = useRouter();
   const [playerCount, setPlayerCount] = useState<number>(1);
   const [paymentMode, setPaymentMode] = useState<'full' | 'split'>('full');
   const [teammateEmails, setTeammateEmails] = useState<string[]>(['', '', '']);
+  const [cart, setCart] = useState<Record<number, number>>({});
   const [loading, setLoading] = useState(false);
 
   // Math
   const baseFee = tournament.entryFee;
-  const totalDueFull = baseFee * playerCount;
-  const totalDueSplit = baseFee; // Split means they just pay for themselves today
+  
+  // Calculate Scramble Store add-ons total in whole dollars
+  const cartCents = Object.entries(cart).reduce((total, [itemId, qty]) => {
+      const item = storeInventory.find(i => i.id === parseInt(itemId));
+      return total + ((item ? item.price : 0) * qty);
+  }, 0);
+  const cartDollars = cartCents / 100;
+
+  const totalDueFull = (baseFee * playerCount) + cartDollars;
+  const totalDueSplit = baseFee + cartDollars; // If split, the initiator pays their fee + ALL team add-ons today
 
   const handleCheckout = async () => {
     try {
@@ -24,7 +33,8 @@ export default function RegistrationClient({ tournament }: { tournament: any }) 
           tournamentId: tournament.id,
           playerCount,
           paymentMode, // 'full' or 'split'
-          teammateEmails: paymentMode === 'split' ? teammateEmails.slice(0, playerCount - 1).filter(e => e.trim() !== '') : []
+          teammateEmails: paymentMode === 'split' ? teammateEmails.slice(0, playerCount - 1).filter(e => e.trim() !== '') : [],
+          scrambleCart: cart
         })
       });
       
@@ -129,6 +139,41 @@ export default function RegistrationClient({ tournament }: { tournament: any }) 
         </>
       )}
 
+      {storeInventory.length > 0 && (
+          <div style={{ marginBottom: '3rem' }}>
+             <h3 style={{ fontSize: '1.4rem', color: 'var(--ink)', marginBottom: '1.5rem', fontWeight: 700 }}>3. Expand your package</h3>
+             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {storeInventory.map(item => {
+                   const qty = cart[item.id] || 0;
+                   const limit = item.maxPerPlayer ? item.maxPerPlayer * playerCount : 999;
+                   
+                   return (
+                      <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.25rem 1.5rem', background: '#fff', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '16px', boxShadow: '0 4px 10px rgba(0,0,0,0.02)' }}>
+                         <div>
+                             <div style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--ink)' }}>{item.title}</div>
+                             <div style={{ fontSize: '0.85rem', color: 'var(--mist)', marginTop: '0.2rem' }}>
+                                ${(item.price / 100).toFixed(2)} each 
+                                {item.maxPerPlayer && ` • Max ${item.maxPerPlayer} per player`}
+                             </div>
+                         </div>
+                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                             <button 
+                                onClick={() => setCart({...cart, [item.id]: Math.max(0, qty - 1)})}
+                                style={{ width: '40px', height: '40px', borderRadius: '50%', border: '1px solid rgba(0,0,0,0.1)', background: '#fafaf5', color: 'var(--ink)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', cursor: qty > 0 ? 'pointer' : 'not-allowed', opacity: qty > 0 ? 1 : 0.4 }}
+                             >-</button>
+                             <div style={{ fontWeight: 800, fontSize: '1.2rem', color: 'var(--forest)', minWidth: '20px', textAlign: 'center' }}>{qty}</div>
+                             <button 
+                                onClick={() => setCart({...cart, [item.id]: Math.min(limit, qty + 1)})}
+                                style={{ width: '40px', height: '40px', borderRadius: '50%', border: '1px solid rgba(0,0,0,0.1)', background: '#fafaf5', color: 'var(--ink)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', cursor: qty < limit ? 'pointer' : 'not-allowed', opacity: qty < limit ? 1 : 0.4 }}
+                             >+</button>
+                         </div>
+                      </div>
+                   )
+                })}
+             </div>
+          </div>
+      )}
+
       <div style={{ padding: '2rem', background: '#f8faf9', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '1.1rem', color: 'var(--ink)' }}>
           <span>Tournament Entry Fee</span>
@@ -139,6 +184,13 @@ export default function RegistrationClient({ tournament }: { tournament: any }) 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '1rem', color: 'var(--mist)' }}>
             <span>Multiply by {playerCount} Players</span>
             <span>x {playerCount}</span>
+          </div>
+        )}
+
+        {cartDollars > 0 && (
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '1.1rem', color: 'var(--ink)' }}>
+            <span>Scramble Add-ons</span>
+            <span style={{ fontWeight: 600 }}>+${cartDollars.toFixed(2)}</span>
           </div>
         )}
 

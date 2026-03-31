@@ -110,6 +110,7 @@ export const registrations = pgTable('registrations', {
   pairingRequest: text('pairing_request'),
   assignedTeam: integer('assigned_team'),
   teamGroupId: integer('team_group_id'), // Links to team_groups.id
+  startingHole: integer('starting_hole'), // Phase 5: Routing Shotgun assignments
   createdAt: timestamp('created_at').defaultNow(),
 });
 
@@ -262,6 +263,16 @@ export const payments = pgTable('payments', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+// Phase 8: E-Commerce Store Add-ons Data Architecture
+export const store_inventory = pgTable('store_inventory', {
+  id: serial('id').primaryKey(),
+  tournamentId: integer('tournament_id').references(() => tournaments.id, { onDelete: 'cascade' }).notNull(),
+  title: text('title').notNull(), // e.g. "Mulligan Package (2)"
+  price: integer('price').notNull(), // Stored entirely in cents (e.g. 2000 = $20.00)
+  maxPerPlayer: integer('max_per_player'), // Allows the organizer to enforce "no more than 2 mulligans"
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
 export const sponsorship_tiers = pgTable('sponsorship_tiers', {
   id: serial('id').primaryKey(),
   tournamentId: integer('tournament_id').references(() => tournaments.id).notNull(),
@@ -278,6 +289,7 @@ export const tournament_sponsors = pgTable('tournament_sponsors', {
   name: text('name').notNull(),
   logoUrl: text('logo_url').notNull(),
   websiteUrl: text('website_url'),
+  holeAssignment: integer('hole_assignment'), // The hole number (1-18) this sponsor is natively attached to
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
@@ -307,4 +319,45 @@ export const saved_courses = pgTable('saved_courses', {
   courseId: integer('course_id').references(() => courses.id, { onDelete: 'cascade' }).notNull(),
   notifyOnNewTournament: boolean('notify_on_new_tournament').default(true),
   createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+// ==========================================
+// PHASE 3: MULTI-ROUND / FORMAT ALGORITHMS
+// ==========================================
+
+export const tournament_rounds = pgTable('tournament_rounds', {
+  id: serial('id').primaryKey(),
+  tournamentId: integer('tournament_id').references(() => tournaments.id, { onDelete: 'cascade' }).notNull(),
+  courseId: integer('course_id').references(() => courses.id), // Allowing multi-course PGA rotations
+  roundNumber: integer('round_number').notNull(),
+  dateString: text('date_string').notNull(),
+  scoringFormat: text('scoring_format').notNull(), // e.g. 'SCRAMBLE', 'BEST_BALL', 'ALT_SHOT', 'STROKE_NET'
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+// PHASE 6: SCORECARD OCR VISION PIPELINE
+export const course_holes = pgTable('course_holes', {
+  id: serial('id').primaryKey(),
+  courseId: integer('course_id').references(() => courses.id, { onDelete: 'cascade' }).notNull(),
+  holeNumber: integer('hole_number').notNull(), // 1 through 18
+  par: integer('par').notNull(),
+  yardage: integer('yardage').notNull(),
+  handicapData: integer('handicap_data'), // The hole's handicap rating
+  
+  // Phase 7: Haversine GPS Mathematical Pipeline Data Storage
+  pinLat: real('pin_lat'),
+  pinLng: real('pin_lng'),
+
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const player_scores = pgTable('player_scores', {
+  id: serial('id').primaryKey(),
+  registrationId: integer('registration_id').references(() => registrations.id, { onDelete: 'cascade' }).notNull(),
+  tournamentRoundId: integer('tournament_round_id').references(() => tournament_rounds.id, { onDelete: 'cascade' }).notNull(),
+  holeNumber: integer('hole_number').notNull(), // 1 through 18
+  grossScore: integer('gross_score').notNull(),
+  netScore: integer('net_score'), // Calculated dynamically or stored after format applied
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });

@@ -54,6 +54,21 @@ export default function HomeFeatures() {
               <div className="feature-title">Team Registration</div>
               <div className="feature-desc">Share a unique team link with your foursome. Track who's registered and paid. Group notifications keep everyone informed.</div>
             </div>
+            <div className="feature-card">
+              <div className="feature-icon">📅</div>
+              <div className="feature-title">Master Tournament Calendar</div>
+              <div className="feature-desc">View all upcoming public, private, and charity tournaments booked at your course in one unified dashboard view.</div>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon">📋</div>
+              <div className="feature-title">Tee-Sheet Logistics</div>
+              <div className="feature-desc">Seamlessly export final player rosters, flight assignments, and starting tee times directly to your staff.</div>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon">💬</div>
+              <div className="feature-title">Direct Host Messaging</div>
+              <div className="feature-desc">Stop chasing organizers via email. Coordinate carts, dining, and rules directly on-platform.</div>
+            </div>
           </div>
         </div>
       </div>
@@ -62,7 +77,7 @@ export default function HomeFeatures() {
       <div className="hiw-section">
         <div className="hiw-inner">
           <div className="section-eyebrow">How It Works</div>
-          <div className="section-title" style={{ marginBottom: '3rem' }}>Two Sides of the Fairway</div>
+          <div className="section-title" style={{ marginBottom: '3rem' }}>The Complete Golf Ecosystem</div>
           <div className="hiw-grid">
             <div className="hiw-panel">
               <div className="hiw-panel-title">🏌️ For Players</div>
@@ -127,6 +142,38 @@ export default function HomeFeatures() {
                 </div>
               </div>
             </div>
+
+            <div className="hiw-panel">
+              <div className="hiw-panel-title">⛳ For Course Pros</div>
+              <div className="hiw-step">
+                <div className="hiw-step-num">1</div>
+                <div>
+                  <div className="hiw-step-title">Claim Your Course</div>
+                  <div className="hiw-step-desc">Take ownership of your facility in our database. Update your scorecard, logo, and amenities.</div>
+                </div>
+              </div>
+              <div className="hiw-step">
+                <div className="hiw-step-num">2</div>
+                <div>
+                  <div className="hiw-step-title">Centralize Logistics</div>
+                  <div className="hiw-step-desc">Move away from scattered spreadsheets. Track every incoming tournament and its requirements in one dashboard.</div>
+                </div>
+              </div>
+              <div className="hiw-step">
+                <div className="hiw-step-num">3</div>
+                <div>
+                  <div className="hiw-step-title">Streamline Communication</div>
+                  <div className="hiw-step-desc">Direct messaging with tournament hosts to coordinate tee sheets, food & beverage, and carts.</div>
+                </div>
+              </div>
+              <div className="hiw-step">
+                <div className="hiw-step-num">4</div>
+                <div>
+                  <div className="hiw-step-title">Drive Revenue</div>
+                  <div className="hiw-step-desc">Showcase your course to thousands of local organizers looking for their next tournament venue.</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -181,13 +228,13 @@ export default function HomeFeatures() {
             </div>
           </div>
           <div className="review-card">
-            <div className="review-stars">★★★★☆</div>
-            <div className="review-text">"The pre-launch private link is a game changer. I sent it to my regulars 2 weeks early, they filled 60% of spots before we even went public. Loyal players love feeling first."</div>
+            <div className="review-stars">★★★★★</div>
+            <div className="review-text">"Before TourneyLinks, tournament season meant 20 hours a week of phone tag with organizers. Now, we see their exact player counts, flight requests, and F&B needs all in real-time."</div>
             <div className="review-author">
-              <div className="review-avatar">PL</div>
+              <div className="review-avatar">DW</div>
               <div>
-                <div className="review-name">Patricia Lee</div>
-                <div className="review-meta">Club Events Director · Scottsdale, AZ</div>
+                <div className="review-name">David Wallace</div>
+                <div className="review-meta">Head Golf Professional · Scottsdale, AZ</div>
               </div>
             </div>
           </div>

@@ -1,5 +1,6 @@
 import React from 'react';
-import { getTournamentById } from '@/lib/db';
+import { getTournamentById, db, store_inventory } from '@/lib/db';
+import { eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import RegistrationClient from './RegistrationClient';
 
@@ -27,6 +28,8 @@ export default async function RegistrationGatePage({ params }: { params: Promise
     allowOfflinePayment: tournament.allowOfflinePayment
   };
 
+  const inventory = await db.select().from(store_inventory).where(eq(store_inventory.tournamentId, tournamentId));
+
   return (
     <div style={{ minHeight: '100vh', background: '#f8faf9', paddingTop: '80px', paddingBottom: '6rem' }}>
       <div className="section-wrapper" style={{ maxWidth: '800px' }}>
@@ -37,7 +40,7 @@ export default async function RegistrationGatePage({ params }: { params: Promise
           {tournament.name}
         </p>
 
-        <RegistrationClient tournament={eventDetails} />
+        <RegistrationClient tournament={eventDetails} storeInventory={inventory} />
       </div>
     </div>
   );

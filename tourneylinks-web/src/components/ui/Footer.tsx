@@ -1,7 +1,16 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  if (pathname?.includes('/tv') || pathname?.includes('/play') || pathname?.includes('/print')) {
+    return null;
+  }
+
   return (
     <footer>
       <div className="footer-inner">

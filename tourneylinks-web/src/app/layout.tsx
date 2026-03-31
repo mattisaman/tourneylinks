@@ -26,6 +26,13 @@ const dmMono = DM_Mono({
 export const metadata: Metadata = {
   title: "TourneyLinks Platform",
   description: "Nationwide Golf Tournament Discovery and Handicap Verification",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "TourneyLinks",
+  },
+  themeColor: "#05120c",
 };
 
 export default function RootLayout({
@@ -42,6 +49,13 @@ export default function RootLayout({
           <Navbar />
           {children}
           <Footer />
+          <script dangerouslySetInnerHTML={{ __html: `
+            if ('serviceWorker' in navigator) {
+              window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').catch(function(err) {});
+              });
+            }
+          `}} />
         </body>
       </html>
     </ClerkProvider>

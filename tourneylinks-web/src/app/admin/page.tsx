@@ -5,6 +5,15 @@ import { eq, desc } from 'drizzle-orm';
 import { currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import FlightBuilder from '@/components/admin/FlightBuilder';
+import TournamentQRCode from '@/components/admin/TournamentQRCode';
+import SponsorManager from '@/components/admin/SponsorManager';
+import RoundManager from '@/components/admin/RoundManager';
+import ShotgunAssigner from '@/components/admin/ShotgunAssigner';
+import LiveTelemetry from '@/components/admin/LiveTelemetry';
+import ScorecardVisionScanner from '@/components/admin/ScorecardVisionScanner';
+import CourseGPSMapper from '@/components/admin/CourseGPSMapper';
+import StripeConnectWidget from '@/components/admin/StripeConnectWidget';
+import ScrambleStoreManager from '@/components/admin/ScrambleStoreManager';
 
 export const dynamic = 'force-dynamic';
 
@@ -124,7 +133,11 @@ export default async function AdminDashboard() {
           </div>
 
           <div className="dash-grid">
-            <div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              
+              {/* LIVE TOURNAMENT ACTION CENTER */}
+              <LiveTelemetry tournamentId={tournamentId} showProLink={true} />
+
               {/* Registrants Table */}
               <div className="dash-card">
                 <div className="dash-card-header">
@@ -146,6 +159,7 @@ export default async function AdminDashboard() {
                       <th>Registered</th>
                       <th>Payment</th>
                       <th>Team</th>
+                      <th>Start Hole</th>
                       <th></th>
                     </tr>
                   </thead>
@@ -169,6 +183,13 @@ export default async function AdminDashboard() {
                               </span>
                             )}
                           </td>
+                          <td>
+                            <ShotgunAssigner 
+                               tournamentId={tournamentId} 
+                               registrationId={reg.id} 
+                               initialHole={reg.startingHole} 
+                            />
+                          </td>
                           <td><button style={{ background: 'none', border: 'none', color: 'var(--mist)', cursor: 'pointer', fontSize: '1rem' }}>⋯</button></td>
                         </tr>
                       ))
@@ -176,6 +197,20 @@ export default async function AdminDashboard() {
                   </tbody>
                 </table>
                 </div>
+              </div>
+
+              {/* Phase 8: Financial Architecture & Organizer Setup */}
+              <StripeConnectWidget account={existingAccount || null} />
+
+              {/* Phase 10: The Live Campaign Builder Launchpad */}
+              <div style={{ background: '#05120c', padding: '2rem', borderRadius: '16px', color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}>
+                 <div>
+                    <h3 style={{ fontSize: '1.4rem', fontWeight: 900, marginBottom: '0.3rem' }}>Live Campaign Builder</h3>
+                    <p style={{ color: 'var(--mist)', fontSize: '0.9rem', maxWidth: '400px', lineHeight: 1.6 }}>Step into the immersive setup studio. Configure entry fees, sponsors, and content side-by-side with a live preview of exactly what players will see.</p>
+                 </div>
+                 <Link href={`/admin/tournaments/${tournamentId}/builder`} style={{ padding: '1rem 2rem', background: 'var(--gold)', color: '#000', fontWeight: 800, borderRadius: '8px', textDecoration: 'none', transition: 'transform 0.2s' }}>
+                    Launch Builder 🚀
+                 </Link>
               </div>
 
               {/* Private Link Panel */}
@@ -201,12 +236,47 @@ export default async function AdminDashboard() {
                   </div>
                 </div>
               </div>
+
+              {/* Phase 3: The Algorithmic Engine & Multi-Round UI */}
+              <RoundManager tournamentId={tournamentId} />
+
+              {/* Phase 2: Sponsor & Hole Integration */}
+              <SponsorManager tournamentId={tournamentId} />
+
+              {/* Phase 6: Gemini Vision OCR Dropzone */}
+              <ScorecardVisionScanner courseId={tourney ? (tourney as any).courseId || 1 : 1} />
+
+              {/* Phase 7: GPS Coordinate Definition (Haversine Source) */}
+              <CourseGPSMapper courseId={tourney ? (tourney as any).courseId || 1 : 1} />
             </div>
 
             {/* Right Column */}
-            <div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              
+              {/* QR & Print Station */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem' }}>
+                 <TournamentQRCode tournamentId={tournamentId} publicName={tourney?.name || 'Tournament'} />
+                 
+                 <div className="dash-card">
+                   <div className="dash-card-header">
+                     <div className="dash-card-title">🖨️ The Print Station</div>
+                   </div>
+                   <div style={{ padding: '1.5rem', textAlign: 'center' }}>
+                     <p style={{ fontSize: '0.85rem', color: 'var(--mist)', marginBottom: '1.25rem' }}>
+                       Generate formatted, high-contrast Cart Signs, Team Pairings, and Blank Scorecards instantly.
+                     </p>
+                     <Link href={`/admin/tournaments/${tournamentId}/print`} className="btn-primary" style={{ display: 'block', width: '100%', padding: '0.75rem', textDecoration: 'none' }}>
+                       Open Print Station →
+                     </Link>
+                   </div>
+                 </div>
+
+                 {/* Phase 8: E-Commerce Store Config */}
+                 <ScrambleStoreManager tournamentId={tournamentId} />
+              </div>
+
               {/* Send Notification */}
-              <div className="dash-card" style={{ marginBottom: '1.5rem' }}>
+              <div className="dash-card">
                 <div className="dash-card-header">
                   <div className="dash-card-title">📢 Send Notification</div>
                 </div>

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
-import { db, stripe_accounts, tournaments, users } from '@/lib/db';
-import { eq } from 'drizzle-orm';
+import { db, stripe_accounts, tournaments, users, store_inventory } from '@/lib/db';
+import { eq, inArray } from 'drizzle-orm';
 import { currentUser } from '@clerk/nextjs/server';
 
 export async function POST(req: Request) {
@@ -11,7 +11,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized. Please sign in to register.' }, { status: 401 });
     }
 
-    const { tournamentId, playerCount = 1, paymentMode = 'full', isClaim, teamGroupId, claimToken, teammateEmails } = await req.json();
+    const { tournamentId, playerCount = 1, paymentMode = 'full', isClaim, teamGroupId, claimToken, teammateEmails, scrambleCart = {} } = await req.json();
     if (!tournamentId) {
       return NextResponse.json({ error: 'Missing tournament ID' }, { status: 400 });
     }
@@ -58,28 +58,49 @@ export async function POST(req: Request) {
     // Provide Checkout Session
     const origin = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
     
+    const lineItems: any[] = [
+      {
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: `Registration: ${tournament.name}`,
+            description: isClaim 
+              ? `Teammate Team Registration Share`
+              : paymentMode === 'split' 
+                ? `Team Captain Split Payment (${playerCount} Spots Total)` 
+                : playerCount > 1 
+                  ? `Full Team Registration (${playerCount} Players)` 
+                  : `Solo Golfer Registration`,
+          },
+          unit_amount: finalUnitAmountCents,
+        },
+        quantity: checkoutQuantity,
+      }
+    ];
+
+    // Securely pull requested Scramble Store Add-ons directly from PostgreSQL to map line-items
+    const cartKeys = Object.keys(scrambleCart).map(k => parseInt(k)).filter(id => !isNaN(id));
+    if (cartKeys.length > 0) {
+        const inventory = await db.select().from(store_inventory).where(inArray(store_inventory.id, cartKeys));
+        for (const item of inventory) {
+             const qty = scrambleCart[item.id] || 0;
+             if (qty > 0) {
+                 lineItems.push({
+                     price_data: {
+                         currency: 'usd',
+                         product_data: { name: `Add-on: ${item.title}` },
+                         unit_amount: item.price,
+                     },
+                     quantity: qty,
+                 });
+             }
+        }
+    }
+
     // We pass metadata to construct the internal Registration record in the Webhook
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card', 'us_bank_account'],
-      line_items: [
-        {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: `Registration: ${tournament.name}`,
-              description: isClaim 
-                ? `Teammate Team Registration Share`
-                : paymentMode === 'split' 
-                  ? `Team Captain Split Payment (${playerCount} Spots Total)` 
-                  : playerCount > 1 
-                    ? `Full Team Registration (${playerCount} Players)` 
-                    : `Solo Golfer Registration`,
-            },
-            unit_amount: finalUnitAmountCents,
-          },
-          quantity: checkoutQuantity,
-        },
-      ],
+      line_items: lineItems,
       mode: 'payment',
       success_url: `${origin}/tournaments/${tournament.id}?registration=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/tournaments/${tournament.id}?registration=cancelled`,

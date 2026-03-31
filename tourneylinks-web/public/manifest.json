@@ -1,0 +1,22 @@
+{
+  "name": "TourneyLinks Scoring",
+  "short_name": "TourneyLinks",
+  "description": "Live GPS & Scoring for Golf Tournaments",
+  "display": "standalone",
+  "background_color": "#05120c",
+  "theme_color": "#c9a84c",
+  "orientation": "portrait-primary",
+  "start_url": "/?pwa=true",
+  "icons": [
+    {
+      "src": "/apple-icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

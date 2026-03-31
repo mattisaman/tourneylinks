@@ -9,6 +9,7 @@ import { MapPin, Phone, Globe, ChevronLeft, Map, Flag } from 'lucide-react';
 import FavoriteButton from './FavoriteButton';
 import { getIsFavorited } from '@/app/actions/favoriteCourse';
 import { auth } from '@clerk/nextjs/server';
+import EagleValePricing from '@/components/courses/EagleValePricing';
 
 export const dynamic = 'force-dynamic';
 
@@ -33,123 +34,132 @@ export default async function CourseDetailPage(props: { params: Promise<{ id: st
   const isFavorited = await getIsFavorited(courseId);
 
   return (
-    <div style={{ background: 'var(--ink)', minHeight: '100vh', display: 'flex', flexDirection: 'column', paddingTop: '80px' }}>
+    <div className="min-h-screen flex flex-col bg-[#050B08] pt-[80px]">
 
-      <div style={{ flex: 1, paddingTop: '100px', paddingBottom: '6rem' }}>
-        <div style={{ width: '100%', maxWidth: '900px', margin: '0 auto', padding: '0 1.5rem' }}>
-          
-          <Link href="/courses" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', color: 'rgba(255,255,255,0.6)', textDecoration: 'none', fontSize: '0.9rem', marginBottom: '2rem', transition: 'color 0.2s' }}>
-            <ChevronLeft size={16} /> Back to Directory
-          </Link>
-
-          {/* Hero Premium Card */}
-          <div style={{ background: 'var(--ink)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}>
-             <div style={{ background: 'linear-gradient(135deg, #152b1b 0%, rgba(10,20,10,0.9) 100%)', height: '160px', position: 'relative' }}>
-                <div style={{ position: 'absolute', inset: 0, opacity: 0.1, backgroundImage: 'radial-gradient(circle at 100% 0%, var(--gold) 0%, transparent 60%)' }} />
-             </div>
+      <main className="flex-1 w-full">
+          {/* NEW CINEMATIC PRESTIGE HERO */}
+          {/* NEW CINEMATIC PRESTIGE HERO */}
+          <div className="w-full relative border-b border-white/10 overflow-hidden flex flex-col justify-center" style={{ backgroundColor: '#020503', minHeight: '280px' }}>
+             {/* Base Image Layer */}
+             <div className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/hero-bg-4.jpg')", opacity: 0.5 }} />
              
-             <div style={{ padding: '2.5rem', marginTop: '-60px', position: 'relative', zIndex: 10 }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
-                  <span style={{ background: 'var(--gold)', color: 'var(--ink)', padding: '0.4rem 1rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', boxShadow: '0 4px 12px rgba(201,168,76,0.3)', display: 'inline-block' }}>
-                     {course.type || 'Public Course'}
-                  </span>
-                  
-                  <FavoriteButton courseId={course.id} initialFavorited={isFavorited} isSignedIn={!!userId} />
-                </div>
-                
-                <h1 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontFamily: "'Clash Display', sans-serif", fontWeight: 600, color: 'var(--white)', marginBottom: '0.5rem', lineHeight: 1.1 }}>
-                  {course.name}
-                </h1>
-                
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'rgba(255,255,255,0.6)', fontSize: '1rem', marginBottom: '2rem' }}>
-                  <MapPin size={18} />
-                  <span>{course.city}, {course.state} {course.zip}</span>
-                </div>
+             {/* Deep Ambient Mesh */}
+             <div className="absolute top-[-10%] right-[-10%] w-[50vw] h-[50vh] rounded-full pointer-events-none z-0" style={{ backgroundColor: 'var(--gold)', opacity: 0.25, filter: 'blur(120px)' }} />
+             <div className="absolute bottom-[-10%] left-[-10%] w-[40vw] h-[40vh] rounded-full pointer-events-none z-0" style={{ backgroundColor: 'var(--gold)', opacity: 0.15, filter: 'blur(100px)' }} />
+             
+             {/* Dark Wash */}
+             <div className="absolute inset-0 z-0 pointer-events-none" style={{ background: 'linear-gradient(to top, #020503 5%, rgba(2,5,3,0.5) 60%, rgba(2,5,3,0.1) 100%)', opacity: 1 }} />
 
-                {/* KPI Grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem', marginBottom: '3rem' }}>
-                  <div style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.05)', padding: '1.25rem', borderRadius: '12px' }}>
-                     <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.5)', marginBottom: '0.4rem' }}>Holes</div>
-                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600, color: 'var(--gold)', fontSize: '1.5rem' }}>
-                       <Flag size={20} color="var(--gold)" />
-                       {course.holes || '18'}
-                     </div>
-                  </div>
-                  <div style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.05)', padding: '1.25rem', borderRadius: '12px' }}>
-                     <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.5)', marginBottom: '0.4rem' }}>Par</div>
-                     <div style={{ fontWeight: 600, color: 'var(--gold)', fontSize: '1.5rem' }}>
-                       {course.par || '72'}
-                     </div>
-                  </div>
-                  <div style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.05)', padding: '1.25rem', borderRadius: '12px' }}>
-                     <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.5)', marginBottom: '0.4rem' }}>Architect</div>
-                     <div style={{ fontWeight: 600, color: 'var(--white)', fontSize: '1.1rem' }}>
-                       {course.architect || 'Unknown'}
-                     </div>
-                  </div>
-                </div>
-
-                {/* AI Extracted Amenities & Policies Section */}
-                <div style={{ marginBottom: '3rem' }}>
-                  {(course.hasDrivingRange || course.hasPuttingGreen || course.hasChippingArea || course.hasProShop) && (
-                    <>
-                      <h3 style={{ fontSize: '1.1rem', color: 'var(--gold)', marginBottom: '1rem', fontWeight: 600 }}>Available Amenities</h3>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.5rem' }}>
-                        {course.hasDrivingRange && <span style={{ padding: '0.4rem 1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '20px', color: 'var(--white)', fontSize: '0.85rem' }}>Driving Range</span>}
-                        {course.hasPuttingGreen && <span style={{ padding: '0.4rem 1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '20px', color: 'var(--white)', fontSize: '0.85rem' }}>Putting Green</span>}
-                        {course.hasChippingArea && <span style={{ padding: '0.4rem 1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '20px', color: 'var(--white)', fontSize: '0.85rem' }}>Chipping Area</span>}
-                        {course.hasProShop && <span style={{ padding: '0.4rem 1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '20px', color: 'var(--white)', fontSize: '0.85rem' }}>Pro Shop</span>}
-                        {course.yearBuilt && <span style={{ padding: '0.4rem 1rem', background: 'rgba(201,168,76,0.1)', borderRadius: '20px', color: 'var(--gold)', fontSize: '0.85rem' }}>Built in {course.yearBuilt}</span>}
-                      </div>
-                    </>
-                  )}
-                  {course.guestPolicy && (
-                     <div style={{ background: 'rgba(201,168,76,0.05)', borderLeft: '3px solid var(--gold)', padding: '1rem', borderRadius: '0 8px 8px 0' }}>
-                       <div style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--gold)', marginBottom: '0.4rem' }}>Guest Policy</div>
-                       <div style={{ color: 'rgba(255,255,255,0.85)', fontSize: '0.95rem', lineHeight: 1.5 }}>{course.guestPolicy}</div>
-                     </div>
-                  )}
-                </div>
-
-                {/* Contact Banner */}
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', alignItems: 'center', padding: '1.5rem', background: 'rgba(0,0,0,0.2)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                   {course.phone && (
-                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--white)', fontWeight: 500 }}>
-                        <Phone size={18} color="var(--gold)" />
-                        {course.phone}
-                     </div>
-                   )}
-                   {course.email && (
-                     <a href={`mailto:${course.email}`} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--white)', fontWeight: 500, textDecoration: 'none' }}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                        {course.email}
-                     </a>
-                   )}
-                   {course.website && (
-                     <a href={course.website} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--white)', fontWeight: 500, textDecoration: 'none' }}>
-                        <Globe size={18} color="var(--gold)" />
-                        Visit Official Website
-                     </a>
-                   )}
-                   {course.address && (
-                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--white)', fontWeight: 500 }}>
-                        <Map size={18} color="var(--gold)" />
-                        {course.address}, {course.city}, {course.state} {course.zip}
-                     </div>
-                   )}
-                </div>
-
-             </div>
-
-             {/* Action Bar */}
-             <div style={{ background: 'linear-gradient(90deg, #0f1c0f 0%, #152b1b 100%)', borderTop: '1px solid rgba(255,255,255,0.05)', padding: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-                <div style={{ color: 'var(--white)' }}>
-                   <h3 style={{ fontSize: '1.25rem', marginBottom: '0.2rem', fontWeight: 600 }}>Host a Tournament Here</h3>
-                   <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.5)', margin: 0 }}>Register and manage your next event at this venue.</p>
-                </div>
-                <Link href={`/host?courseId=${course.id}&courseName=${encodeURIComponent(course.name)}&courseCity=${encodeURIComponent(course.city)}&courseState=${encodeURIComponent(course.state)}&courseZip=${course.zip || ''}`} className="btn-primary" style={{ background: 'var(--gold)', color: 'var(--ink)', border: 'none', padding: '0.8rem 2rem' }}>
-                   Plan Event Setup
+             <div className="w-full relative z-10" style={{ maxWidth: '1300px', margin: '0 auto', paddingLeft: 'clamp(2rem, 5vw, 4rem)', paddingRight: 'clamp(2rem, 5vw, 4rem)', paddingTop: '3rem', paddingBottom: '3rem' }}>
+                <Link href="/courses" className="inline-flex items-center gap-2 text-white/50 hover:text-[var(--gold)] text-sm tracking-widest uppercase mb-8 transition-colors">
+                  <ChevronLeft size={16} /> Directory
                 </Link>
+
+                <div className="flex flex-col xl:flex-row gap-10 xl:gap-16 xl:items-end justify-between">
+                   <div className="flex-1 min-w-0">
+                      <div className="flex items-center flex-wrap gap-4 mb-6">
+                        <span className="bg-[var(--gold)] text-black text-xs font-black uppercase tracking-widest rounded-sm" style={{ padding: '6px 16px' }}>
+                          {course.type || 'Public'}
+                        </span>
+                        <FavoriteButton courseId={course.id} initialFavorited={isFavorited} isSignedIn={!!userId} />
+                      </div>
+                      
+                      <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-white tracking-tight" style={{ fontFamily: 'var(--font-serif)', wordBreak: 'break-word', overflowWrap: 'break-word', marginBottom: '1.5rem' }}>
+                        {course.name.replace(' Golf Course Inc', '').replace(' Golf Course, Inc.', '')}
+                      </h1>
+                      
+                      <div className="flex items-center gap-4" style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.25em', fontWeight: 700, fontFamily: 'var(--font-sans)', display: 'flex', alignItems: 'center' }}>
+                        <MapPin size={14} style={{ color: 'var(--gold)' }} />
+                        <span>{course.address ? `${course.address}, ` : ''}{course.city}, {course.state} {course.zip}</span>
+                      </div>
+
+                      {/* Amenities Row */}
+                      {(course.hasDrivingRange || course.hasPuttingGreen || course.hasChippingArea || course.hasProShop) && (
+                        <div className="flex flex-wrap gap-2 mt-8">
+                          {course.hasDrivingRange && <span className="bg-white/5 border border-white/5 text-white/70 text-xs tracking-wider uppercase rounded-sm" style={{ padding: '4px 12px' }}>Range</span>}
+                          {course.hasPuttingGreen && <span className="bg-white/5 border border-white/5 text-white/70 text-xs tracking-wider uppercase rounded-sm" style={{ padding: '4px 12px' }}>Putting Green</span>}
+                          {course.hasChippingArea && <span className="bg-white/5 border border-white/5 text-white/70 text-xs tracking-wider uppercase rounded-sm" style={{ padding: '4px 12px' }}>Chipping Area</span>}
+                          {course.hasProShop && <span className="bg-white/5 border border-white/5 text-white/70 text-xs tracking-wider uppercase rounded-sm" style={{ padding: '4px 12px' }}>Pro Shop</span>}
+                          {course.yearBuilt && <span className="bg-[rgba(197,160,89,0.1)] border border-[rgba(197,160,89,0.2)] text-[var(--gold)] text-xs tracking-wider uppercase rounded-sm" style={{ padding: '4px 12px' }}>Est {course.yearBuilt}</span>}
+                        </div>
+                      )}
+                   </div>
+
+                   {/* Right Side Info Strip */}
+                   <div className="flex flex-col md:flex-row xl:flex-col gap-6 lg:gap-10 min-w-0 flex-shrink-0">
+                      
+                      {/* KPI Flat Bar */}
+                      <div className="flex flex-wrap items-center gap-6 lg:gap-10 border-b border-white/10 pb-6 lg:pb-0 lg:border-0">
+                         <div>
+                           <div className="text-[10px] text-white/40 uppercase tracking-widest mb-1 font-bold">Holes</div>
+                           <div className="text-3xl font-black text-white font-mono flex items-center gap-2">
+                             <Flag size={20} className="text-[var(--gold)]" />
+                             {course.holes || '18'}
+                           </div>
+                         </div>
+                         <div className="w-px h-10 bg-white/10 hidden sm:block" />
+                         <div>
+                           <div className="text-[10px] text-white/40 uppercase tracking-widest mb-1 font-bold">Par</div>
+                           <div className="text-3xl font-black text-white font-mono">{course.par || '72'}</div>
+                         </div>
+                      </div>
+
+                      {/* Contact Flat Grid */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-y-3 gap-x-6 pt-2">
+                         {course.phone && (
+                           <div className="flex items-center gap-3 text-white/80 text-sm">
+                              <Phone size={14} className="text-[var(--gold)] flex-shrink-0" /> {course.phone}
+                           </div>
+                         )}
+                         <a href={`mailto:${course.email || (course.id === 10619 ? 'info@eaglevale.com' : 'info@tourneylinks.com')}`} className="flex items-center gap-3 text-white/80 text-sm hover:text-[var(--gold)] transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--gold)] flex-shrink-0"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                            <span className="truncate">{course.email || (course.id === 10619 ? 'info@eaglevale.com' : 'Contact Course Admin')}</span>
+                         </a>
+                         {course.website && (
+                           <a href={course.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-[var(--gold)] text-sm font-bold hover:text-white transition-colors">
+                              <Globe size={14} className="flex-shrink-0" /> Official Website
+                           </a>
+                         )}
+                      </div>
+                   </div>
+                </div>
+             </div>
+          </div>
+
+          <div className="w-full bg-[#050B08]">
+             {/* Guest Policy Band */}
+             {course.guestPolicy && (
+               <div className="w-full border-b border-[rgba(255,255,255,0.03)] bg-[#020604]">
+                 <div className="w-full flex flex-col md:flex-row lg:items-center gap-4 lg:gap-12" style={{ maxWidth: '1300px', margin: '0 auto', paddingLeft: 'clamp(2rem, 5vw, 4rem)', paddingRight: 'clamp(2rem, 5vw, 4rem)', paddingBottom: '2rem', paddingTop: '2rem' }}>
+                   <h3 className="text-[var(--gold)] font-black uppercase tracking-widest text-[10px] flex-shrink-0">Guest Policy</h3>
+                   <p className="text-white/70 text-sm leading-relaxed max-w-4xl">{course.guestPolicy}</p>
+                 </div>
+               </div>
+             )}
+
+             {/* Builder Module */}
+             <div className="w-full relative z-30">
+               {course.id === 10619 ? (
+                 <EagleValePricing courseName={course.name} courseEmail={course.email || 'info@eaglevale.com'} />
+               ) : (
+                 <div className="w-full" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '8rem 2rem', background: 'linear-gradient(180deg, rgba(2,6,4,0) 0%, rgba(20,35,20,0.6) 50%, rgba(2,6,4,0) 100%)', position: 'relative', borderTop: '1px solid rgba(255,255,255,0.03)', borderBottom: '1px solid rgba(255,255,255,0.03)', marginTop: '2rem' }}>
+                    <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '800px', height: '800px', background: 'radial-gradient(circle, rgba(201,168,76,0.05) 0%, transparent 70%)', pointerEvents: 'none', zIndex: 0 }} />
+                    
+                    <h2 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', fontFamily: "'Clash Display', sans-serif", fontWeight: 600, color: 'var(--white)', marginBottom: '1.5rem', position: 'relative', zIndex: 10, letterSpacing: '-0.02em' }}>
+                      Host at <span style={{ color: 'var(--gold)' }}>{course.name}</span>
+                    </h2>
+                    
+                    <p style={{ fontSize: '1.25rem', color: 'rgba(255,255,255,0.6)', maxWidth: '750px', lineHeight: 1.7, marginBottom: '3.5rem', position: 'relative', zIndex: 10 }}>
+                      Bring your tournament to life on these pristine fairways. We streamline the registration and management process, delivering a premium, transparent experience for organizers and players alike.
+                    </p>
+                    
+                    <a href={`mailto:${course.email || 'info@tourneylinks.com'}`} className="gold-foil-hover" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: '1.4rem 3.5rem', background: 'rgba(201,168,76,0.05)', border: '1px solid rgba(201,168,76,0.3)', color: 'var(--gold)', letterSpacing: '0.2em', textTransform: 'uppercase', fontSize: '0.9rem', fontWeight: 600, transition: 'all 0.3s ease', position: 'relative', zIndex: 10, textDecoration: 'none' }}
+                       onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(201,168,76,0.15)'; e.currentTarget.style.boxShadow = '0 0 30px rgba(201,168,76,0.2)'; e.currentTarget.style.borderColor = 'rgba(201,168,76,0.8)'; }}
+                       onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(201,168,76,0.05)'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.borderColor = 'rgba(201,168,76,0.3)'; }}>
+                      Contact Director &rarr;
+                    </a>
+                 </div>
+               )}
              </div>
           </div>
 
@@ -188,8 +198,7 @@ export default async function CourseDetailPage(props: { params: Promise<{ id: st
             </div>
           )}
 
-        </div>
-      </div>
+      </main>
     </div>
   );
 }
