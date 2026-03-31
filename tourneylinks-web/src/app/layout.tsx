@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/ui/Navbar";
 import Footer from "@/components/ui/Footer";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Analytics } from "@vercel/analytics/react";
 
 const dmSans = DM_Sans({
   variable: "--font-sans",
@@ -56,6 +57,7 @@ export default function RootLayout({
               });
             }
           `}} />
+          <Analytics />
         </body>
       </html>
     </ClerkProvider>
