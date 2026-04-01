@@ -21,21 +21,6 @@ export default function Hero() {
             <span style={{ opacity: 0.3 }} className="hidden md:inline">|</span>
             <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}><span style={{ color: 'var(--teal)' }}>✓</span> <b>$99/Event</b> for Organizers (Introductory Offer $49)</span>
           </div>
-          
-          <div className="hero-stats" style={{ justifyContent: 'center', marginTop: '2.5rem', gap: '4rem' }}>
-            <div>
-              <div className="hero-stat-num">4,200+</div>
-              <div className="hero-stat-label">Tournaments Hosted</div>
-            </div>
-            <div>
-              <div className="hero-stat-num">87K</div>
-              <div className="hero-stat-label">Registered Players</div>
-            </div>
-            <div>
-              <div className="hero-stat-num">16,000+</div>
-              <div className="hero-stat-label">Courses Nationwide</div>
-            </div>
-          </div>
         </div>
 
         {/* 3 Pillar Dashboard */}
@@ -124,12 +109,31 @@ export default function Hero() {
             <p style={{ color: 'rgba(245,240,232,0.65)', fontSize: '0.95rem', lineHeight: 1.6, margin: '0 0 2rem', flexGrow: 1 }}>
               Take control of your facility. Claim your course to centralize logistics, download tee sheets, and message hosts directly.
             </p>
-            <Link href="/courses" className="btn-hero-outline" style={{ display: 'flex', justifyContent: 'center', width: '100%', padding: '1rem', borderColor: 'rgba(78,201,160,0.3)', color: 'var(--teal)' }}>
+            <Link href="/courses" className="btn-hero-outline" style={{ display: 'flex', justifyContent: 'center', width: '100%', padding: '1rem', marginBottom: '1rem' }}>
               Claim Your Course →
             </Link>
           </div>
 
         </div>
+        
+        {/* Global Stats - Moved Below Pillars */}
+        <div style={{ maxWidth: '1200px', display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '3rem auto 0 auto' }}>
+          <div className="hero-stats" style={{ justifyContent: 'center', gap: '4rem' }}>
+            <div>
+              <div className="hero-stat-num">4,200+</div>
+              <div className="hero-stat-label">Tournaments Hosted</div>
+            </div>
+            <div>
+              <div className="hero-stat-num">87K</div>
+              <div className="hero-stat-label">Registered Players</div>
+            </div>
+            <div>
+              <div className="hero-stat-num">16,000+</div>
+              <div className="hero-stat-label">Courses Nationwide</div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
   );
