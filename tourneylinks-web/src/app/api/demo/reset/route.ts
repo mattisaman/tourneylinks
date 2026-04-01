@@ -2,6 +2,11 @@ import { NextResponse } from 'next/server';
 import { db, users, courses, tournaments, course_holes, registrations, team_groups, split_invites, payments, store_inventory, stripe_accounts, tournament_sponsors, live_telemetry, beverage_orders, live_banter } from '@/lib/db';
 
 export async function POST() {
+  // CRITICAL SECURITY BARRIER
+  if (process.env.NEXT_PUBLIC_IS_DEMO !== 'true') {
+      return NextResponse.json({ error: 'ILLEGAL OPERATION: Sandbox Engine disabled in Production.' }, { status: 403 });
+  }
+
   try {
      // 1. OBLITERATE THE ENTIRE LOCAL DEMO ECOSYSTEM
      // Order matters severely due to Postgres Foreign Key cascading constraints
