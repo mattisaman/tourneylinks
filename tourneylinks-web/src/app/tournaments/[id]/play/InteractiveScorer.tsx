@@ -52,6 +52,59 @@ export default function InteractiveScorer({
   const [distanceToPin, setDistanceToPin] = useState<number | null>(null);
   const [gpsStatus, setGpsStatus] = useState<string>('SEARCHING SATELLITES...');
 
+  // Phase 11: Beverage Cart
+  const [bevStatus, setBevStatus] = useState<'IDLE'|'ORDERING'|'SENT'>('IDLE');
+
+  const handleCallBevCart = () => {
+     if (!activeTeam || bevStatus === 'ORDERING') return;
+     setBevStatus('ORDERING');
+     
+     if (typeof navigator !== 'undefined' && 'geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(async (pos) => {
+           try {
+              await fetch(`/api/tournaments/${tournamentId}/drinks`, {
+                 method: 'POST',
+                 headers: { 'Content-Type': 'application/json' },
+                 body: JSON.stringify({
+                    registrationId: activeTeam.id,
+                    latitude: pos.coords.latitude,
+                    longitude: pos.coords.longitude
+                 })
+              });
+              setBevStatus('SENT');
+              setTimeout(() => setBevStatus('IDLE'), 5000);
+           } catch {
+              setBevStatus('IDLE');
+           }
+        }, () => setBevStatus('IDLE'), { enableHighAccuracy: true });
+     } else {
+        setBevStatus('IDLE');
+     }
+  };
+
+  // Phase 11: Banter Feed
+  const [showBanter, setShowBanter] = useState(false);
+  const [banterMsg, setBanterMsg] = useState("");
+  const [sendingBanter, setSendingBanter] = useState(false);
+
+  const submitBanter = async () => {
+      if (!banterMsg.trim() || !activeTeam || sendingBanter) return;
+      setSendingBanter(true);
+      try {
+         await fetch(`/api/tournaments/${tournamentId}/banter`, {
+             method: 'POST',
+             headers: { 'Content-Type': 'application/json' },
+             body: JSON.stringify({ 
+                 authorName: `${activeTeam.firstName} ${activeTeam.lastName}`, 
+                 message: banterMsg 
+             })
+         });
+         setBanterMsg("");
+         setShowBanter(false);
+      } catch (err) {}
+      setSendingBanter(false);
+  };
+
   useEffect(() => {
      const fetchData = async () => {
         try {
@@ -240,6 +293,26 @@ export default function InteractiveScorer({
   return (
     <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
        
+       {showBanter && (
+          <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.9)', zIndex: 9999, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+             <h3 style={{ color: 'var(--gold)', fontFamily: 'serif', fontSize: '2rem', marginBottom: '0.5rem' }}>The Banter Feed</h3>
+             <p style={{ color: 'var(--mist)', fontSize: '0.9rem', marginBottom: '2rem' }}>Broadcast your trash talk to the entire field.</p>
+             <textarea 
+                value={banterMsg}
+                onChange={(e) => setBanterMsg(e.target.value)}
+                placeholder="He shanked it into the fescue again..."
+                style={{ width: '100%', maxWidth: '400px', height: '120px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '12px', padding: '1rem', color: 'white', fontSize: '1.2rem', resize: 'none' }}
+                maxLength={140}
+             />
+             <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
+                <button onClick={() => setShowBanter(false)} style={{ background: 'transparent', border: '1px solid white', color: 'white', padding: '1rem 2rem', borderRadius: '30px', fontWeight: 600 }}>Cancel</button>
+                <button onClick={submitBanter} disabled={sendingBanter || !banterMsg.trim()} style={{ background: 'var(--gold)', border: 'none', color: 'black', padding: '1rem 2rem', borderRadius: '30px', fontWeight: 800 }}>
+                    {sendingBanter ? 'Sending...' : 'Broadcast'}
+                </button>
+             </div>
+          </div>
+       )}
+
        {/* ACTIVE TEAM CARD */}
        <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           {/* Identity Header & Haversine Engine Output */}
@@ -247,13 +320,28 @@ export default function InteractiveScorer({
              <div>
                 <div style={{ fontWeight: 800, fontSize: '1.3rem', color: 'var(--cream)' }}>{activeTeam.firstName} {activeTeam.lastName}</div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Captain: HDCP {activeTeam.handicapIndex}</div>
-                <button 
-                  onClick={() => router.push(`/tournaments/${tournamentId}/play/watch?hole=${currentHole}`)}
-                  style={{ marginTop: '0.5rem', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '20px', padding: '0.25rem 0.75rem', color: 'var(--gold)', fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.05em', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
-                >
-                  ⌚ WATCH MODE
-                </button>
-             </div>
+                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
+                    <button 
+                      onClick={() => router.push(`/tournaments/${tournamentId}/play/watch?hole=${currentHole}`)}
+                      style={{ background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '20px', padding: '0.25rem 0.75rem', color: 'var(--gold)', fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.05em', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
+                    >
+                      ⌚ WATCH MODE
+                    </button>
+                    <button 
+                      onClick={handleCallBevCart}
+                      disabled={bevStatus !== 'IDLE'}
+                      style={{ background: bevStatus === 'SENT' ? 'rgba(78,201,160,0.1)' : 'rgba(59,130,246,0.1)', border: bevStatus === 'SENT' ? '1px solid rgba(78,201,160,0.3)' : '1px solid rgba(59,130,246,0.3)', borderRadius: '20px', padding: '0.25rem 0.75rem', color: bevStatus === 'SENT' ? '#4ec9a0' : '#60a5fa', fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.05em', cursor: bevStatus !== 'IDLE' ? 'default' : 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
+                    >
+                      {bevStatus === 'ORDERING' ? '📡 PINGING...' : bevStatus === 'SENT' ? '🍻 CART DISPATCHED' : '🍻 CALL BEV CART'}
+                    </button>
+                    <button 
+                      onClick={() => setShowBanter(true)}
+                      style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '20px', padding: '0.25rem 0.75rem', color: 'white', fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.05em', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
+                    >
+                      💬 TRASH TALK
+                    </button>
+                 </div>
+              </div>
              
              <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center' }}>
                 <div style={{ fontSize: '0.65rem', color: distanceToPin ? '#4CAF50' : 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 800 }}>

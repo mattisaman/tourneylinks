@@ -4,6 +4,7 @@ import { FormatEngine } from '@/lib/scoring-engine';
 import { eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import BanterStream from './BanterStream';
 
 export const dynamic = 'force-dynamic';
 
@@ -68,6 +69,8 @@ export default async function MobileLeaderboardPage({
             <div style={{ fontSize: '1.2rem', fontFamily: 'serif', fontWeight: 800 }}>{tournament.name}</div>
          </div>
       </div>
+
+      <BanterStream tournamentId={tourneyId} />
 
       <div style={{ padding: '1rem' }}>
          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>

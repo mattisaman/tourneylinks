@@ -4,18 +4,33 @@ import React, { useEffect, useState } from 'react';
 
 export default function LiveRadarClient({ tournamentId }: { tournamentId: number }) {
   const [telemetry, setTelemetry] = useState<any[]>([]);
+  const [orders, setOrders] = useState<any[]>([]);
   const [lastPing, setLastPing] = useState<Date | null>(null);
+
+  const markDrinkDelivered = async (orderId: number) => {
+      try {
+         await fetch(`/api/tournaments/${tournamentId}/drinks`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderId, status: 'DELIVERED' })
+         });
+         setOrders(orders.filter(o => o.id !== orderId));
+      } catch (e) { console.error(e); }
+  };
 
   useEffect(() => {
      const fetchRadar = async () => {
-         try {
-             const res = await fetch(`/api/tournaments/${tournamentId}/telemetry`);
-             if (res.ok) {
-                 const data = await res.json();
-                 setTelemetry(data);
-                 setLastPing(new Date());
-             }
-         } catch (e) {
+        try {
+            const [tRes, oRes] = await Promise.all([
+                fetch(`/api/tournaments/${tournamentId}/telemetry`),
+                fetch(`/api/tournaments/${tournamentId}/drinks`)
+            ]);
+            
+            if (tRes.ok) setTelemetry(await tRes.json());
+            if (oRes.ok) setOrders(await oRes.json());
+            
+            setLastPing(new Date());
+        } catch (e) {
              console.error('Radar offline');
          }
      };
@@ -81,23 +96,12 @@ export default function LiveRadarClient({ tournamentId }: { tournamentId: number
              pointerEvents: 'none'
           }}></div>
 
-          <style dangerouslySetInnerHTML={{__html: `
-            @keyframes radar-sweep {
-              from { transform: rotate(0deg); }
-              to { transform: rotate(360deg); }
-            }
-            @keyframes pulse-red {
-              0% { box-shadow: 0 0 0 0 rgba(255, 77, 79, 0.7); }
-              70% { box-shadow: 0 0 0 10px rgba(255, 77, 79, 0); }
-              100% { box-shadow: 0 0 0 0 rgba(255, 77, 79, 0); }
-            }
-          `}} />
 
           {/* Plotting the Field */}
           {telemetry.map(t => {
              // Calculate absolute % mapping inside the auto-bounding box
-             const latPercent = ((t.latitude - minLat) / (maxLat - minLat)) * 100;
-             const lngPercent = ((t.longitude - minLng) / (maxLng - minLng)) * 100;
+             const latPercent = maxLat === minLat ? 50 : ((t.latitude - minLat) / (maxLat - minLat)) * 100;
+             const lngPercent = maxLng === minLng ? 50 : ((t.longitude - minLng) / (maxLng - minLng)) * 100;
 
              // Pace of Play Warning Logic: If they haven't pinged in > 5 mins, assume they are stuck
              const msSincePing = new Date().getTime() - new Date(t.timestamp).getTime();
@@ -129,7 +133,61 @@ export default function LiveRadarClient({ tournamentId }: { tournamentId: number
                 </div>
              );
           })}
-       </div>
+
+           {/* Plotting Beverage Orders */}
+           {orders.map(o => {
+              const latPercent = maxLat === minLat ? 50 : ((o.latitude - minLat) / (maxLat - minLat)) * 100;
+              const lngPercent = maxLng === minLng ? 50 : ((o.longitude - minLng) / (maxLng - minLng)) * 100;
+
+              return (
+                 <div 
+                    key={`drink-${o.id}`}
+                    onClick={() => markDrinkDelivered(o.id)}
+                    style={{
+                       position: 'absolute',
+                       top: `${100 - latPercent}%`, 
+                       left: `${lngPercent}%`,
+                       transform: 'translate(-50%, -50%)',
+                       width: '18px',
+                       height: '18px',
+                       background: '#3b82f6',
+                       borderRadius: '50%',
+                       boxShadow: '0 0 15px #3b82f6',
+                       animation: 'pulse-blue 1.5s infinite',
+                       cursor: 'pointer',
+                       zIndex: 20,
+                       display: 'flex',
+                       alignItems: 'center',
+                       justifyContent: 'center',
+                       fontSize: '10px'
+                    }}
+                    title="Deliver Drinks. Click to resolve."
+                 >
+                    🍻
+                    <div style={{ position: 'absolute', top: '-25px', left: '15px', background: 'rgba(59,130,246,0.2)', padding: '2px 6px', borderRadius: '4px', fontSize: '10px', color: '#60a5fa', whiteSpace: 'nowrap', border: '1px solid #3b82f6' }}>
+                       Thirsty!
+                    </div>
+                 </div>
+              );
+           })}
+
+           <style dangerouslySetInnerHTML={{__html: `
+             @keyframes radar-sweep {
+               from { transform: rotate(0deg); }
+               to { transform: rotate(360deg); }
+             }
+             @keyframes pulse-red {
+               0% { box-shadow: 0 0 0 0 rgba(255, 77, 79, 0.7); }
+               70% { box-shadow: 0 0 0 10px rgba(255, 77, 79, 0); }
+               100% { box-shadow: 0 0 0 0 rgba(255, 77, 79, 0); }
+             }
+             @keyframes pulse-blue {
+               0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+               70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
+               100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+             }
+           `}} />
+        </div>
     </div>
   );
 }

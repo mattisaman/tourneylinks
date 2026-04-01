@@ -90,6 +90,17 @@ export async function POST() {
          { tournamentId, title: "Pro Drive on Hole 18", price: 5000, maxPerPlayer: 1 }
      ]);
 
+     // Seed GeoFenced Sponsors
+     await db.insert(tournament_sponsors).values([
+         {
+            tournamentId,
+            name: 'Local Ford Dealership',
+            logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a0/Ford_Motor_Company_Logo.svg',
+            holeAssignment: 2, // The hole they are sponsoring
+            popupAdCopy: 'FORD DEALERSHIP: WIN A NEW F-150 WITH A HOLE-IN-ONE TODAY!'
+         }
+     ]);
+
      return NextResponse.json({ success: true, message: 'Drizzle ORM Engine completely purged and precisely rebuilt Pebble Beach Demo infrastructure.' });
   } catch(err: any) {
      console.error('Master Sandbox Refresh Failure:', err);

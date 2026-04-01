@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import InteractiveScorer from './InteractiveScorer';
 import TraditionalScorecard from './TraditionalScorecard';
+import GeoFenceModal from './GeoFenceModal';
 
 export const dynamic = 'force-dynamic';
 
@@ -54,6 +55,11 @@ export default async function LiveScoringApp({ params, searchParams }: { params:
           </div>
         </div>
       ) : null}
+
+      {/* Geo-Fenced Sponsor Modal (Triggers Instantly if Active Sponsor Pop-up Present) */}
+      {activeSponsor && activeSponsor.popupAdCopy && (
+          <GeoFenceModal sponsor={activeSponsor} />
+      )}
 
       {/* Main Scoring Interface (Scaffold) */}
       <div style={{ padding: '1.5rem', maxWidth: '600px', margin: '0 auto' }}>
