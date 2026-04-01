@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { db, users, courses, tournaments, course_holes, registrations, team_groups, split_invites, payments, store_inventory, stripe_accounts, tournament_sponsors } from '@/lib/db';
+import { db, users, courses, tournaments, course_holes, registrations, team_groups, split_invites, payments, store_inventory, stripe_accounts, tournament_sponsors, live_telemetry, beverage_orders, live_banter } from '@/lib/db';
 
 export async function POST() {
   try {
@@ -12,6 +12,9 @@ export async function POST() {
      await db.delete(store_inventory);
      await db.delete(tournament_sponsors);
      await db.delete(stripe_accounts);
+     await db.delete(live_telemetry);
+     await db.delete(beverage_orders);
+     await db.delete(live_banter);
      await db.delete(course_holes);
      await db.delete(tournaments);
      await db.delete(courses);

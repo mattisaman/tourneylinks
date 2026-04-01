@@ -290,6 +290,7 @@ export const tournament_sponsors = pgTable('tournament_sponsors', {
   logoUrl: text('logo_url').notNull(),
   websiteUrl: text('website_url'),
   holeAssignment: integer('hole_assignment'), // The hole number (1-18) this sponsor is natively attached to
+  popupAdCopy: text('popup_ad_copy'), // e.g. "Hole 8 Sponsored by Ford! Win a F150!"
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
@@ -366,4 +367,34 @@ export const player_scores = pgTable('player_scores', {
   
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+// PHASE 10: MARAUDERS MAP TELEMETRY ENGINE
+export const live_telemetry = pgTable('live_telemetry', {
+  id: serial('id').primaryKey(),
+  tournamentId: integer('tournament_id').references(() => tournaments.id, { onDelete: 'cascade' }).notNull(),
+  registrationId: integer('registration_id').references(() => registrations.id, { onDelete: 'cascade' }).notNull(),
+  latitude: real('latitude').notNull(),
+  longitude: real('longitude').notNull(),
+  accuracy: real('accuracy'), // For resolving ping noise
+  timestamp: timestamp('timestamp').defaultNow().notNull(),
+});
+
+// PHASE 11: Beverage Cart & Banter Features
+export const beverage_orders = pgTable('beverage_orders', {
+  id: serial('id').primaryKey(),
+  tournamentId: integer('tournament_id').references(() => tournaments.id, { onDelete: 'cascade' }).notNull(),
+  registrationId: integer('registration_id').references(() => registrations.id, { onDelete: 'cascade' }).notNull(),
+  latitude: real('latitude').notNull(),
+  longitude: real('longitude').notNull(),
+  status: text('status').default('PENDING').notNull(), // 'PENDING' | 'DELIVERED'
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const live_banter = pgTable('live_banter', {
+  id: serial('id').primaryKey(),
+  tournamentId: integer('tournament_id').references(() => tournaments.id, { onDelete: 'cascade' }).notNull(),
+  authorName: text('author_name').notNull(),
+  message: text('message').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });

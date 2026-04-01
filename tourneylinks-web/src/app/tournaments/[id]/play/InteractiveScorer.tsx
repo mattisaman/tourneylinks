@@ -91,6 +91,7 @@ export default function InteractiveScorer({
                  }
               }
 
+              // Determine My HUD Stats
               // Pull live telemetry from the multi-format FormatEngine Backend
               if (leaderboardData && leaderboardData.leaderboard) {
                  const lbRaw = leaderboardData.leaderboard;
@@ -115,44 +116,61 @@ export default function InteractiveScorer({
      fetchData();
   }, [tournamentId, currentHole, courseId]);
 
-  // Phase 7: Subsystem initializing the HTML5 Navigator & Haversine Formula
+  // Phase 10: MARAUDERS MAP / Real-Time Telemetry Pinging
   useEffect(() => {
-     if (!pinTarget) return;
+     if (!activeTeam) return;
 
-     if (!('geolocation' in navigator)) {
-         setGpsStatus('GPS UNAVAILABLE');
-         return;
+     let watchId: number;
+     if (typeof navigator !== 'undefined' && 'geolocation' in navigator) {
+        watchId = navigator.geolocation.watchPosition((pos) => {
+            const { latitude, longitude, accuracy } = pos.coords;
+            
+            // Fire and forget Ping to Command Center
+            fetch(`/api/tournaments/${tournamentId}/telemetry`, {
+               method: 'POST',
+               headers: { 'Content-Type': 'application/json' },
+               body: JSON.stringify({
+                  registrationId: activeTeam.id,
+                  latitude,
+                  longitude,
+                  accuracy
+               })
+            }).catch(() => {}); // Suppress network drops
+
+            // Haversine Distance Calculator
+            if (pinTarget) {
+               const R = 6371e3; // Earth radius in meters
+               const φ1 = latitude * Math.PI/180;
+               const φ2 = pinTarget.lat * Math.PI/180;
+               const Δφ = (pinTarget.lat - latitude) * Math.PI/180;
+               const Δλ = (pinTarget.lng - longitude) * Math.PI/180;
+   
+               const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                         Math.cos(φ1) * Math.cos(φ2) *
+                         Math.sin(Δλ/2) * Math.sin(Δλ/2);
+               const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+   
+               const distMeters = R * c; 
+               const yards = Math.round(distMeters * 1.09361);
+               
+               setDistanceToPin(yards);
+               setGpsStatus('ACQUIRED');
+            }
+
+        }, () => {
+            setGpsStatus('GPS DENIED');
+        }, {
+           enableHighAccuracy: true,
+           timeout: 10000,
+           maximumAge: 5000
+        });
      }
 
-     const getDistanceYards = (lat1: number, lon1: number, lat2: number, lon2: number) => {
-         const R = 6371; // Radius of the Earth in Kilometers
-         const dLat = (lat2 - lat1) * (Math.PI / 180);
-         const dLon = (lon2 - lon1) * (Math.PI / 180);
-         const a = 
-             Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-             Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) * 
-             Math.sin(dLon / 2) * Math.sin(dLon / 2);
-         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); 
-         const d = R * c; 
-         return Math.round(d * 1093.61); // Dynamically convert km to physical yards
-     };
+     return () => {
+        if (watchId) navigator.geolocation.clearWatch(watchId);
+     }
+  }, [tournamentId, activeTeam, pinTarget]);
 
-     const watchId = navigator.geolocation.watchPosition(
-         (pos) => {
-             const userLat = pos.coords.latitude;
-             const userLng = pos.coords.longitude;
-             const distance = getDistanceYards(userLat, userLng, pinTarget.lat, pinTarget.lng);
-             setDistanceToPin(distance);
-             setGpsStatus('ACQUIRED');
-         },
-         (err) => {
-             setGpsStatus('GPS DENIED');
-         },
-         { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-     );
-
-     return () => navigator.geolocation.clearWatch(watchId);
-  }, [pinTarget]);
 
   const saveInteraction = async (newScore: number, newPutts: number, newFIR: boolean, newGIR: boolean) => {
      if (!activeTeam) return;

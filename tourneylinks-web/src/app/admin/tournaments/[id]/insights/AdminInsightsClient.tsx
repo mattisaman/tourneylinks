@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell, LineChart, Line } from 'recharts';
+import LiveRadarClient from './LiveRadarClient';
 
 export default function AdminInsightsClient({ tournamentId, tourneyName }: { tournamentId: number, tourneyName: string }) {
   const [data, setData] = useState<any>(null);
@@ -53,6 +54,9 @@ export default function AdminInsightsClient({ tournamentId, tourneyName }: { tou
              <div style={{ fontSize: '2.5rem', fontWeight: 900, color: '#4ec9a0', marginTop: '0.5rem' }}>{data.courseAverages?.girPercentage?.toFixed(1) || '--'}%</div>
           </div>
        </div>
+
+       {/* MARAUDERS MAP: LIVE PACE OF PLAY RADAR */}
+       <LiveRadarClient tournamentId={tournamentId} />
 
        {/* DIAGNOSTIC CHARTS */}
        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
