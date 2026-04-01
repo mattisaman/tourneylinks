@@ -109,9 +109,9 @@ export default function Hero() {
                   Search Tournaments →
                 </Link>
                 <div style={{ textAlign: "center", marginTop: "1rem" }}>
-                  <a href="#" style={{ color: "rgba(245,240,232,0.4)", fontSize: "0.78rem", textDecoration: "none" }}>
+                  <Link href="/profile" style={{ color: "rgba(245,240,232,0.4)", fontSize: "0.78rem", textDecoration: "none" }}>
                     🔔 Get alerts for new tournaments
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

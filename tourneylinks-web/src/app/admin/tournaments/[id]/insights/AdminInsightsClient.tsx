@@ -7,6 +7,34 @@ import LiveRadarClient from './LiveRadarClient';
 export default function AdminInsightsClient({ tournamentId, tourneyName }: { tournamentId: number, tourneyName: string }) {
   const [data, setData] = useState<any>(null);
 
+  // Broadcast State
+  const [broadcastMsg, setBroadcastMsg] = useState("");
+  const [broadcasting, setBroadcasting] = useState(false);
+  const [broadcastSuccess, setBroadcastSuccess] = useState("");
+
+  const handleBroadcast = async () => {
+     if (!broadcastMsg.trim()) return;
+     setBroadcasting(true);
+     setBroadcastSuccess("");
+     try {
+       const res = await fetch(`/api/admin/tournaments/${tournamentId}/announce`, {
+           method: 'POST',
+           headers: { 'Content-Type': 'application/json' },
+           body: JSON.stringify({ message: broadcastMsg })
+       });
+       const data = await res.json();
+       if (data.success) {
+          setBroadcastSuccess(`Successfully dispatched to ${data.count} players!`);
+          setBroadcastMsg("");
+       } else {
+          setBroadcastSuccess(`Error: ${data.error}`);
+       }
+     } catch (e) {
+       setBroadcastSuccess('Network error dispatching broadcast.');
+     }
+     setBroadcasting(false);
+  };
+
   useEffect(() => {
     fetch(`/api/tournaments/${tournamentId}/stats`)
       .then(res => res.json())
@@ -57,6 +85,31 @@ export default function AdminInsightsClient({ tournamentId, tourneyName }: { tou
 
        {/* MARAUDERS MAP: LIVE PACE OF PLAY RADAR */}
        <LiveRadarClient tournamentId={tournamentId} />
+
+       {/* BROADCAST COMMUNICATIONS HUB */}
+       <div style={{ background: 'rgba(255, 255, 255, 0.02)', padding: '2rem', borderRadius: '16px', border: '1px solid rgba(255,77,79,0.2)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+             <h3 style={{ margin: 0, color: 'white', fontWeight: 600, fontSize: '1.5rem' }}>📣 Field Communications Hub</h3>
+             <div style={{ background: 'rgba(255,77,79,0.1)', color: '#ff4d4f', padding: '0.2rem 0.5rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Danger Zone</div>
+          </div>
+          <p style={{ color: 'var(--mist)', fontSize: '0.95rem', marginBottom: '1.5rem' }}>Send an instant, high-priority alert email to every single registered player simultaneously. Use for frost delays, evacuations, or critical rule changes.</p>
+          <textarea 
+             value={broadcastMsg}
+             onChange={e => setBroadcastMsg(e.target.value)}
+             placeholder="Type your emergency field announcement here..."
+             style={{ width: '100%', height: '100px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '1rem', color: 'white', fontFamily: 'var(--font-sans)', fontSize: '1rem', resize: 'none', marginBottom: '1rem' }}
+          />
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+             <div style={{ color: broadcastSuccess.includes('Error') ? '#ff4d4f' : '#4ec9a0', fontSize: '0.9rem', fontWeight: 600 }}>{broadcastSuccess}</div>
+             <button 
+                onClick={handleBroadcast}
+                disabled={broadcasting || !broadcastMsg.trim()}
+                style={{ background: '#ff4d4f', color: 'white', border: 'none', padding: '1rem 2rem', borderRadius: '8px', fontWeight: 800, fontSize: '1rem', cursor: broadcasting || !broadcastMsg.trim() ? 'not-allowed' : 'pointer', opacity: broadcasting || !broadcastMsg.trim() ? 0.5 : 1, transition: '0.2s', boxShadow: '0 4px 15px rgba(255,77,79,0.3)' }}
+             >
+                {broadcasting ? '📡 Dispatching...' : 'BLAST ENTIRE FIELD'}
+             </button>
+          </div>
+       </div>
 
        {/* DIAGNOSTIC CHARTS */}
        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>

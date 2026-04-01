@@ -23,44 +23,44 @@ export default function Footer() {
             </div>
               The premier platform for golf tournament discovery, registration, and management. Built for players, loved by organizers.
             <div className="footer-social">
-              <a href="#" className="social-icon">X</a>
-              <a href="#" className="social-icon">IN</a>
-              <a href="#" className="social-icon">FB</a>
+              <a href="https://x.com/tourneylinks" target="_blank" rel="noopener noreferrer" className="social-icon">X</a>
+              <a href="https://instagram.com/tourneylinks" target="_blank" rel="noopener noreferrer" className="social-icon">IN</a>
+              <a href="https://facebook.com/tourneylinks" target="_blank" rel="noopener noreferrer" className="social-icon">FB</a>
             </div>
           </div>
           <div>
             <div className="footer-col-title">Players</div>
             <ul className="footer-links">
-              <li><a href="#">Find Tournaments</a></li>
-              <li><a href="#">Verify Handicap</a></li>
-              <li><a href="#">Player Dashboard</a></li>
-              <li><a href="#">Tournament Rules</a></li>
+              <li><Link href="/tournaments">Find Tournaments</Link></li>
+              <li><Link href="/verify">Verify Handicap</Link></li>
+              <li><Link href="/profile">Player Dashboard</Link></li>
+              <li><Link href="/support">Tournament Rules</Link></li>
             </ul>
           </div>
           <div>
             <div className="footer-col-title">Organizers</div>
             <ul className="footer-links">
-              <li><a href="#">Host an Event</a></li>
-              <li><a href="#">Pricing</a></li>
-              <li><a href="#">Features</a></li>
-              <li><a href="#">Course Database</a></li>
+              <li><Link href="/admin">Host an Event</Link></li>
+              <li><Link href="/compare">Pricing</Link></li>
+              <li><Link href="/compare">Features</Link></li>
+              <li><Link href="/courses">Course Database</Link></li>
             </ul>
           </div>
           <div>
             <div className="footer-col-title">Company</div>
             <ul className="footer-links">
-              <li><a href="#">About Us</a></li>
-              <li><a href="#">Contact</a></li>
-              <li><a href="#">Careers</a></li>
-              <li><a href="#">Blog</a></li>
+              <li><Link href="/support">About Us</Link></li>
+              <li><Link href="/support">Contact</Link></li>
+              <li><Link href="/support">Careers</Link></li>
+              <li><Link href="/support">Blog</Link></li>
             </ul>
           </div>
         </div>
         <div className="footer-bottom">
           <div>© {new Date().getFullYear()} TourneyLinks Platform. All rights reserved.</div>
           <div style={{ display: 'flex', gap: '1rem' }}>
-            <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>Privacy Policy</a>
-            <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>Terms of Service</a>
+            <Link href="/support" style={{ color: 'inherit', textDecoration: 'none' }}>Privacy Policy</Link>
+            <Link href="/support" style={{ color: 'inherit', textDecoration: 'none' }}>Terms of Service</Link>
           </div>
         </div>
       </div>

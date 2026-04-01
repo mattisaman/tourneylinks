@@ -4,6 +4,8 @@ import { db, registrations, payments, tournaments, users, tournament_sponsors } 
 import { eq } from 'drizzle-orm';
 import Stripe from 'stripe';
 import { headers } from 'next/headers';
+import { resend, DEFAULT_FROM_ADDRESS } from '@/lib/mail';
+import RegistrationSuccessEmail from '@/emails/RegistrationSuccessEmail';
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -183,6 +185,22 @@ export async function POST(req: Request) {
         });
 
         console.log(`✅ [Webhook] Registration sequence successfully closed for User ${userId}.`);
+
+        // Phase Epic: Dispatch Resend Registration Success Atomic Email
+        const baseSystemUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://tourneylinks.com';
+        
+        resend.emails.send({
+           from: DEFAULT_FROM_ADDRESS,
+           to: user.email,
+           subject: `Registration Confirmed: ${tourneyData[0].name}`,
+           react: RegistrationSuccessEmail({
+              playerName: user.fullName || 'Golfer',
+              tournamentName: tourneyData[0].name,
+              format: tourneyData[0].format || 'SCRAMBLE',
+              transactionId: session.id.slice(-8).toUpperCase(),
+              tournamentUrl: `${baseSystemUrl}/tournaments/${tournamentId}`
+           })
+        }).catch(err => console.error("Resend Confirmation Dispatch Failed:", err));
       }
     } // Closes `if (stripeEvent.type === 'checkout.session.completed')`
 
