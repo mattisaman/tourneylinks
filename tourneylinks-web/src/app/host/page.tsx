@@ -372,6 +372,11 @@ export default function HostLiveCampaignBuilder() {
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                        <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--grass)' }}>${p.price.toFixed(2)}</span>
+                       <button onClick={() => {
+                          setNewPackage(p);
+                          setPackages(packages.filter((_, idx) => idx !== i));
+                          setShowPackageForm(true);
+                       }} style={{ background: 'none', border: 'none', color: 'var(--forest)', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600 }}>Edit</button>
                        <button onClick={() => setPackages(packages.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: '#e74c3c', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600 }}>Remove</button>
                     </div>
                  </div>
@@ -759,14 +764,15 @@ export default function HostLiveCampaignBuilder() {
                       <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.1rem' }}>${totalDue.toFixed(2)}</span>
                    </div>
                    <div style={{ background: '#f4f7f5', padding: '0.8rem', borderRadius: '6px', marginTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--forest)' }}>💳 Split Payment with Foursome</span>
+                      <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--forest)' }}>💳 Universal Split Cart (BNPL / Team Link)</span>
                       <label className="toggle-switch" style={{ transform: 'scale(0.8)' }}>
                         <input type="checkbox" checked={false} readOnly />
                         <span className="toggle-slider"></span>
                       </label>
                    </div>
-                   <div style={{ textAlign: 'right', fontSize: '0.7rem', color: 'var(--mist)', marginTop: '0.3rem' }}>
-                      Pay ${(totalDue / 4).toFixed(2)} now, teammates pay remainder
+                   <div style={{ textAlign: 'right', fontSize: '0.7rem', color: 'var(--mist)', marginTop: '0.3rem', lineHeight: 1.4 }}>
+                      Stripe Affirm/Klarna native percent splits.<br/>
+                      Or generate a secure Link to text buddies!
                    </div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
@@ -877,8 +883,8 @@ export default function HostLiveCampaignBuilder() {
                     </div>
                  )}
 
-                 <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '0.75rem' }}>Live Sponsors</div>
-                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '2rem' }}>
+                 <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '0.75rem', marginTop: '1.5rem' }}>Live Sponsors</div>
+                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.5rem' }}>
                     {sponsors.map((s, idx) => (
                        <div key={idx} style={{ padding: '1rem', background: '#f8faf9', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                           <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--forest)' }}>{s.tier}</span>
@@ -886,6 +892,20 @@ export default function HostLiveCampaignBuilder() {
                        </div>
                     ))}
                  </div>
+
+                 {packages.length > 0 && (
+                    <div style={{ marginTop: '1.5rem' }}>
+                       <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '0.75rem' }}>Registration Packages</div>
+                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                          {packages.map((p, idx) => (
+                             <div key={idx} style={{ padding: '1rem', background: '#f4f7f5', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink)' }}>{p.name}</span>
+                                <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--ink)' }}>${p.price}</span>
+                             </div>
+                          ))}
+                       </div>
+                    </div>
+                 )}
               </div>
 
               <div style={{ position: 'sticky', bottom: 0, background: '#fff', padding: '1rem', borderTop: '1px solid rgba(0,0,0,0.05)', display: 'flex', justifyContent: 'center', zIndex: 50 }}>
@@ -930,14 +950,15 @@ export default function HostLiveCampaignBuilder() {
                       <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.1rem' }}>${totalDue.toFixed(2)}</span>
                    </div>
                    <div style={{ background: '#f4f7f5', padding: '0.8rem', borderRadius: '6px', marginTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--forest)' }}>💳 Split Payment with Foursome</span>
+                      <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--forest)' }}>💳 Universal Split Cart (BNPL / Team Link)</span>
                       <label className="toggle-switch" style={{ transform: 'scale(0.8)' }}>
                         <input type="checkbox" checked={false} readOnly />
                         <span className="toggle-slider"></span>
                       </label>
                    </div>
-                   <div style={{ textAlign: 'right', fontSize: '0.7rem', color: 'var(--mist)', marginTop: '0.3rem' }}>
-                      Pay ${(totalDue / 4).toFixed(2)} now, teammates pay remainder
+                   <div style={{ textAlign: 'right', fontSize: '0.7rem', color: 'var(--mist)', marginTop: '0.3rem', lineHeight: 1.4 }}>
+                      Stripe Affirm/Klarna native percent splits.<br/>
+                      Or generate a secure Link to text buddies!
                    </div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
