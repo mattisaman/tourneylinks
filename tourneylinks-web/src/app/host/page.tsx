@@ -23,7 +23,11 @@ export default function HostLiveCampaignBuilder() {
   const [org, setOrg] = useState('');
   const [email, setEmail] = useState('');
   const [passFees, setPassFees] = useState(false);
-  const [addons, setAddons] = useState([{ name: 'Mulligan (Max 2)', price: 20 }]);
+  const [addons, setAddons] = useState<{name: string, price: number, type: 'per_player'|'per_team'|'flat'}[]>([
+     { name: 'Mulligan (Max 2)', price: 20, type: 'per_player' }
+  ]);
+  const [showAddonForm, setShowAddonForm] = useState(false);
+  const [newAddon, setNewAddon] = useState<{name: string, price: number, type: 'per_player'|'per_team'|'flat'}>({ name: '', price: 0, type: 'per_player' });
 
   const [themeColor, setThemeColor] = useState('#c9a84c');
   const [secondaryThemeColor, setSecondaryThemeColor] = useState('#1a2e1a');
@@ -40,10 +44,13 @@ export default function HostLiveCampaignBuilder() {
   const [courseSearch, setCourseSearch] = useState('');
   const [courseResults, setCourseResults] = useState<any[]>([]);
   
-  const [sponsors, setSponsors] = useState([
+  const [sponsors, setSponsors] = useState<{tier: string, price: number, spots: number, incentives: string[]}[]>([
      { tier: 'Title Sponsor', price: 5000, spots: 1, incentives: ['Primary Logo on all Hero branding', 'Foursome included', 'Speaking opportunity at dinner'] },
      { tier: 'Beverage Cart', price: 1500, spots: 2, incentives: ['Logo on beverage cart', 'Custom branded napkins'] }
   ]);
+  const [showSponsorForm, setShowSponsorForm] = useState(false);
+  const [editingSponsorIdx, setEditingSponsorIdx] = useState<number | null>(null);
+  const [newSponsor, setNewSponsor] = useState<{tier: string, price: number, spots: number, incentivesText: string}>({ tier: '', price: 0, spots: 1, incentivesText: '' });
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -322,7 +329,7 @@ export default function HostLiveCampaignBuilder() {
             </div>
             <div className="pricing-row" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.9rem' }}>
               <span style={{ color: 'var(--mist)' }}>
-                 Platform & Processing <br/>
+                 Credit Card Processing Fee <br/>
                  <span style={{ fontSize: '0.75rem' }}>{passFees ? '(Paid by Registrant)' : '(Deducted from Payout)'}</span>
               </span>
               <strong style={{ color: passFees ? 'var(--mist)' : '#e74c3c' }}>{passFees ? '' : '-'}${stripeFee.toFixed(2)}</strong>
@@ -331,7 +338,7 @@ export default function HostLiveCampaignBuilder() {
             <div className="notif-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '1rem 0', padding: '1rem', background: '#fff', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.1)' }}>
               <div>
                 <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--ink)' }}>Pass Fees to Registrant</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>Automatically append transaction costs to checkout.</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>Automatically append standard 2.9% + 30¢ processor costs to checkout.</div>
               </div>
               <label className="toggle-switch">
                 <input type="checkbox" checked={passFees} onChange={e => setPassFees(e.target.checked)} />
@@ -355,17 +362,67 @@ export default function HostLiveCampaignBuilder() {
         <div className="wizard-card">
            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
               <div className="wizard-card-title" style={{ marginBottom: 0 }}>Add-ons & Extras</div>
-              <button className="btn-hero-outline" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                 <Plus size={14} /> Mint Add-on
+              <button onClick={() => setShowAddonForm(!showAddonForm)} className="btn-hero-outline" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                 {showAddonForm ? 'Cancel' : <><Plus size={14} /> Mint Add-on</>}
               </button>
            </div>
-           <div style={{ color: 'var(--mist)', fontSize: '0.8rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>Configure optional purchases (e.g., Mulligans, Skins, Raffle Tickets) that players can seamlessly add to their cart during checkout.</div>
+           
+           {showAddonForm && (
+              <div style={{ padding: '1.5rem', background: '#f4f7f5', borderRadius: '8px', border: '1px dashed rgba(0,0,0,0.1)', marginBottom: '1.5rem' }}>
+                 <div style={{ fontWeight: 700, color: 'var(--forest)', marginBottom: '1rem', fontSize: '0.9rem' }}>Create Custom Add-on</div>
+                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <div style={{ display: 'flex', gap: '1rem' }}>
+                       <div style={{ flex: 2 }}>
+                          <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>Add-on Name</label>
+                          <input type="text" value={newAddon.name} onChange={e => setNewAddon({...newAddon, name: e.target.value})} placeholder="e.g. Mulligan Package" style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }} />
+                       </div>
+                       <div style={{ flex: 1 }}>
+                          <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>Price ($)</label>
+                          <input type="number" value={newAddon.price} onChange={e => setNewAddon({...newAddon, price: Number(e.target.value)})} style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }} />
+                       </div>
+                    </div>
+                    <div>
+                       <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>Application Logic</label>
+                       <select value={newAddon.type} onChange={e => setNewAddon({...newAddon, type: e.target.value as any})} style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }}>
+                          <option value="per_player">Per Player (Scales with roster size)</option>
+                          <option value="per_team">Per Foursome Team (Flat team addition)</option>
+                          <option value="flat">Flat Purchase (e.g. 50/50 Raffle Tickets)</option>
+                       </select>
+                    </div>
+                    <button 
+                       onClick={() => {
+                          if (newAddon.name && newAddon.price >= 0) {
+                             setAddons([...addons, newAddon]);
+                             setNewAddon({ name: '', price: 0, type: 'per_player' });
+                             setShowAddonForm(false);
+                          }
+                       }}
+                       style={{ padding: '0.8rem', background: 'var(--forest)', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 700, cursor: 'pointer' }}>
+                       Save Add-on to Cart
+                    </button>
+                 </div>
+              </div>
+           )}
+
+           {!showAddonForm && addons.length === 0 && (
+              <div style={{ color: 'var(--mist)', fontSize: '0.8rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>
+                 Configure optional purchases (e.g., Mulligans, Skins, Raffle Tickets) that players can seamlessly add to their cart during checkout.
+              </div>
+           )}
            
            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {addons.map((a, i) => (
                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', background: '#f8faf9' }}>
-                    <div style={{ fontWeight: 600, color: 'var(--forest)', fontSize: '0.95rem' }}>{a.name}</div>
-                    <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--ink)' }}>${a.price.toFixed(2)}</div>
+                    <div>
+                       <div style={{ fontWeight: 600, color: 'var(--forest)', fontSize: '0.95rem' }}>{a.name}</div>
+                       <div style={{ fontSize: '0.75rem', color: 'var(--mist)', marginTop: '0.2rem' }}>
+                          {a.type === 'per_player' ? 'Applied Per Player' : a.type === 'per_team' ? 'Applied Per Team' : 'Flat Purchase Item'}
+                       </div>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                       <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--ink)' }}>${a.price.toFixed(2)}</div>
+                       <button onClick={() => setAddons(addons.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: '#ff5f56', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600 }}>Remove</button>
+                    </div>
                  </div>
               ))}
            </div>
@@ -388,19 +445,115 @@ export default function HostLiveCampaignBuilder() {
         <div className="wizard-card">
            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
               <div className="wizard-card-title" style={{ marginBottom: 0 }}>Sponsorship Inventory</div>
-              <button className="btn-hero-outline" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                 <Plus size={14} /> Mint Sponsor Tier
+              <button 
+                 onClick={() => {
+                    setShowSponsorForm(!showSponsorForm);
+                    setEditingSponsorIdx(null);
+                    setNewSponsor({ tier: '', price: 0, spots: 1, incentivesText: '' });
+                 }} 
+                 className="btn-hero-outline" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                 {showSponsorForm && editingSponsorIdx === null ? 'Cancel' : <><Plus size={14} /> Mint Sponsor Tier</>}
               </button>
            </div>
            
+           {showSponsorForm && (
+              <div style={{ padding: '1.5rem', background: '#f4f7f5', borderRadius: '8px', border: '1px dashed rgba(0,0,0,0.1)', marginBottom: '1.5rem' }}>
+                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                    <div style={{ fontWeight: 700, color: 'var(--forest)', fontSize: '0.9rem' }}>
+                       {editingSponsorIdx !== null ? 'Edit Sponsor Tier' : 'Create Custom Tier'}
+                    </div>
+                    {editingSponsorIdx !== null && (
+                       <button onClick={() => { setShowSponsorForm(false); setEditingSponsorIdx(null); }} style={{ background: 'none', border: 'none', color: 'var(--mist)', cursor: 'pointer', fontSize: '0.8rem' }}>Cancel</button>
+                    )}
+                 </div>
+                 
+                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <div style={{ display: 'flex', gap: '1rem' }}>
+                       <div style={{ flex: 2 }}>
+                          <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>Tier Name</label>
+                          <input type="text" value={newSponsor.tier} onChange={e => setNewSponsor({...newSponsor, tier: e.target.value})} placeholder="e.g. Title Sponsor" style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }} />
+                       </div>
+                       <div style={{ flex: 1 }}>
+                          <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>Price ($)</label>
+                          <input type="number" value={newSponsor.price} onChange={e => setNewSponsor({...newSponsor, price: Number(e.target.value)})} style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }} />
+                       </div>
+                       <div style={{ flex: 1 }}>
+                          <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>Inventory</label>
+                          <input type="number" value={newSponsor.spots} onChange={e => setNewSponsor({...newSponsor, spots: Number(e.target.value)})} style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }} />
+                       </div>
+                    </div>
+                    <div>
+                       <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>Incentives & Perks (One per line)</label>
+                       <textarea 
+                          value={newSponsor.incentivesText}
+                          onChange={e => setNewSponsor({...newSponsor, incentivesText: e.target.value})}
+                          placeholder="e.g. Foursome Included&#10;Logo on all Golf Carts"
+                          rows={3}
+                          style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)', resize: 'vertical' }}
+                       />
+                       <div style={{ fontSize: '0.65rem', color: 'var(--mist)', marginTop: '0.3rem' }}>Hit enter to create a new bullet point for the sponsor.</div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+                       <button 
+                          onClick={() => {
+                             if (!newSponsor.tier || newSponsor.price < 0) return;
+                             const incArray = newSponsor.incentivesText.split('\n').map(i => i.trim()).filter(i => i !== '');
+                             const sponsorObj = { tier: newSponsor.tier, price: newSponsor.price, spots: newSponsor.spots, incentives: incArray };
+                             
+                             if (editingSponsorIdx !== null) {
+                                const clone = [...sponsors];
+                                clone[editingSponsorIdx] = sponsorObj;
+                                setSponsors(clone);
+                             } else {
+                                setSponsors([...sponsors, sponsorObj]);
+                             }
+                             setShowSponsorForm(false);
+                             setEditingSponsorIdx(null);
+                             setNewSponsor({ tier: '', price: 0, spots: 1, incentivesText: '' });
+                          }}
+                          style={{ flex: 1, padding: '0.8rem', background: 'var(--forest)', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 700, cursor: 'pointer' }}>
+                          {editingSponsorIdx !== null ? 'Save Changes' : 'Mint Tier'}
+                       </button>
+                    </div>
+                 </div>
+              </div>
+           )}
+
+           {!showSponsorForm && sponsors.length === 0 && (
+              <div style={{ color: 'var(--mist)', fontSize: '0.8rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>
+                 Clearly list what each sponsor tier includes. Incentives like "Foursome Included" or "Logo on Signage" help drive higher commitment.
+              </div>
+           )}
+           
            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {sponsors.map((s, i) => (
-                 <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', background: '#f8faf9' }}>
-                    <div>
-                       <div style={{ fontWeight: 700, color: 'var(--forest)', fontSize: '0.95rem' }}>{s.tier}</div>
-                       <div style={{ fontSize: '0.75rem', color: 'var(--mist)', marginTop: '0.2rem' }}>{s.spots} spots remaining</div>
+                 <div key={i} style={{ display: 'flex', flexDirection: 'column', padding: '1rem', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', background: '#f8faf9', transition: '0.2s', ...(editingSponsorIdx === i ? { opacity: 0.5, pointerEvents: 'none' } : {}) }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: s.incentives && s.incentives.length > 0 ? '1px solid rgba(0,0,0,0.05)' : 'none', paddingBottom: s.incentives && s.incentives.length > 0 ? '0.75rem' : 0, marginBottom: s.incentives && s.incentives.length > 0 ? '0.75rem' : 0 }}>
+                       <div>
+                          <div style={{ fontWeight: 700, color: 'var(--forest)', fontSize: '0.95rem' }}>{s.tier} <span style={{ fontSize: '0.7rem', color: 'var(--mist)', fontWeight: 400, marginLeft: '0.5rem' }}>({s.spots} {s.spots === 1 ? 'spot' : 'spots'})</span></div>
+                       </div>
+                       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                          <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--grass)' }}>${s.price}</div>
+                          <div style={{ display: 'flex', gap: '0.5rem' }}>
+                             <button onClick={() => {
+                                setEditingSponsorIdx(i);
+                                setNewSponsor({ tier: s.tier, price: s.price, spots: s.spots, incentivesText: (s.incentives || []).join('\n') });
+                                setShowSponsorForm(true);
+                             }} style={{ background: 'none', border: 'none', color: '#3399FF', fontSize: '0.75rem', cursor: 'pointer', fontWeight: 600 }}>Edit</button>
+                             <button onClick={() => setSponsors(sponsors.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: '#ff5f56', fontSize: '0.75rem', cursor: 'pointer', fontWeight: 600 }}>Remove</button>
+                          </div>
+                       </div>
                     </div>
-                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--grass)' }}>${s.price}</div>
+                    {s.incentives && s.incentives.length > 0 && (
+                       <div style={{ paddingLeft: '0.5rem' }}>
+                          {s.incentives.map((inc, incIdx) => (
+                             <div key={incIdx} style={{ fontSize: '0.75rem', color: 'var(--mist)', display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.4rem' }}>
+                                <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'var(--gold)' }}></div>
+                                {inc}
+                             </div>
+                          ))}
+                       </div>
+                    )}
                  </div>
               ))}
            </div>
@@ -520,6 +673,16 @@ export default function HostLiveCampaignBuilder() {
                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
                       <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.1rem' }}>Total Due</span>
                       <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.1rem' }}>${totalDue.toFixed(2)}</span>
+                   </div>
+                   <div style={{ background: '#f4f7f5', padding: '0.8rem', borderRadius: '6px', marginTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--forest)' }}>💳 Split Payment with Foursome</span>
+                      <label className="toggle-switch" style={{ transform: 'scale(0.8)' }}>
+                        <input type="checkbox" checked={false} readOnly />
+                        <span className="toggle-slider"></span>
+                      </label>
+                   </div>
+                   <div style={{ textAlign: 'right', fontSize: '0.7rem', color: 'var(--mist)', marginTop: '0.3rem' }}>
+                      Pay ${(totalDue / 4).toFixed(2)} now, teammates pay remainder
                    </div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
@@ -645,6 +808,16 @@ export default function HostLiveCampaignBuilder() {
                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
                       <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.1rem' }}>Total Due</span>
                       <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.1rem' }}>${totalDue.toFixed(2)}</span>
+                   </div>
+                   <div style={{ background: '#f4f7f5', padding: '0.8rem', borderRadius: '6px', marginTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--forest)' }}>💳 Split Payment with Foursome</span>
+                      <label className="toggle-switch" style={{ transform: 'scale(0.8)' }}>
+                        <input type="checkbox" checked={false} readOnly />
+                        <span className="toggle-slider"></span>
+                      </label>
+                   </div>
+                   <div style={{ textAlign: 'right', fontSize: '0.7rem', color: 'var(--mist)', marginTop: '0.3rem' }}>
+                      Pay ${(totalDue / 4).toFixed(2)} now, teammates pay remainder
                    </div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
