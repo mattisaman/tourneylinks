@@ -47,7 +47,15 @@ export default function Navbar() {
             </SignInButton>
           ) : (
             <>
-              <Link href="/admin" className="profile-link hidden md:inline" style={{ marginRight: '1.2rem', color: '#f5f2ed', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600 }}>Host Dashboard</Link>
+              {process.env.NEXT_PUBLIC_IS_DEMO === 'true' ? (
+                <div className="hidden md:flex" style={{ gap: '0.75rem', marginRight: '1.2rem', alignItems: 'center' }}>
+                  <Link href="/admin" style={{ background: 'rgba(212,175,55,0.15)', color: 'var(--gold)', border: '1px solid rgba(212,175,55,0.4)', padding: '0.3rem 0.8rem', borderRadius: '4px', textDecoration: 'none', fontSize: '0.8rem', fontWeight: 700 }}>Host Hub</Link>
+                  <Link href="/courses/dashboard" style={{ background: 'rgba(212,175,55,0.15)', color: 'var(--gold)', border: '1px solid rgba(212,175,55,0.4)', padding: '0.3rem 0.8rem', borderRadius: '4px', textDecoration: 'none', fontSize: '0.8rem', fontWeight: 700 }}>Pro Hub</Link>
+                  <Link href="/sponsor/dashboard" style={{ background: 'rgba(212,175,55,0.15)', color: 'var(--gold)', border: '1px solid rgba(212,175,55,0.4)', padding: '0.3rem 0.8rem', borderRadius: '4px', textDecoration: 'none', fontSize: '0.8rem', fontWeight: 700 }}>Sponsor Hub</Link>
+                </div>
+              ) : (
+                <Link href="/admin" className="profile-link hidden md:inline" style={{ marginRight: '1.2rem', color: '#f5f2ed', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600 }}>Host Dashboard</Link>
+              )}
               <Link href="/profile" className="profile-link" style={{ marginRight: '0.8rem', color: '#f5f2ed', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600 }}>My Profile</Link>
               <UserButton 
                 appearance={{
