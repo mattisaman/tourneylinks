@@ -103,7 +103,7 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
   const formatDate = (dateStr: string | null) => {
     if (!dateStr) return "TBD";
     const d = new Date(dateStr);
-    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }).toUpperCase();
+    return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).toUpperCase();
   };
 
   const getStatus = (t: any) => {

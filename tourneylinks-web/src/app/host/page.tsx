@@ -193,18 +193,21 @@ export default function HostLiveCampaignBuilder() {
                  <option>9 Holes</option>
                </select>
              </div>
-             <div className="wfield">
+              <div className="wfield">
                  <label>Primary Theme Color</label>
                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                     <input type="color" value={themeColor} onChange={e => setThemeColor(e.target.value)} style={{ padding: 0, width: '40px', height: '40px', border: 'none', borderRadius: '4px', cursor: 'pointer' }} />
-                    <span style={{ fontSize: '0.8rem', fontFamily: 'monospace', color: 'var(--ink)' }}>{themeColor.toUpperCase()}</span>
+                    <input type="text" value={themeColor.toUpperCase()} onChange={e => { let v = e.target.value.toLowerCase(); if(!v.startsWith('#')) v='#'+v; if(v.length<=7) setThemeColor(v); }} style={{ fontSize: '0.8rem', fontFamily: 'monospace', color: 'var(--ink)', width: '85px', padding: '0.4rem 0.6rem', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '4px' }} />
                  </div>
               </div>
               <div className="wfield">
-                 <label>Secondary Theme Color</label>
+                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.4rem' }}>
+                    <label style={{ margin: 0 }}>Secondary Theme Color</label>
+                    <span title="Optional: Set to grayscale or blank to disable the dynamic accent gradient, resulting in a single dominant primary color vibe." style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '14px', height: '14px', borderRadius: '50%', background: 'rgba(0,0,0,0.1)', color: 'rgba(0,0,0,0.5)', fontSize: '0.6rem', cursor: 'help' }}>?</span>
+                 </div>
                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                     <input type="color" value={secondaryThemeColor} onChange={e => setSecondaryThemeColor(e.target.value)} style={{ padding: 0, width: '40px', height: '40px', border: 'none', borderRadius: '4px', cursor: 'pointer' }} />
-                    <span style={{ fontSize: '0.8rem', fontFamily: 'monospace', color: 'var(--ink)' }}>{secondaryThemeColor.toUpperCase()}</span>
+                    <input type="text" value={secondaryThemeColor.toUpperCase()} onChange={e => { let v = e.target.value.toLowerCase(); if(!v.startsWith('#')) v='#'+v; if(v.length<=7) setSecondaryThemeColor(v); }} style={{ fontSize: '0.8rem', fontFamily: 'monospace', color: 'var(--ink)', width: '85px', padding: '0.4rem 0.6rem', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '4px' }} />
                  </div>
               </div>
           </div>
