@@ -89,11 +89,12 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
 
   const getGradient = (index: number) => {
     const images = [
-      "url('https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&q=80&w=800')", // Golf course sunrise
-      "url('https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&q=80&w=800')", // Golf swing
-      "url('https://images.unsplash.com/photo-1535136123490-5b721867dd1f?auto=format&fit=crop&q=80&w=800')", // Fairway
-      "url('https://images.unsplash.com/photo-1610017126131-032c1cba5875?auto=format&fit=crop&q=80&w=800')", // Tee off
-      "url('https://images.unsplash.com/photo-1593111774240-d529f12cb416?auto=format&fit=crop&q=80&w=800')", // Green
+      "url('https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&q=80&w=800')", // Existing sunrise
+      "url('https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&q=80&w=800')", // Existing swing
+      "url('https://images.unsplash.com/photo-1538648759472-7251f7cb2c2f?auto=format&fit=crop&q=80&w=800')", // Pinehurst style
+      "url('https://images.unsplash.com/photo-1500932334442-8761ee4810a7?auto=format&fit=crop&q=80&w=800')", // Beautiful fairway
+      "url('https://images.unsplash.com/photo-1605144884374-ecbb643615f6?auto=format&fit=crop&q=80&w=800')", // Golf club green
+      "url('https://images.unsplash.com/photo-1532508583690-538a1436f423?auto=format&fit=crop&q=80&w=800')", // Putting green
     ];
     const image = images[index % images.length];
     return `linear-gradient(to top, rgba(26,46,26,0.9) 0%, transparent 60%), ${image} center/cover no-repeat`;
