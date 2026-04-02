@@ -695,25 +695,60 @@ export default function HostLiveCampaignBuilder() {
           </div>
         );
      }
+     if (activeTab === 'sponsorships') {
+        const topSponsor = sponsors.length > 0 ? sponsors[0] : { tier: 'Title Sponsor', price: 5000, spots: 1, incentives: [] };
+        // ACH is generally ~0.8% with a $5 cap, let's mock 0.8%
+        const achFee = topSponsor.price * 0.008;
+
+        return (
+           <div style={{ height: '450px', overflowY: 'auto', background: '#f8faf9', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: '3rem 2rem' }}>
+             <div style={{ width: '100%', maxWidth: '450px', background: '#fff', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 10px 40px rgba(0,0,0,0.05)', padding: '2rem' }}>
+                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Secure Checkout</div>
+                <h3 style={{ margin: '0 0 0.5rem 0', fontFamily: 'Playfair Display, serif', fontSize: '1.5rem', color: 'var(--forest)' }}>{topSponsor.tier}</h3>
+                <div style={{ fontSize: '0.85rem', color: 'var(--mist)', marginBottom: '1.5rem', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                   <span>{topSponsor.spots} remaining</span>
+                   {topSponsor.incentives && topSponsor.incentives.length > 0 && <span style={{ color: 'var(--forest)', background: 'rgba(46, 204, 113, 0.1)', padding: '0.1rem 0.4rem', borderRadius: '4px', fontSize: '0.7rem' }}>Includes Perks</span>}
+                </div>
+
+                <div style={{ borderTop: '1px solid rgba(0,0,0,0.05)', borderBottom: '1px solid rgba(0,0,0,0.05)', padding: '1.5rem 0', marginBottom: '1.5rem' }}>
+                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.9rem' }}>
+                      <span style={{ fontWeight: 600, color: 'var(--ink)' }}>Sponsorship Tier</span>
+                      <span style={{ fontWeight: 700, color: 'var(--ink)' }}>${topSponsor.price.toFixed(2)}</span>
+                   </div>
+                   
+                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.85rem' }}>
+                      <span style={{ color: 'var(--mist)' }}>+ Bank Transfer (ACH - 0.8%)</span>
+                      <span style={{ fontWeight: 600, color: 'var(--mist)' }}>${achFee.toFixed(2)}</span>
+                   </div>
+                   
+                   <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
+                      <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.1rem' }}>Total Due</span>
+                      <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.1rem' }}>${(topSponsor.price + achFee).toFixed(2)}</span>
+                   </div>
+                </div>
+
+                <div style={{ marginBottom: '1.5rem' }}>
+                   <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink)', marginBottom: '0.5rem' }}>Participant Intent</div>
+                   <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <button style={{ flex: 1, padding: '0.6rem', border: '2px solid var(--forest)', background: 'var(--forest)', color: '#fff', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>Sponsor Only</button>
+                      <button style={{ flex: 1, padding: '0.6rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>Play & Sponsor</button>
+                   </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                   <button style={{ width: '100%', padding: '0.9rem', background: '#e0ece0', color: 'var(--forest)', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Connect Bank (ACH)</button>
+                   <button style={{ width: '100%', padding: '0.9rem', background: '#000', color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Pay With Credit Card</button>
+                </div>
+                
+                <div style={{ textAlign: 'center', fontSize: '0.65rem', color: 'var(--mist)', marginTop: '1rem' }}>
+                   Credit card incurs standard 2.9% + 30¢ processing fee (${(topSponsor.price * 0.029 + 0.3).toFixed(2)}). ACH processing is recommended.
+                </div>
+             </div>
+          </div>
+        );
+     }
      
-     return (
-        <div style={{ height: '450px', overflowY: 'auto', background: '#0f1512', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '2rem' }}>
-           <div style={{ width: '100%', maxWidth: '600px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div style={{ color: '#fff', fontSize: '1.5rem', fontFamily: 'Playfair Display, serif', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                 Live Scoreboard TV
-                 <span style={{ fontSize: '0.8rem', background: '#27c93f', padding: '0.2rem 0.6rem', borderRadius: '4px', color: '#000', fontWeight: 700, fontFamily: 'sans-serif' }}>LIVE</span>
-              </div>
-              {sponsors.map((s, i) => (
-                 <div key={i} style={{ padding: '1.5rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div>
-                       <div style={{ color: 'var(--gold)', fontWeight: 800, fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{s.tier} provided by</div>
-                       <div style={{ color: '#fff', fontSize: '1.5rem', fontWeight: 700, marginTop: '0.5rem' }}>[Brand Logo]</div>
-                    </div>
-                 </div>
-              ))}
-           </div>
-        </div>
-     );
+     return null;
   };
 
   const renderMobileSimulator = () => {
@@ -831,19 +866,59 @@ export default function HostLiveCampaignBuilder() {
         );
      }
      
-     return (
-        <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative', background: '#0f1512', padding: '2rem 1.5rem' }}>
-           <div style={{ color: '#fff', fontSize: '1.3rem', fontFamily: 'Playfair Display, serif', marginBottom: '1.5rem', textAlign: 'center' }}>Player Scorecard</div>
-           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {sponsors.map((s, i) => (
-                 <div key={i} style={{ padding: '1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', textAlign: 'center' }}>
-                    <div style={{ color: 'var(--gold)', fontWeight: 700, fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>{s.tier}</div>
-                    <div style={{ color: '#fff', fontSize: '1.2rem', fontWeight: 800 }}>[Brand Logo/Ad]</div>
-                 </div>
-              ))}
-           </div>
-        </div>
-     );
+     if (activeTab === 'sponsorships') {
+        const topSponsor = sponsors.length > 0 ? sponsors[0] : { tier: 'Title Sponsor', price: 5000, spots: 1, incentives: [] };
+        const achFee = topSponsor.price * 0.008;
+
+        return (
+           <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative', background: '#f8faf9', padding: '1.5rem' }}>
+             <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 10px 40px rgba(0,0,0,0.05)', padding: '1.5rem' }}>
+                <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Secure Checkout</div>
+                <h3 style={{ margin: '0 0 0.5rem 0', fontFamily: 'Playfair Display, serif', fontSize: '1.3rem', color: 'var(--forest)' }}>{topSponsor.tier}</h3>
+                <div style={{ fontSize: '0.8rem', color: 'var(--mist)', marginBottom: '1.5rem', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                   <span>{topSponsor.spots} remaining</span>
+                   {topSponsor.incentives && topSponsor.incentives.length > 0 && <span style={{ color: 'var(--forest)', background: 'rgba(46, 204, 113, 0.1)', padding: '0.1rem 0.4rem', borderRadius: '4px', fontSize: '0.65rem' }}>Includes Perks</span>}
+                </div>
+
+                <div style={{ borderTop: '1px solid rgba(0,0,0,0.05)', borderBottom: '1px solid rgba(0,0,0,0.05)', padding: '1.5rem 0', marginBottom: '1.5rem' }}>
+                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.85rem' }}>
+                      <span style={{ fontWeight: 600, color: 'var(--ink)' }}>Sponsorship Tier</span>
+                      <span style={{ fontWeight: 700, color: 'var(--ink)' }}>${topSponsor.price.toFixed(2)}</span>
+                   </div>
+                   
+                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.8rem' }}>
+                      <span style={{ color: 'var(--mist)' }}>+ Bank Transfer (ACH - 0.8%)</span>
+                      <span style={{ fontWeight: 600, color: 'var(--mist)' }}>${achFee.toFixed(2)}</span>
+                   </div>
+                   
+                   <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
+                      <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.05rem' }}>Total Due</span>
+                      <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.05rem' }}>${(topSponsor.price + achFee).toFixed(2)}</span>
+                   </div>
+                </div>
+
+                <div style={{ marginBottom: '1.5rem' }}>
+                   <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--ink)', marginBottom: '0.5rem' }}>Participant Intent</div>
+                   <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <button style={{ flex: 1, padding: '0.5rem', border: '2px solid var(--forest)', background: 'var(--forest)', color: '#fff', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 600 }}>Sponsor Only</button>
+                      <button style={{ flex: 1, padding: '0.5rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 600 }}>Play & Sponsor</button>
+                   </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                   <button style={{ width: '100%', padding: '0.8rem', background: '#e0ece0', color: 'var(--forest)', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Connect Bank (ACH)</button>
+                   <button style={{ width: '100%', padding: '0.8rem', background: '#000', color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Pay With Credit Card</button>
+                </div>
+                
+                <div style={{ textAlign: 'center', fontSize: '0.65rem', color: 'var(--mist)', marginTop: '1rem' }}>
+                   Credit card incurs standard processing fee (${(topSponsor.price * 0.029 + 0.3).toFixed(2)}). ACH processing is recommended.
+                </div>
+             </div>
+          </div>
+        );
+     }
+     
+     return null;
   };
 
   return (
