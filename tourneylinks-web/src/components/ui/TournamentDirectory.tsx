@@ -133,9 +133,9 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
         if (new Date(t.dateStart) > new Date(appliedFilters.endDate)) return false;
       }
 
-      // 0.2 Exact Course Filter
-      if (appliedFilters.courseFilter !== 'All') {
-        if (t.courseName !== appliedFilters.courseFilter) return false;
+      // 0.2 Course Filter
+      if (appliedFilters.courseFilter !== 'All' && appliedFilters.courseFilter !== '') {
+        if (!t.courseName || !t.courseName.toLowerCase().includes(appliedFilters.courseFilter.toLowerCase())) return false;
       }
 
       // 1. Fee Filter
