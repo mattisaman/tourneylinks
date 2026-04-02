@@ -11,6 +11,25 @@ export default function Navbar() {
   const { userId } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  const goldFoilStyle = {
+    background: 'linear-gradient(135deg, #BF953F 0%, #FCF6BA 25%, #B38728 50%, #FBF5B7 75%, #AA771C 100%)',
+    color: '#05120c',
+    border: '1px solid rgba(255, 235, 160, 0.8)',
+    boxShadow: '0 2px 8px rgba(212,175,55,0.4), inset 0 1px 2px rgba(255,255,255,0.8)',
+    textShadow: '0 1px 0 rgba(255,255,255,0.4)',
+    padding: '0.4rem 1rem',
+    borderRadius: '4px',
+    textDecoration: 'none',
+    fontSize: '0.8rem',
+    fontWeight: 800,
+    letterSpacing: '0.02em',
+    transition: '0.2s',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer'
+  };
+
   // Instantly detach the Global Marketing Chrome if we are inside a Live Utility Route
   if (pathname?.includes('/tv') || pathname?.includes('/play') || pathname?.includes('/print')) {
     return null;
@@ -49,9 +68,9 @@ export default function Navbar() {
             <>
               {process.env.NEXT_PUBLIC_IS_DEMO === 'true' ? (
                 <div className="hidden md:flex" style={{ gap: '0.75rem', marginRight: '1.2rem', alignItems: 'center' }}>
-                  <Link href="/admin" style={{ background: 'rgba(212,175,55,0.15)', color: 'var(--gold)', border: '1px solid rgba(212,175,55,0.4)', padding: '0.3rem 0.8rem', borderRadius: '4px', textDecoration: 'none', fontSize: '0.8rem', fontWeight: 700 }}>Host Hub</Link>
-                  <Link href="/courses/dashboard" style={{ background: 'rgba(212,175,55,0.15)', color: 'var(--gold)', border: '1px solid rgba(212,175,55,0.4)', padding: '0.3rem 0.8rem', borderRadius: '4px', textDecoration: 'none', fontSize: '0.8rem', fontWeight: 700 }}>Pro Hub</Link>
-                  <Link href="/sponsor/dashboard" style={{ background: 'rgba(212,175,55,0.15)', color: 'var(--gold)', border: '1px solid rgba(212,175,55,0.4)', padding: '0.3rem 0.8rem', borderRadius: '4px', textDecoration: 'none', fontSize: '0.8rem', fontWeight: 700 }}>Sponsor Hub</Link>
+                  <Link href="/admin" style={goldFoilStyle} onMouseOver={e => e.currentTarget.style.filter = 'brightness(1.1) drop-shadow(0 4px 12px rgba(212,175,55,0.6))'} onMouseOut={e => e.currentTarget.style.filter = 'none'}>Host Hub</Link>
+                  <Link href="/courses/dashboard" style={goldFoilStyle} onMouseOver={e => e.currentTarget.style.filter = 'brightness(1.1) drop-shadow(0 4px 12px rgba(212,175,55,0.6))'} onMouseOut={e => e.currentTarget.style.filter = 'none'}>Pro Hub</Link>
+                  <Link href="/sponsor/dashboard" style={goldFoilStyle} onMouseOver={e => e.currentTarget.style.filter = 'brightness(1.1) drop-shadow(0 4px 12px rgba(212,175,55,0.6))'} onMouseOut={e => e.currentTarget.style.filter = 'none'}>Sponsor Hub</Link>
                 </div>
               ) : (
                 <Link href="/admin" className="profile-link hidden md:inline" style={{ marginRight: '1.2rem', color: '#f5f2ed', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600 }}>Host Dashboard</Link>
