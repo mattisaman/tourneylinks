@@ -24,12 +24,12 @@ export default function HostLiveCampaignBuilder() {
   const [passFees, setPassFees] = useState(false);
 
   const [packages, setPackages] = useState<{name: string, price: number, isTeam: boolean}[]>([
-     { name: 'Foursome & Golf', price: 500, isTeam: true },
+     { name: 'Foursome', price: 500, isTeam: true },
      { name: 'Individual Golfer', price: 125, isTeam: false },
      { name: 'Dinner Ticket Only', price: 50, isTeam: false }
   ]);
   const [showPackageForm, setShowPackageForm] = useState(false);
-  const [newPackage, setNewPackage] = useState<{name: string, price: number, isTeam: boolean}>({ name: '', price: 0, isTeam: false });
+  const [newPackage, setNewPackage] = useState<{name: string, price: number | string, isTeam: boolean}>({ name: '', price: '', isTeam: false });
 
   const [addons, setAddons] = useState<{name: string, price: number, type: 'per_player'|'per_team'|'flat', maxQuantity?: number}[]>([
      { name: 'Mulligan', price: 20, type: 'per_player', maxQuantity: 2 }
@@ -329,22 +329,22 @@ export default function HostLiveCampaignBuilder() {
                     <div style={{ display: 'flex', gap: '1rem' }}>
                        <div style={{ flex: 2 }}>
                           <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>Package Name</label>
-                          <input type="text" value={newPackage.name} onChange={e => setNewPackage({...newPackage, name: e.target.value})} placeholder="e.g. Foursome & Golf" style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }} />
+                          <input type="text" value={newPackage.name} onChange={e => setNewPackage({...newPackage, name: e.target.value})} placeholder="e.g. Foursome" style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }} />
                        </div>
                        <div style={{ flex: 1 }}>
                           <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>Price ($)</label>
-                          <input type="number" value={newPackage.price} onChange={e => setNewPackage({...newPackage, price: Number(e.target.value)})} style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }} />
+                          <input type="number" value={newPackage.price} onChange={e => setNewPackage({...newPackage, price: e.target.value === '' ? '' : Number(e.target.value)})} style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }} />
                        </div>
                     </div>
                     <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
                        <input type="checkbox" checked={newPackage.isTeam} onChange={e => setNewPackage({...newPackage, isTeam: e.target.checked})} />
-                       <span style={{ fontSize: '0.8rem', color: 'var(--ink)', fontWeight: 600 }}>This is a Foursome/Team Package (Scales natively to 4 players)</span>
+                       <span style={{ fontSize: '0.8rem', color: 'var(--ink)', fontWeight: 600 }}>This is a Foursome/Team Package</span>
                     </label>
                     <button 
                        onClick={() => {
-                          if (newPackage.name && newPackage.price >= 0) {
-                             setPackages([...packages, newPackage]);
-                             setNewPackage({ name: '', price: 0, isTeam: false });
+                          if (newPackage.name && newPackage.price !== '' && Number(newPackage.price) >= 0) {
+                             setPackages([...packages, { ...newPackage, price: Number(newPackage.price) }]);
+                             setNewPackage({ name: '', price: '', isTeam: false });
                              setShowPackageForm(false);
                           }
                        }}
@@ -357,7 +357,7 @@ export default function HostLiveCampaignBuilder() {
 
            {!showPackageForm && packages.length === 0 && (
               <div style={{ color: 'var(--mist)', fontSize: '0.8rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>
-                 Mint packages for users to purchase (e.g. Foursome & Golf, Individual Golfer, Dinner Only ticket).
+                 Mint packages for users to purchase (e.g. Foursome, Individual Golfer, Dinner Only ticket).
               </div>
            )}
            
@@ -756,7 +756,7 @@ export default function HostLiveCampaignBuilder() {
 
                 <div style={{ borderTop: '1px solid rgba(0,0,0,0.05)', borderBottom: '1px solid rgba(0,0,0,0.05)', padding: '1.5rem 0', marginBottom: '1.5rem' }}>
                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.9rem' }}>
-                      <span style={{ fontWeight: 600, color: 'var(--ink)' }}>Foursome Entry Fee</span>
+                      <span style={{ fontWeight: 600, color: 'var(--ink)' }}>Primary Package</span>
                       <span style={{ fontWeight: 700, color: 'var(--ink)' }}>${entryFeeSubtotal.toFixed(2)}</span>
                    </div>
                    {addons.map((a, i) => (
@@ -775,16 +775,17 @@ export default function HostLiveCampaignBuilder() {
                       <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.1rem' }}>Total Due</span>
                       <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.1rem' }}>${totalDue.toFixed(2)}</span>
                    </div>
-                   <div style={{ background: '#f4f7f5', padding: '0.8rem', borderRadius: '6px', marginTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--forest)' }}>💳 Universal Split Cart (BNPL / Team Link)</span>
-                      <label className="toggle-switch" style={{ transform: 'scale(0.8)' }}>
-                        <input type="checkbox" checked={false} readOnly />
-                        <span className="toggle-slider"></span>
-                      </label>
-                   </div>
-                   <div style={{ textAlign: 'right', fontSize: '0.7rem', color: 'var(--mist)', marginTop: '0.3rem', lineHeight: 1.4 }}>
-                      Stripe Affirm/Klarna native percent splits.<br/>
-                      Or generate a secure Link to text buddies!
+                   <div style={{ background: '#f4f7f5', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.05)', marginTop: '1.5rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                         <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--forest)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>💳 Split Payment at Checkout</span>
+                         <label className="toggle-switch" style={{ transform: 'scale(0.8)' }}>
+                           <input type="checkbox" checked={false} readOnly />
+                           <span className="toggle-slider"></span>
+                         </label>
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--mist)', lineHeight: 1.5 }}>
+                         <b>How it works:</b> The registering player controls the ledger. They can split it entirely using <b>Affirm/Klarna</b> natively, OR pay their fraction and generate a <b>Secure Team Link</b> to text their 3 buddies to collect the remaining fractions! Your Tournament gets paid in full instantly.
+                      </div>
                    </div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
@@ -942,7 +943,7 @@ export default function HostLiveCampaignBuilder() {
 
                 <div style={{ borderTop: '1px solid rgba(0,0,0,0.05)', borderBottom: '1px solid rgba(0,0,0,0.05)', padding: '1.5rem 0', marginBottom: '1.5rem' }}>
                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.85rem' }}>
-                      <span style={{ fontWeight: 600, color: 'var(--ink)' }}>Foursome Entry Fee</span>
+                      <span style={{ fontWeight: 600, color: 'var(--ink)' }}>Primary Package</span>
                       <span style={{ fontWeight: 700, color: 'var(--ink)' }}>${entryFeeSubtotal.toFixed(2)}</span>
                    </div>
                    {addons.map((a, i) => (
@@ -961,16 +962,17 @@ export default function HostLiveCampaignBuilder() {
                       <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.1rem' }}>Total Due</span>
                       <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.1rem' }}>${totalDue.toFixed(2)}</span>
                    </div>
-                   <div style={{ background: '#f4f7f5', padding: '0.8rem', borderRadius: '6px', marginTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--forest)' }}>💳 Universal Split Cart (BNPL / Team Link)</span>
-                      <label className="toggle-switch" style={{ transform: 'scale(0.8)' }}>
-                        <input type="checkbox" checked={false} readOnly />
-                        <span className="toggle-slider"></span>
-                      </label>
-                   </div>
-                   <div style={{ textAlign: 'right', fontSize: '0.7rem', color: 'var(--mist)', marginTop: '0.3rem', lineHeight: 1.4 }}>
-                      Stripe Affirm/Klarna native percent splits.<br/>
-                      Or generate a secure Link to text buddies!
+                   <div style={{ background: '#f4f7f5', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.05)', marginTop: '1.5rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                         <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--forest)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>💳 Split Payment at Checkout</span>
+                         <label className="toggle-switch" style={{ transform: 'scale(0.8)' }}>
+                           <input type="checkbox" checked={false} readOnly />
+                           <span className="toggle-slider"></span>
+                         </label>
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--mist)', lineHeight: 1.5 }}>
+                         <b>How it works:</b> The registering player controls the ledger. They can split it entirely using <b>Affirm/Klarna</b> natively, OR pay their fraction and generate a <b>Secure Team Link</b> to text their 3 buddies to collect the remaining fractions! Your Tournament gets paid in full instantly.
+                      </div>
                    </div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
