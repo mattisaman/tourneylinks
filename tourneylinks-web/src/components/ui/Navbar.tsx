@@ -2,14 +2,19 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { SignInButton, UserButton, useAuth } from '@clerk/nextjs';
+import { SignInButton, UserButton, useAuth, useUser } from '@clerk/nextjs';
 import { usePathname } from 'next/navigation';
 import { HelpCircle, Menu, X } from 'lucide-react';
 
 export default function Navbar() {
   const pathname = usePathname();
   const { userId } = useAuth();
+  const { user } = useUser();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const superAdminEmails = ['matthewisaman@gmail.com', 'mattisaman@gmail.com', 'joshuafribush@gmail.com', 'matt@tourneylinks.com'];
+  const isSuperAdmin = user?.primaryEmailAddress?.emailAddress && superAdminEmails.includes(user.primaryEmailAddress.emailAddress.toLowerCase()) || false;
+  const showHubs = process.env.NEXT_PUBLIC_IS_DEMO === 'true' || isSuperAdmin;
 
   const goldFoilStyle = {
     background: 'linear-gradient(135deg, #BF953F 0%, #FCF6BA 25%, #B38728 50%, #FBF5B7 75%, #AA771C 100%)',
@@ -66,14 +71,12 @@ export default function Navbar() {
             </SignInButton>
           ) : (
             <>
-              {process.env.NEXT_PUBLIC_IS_DEMO === 'true' ? (
+              {showHubs && (
                 <div className="hidden md:flex" style={{ gap: '0.75rem', marginRight: '1.2rem', alignItems: 'center' }}>
                   <Link href="/admin" style={goldFoilStyle} onMouseOver={e => e.currentTarget.style.filter = 'brightness(1.1) drop-shadow(0 4px 12px rgba(212,175,55,0.6))'} onMouseOut={e => e.currentTarget.style.filter = 'none'}>Host Hub</Link>
                   <Link href="/courses/dashboard" style={goldFoilStyle} onMouseOver={e => e.currentTarget.style.filter = 'brightness(1.1) drop-shadow(0 4px 12px rgba(212,175,55,0.6))'} onMouseOut={e => e.currentTarget.style.filter = 'none'}>Pro Hub</Link>
                   <Link href="/sponsor/dashboard" style={goldFoilStyle} onMouseOver={e => e.currentTarget.style.filter = 'brightness(1.1) drop-shadow(0 4px 12px rgba(212,175,55,0.6))'} onMouseOut={e => e.currentTarget.style.filter = 'none'}>Sponsor Hub</Link>
                 </div>
-              ) : (
-                <Link href="/admin" className="profile-link hidden md:inline" style={{ marginRight: '1.2rem', color: '#f5f2ed', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600 }}>Host Dashboard</Link>
               )}
               <Link href="/profile" className="profile-link" style={{ marginRight: '0.8rem', color: '#f5f2ed', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600 }}>My Profile</Link>
               <UserButton 
