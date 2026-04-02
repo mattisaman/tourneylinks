@@ -18,9 +18,17 @@ export default function LiveTelemetry({ tournamentId, showProLink }: { tournamen
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-     // Fetch every 15 seconds dynamically in the background so the Ranger dashboard is always 100% accurate
      const streamPace = async () => {
         try {
+           if (process.env.NEXT_PUBLIC_IS_DEMO === 'true') {
+              setMetrics([
+                  { teamId: 1, teamName: 'Jordan / Woods', holesPlayed: 14, lastHole: 14, paceMins: 13.5, lastUpdated: new Date().toISOString(), isBehindPace: false },
+                  { teamId: 2, teamName: 'Mickelson / McIlroy', holesPlayed: 12, lastHole: 12, paceMins: 16.2, lastUpdated: new Date(Date.now() - 300000).toISOString(), isBehindPace: true },
+                  { teamId: 3, teamName: 'Spieth / Fowler', holesPlayed: 15, lastHole: 15, paceMins: 12.8, lastUpdated: new Date().toISOString(), isBehindPace: false }
+              ]);
+              return;
+           }
+
            const res = await fetch(`/api/admin/tournaments/${tournamentId}/telemetry`);
            const data = await res.json();
            if (Array.isArray(data)) setMetrics(data);

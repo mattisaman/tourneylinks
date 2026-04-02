@@ -88,12 +88,15 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
   };
 
   const getGradient = (index: number) => {
-    const gradients = [
-      "linear-gradient(to top, rgba(26,46,26,0.9) 0%, transparent 60%), linear-gradient(135deg, #1a4a1a 0%, #2d6b2d 50%, #3d8b3d 100%)",
-      "linear-gradient(to top, rgba(26,46,26,0.9) 0%, transparent 60%), linear-gradient(0deg, #2d4a2d 0%, #5a8c3a 50%, #8fbc5a 100%)",
-      "linear-gradient(to top, rgba(26,46,26,0.9) 0%, transparent 60%), linear-gradient(45deg, #1a2e1a 0%, #2c3e50 50%, #3498db 100%)"
+    const images = [
+      "url('https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&q=80&w=800')", // Golf course sunrise
+      "url('https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&q=80&w=800')", // Golf swing
+      "url('https://images.unsplash.com/photo-1535136123490-5b721867dd1f?auto=format&fit=crop&q=80&w=800')", // Fairway
+      "url('https://images.unsplash.com/photo-1610017126131-032c1cba5875?auto=format&fit=crop&q=80&w=800')", // Tee off
+      "url('https://images.unsplash.com/photo-1593111774240-d529f12cb416?auto=format&fit=crop&q=80&w=800')", // Green
     ];
-    return gradients[index % gradients.length];
+    const image = images[index % images.length];
+    return `linear-gradient(to top, rgba(26,46,26,0.9) 0%, transparent 60%), ${image} center/cover no-repeat`;
   };
 
   const formatDate = (dateStr: string | null) => {

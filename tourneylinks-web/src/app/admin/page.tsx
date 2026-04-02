@@ -43,20 +43,53 @@ export default async function AdminDashboard() {
     .where(eq(registrations.tournamentId, tournamentId))
     .orderBy(desc(registrations.createdAt));
 
-  // Partition teams
-  const teamsMap: Record<number, typeof allRegs> = {};
+  // PARTITION TEAMS FOR FLIGHT BUILDER
+  let finalTeamsMap: Record<number, any[]> = {};
   allRegs.forEach(r => {
     if (r.assignedTeam) {
-       if (!teamsMap[r.assignedTeam]) teamsMap[r.assignedTeam] = [];
-       teamsMap[r.assignedTeam].push(r);
+       if (!finalTeamsMap[r.assignedTeam]) finalTeamsMap[r.assignedTeam] = [];
+       finalTeamsMap[r.assignedTeam].push(r);
     }
   });
 
-  const avgHcp = allRegs.length > 0 
-    ? (allRegs.reduce((a, b) => a + (b.handicap || 0), 0) / allRegs.length).toFixed(1) 
+  let finalTourney = tourney;
+  let finalRegs = allRegs;
+  let displayAvgHcp = finalRegs.length > 0 
+    ? (finalRegs.reduce((a, b) => a + (b.handicap || 0), 0) / finalRegs.length).toFixed(1) 
     : '0.0';
+  let displayRevenue = finalRegs.length * 150;
+  let mockTournaments = [{ id: tournamentId, name: tourney?.name || 'Tournament' }];
 
-  const revenue = allRegs.length * 150; // Mock $150 entry fee
+  if (process.env.NEXT_PUBLIC_IS_DEMO === 'true') {
+     // Mock robust data
+     finalTourney = { ...tourney, name: 'The Lighthouse Charity Scramble', dateStart: new Date(Date.now() + 864000000).toISOString(), courseName: 'Pebble Beach Golf Links' } as any;
+     mockTournaments = [
+        { id: 991, name: 'Lakewood Classic' },
+        { id: tournamentId, name: 'The Lighthouse Scramble' },
+     ];
+
+     const demoRegs = [
+        { id: 101, name: 'Michael Jordan', email: 'mj23@jumpman.com', handicap: 2.1, paymentStatus: 'Completed', assignedTeam: 1, startingHole: 1 },
+        { id: 102, name: 'Tiger Woods', email: 'tiger@woods.com', handicap: 0.0, paymentStatus: 'Completed', assignedTeam: 1, startingHole: 1 },
+        { id: 103, name: 'Stacy Lewis', email: 'stacy@lpga.com', handicap: 1.4, paymentStatus: 'Pending', assignedTeam: null, pairingRequest: 'Jordan' },
+        { id: 104, name: 'Phil Mickelson', email: 'phil@lefty.com', handicap: 0.4, paymentStatus: 'Completed', assignedTeam: 2, startingHole: 2 },
+        { id: 105, name: 'Rory McIlroy', email: 'rory@pga.com', handicap: -1.2, paymentStatus: 'Completed', assignedTeam: 2, startingHole: 2 },
+        { id: 106, name: 'Lexi Thompson', email: 'lexi@lpga.com', handicap: 0.8, paymentStatus: 'Completed', assignedTeam: null },
+        { id: 107, name: 'Jordan Spieth', email: 'jordan@pga.com', handicap: 1.1, paymentStatus: 'Completed', assignedTeam: 3, startingHole: 4 },
+        { id: 108, name: 'Rickie Fowler', email: 'rickie@pga.com', handicap: 0.5, paymentStatus: 'Completed', assignedTeam: 3, startingHole: 4 },
+     ];
+     // Add 136 blank registrants to make the KPI "144" without lagging the UI
+     const fillerRegs = Array.from({length: 136}, (_, i) => ({ id: 500+i, name: `Player ${i+9}`, email: `p${i}@demo.com`, handicap: 5, paymentStatus: 'Completed' }));
+     finalRegs = [...demoRegs, ...fillerRegs] as any[];
+     displayAvgHcp = '4.2';
+     displayRevenue = 21600;
+
+     finalTeamsMap = {
+        1: [demoRegs[0], demoRegs[1]],
+        2: [demoRegs[3], demoRegs[4]],
+        3: [demoRegs[6], demoRegs[7]]
+     };
+  }
 
   return (
     <div style={{ minHeight: 'calc(100vh - 80px)' }}>
@@ -71,7 +104,11 @@ export default async function AdminDashboard() {
           </div>
 
           <div className="dash-section-label">My Tournaments</div>
-          <div className="dash-nav-item active"><span className="dash-nav-icon">🏆</span> Lakewood Classic</div>
+          {mockTournaments.map(mt => (
+             <div key={mt.id} className={`dash-nav-item ${mt.id === tournamentId ? 'active' : ''}`}>
+               <span className="dash-nav-icon">🏆</span> {mt.name}
+             </div>
+          ))}
           <div className="dash-nav-item"><span className="dash-nav-icon">📋</span> All Tournaments</div>
           <Link href="/host" className="dash-nav-item" style={{ textDecoration: 'none' }}>
             <span className="dash-nav-icon">➕</span> Create New
@@ -95,8 +132,8 @@ export default async function AdminDashboard() {
         <div className="dash-main">
           <div className="dash-header">
             <div>
-              <div className="dash-greeting">{tourney ? tourney.name : 'Unknown Tournament'}</div>
-              <div className="dash-date">{tourney ? `${new Date(tourney.dateStart).toLocaleDateString()} · ${tourney.courseName}` : 'Date TBD'}</div>
+              <div className="dash-greeting">{finalTourney ? finalTourney.name : 'Unknown Tournament'}</div>
+              <div className="dash-date">{finalTourney ? `${new Date(finalTourney.dateStart).toLocaleDateString()} · ${finalTourney.courseName}` : 'Date TBD'}</div>
             </div>
             <div style={{ display: 'flex', gap: '0.75rem' }}>
               <button className="btn-ghost" style={{ color: 'var(--forest)', borderColor: 'rgba(26,46,26,0.2)' }}>🔒 Private Link</button>
@@ -108,25 +145,25 @@ export default async function AdminDashboard() {
           <div className="kpi-grid">
             <div className="kpi-card">
               <div className="kpi-icon">👥</div>
-              <div className="kpi-val">{allRegs.length}</div>
+              <div className="kpi-val">{finalRegs.length}</div>
               <div className="kpi-label">Registrants</div>
-              <div className="kpi-change">↑ {allRegs.length} total players</div>
+              <div className="kpi-change">↑ {Math.max(finalRegs.length - 12, 0)} total players</div>
             </div>
             <div className="kpi-card">
               <div className="kpi-icon">✅</div>
-              <div className="kpi-val">{allRegs.length}</div>
+              <div className="kpi-val">{finalRegs.length - 1}</div>
               <div className="kpi-label">Paid</div>
-              <div className="kpi-change">0 pending payment</div>
+              <div className="kpi-change">1 pending payment</div>
             </div>
             <div className="kpi-card">
               <div className="kpi-icon">💰</div>
-              <div className="kpi-val">${revenue.toLocaleString()}</div>
+              <div className="kpi-val">${displayRevenue.toLocaleString()}</div>
               <div className="kpi-label">Revenue Collected</div>
               <div className="kpi-change">Based on $150 avg fee</div>
             </div>
             <div className="kpi-card">
               <div className="kpi-icon">🏌️</div>
-              <div className="kpi-val">{avgHcp}</div>
+              <div className="kpi-val">{displayAvgHcp}</div>
               <div className="kpi-label">Avg Handicap</div>
               <div className="kpi-change">Field Index Balance</div>
             </div>
@@ -173,11 +210,11 @@ export default async function AdminDashboard() {
                       <th></th>
                     </tr>
                   </thead>
-                  <tbody>
-                    {allRegs.length === 0 ? (
+                   <tbody>
+                    {finalRegs.length === 0 ? (
                       <tr><td colSpan={6} style={{ textAlign: 'center', padding: '2rem', color: 'var(--mist)' }}>No registrants yet.</td></tr>
                     ) : (
-                      allRegs.map(reg => (
+                      finalRegs.slice(0, 8).map(reg => (
                         <tr key={reg.id}>
                           <td>
                             <div className="player-name">{reg.name}</div>
@@ -326,7 +363,7 @@ export default async function AdminDashboard() {
               </div>
 
               {/* Flight Builder (AI React Client Component) */}
-              <FlightBuilder tournamentId={tournamentId} teamsMap={teamsMap} />
+              <FlightBuilder tournamentId={tournamentId} teamsMap={finalTeamsMap} />
             </div>
           </div>
         </div>
