@@ -138,6 +138,16 @@ export default async function AdminDashboard() {
               {/* LIVE TOURNAMENT ACTION CENTER */}
               <LiveTelemetry tournamentId={tournamentId} showProLink={true} />
 
+              {/* === DEMO ENVIRONMENT EXPLANATORY INJECTION === */}
+              {process.env.NEXT_PUBLIC_IS_DEMO === 'true' && (
+                  <div style={{ background: 'rgba(212, 175, 55, 0.05)', borderLeft: '4px solid var(--gold)', padding: '1.5rem', borderRadius: '4px' }}>
+                      <h3 style={{ color: 'var(--gold)', fontWeight: 800, marginBottom: '0.5rem', fontSize: '1.1rem' }}>Demo Architecture: Unified Context Switching</h3>
+                      <p style={{ color: 'var(--mist)', fontSize: '0.85rem', lineHeight: 1.6 }}>
+                        Notice how you didn't have to create a separate "Host Account" to see this screen? In Production, TourneyLinks operates on a seamless Single-Identity Architecture. If a user plays golf on Saturday (Golfer), sponsors a hole on Sunday (Sponsor View), and runs a charity scramble on Monday (Host View), their singular profile instantly routes them to the correct dashboard based strictly on their underlying database relationships. No friction. No secondary accounts.
+                      </p>
+                  </div>
+              )}
+
               {/* Registrants Table */}
               <div className="dash-card">
                 <div className="dash-card-header">
