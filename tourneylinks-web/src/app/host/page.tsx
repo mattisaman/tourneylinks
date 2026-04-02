@@ -268,10 +268,10 @@ export default function HostLiveCampaignBuilder() {
        </div>
 
        {/* Campaign Builder Two-Column Grid */}
-       <div style={{ maxWidth: '1600px', margin: '2rem auto 0 auto', padding: '0 2rem', display: 'flex', flexDirection: 'column', gap: '2rem' }} className="md:flex-row">
+       <div style={{ maxWidth: '1600px', margin: '2rem auto 0 auto', padding: '0 2rem', display: 'flex', flexWrap: 'wrap', gap: '3rem' }}>
           
           {/* EDITOR COLUMN (Left) */}
-          <div style={{ flex: '1.2 1 600px', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ flex: '1 1 600px', display: 'flex', flexDirection: 'column' }}>
              
              {/* 3-State Tab Nav */}
              <div style={{ display: 'flex', gap: '0.5rem', background: '#fff', padding: '0.5rem', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.05)', marginBottom: '2rem', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
@@ -300,91 +300,153 @@ export default function HostLiveCampaignBuilder() {
           </div>
 
           {/* SIMULATOR COLUMN (Right) */}
-          <div style={{ flex: '0.8 1 400px', display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }} className="hidden lg:flex">
+          <div style={{ flex: '1 1 500px', display: 'flex', flexDirection: 'column' }}>
+             
              {/* Sticky Wrapper */}
-             <div style={{ position: 'sticky', top: '120px', width: '100%', maxWidth: '380px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                   <Smartphone size={14} /> Live Mobile Preview
-                </div>
+             <div style={{ position: 'sticky', top: '100px', width: '100%', height: 'calc(100vh - 120px)', overflowY: 'auto', paddingRight: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3rem', paddingBottom: '3rem' }}>
                 
-                {/* iPhone Frame Envelope */}
-                <div style={{
-                   width: '100%',
-                   height: '750px',
-                   background: '#fff',
-                   borderRadius: '40px', // iPhone hardware curves
-                   border: '12px solid #0f1512', // Black device frame
-                   boxShadow: '0 25px 50px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(255,255,255,0.2)',
-                   position: 'relative',
-                   overflow: 'hidden',
-                   display: 'flex',
-                   flexDirection: 'column'
-                }}>
-                   {/* Dynamic Notch */}
-                   <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '120px', height: '25px', background: '#0f1512', borderBottomLeftRadius: '16px', borderBottomRightRadius: '16px', zIndex: 50 }}></div>
-
-                   {/* SIMULATED WEB BROWSER CANVAS */}
-                   <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative' }}>
+                {/* DESKTOP BROWSER ENVELOPE */}
+                <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                   <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <Smartphone size={14} /> Desktop Browser Preview
+                   </div>
+                   <div style={{ width: '100%', background: '#fff', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.1)', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.08)' }}>
+                      <div style={{ background: '#f4f7f5', borderBottom: '1px solid rgba(0,0,0,0.05)', padding: '0.6rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                         <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ff5f56' }} />
+                         <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ffbd2e' }} />
+                         <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#27c93f' }} />
+                         <div style={{ marginLeft: '1rem', background: '#fff', padding: '0.2rem 1rem', borderRadius: '4px', fontSize: '0.7rem', color: 'var(--mist)', flex: 1, border: '1px solid rgba(0,0,0,0.05)' }}>demo.tourneylinks.com/tournaments/live</div>
+                      </div>
                       
-                      {/* Simulated Hero Section */}
-                      <div style={{ height: '300px', background: `linear-gradient(135deg, ${secondaryThemeColor}, #112814)`, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '1.5rem', position: 'relative' }}>
-                         {/* Dynamic gradient wash over hero */}
-                         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `radial-gradient(circle at top right, ${themeColor} 0%, transparent 60%)`, opacity: 0.3, pointerEvents: 'none' }}></div>
+                      {/* Desktop Canvas */}
+                      <div style={{ height: '450px', overflowY: 'auto', background: '#f8faf9', display: 'flex', flexDirection: 'column' }}>
+                         <div style={{ padding: '2rem', background: `linear-gradient(135deg, ${secondaryThemeColor}, #112814)`, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', textAlign: 'center' }}>
+                            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `radial-gradient(circle at top right, ${themeColor} 0%, transparent 60%)`, opacity: 0.3, pointerEvents: 'none' }}></div>
+                            <div style={{ position: 'relative', zIndex: 10 }}>
+                               <span style={{ fontSize: '0.7rem', padding: '0.2rem 0.6rem', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(4px)', color: '#fff', borderRadius: '4px', fontWeight: 700, marginBottom: '0.75rem', display: 'inline-block' }}>{formatName}</span>
+                               <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '2.5rem', color: 'var(--cream)', margin: 0, lineHeight: 1.1, textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
+                                  {name || 'Tournament Title'}
+                               </h2>
+                               <div style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.8)', marginTop: '0.75rem', display: 'flex', justifyContent: 'center', gap: '0.5rem' }}>
+                                  <span>📍 {course || 'Course TBD'}</span>
+                                  <span>·</span>
+                                  <span>{date ? new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }) : 'Date TBD'}</span>
+                               </div>
+                            </div>
+                         </div>
                          
-                         <div style={{ position: 'relative', zIndex: 10 }}>
-                            <div style={{ display: 'flex', gap: '0.4rem', marginBottom: '0.5rem' }}>
-                               <span style={{ fontSize: '0.65rem', padding: '0.2rem 0.5rem', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(4px)', color: '#fff', borderRadius: '4px', fontWeight: 700 }}>{formatName}</span>
-                            </div>
-                            <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.8rem', color: 'var(--cream)', margin: 0, lineHeight: 1.1, textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
-                               {name || 'Tournament Title'}
-                            </h2>
-                            <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.8)', marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                               📍 {course ? `${course} ${city ? `· ${city}` : ''}` : 'Course TBD'}
-                            </div>
-                         </div>
-                      </div>
+                         <div style={{ padding: '1.5rem', display: 'flex', gap: '1.5rem', flex: 1 }}>
+                            <div style={{ flex: '1 1 60%' }}>
+                               <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--forest)', marginBottom: '0.5rem' }}>About Event</div>
+                               <div style={{ fontSize: '0.85rem', color: 'var(--mist)', lineHeight: 1.6, marginBottom: '1.5rem' }}>{desc || 'Tournament description will appear here...'}</div>
 
-                      {/* Simulated Body Content */}
-                      <div style={{ padding: '1.5rem', background: '#fff' }}>
-                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
-                            <div>
-                               <div style={{ fontSize: '0.7rem', color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>Entry Fee</div>
-                               <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--forest)' }}>${totalFee.toFixed(2)}</div>
+                               <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '0.75rem' }}>Sponsors</div>
+                               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                                  {sponsors.map((s, idx) => (
+                                     <div key={idx} style={{ padding: '0.75rem', background: '#fff', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.05)', textAlign: 'center' }}>
+                                        <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)' }}>{s.tier}</div>
+                                        <div style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--grass)' }}>${s.price}</div>
+                                     </div>
+                                  ))}
+                               </div>
                             </div>
-                            <div style={{ textAlign: 'right' }}>
-                               <div style={{ fontSize: '0.7rem', color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>Date</div>
-                               <div style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--ink)', fontFamily: 'DM Mono, monospace' }}>
-                                  {date ? new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }) : 'TBD'}
+
+                            <div style={{ flex: '0 0 200px' }}>
+                               <div style={{ background: '#fff', padding: '1.25rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', textAlign: 'center', position: 'sticky', top: '10px' }}>
+                                  <div style={{ fontSize: '0.75rem', color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Registration</div>
+                                  <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--forest)', margin: '0.5rem 0' }}>${totalFee.toFixed(2)}</div>
+                                  <button style={{ width: '100%', padding: '0.75rem', background: themeColor, color: '#fff', fontWeight: 700, border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem' }}>Register Now</button>
                                </div>
                             </div>
                          </div>
-
-                         {desc && (
-                            <div style={{ marginBottom: '1.5rem' }}>
-                               <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '0.5rem' }}>About Event</div>
-                               <div style={{ fontSize: '0.85rem', color: 'var(--mist)', lineHeight: 1.6 }}>{desc}</div>
-                            </div>
-                         )}
-
-                         <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '0.75rem' }}>Live Sponsors</div>
-                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '2rem' }}>
-                            {sponsors.map((s, idx) => (
-                               <div key={idx} style={{ padding: '1rem', background: '#f8faf9', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                  <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--forest)' }}>{s.tier}</span>
-                                  <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--grass)' }}>${s.price}</span>
-                               </div>
-                            ))}
-                         </div>
-                      </div>
-
-                      {/* Sticky Bottom Action Mobile */}
-                      <div style={{ position: 'sticky', bottom: 0, background: '#fff', padding: '1rem', borderTop: '1px solid rgba(0,0,0,0.05)', display: 'flex', justifyContent: 'center' }}>
-                         <button style={{ width: '100%', padding: '0.8rem', background: themeColor, color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', boxShadow: `0 4px 14px ${themeColor}40` }}>
-                            Register Now
-                         </button>
                       </div>
                    </div>
                 </div>
+
+                {/* iPhone Frame Envelope */}
+                <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                   <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <Smartphone size={14} /> Mobile Simulator
+                   </div>
+                   <div style={{
+                      width: '375px', // Fixed iPhone width
+                      height: '750px',
+                      background: '#fff',
+                      borderRadius: '40px', // iPhone hardware curves
+                      border: '12px solid #0f1512', // Black device frame
+                      boxShadow: '0 25px 50px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(255,255,255,0.2)',
+                      position: 'relative',
+                      overflow: 'hidden',
+                      display: 'flex',
+                      flexDirection: 'column'
+                   }}>
+                      {/* Dynamic Notch */}
+                      <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '120px', height: '25px', background: '#0f1512', borderBottomLeftRadius: '16px', borderBottomRightRadius: '16px', zIndex: 50 }}></div>
+
+                      {/* SIMULATED WEB BROWSER CANVAS */}
+                      <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative' }}>
+                         
+                         {/* Simulated Hero Section */}
+                         <div style={{ height: '300px', background: `linear-gradient(135deg, ${secondaryThemeColor}, #112814)`, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '1.5rem', position: 'relative' }}>
+                            {/* Dynamic gradient wash over hero */}
+                            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `radial-gradient(circle at top right, ${themeColor} 0%, transparent 60%)`, opacity: 0.3, pointerEvents: 'none' }}></div>
+                            
+                            <div style={{ position: 'relative', zIndex: 10 }}>
+                               <div style={{ display: 'flex', gap: '0.4rem', marginBottom: '0.5rem' }}>
+                                  <span style={{ fontSize: '0.65rem', padding: '0.2rem 0.5rem', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(4px)', color: '#fff', borderRadius: '4px', fontWeight: 700 }}>{formatName}</span>
+                               </div>
+                               <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.8rem', color: 'var(--cream)', margin: 0, lineHeight: 1.1, textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
+                                  {name || 'Tournament Title'}
+                               </h2>
+                               <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.8)', marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                                  📍 {course ? `${course} ${city ? `· ${city}` : ''}` : 'Course TBD'}
+                               </div>
+                            </div>
+                         </div>
+
+                         {/* Simulated Body Content */}
+                         <div style={{ padding: '1.5rem', background: '#fff' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
+                               <div>
+                                  <div style={{ fontSize: '0.7rem', color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>Entry Fee</div>
+                                  <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--forest)' }}>${totalFee.toFixed(2)}</div>
+                               </div>
+                               <div style={{ textAlign: 'right' }}>
+                                  <div style={{ fontSize: '0.7rem', color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>Date</div>
+                                  <div style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--ink)', fontFamily: 'DM Mono, monospace' }}>
+                                     {date ? new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }) : 'TBD'}
+                                  </div>
+                               </div>
+                            </div>
+
+                            {desc && (
+                               <div style={{ marginBottom: '1.5rem' }}>
+                                  <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '0.5rem' }}>About Event</div>
+                                  <div style={{ fontSize: '0.85rem', color: 'var(--mist)', lineHeight: 1.6 }}>{desc}</div>
+                               </div>
+                            )}
+
+                            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '0.75rem' }}>Live Sponsors</div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '2rem' }}>
+                               {sponsors.map((s, idx) => (
+                                  <div key={idx} style={{ padding: '1rem', background: '#f8faf9', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                     <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--forest)' }}>{s.tier}</span>
+                                     <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--grass)' }}>${s.price}</span>
+                                  </div>
+                               ))}
+                            </div>
+                         </div>
+
+                         {/* Sticky Bottom Action Mobile */}
+                         <div style={{ position: 'sticky', bottom: 0, background: '#fff', padding: '1rem', borderTop: '1px solid rgba(0,0,0,0.05)', display: 'flex', justifyContent: 'center' }}>
+                            <button style={{ width: '100%', padding: '0.8rem', background: themeColor, color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', boxShadow: `0 4px 14px ${themeColor}40` }}>
+                               Register Now
+                            </button>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+
              </div>
           </div>
 
