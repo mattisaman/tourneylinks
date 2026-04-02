@@ -18,16 +18,28 @@ export default function HostLiveCampaignBuilder() {
   const [selectedVis, setSelectedVis] = useState('private');
 
   const [price, setPrice] = useState(125);
+  const [dinnerPrice, setDinnerPrice] = useState(50);
   const [maxPlayers, setMaxPlayers] = useState(80);
   const [holes, setHoles] = useState('18 Holes');
   const [org, setOrg] = useState('');
   const [email, setEmail] = useState('');
   const [passFees, setPassFees] = useState(false);
-  const [addons, setAddons] = useState<{name: string, price: number, type: 'per_player'|'per_team'|'flat'}[]>([
-     { name: 'Mulligan (Max 2)', price: 20, type: 'per_player' }
+  
+  const [activeIntents, setActiveIntents] = useState({
+     foursome: true,
+     dinnerOnly: true,
+     sponsorGolf: true,
+     sponsorDinner: true,
+     sponsorOnly: true,
+     donateDinner: true,
+     donateOnly: true
+  });
+
+  const [addons, setAddons] = useState<{name: string, price: number, type: 'per_player'|'per_team'|'flat', maxQuantity?: number}[]>([
+     { name: 'Mulligan', price: 20, type: 'per_player', maxQuantity: 2 }
   ]);
   const [showAddonForm, setShowAddonForm] = useState(false);
-  const [newAddon, setNewAddon] = useState<{name: string, price: number, type: 'per_player'|'per_team'|'flat'}>({ name: '', price: 0, type: 'per_player' });
+  const [newAddon, setNewAddon] = useState<{name: string, price: number, type: 'per_player'|'per_team'|'flat', maxQuantity?: number}>({ name: '', price: 0, type: 'per_player' });
 
   const [themeColor, setThemeColor] = useState('#c9a84c');
   const [secondaryThemeColor, setSecondaryThemeColor] = useState('#1a2e1a');
@@ -359,6 +371,69 @@ export default function HostLiveCampaignBuilder() {
           </div>
         </div>
         
+        <div className="wizard-card" style={{ marginBottom: '2rem' }}>
+           <div className="wizard-card-title">Participant Intent Options</div>
+           <div style={{ color: 'var(--mist)', fontSize: '0.8rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>
+              Toggle which registration pathways are available to your audience during checkout.
+           </div>
+           
+           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fff', padding: '0.8rem', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '6px', cursor: 'pointer' }}>
+                 <input type="checkbox" checked={activeIntents.foursome} onChange={e => setActiveIntents({...activeIntents, foursome: e.target.checked})} />
+                 <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink)' }}>Foursome & Golf</span>
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fff', padding: '0.8rem', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '6px', cursor: 'pointer' }}>
+                 <input type="checkbox" checked={activeIntents.sponsorGolf} onChange={e => setActiveIntents({...activeIntents, sponsorGolf: e.target.checked})} />
+                 <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink)' }}>Sponsor & Golf</span>
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fff', padding: '0.8rem', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '6px', cursor: 'pointer' }}>
+                 <input type="checkbox" checked={activeIntents.sponsorOnly} onChange={e => setActiveIntents({...activeIntents, sponsorOnly: e.target.checked})} />
+                 <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink)' }}>Sponsor Only</span>
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fff', padding: '0.8rem', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '6px', cursor: 'pointer' }}>
+                 <input type="checkbox" checked={activeIntents.dinnerOnly} onChange={e => setActiveIntents({...activeIntents, dinnerOnly: e.target.checked})} />
+                 <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink)' }}>Dinner Only</span>
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fff', padding: '0.8rem', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '6px', cursor: 'pointer' }}>
+                 <input type="checkbox" checked={activeIntents.sponsorDinner} onChange={e => setActiveIntents({...activeIntents, sponsorDinner: e.target.checked})} />
+                 <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink)' }}>Sponsor & Dinner</span>
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fff', padding: '0.8rem', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '6px', cursor: 'pointer' }}>
+                 <input type="checkbox" checked={activeIntents.donateDinner} onChange={e => setActiveIntents({...activeIntents, donateDinner: e.target.checked})} />
+                 <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink)' }}>Donate & Dinner</span>
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fff', padding: '0.8rem', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '6px', cursor: 'pointer' }}>
+                 <input type="checkbox" checked={activeIntents.donateOnly} onChange={e => setActiveIntents({...activeIntents, donateOnly: e.target.checked})} />
+                 <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink)' }}>Donate Only</span>
+              </label>
+           </div>
+           
+           {(activeIntents.dinnerOnly || activeIntents.sponsorDinner || activeIntents.donateDinner) && (
+              <div className="wfield" style={{ maxWidth: '300px', borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '1.5rem' }}>
+                 <label>Dinner Ticket Price ($)</label>
+                 <div style={{ position: 'relative' }}>
+                    <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', fontWeight: 600, color: 'var(--mist)' }}>$</span>
+                    <input type="number" value={dinnerPrice} onChange={e => setDinnerPrice(Number(e.target.value))} style={{ paddingLeft: '2rem' }} />
+                 </div>
+              </div>
+           )}
+        </div>
+        
+        <div className="wizard-card" style={{ marginBottom: '2rem' }}>
+           <div className="wizard-card-title">Prizes & Raffles</div>
+           <div className="pro-tip-alert" style={{ background: '#fff3cd', border: '1px solid #ffeeba', borderRadius: '8px', padding: '1rem', marginBottom: '1.5rem', display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+               <div style={{ fontSize: '1.2rem' }}>⚠️</div>
+               <div>
+                  <strong style={{ color: '#856404', fontSize: '0.85rem', display: 'block', marginBottom: '0.2rem' }}>Legal & Tax Implications</strong>
+                  <div style={{ color: '#856404', fontSize: '0.8rem', lineHeight: 1.5 }}>
+                     Strict Stripe Terms of Service prohibit processing digital "Raffles" or games of chance unless your organization is a verified 501(c)(3) and explicitly whitelisted by Stripe. 
+                     We strongly advise collecting cash/check at the door for raffles until you achieve whitelisted status.
+                  </div>
+               </div>
+            </div>
+            <div style={{ color: 'var(--mist)', fontSize: '0.85rem' }}>Prizes setup will unlock once you connect a verified 501(c)(3) taxonomy code.</div>
+        </div>
+        
         <div className="wizard-card">
            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
               <div className="wizard-card-title" style={{ marginBottom: 0 }}>Add-ons & Extras</div>
@@ -381,19 +456,25 @@ export default function HostLiveCampaignBuilder() {
                           <input type="number" value={newAddon.price} onChange={e => setNewAddon({...newAddon, price: Number(e.target.value)})} style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }} />
                        </div>
                     </div>
-                    <div>
-                       <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>Application Logic</label>
-                       <select value={newAddon.type} onChange={e => setNewAddon({...newAddon, type: e.target.value as any})} style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }}>
-                          <option value="per_player">Per Player (Scales with roster size)</option>
-                          <option value="per_team">Per Foursome Team (Flat team addition)</option>
-                          <option value="flat">Flat Purchase (e.g. 50/50 Raffle Tickets)</option>
-                       </select>
+                    <div style={{ display: 'flex', gap: '1rem' }}>
+                       <div style={{ flex: 2 }}>
+                          <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>Application Logic</label>
+                          <select value={newAddon.type} onChange={e => setNewAddon({...newAddon, type: e.target.value as any})} style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }}>
+                             <option value="per_player">Per Player (Scales with roster size)</option>
+                             <option value="per_team">Per Foursome Team (Flat team addition)</option>
+                             <option value="flat">Flat Purchase (e.g. 50/50 Raffle Tickets)</option>
+                          </select>
+                       </div>
+                       <div style={{ flex: 1 }}>
+                          <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>Max Qty (Optional)</label>
+                          <input type="number" value={newAddon.maxQuantity || ''} onChange={e => setNewAddon({...newAddon, maxQuantity: e.target.value ? Number(e.target.value) : undefined})} placeholder="e.g. 2" style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }} />
+                       </div>
                     </div>
                     <button 
                        onClick={() => {
                           if (newAddon.name && newAddon.price >= 0) {
                              setAddons([...addons, newAddon]);
-                             setNewAddon({ name: '', price: 0, type: 'per_player' });
+                             setNewAddon({ name: '', price: 0, type: 'per_player', maxQuantity: undefined });
                              setShowAddonForm(false);
                           }
                        }}
@@ -414,7 +495,10 @@ export default function HostLiveCampaignBuilder() {
               {addons.map((a, i) => (
                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', background: '#f8faf9' }}>
                     <div>
-                       <div style={{ fontWeight: 600, color: 'var(--forest)', fontSize: '0.95rem' }}>{a.name}</div>
+                       <div style={{ fontWeight: 600, color: 'var(--forest)', fontSize: '0.95rem' }}>
+                          {a.name}
+                          {a.maxQuantity ? <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--mist)', marginLeft: '0.5rem' }}>(Max {a.maxQuantity})</span> : null}
+                       </div>
                        <div style={{ fontSize: '0.75rem', color: 'var(--mist)', marginTop: '0.2rem' }}>
                           {a.type === 'per_player' ? 'Applied Per Player' : a.type === 'per_team' ? 'Applied Per Team' : 'Flat Purchase Item'}
                        </div>
@@ -697,8 +781,8 @@ export default function HostLiveCampaignBuilder() {
      }
      if (activeTab === 'sponsorships') {
         const topSponsor = sponsors.length > 0 ? sponsors[0] : { tier: 'Title Sponsor', price: 5000, spots: 1, incentives: [] };
-        // ACH is generally ~0.8% with a $5 cap, let's mock 0.8%
-        const achFee = topSponsor.price * 0.008;
+        // ACH is generally ~0.8% with a $5 cap. Let's accurately mock that calculation.
+        const achFee = Math.min(topSponsor.price * 0.008, 5.00);
 
         return (
            <div style={{ height: '450px', overflowY: 'auto', background: '#f8faf9', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: '3rem 2rem' }}>
@@ -717,7 +801,7 @@ export default function HostLiveCampaignBuilder() {
                    </div>
                    
                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.85rem' }}>
-                      <span style={{ color: 'var(--mist)' }}>+ Bank Transfer (ACH - 0.8%)</span>
+                      <span style={{ color: 'var(--mist)' }}>+ Bank Transfer (ACH - capped at $5)</span>
                       <span style={{ fontWeight: 600, color: 'var(--mist)' }}>${achFee.toFixed(2)}</span>
                    </div>
                    
@@ -729,9 +813,10 @@ export default function HostLiveCampaignBuilder() {
 
                 <div style={{ marginBottom: '1.5rem' }}>
                    <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink)', marginBottom: '0.5rem' }}>Participant Intent</div>
-                   <div style={{ display: 'flex', gap: '0.5rem' }}>
-                      <button style={{ flex: 1, padding: '0.6rem', border: '2px solid var(--forest)', background: 'var(--forest)', color: '#fff', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>Sponsor Only</button>
-                      <button style={{ flex: 1, padding: '0.6rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>Play & Sponsor</button>
+                   <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                      {activeIntents.sponsorOnly && <button style={{ flex: 1, minWidth: '120px', padding: '0.6rem', border: '2px solid var(--forest)', background: 'var(--forest)', color: '#fff', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>Sponsor Only</button>}
+                      {activeIntents.sponsorGolf && <button style={{ flex: 1, minWidth: '120px', padding: '0.6rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>Play & Sponsor</button>}
+                      {activeIntents.sponsorDinner && <button style={{ flex: 1, minWidth: '120px', padding: '0.6rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>Sponsor & Dinner</button>}
                    </div>
                 </div>
 
@@ -868,7 +953,7 @@ export default function HostLiveCampaignBuilder() {
      
      if (activeTab === 'sponsorships') {
         const topSponsor = sponsors.length > 0 ? sponsors[0] : { tier: 'Title Sponsor', price: 5000, spots: 1, incentives: [] };
-        const achFee = topSponsor.price * 0.008;
+        const achFee = Math.min(topSponsor.price * 0.008, 5.00);
 
         return (
            <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative', background: '#f8faf9', padding: '1.5rem' }}>
@@ -887,7 +972,7 @@ export default function HostLiveCampaignBuilder() {
                    </div>
                    
                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.8rem' }}>
-                      <span style={{ color: 'var(--mist)' }}>+ Bank Transfer (ACH - 0.8%)</span>
+                      <span style={{ color: 'var(--mist)' }}>+ Bank Transfer (ACH - capped at $5)</span>
                       <span style={{ fontWeight: 600, color: 'var(--mist)' }}>${achFee.toFixed(2)}</span>
                    </div>
                    
@@ -899,9 +984,10 @@ export default function HostLiveCampaignBuilder() {
 
                 <div style={{ marginBottom: '1.5rem' }}>
                    <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--ink)', marginBottom: '0.5rem' }}>Participant Intent</div>
-                   <div style={{ display: 'flex', gap: '0.5rem' }}>
-                      <button style={{ flex: 1, padding: '0.5rem', border: '2px solid var(--forest)', background: 'var(--forest)', color: '#fff', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 600 }}>Sponsor Only</button>
-                      <button style={{ flex: 1, padding: '0.5rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 600 }}>Play & Sponsor</button>
+                   <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                      {activeIntents.sponsorOnly && <button style={{ flex: 1, minWidth: '100px', padding: '0.5rem', border: '2px solid var(--forest)', background: 'var(--forest)', color: '#fff', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 600 }}>Sponsor Only</button>}
+                      {activeIntents.sponsorGolf && <button style={{ flex: 1, minWidth: '100px', padding: '0.5rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 600 }}>Play & Sponsor</button>}
+                      {activeIntents.sponsorDinner && <button style={{ flex: 1, minWidth: '100px', padding: '0.5rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 600 }}>Sponsor & Dinner</button>}
                    </div>
                 </div>
 
