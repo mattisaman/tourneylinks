@@ -27,6 +27,9 @@ export default function HostLiveCampaignBuilder() {
   const [themeColor, setThemeColor] = useState('#c9a84c');
   const [secondaryThemeColor, setSecondaryThemeColor] = useState('#1a2e1a');
   
+  const [heroImage, setHeroImage] = useState<string | null>(null);
+  const [tileImage, setTileImage] = useState<string | null>(null);
+  
   const [sponsors, setSponsors] = useState([
      { tier: 'Title Sponsor', price: 5000, spots: 1 },
      { tier: 'Beverage Cart', price: 1500, spots: 2 }
@@ -42,6 +45,17 @@ export default function HostLiveCampaignBuilder() {
       else if (ct) setCity(ct);
     }
   }, []);
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, setter: (val: string) => void) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setter(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const formatNames: Record<string, string> = {
     'scramble': '4-Man Scramble',
@@ -136,11 +150,33 @@ export default function HostLiveCampaignBuilder() {
              </div>
           </div>
           
-          <div style={{ marginTop: '1.5rem' }}>
-             <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.5rem' }}>Hero Branding Image</label>
-             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(0,0,0,0.1)', borderRadius: '8px', padding: '2rem', background: '#fafaf5', cursor: 'pointer' }} onClick={() => alert('Media Library opens here.')}>
-                <UploadCloud color="var(--mist)" size={32} style={{ marginBottom: '0.5rem' }} />
-                <span style={{ fontSize: '0.85rem', color: 'var(--forest)', fontWeight: 600 }}>Click to Upload Media</span>
+          <div style={{ marginTop: '1.5rem', display: 'grid', gap: '1.5rem', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))' }}>
+             <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.5rem' }}>Hero Branding Image</label>
+                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(0,0,0,0.1)', borderRadius: '8px', padding: '2rem', background: heroImage ? `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${heroImage}) center/cover` : '#fafaf5', cursor: 'pointer', minHeight: '160px', position: 'relative' }}>
+                   <input type="file" style={{ display: 'none' }} accept="image/*" onChange={e => handleImageUpload(e, setHeroImage)} />
+                   {!heroImage && (
+                     <>
+                        <UploadCloud color="var(--mist)" size={32} style={{ marginBottom: '0.5rem' }} />
+                        <span style={{ fontSize: '0.85rem', color: 'var(--forest)', fontWeight: 600 }}>Upload Hero Media</span>
+                     </>
+                   )}
+                   {heroImage && <span style={{ color: '#fff', fontWeight: 600, zIndex: 10 }}>Change Hero</span>}
+                </label>
+             </div>
+             
+             <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.5rem' }}>Directory Tile Thumbnail</label>
+                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(0,0,0,0.1)', borderRadius: '8px', padding: '2rem', background: tileImage ? `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${tileImage}) center/cover` : '#fafaf5', cursor: 'pointer', minHeight: '160px', position: 'relative' }}>
+                   <input type="file" style={{ display: 'none' }} accept="image/*" onChange={e => handleImageUpload(e, setTileImage)} />
+                   {!tileImage && (
+                     <>
+                        <ImageIcon color="var(--mist)" size={32} style={{ marginBottom: '0.5rem' }} />
+                        <span style={{ fontSize: '0.85rem', color: 'var(--forest)', fontWeight: 600 }}>Upload Tile Media</span>
+                     </>
+                   )}
+                   {tileImage && <span style={{ color: '#fff', fontWeight: 600, zIndex: 10 }}>Change Tile</span>}
+                </label>
              </div>
           </div>
         </div>
@@ -320,7 +356,7 @@ export default function HostLiveCampaignBuilder() {
                       
                       {/* Desktop Canvas */}
                       <div style={{ height: '450px', overflowY: 'auto', background: '#f8faf9', display: 'flex', flexDirection: 'column' }}>
-                         <div style={{ padding: '2rem', background: `linear-gradient(135deg, ${secondaryThemeColor}, #112814)`, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', textAlign: 'center' }}>
+                         <div style={{ padding: '2rem', background: heroImage ? `linear-gradient(135deg, rgba(26,46,26,0.8), rgba(17,40,20,0.9)), url(${heroImage}) center/cover no-repeat` : `linear-gradient(135deg, ${secondaryThemeColor}, #112814)`, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', textAlign: 'center' }}>
                             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `radial-gradient(circle at top right, ${themeColor} 0%, transparent 60%)`, opacity: 0.3, pointerEvents: 'none' }}></div>
                             <div style={{ position: 'relative', zIndex: 10 }}>
                                <span style={{ fontSize: '0.7rem', padding: '0.2rem 0.6rem', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(4px)', color: '#fff', borderRadius: '4px', fontWeight: 700, marginBottom: '0.75rem', display: 'inline-block' }}>{formatName}</span>
@@ -387,7 +423,7 @@ export default function HostLiveCampaignBuilder() {
                       <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative' }}>
                          
                          {/* Simulated Hero Section */}
-                         <div style={{ height: '300px', background: `linear-gradient(135deg, ${secondaryThemeColor}, #112814)`, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '1.5rem', position: 'relative' }}>
+                         <div style={{ height: '300px', background: heroImage ? `linear-gradient(135deg, rgba(26,46,26,0.8), rgba(17,40,20,0.9)), url(${heroImage}) center/cover no-repeat` : `linear-gradient(135deg, ${secondaryThemeColor}, #112814)`, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '1.5rem', position: 'relative' }}>
                             {/* Dynamic gradient wash over hero */}
                             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `radial-gradient(circle at top right, ${themeColor} 0%, transparent 60%)`, opacity: 0.3, pointerEvents: 'none' }}></div>
                             
