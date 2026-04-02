@@ -6,7 +6,7 @@ import { Smartphone, Image as ImageIcon, DollarSign, Settings, ShoppingBag, Plus
 import StripeOnboardButton from './onboarding/StripeOnboardButton';
 
 export default function HostLiveCampaignBuilder() {
-  const [activeTab, setActiveTab] = useState<'content' | 'finance' | 'sponsorships'>('content');
+  const [activeTab, setActiveTab] = useState<'content' | 'finance' | 'sponsorships' | 'launch'>('content');
 
   // Form State
   const [name, setName] = useState('');
@@ -23,6 +23,7 @@ export default function HostLiveCampaignBuilder() {
   const [org, setOrg] = useState('');
   const [email, setEmail] = useState('');
   const [passFees, setPassFees] = useState(false);
+  const [addons, setAddons] = useState([{ name: 'Mulligan (Max 2)', price: 20 }]);
 
   const [themeColor, setThemeColor] = useState('#c9a84c');
   const [secondaryThemeColor, setSecondaryThemeColor] = useState('#1a2e1a');
@@ -40,8 +41,8 @@ export default function HostLiveCampaignBuilder() {
   const [courseResults, setCourseResults] = useState<any[]>([]);
   
   const [sponsors, setSponsors] = useState([
-     { tier: 'Title Sponsor', price: 5000, spots: 1 },
-     { tier: 'Beverage Cart', price: 1500, spots: 2 }
+     { tier: 'Title Sponsor', price: 5000, spots: 1, incentives: ['Primary Logo on all Hero branding', 'Foursome included', 'Speaking opportunity at dinner'] },
+     { tier: 'Beverage Cart', price: 1500, spots: 2, incentives: ['Logo on beverage cart', 'Custom branded napkins'] }
   ]);
 
   useEffect(() => {
@@ -164,7 +165,17 @@ export default function HostLiveCampaignBuilder() {
             </div>
             <div className="wfield wform-full">
                <label>Public Description</label>
-               <textarea rows={4} value={desc} onChange={e => setDesc(e.target.value)} placeholder="Tell players what makes this tournament special..."></textarea>
+               <div style={{ border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px', overflow: 'hidden', transition: 'border-color 0.2s', background: '#fff' }}>
+                 <div style={{ background: '#f4f7f5', borderBottom: '1px solid rgba(0,0,0,0.1)', padding: '0.4rem 0.6rem', display: 'flex', gap: '0.3rem', alignItems: 'center' }}>
+                    <button type="button" style={{ background: 'none', border: 'none', fontWeight: 'bold', cursor: 'pointer', padding: '0.3rem 0.6rem', borderRadius: '4px', color: 'var(--ink)' }}>B</button>
+                    <button type="button" style={{ background: 'none', border: 'none', fontStyle: 'italic', cursor: 'pointer', padding: '0.3rem 0.6rem', borderRadius: '4px', color: 'var(--ink)' }}>I</button>
+                    <button type="button" style={{ background: 'none', border: 'none', textDecoration: 'underline', cursor: 'pointer', padding: '0.3rem 0.6rem', borderRadius: '4px', color: 'var(--ink)' }}>U</button>
+                    <div style={{ width: '1px', height: '16px', background: 'rgba(0,0,0,0.1)', margin: '0 0.3rem' }}></div>
+                    <button type="button" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.3rem 0.6rem', borderRadius: '4px', fontSize: '0.85rem', color: 'var(--ink)' }}>🔗 Link</button>
+                    <button type="button" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.3rem 0.6rem', borderRadius: '4px', fontSize: '0.85rem', color: 'var(--ink)', fontWeight: 600 }}>• Bullet List</button>
+                 </div>
+                 <textarea style={{ border: 'none', width: '100%', padding: '1rem', outline: 'none', resize: 'vertical', minHeight: '120px', fontFamily: 'inherit', fontSize: '0.9rem' }} rows={4} value={desc} onChange={e => setDesc(e.target.value)} placeholder="Tell players what makes this tournament special. For example, copy-paste a bulleted list of events or schedule information here..."></textarea>
+               </div>
             </div>
             <div className="wfield wform-full">
                <label>Co-Host UserID (Optional)</label>
@@ -342,14 +353,21 @@ export default function HostLiveCampaignBuilder() {
         </div>
         
         <div className="wizard-card">
-           <div className="wizard-card-title">Launch Protocol</div>
-           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1rem' }}>
-             <button className="btn-primary" style={{ flex: 1, padding: '1rem', background: 'var(--gold)', color: '#000', fontWeight: 700, border: 'none' }}>
-               Pay $99 to Publish 🚀
-             </button>
-             <button className="btn-hero-outline" style={{ flex: 1, padding: '1rem' }} onClick={() => alert('Saved to Drafts')}>
-               Save as Draft
-             </button>
+           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <div className="wizard-card-title" style={{ marginBottom: 0 }}>Add-ons & Extras</div>
+              <button className="btn-hero-outline" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                 <Plus size={14} /> Mint Add-on
+              </button>
+           </div>
+           <div style={{ color: 'var(--mist)', fontSize: '0.8rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>Configure optional purchases (e.g., Mulligans, Skins, Raffle Tickets) that players can seamlessly add to their cart during checkout.</div>
+           
+           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {addons.map((a, i) => (
+                 <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', background: '#f8faf9' }}>
+                    <div style={{ fontWeight: 600, color: 'var(--forest)', fontSize: '0.95rem' }}>{a.name}</div>
+                    <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--ink)' }}>${a.price.toFixed(2)}</div>
+                 </div>
+              ))}
            </div>
         </div>
      </div>
@@ -390,6 +408,271 @@ export default function HostLiveCampaignBuilder() {
      </div>
   );
 
+   const renderLaunchTab = () => (
+     <div className="builder-section fade-in">
+        <div className="wizard-card" style={{ marginBottom: '2rem' }}>
+           <div className="wizard-card-title">Payouts & Treasury</div>
+           <div style={{ color: 'var(--mist)', fontSize: '0.85rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>
+              Connect a validated Stripe account to enable automated payouts. Player entry fees and sponsor revenue will bypass TourneyLinks and flow directly into your connected treasury account.
+           </div>
+           
+           <div style={{ background: '#f8faf9', padding: '1.5rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <DollarSign color="var(--forest)" size={24} />
+                <div>
+                   <div style={{ fontWeight: 700, color: 'var(--forest)' }}>Stripe Connect Identity</div>
+                   <div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>Awaiting Boarding...</div>
+                </div>
+             </div>
+             <StripeOnboardButton />
+           </div>
+        </div>
+
+        <div className="wizard-card">
+           <div className="wizard-card-title">Launch Protocol</div>
+           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1rem' }}>
+             <button className="btn-primary" style={{ flex: 1, padding: '1rem', background: 'var(--gold)', color: '#000', fontWeight: 700, border: 'none', borderRadius: '8px', boxShadow: '0 4px 15px rgba(212,175,55,0.4)' }}>
+               Pay $99 to Publish 🚀
+             </button>
+             <button className="btn-hero-outline" style={{ flex: 1, padding: '1rem', borderRadius: '8px' }} onClick={() => alert('Saved to Drafts')}>
+               Save as Draft
+             </button>
+           </div>
+        </div>
+     </div>
+  );
+
+  const renderDesktopSimulator = () => {
+     if (activeTab === 'content' || activeTab === 'launch') {
+        return (
+           <div style={{ height: '450px', overflowY: 'auto', background: '#f8faf9', display: 'flex', flexDirection: 'column' }}>
+              <div style={{ padding: '2rem', background: heroImage ? `linear-gradient(135deg, ${secondaryThemeColor}99, ${themeColor}99), url(${heroImage}) ${heroPosition}/${heroZoom}% no-repeat` : `linear-gradient(135deg, ${secondaryThemeColor}, ${themeColor})`, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', textAlign: 'center' }}>
+                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `radial-gradient(circle at top right, ${themeColor} 0%, transparent 60%)`, opacity: 0.3, pointerEvents: 'none' }}></div>
+                 <div style={{ position: 'relative', zIndex: 10 }}>
+                    <span style={{ fontSize: '0.7rem', padding: '0.2rem 0.6rem', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(4px)', color: '#fff', borderRadius: '4px', fontWeight: 700, marginBottom: '0.75rem', display: 'inline-block' }}>{formatName}</span>
+                    <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '2.5rem', color: '#fff', margin: 0, lineHeight: 1.1, textShadow: '0 2px 8px rgba(0,0,0,0.4), 0 4px 20px rgba(0,0,0,0.2)' }}>
+                       {name || 'Tournament Title'}
+                    </h2>
+                    <div style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.8)', marginTop: '0.75rem', display: 'flex', justifyContent: 'center', gap: '0.5rem' }}>
+                       <span>📍 {course || 'Course TBD'}</span>
+                       <span>·</span>
+                       <span>{date ? new Date(date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }) : 'Date TBD'}</span>
+                    </div>
+                 </div>
+              </div>
+              
+              <div style={{ padding: '1.5rem', display: 'flex', gap: '1.5rem', flex: 1 }}>
+                 <div style={{ flex: '1 1 60%' }}>
+                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--forest)', marginBottom: '0.5rem' }}>About Event</div>
+                    <div style={{ fontSize: '0.85rem', color: 'var(--mist)', lineHeight: 1.6, marginBottom: '1.5rem', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{desc || 'Tournament description will appear here...'}</div>
+
+                    <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '0.75rem' }}>Sponsors</div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                       {sponsors.map((s, idx) => (
+                          <div key={idx} style={{ padding: '0.75rem', background: '#fff', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.05)', textAlign: 'center' }}>
+                             <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)' }}>{s.tier}</div>
+                             <div style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--grass)' }}>${s.price}</div>
+                          </div>
+                       ))}
+                    </div>
+                 </div>
+
+                 <div style={{ flex: '0 0 200px' }}>
+                     <div style={{ background: '#fff', padding: '1.25rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', textAlign: 'center', position: 'sticky', top: '10px' }}>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Registration</div>
+                        <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--forest)', margin: '0.5rem 0' }}>${totalFee.toFixed(2)}</div>
+                        <button style={{ width: '100%', padding: '0.8rem', background: `linear-gradient(135deg, ${themeColor}, ${secondaryThemeColor})`, color: '#fff', fontWeight: 700, border: `1px solid ${secondaryThemeColor}40`, borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem', boxShadow: `0 8px 20px ${themeColor}40`, transition: '0.2s' }}>Register Now</button>
+                     </div>
+                  </div>
+              </div>
+           </div>
+        );
+     }
+     if (activeTab === 'finance') {
+        const entryFeeSubtotal = price * 4;
+        const totalAddon = addons.reduce((acc, a) => acc + a.price, 0);
+        const totalProcessing = passFees ? (stripeFee * 4) : 0;
+        const totalDue = entryFeeSubtotal + totalAddon + totalProcessing;
+
+        return (
+           <div style={{ height: '450px', overflowY: 'auto', background: '#f8faf9', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: '3rem 2rem' }}>
+             <div style={{ width: '100%', maxWidth: '400px', background: '#fff', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 10px 40px rgba(0,0,0,0.05)', padding: '2rem' }}>
+                <h3 style={{ margin: '0 0 0.5rem 0', fontFamily: 'Playfair Display, serif', fontSize: '1.5rem', color: 'var(--forest)' }}>Registration</h3>
+                <div style={{ fontSize: '0.8rem', color: 'var(--mist)', marginBottom: '1.5rem' }}>{name || 'Tournament Title'}</div>
+
+                <div style={{ borderTop: '1px solid rgba(0,0,0,0.05)', borderBottom: '1px solid rgba(0,0,0,0.05)', padding: '1.5rem 0', marginBottom: '1.5rem' }}>
+                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.9rem' }}>
+                      <span style={{ fontWeight: 600, color: 'var(--ink)' }}>Foursome Entry Fee</span>
+                      <span style={{ fontWeight: 700, color: 'var(--ink)' }}>${entryFeeSubtotal.toFixed(2)}</span>
+                   </div>
+                   {addons.map((a, i) => (
+                       <div key={i} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.85rem' }}>
+                          <span style={{ color: 'var(--mist)' }}>+ {a.name}</span>
+                          <span style={{ fontWeight: 600, color: 'var(--mist)' }}>${a.price.toFixed(2)}</span>
+                       </div>
+                   ))}
+                   {passFees && (
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.85rem' }}>
+                         <span style={{ color: 'var(--mist)' }}>+ Platform & Tax</span>
+                         <span style={{ fontWeight: 600, color: 'var(--mist)' }}>${(stripeFee * 4).toFixed(2)}</span>
+                      </div>
+                   )}
+                   <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
+                      <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.1rem' }}>Total Due</span>
+                      <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.1rem' }}>${totalDue.toFixed(2)}</span>
+                   </div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                   <button style={{ width: '100%', padding: '0.9rem', background: '#000', color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}> Apple Pay</button>
+                   <button style={{ width: '100%', padding: '0.9rem', background: '#0070ba', color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer' }}>PayPal</button>
+                   <button style={{ width: '100%', padding: '0.9rem', background: '#fff', color: '#3399FF', fontWeight: 800, border: '2px solid #3399FF', borderRadius: '8px', cursor: 'pointer', fontStyle: 'italic' }}>venmo</button>
+                   <button style={{ width: '100%', padding: '0.9rem', background: 'transparent', color: 'var(--forest)', fontWeight: 600, border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px', cursor: 'pointer', marginTop: '0.5rem', fontSize: '0.8rem' }}>Commit & Pay at Course (Cash/Check)</button>
+                </div>
+             </div>
+          </div>
+        );
+     }
+     
+     return (
+        <div style={{ height: '450px', overflowY: 'auto', background: '#0f1512', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '2rem' }}>
+           <div style={{ width: '100%', maxWidth: '600px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div style={{ color: '#fff', fontSize: '1.5rem', fontFamily: 'Playfair Display, serif', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                 Live Scoreboard TV
+                 <span style={{ fontSize: '0.8rem', background: '#27c93f', padding: '0.2rem 0.6rem', borderRadius: '4px', color: '#000', fontWeight: 700, fontFamily: 'sans-serif' }}>LIVE</span>
+              </div>
+              {sponsors.map((s, i) => (
+                 <div key={i} style={{ padding: '1.5rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                       <div style={{ color: 'var(--gold)', fontWeight: 800, fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{s.tier} provided by</div>
+                       <div style={{ color: '#fff', fontSize: '1.5rem', fontWeight: 700, marginTop: '0.5rem' }}>[Brand Logo]</div>
+                    </div>
+                 </div>
+              ))}
+           </div>
+        </div>
+     );
+  };
+
+  const renderMobileSimulator = () => {
+     if (activeTab === 'content' || activeTab === 'launch') {
+        return (
+           <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative' }}>
+              <div style={{ height: '300px', background: heroImage ? `linear-gradient(135deg, ${secondaryThemeColor}99, ${themeColor}99), url(${heroImage}) ${heroPosition}/${heroZoom}% no-repeat` : `linear-gradient(135deg, ${secondaryThemeColor}, ${themeColor})`, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '1.5rem', position: 'relative' }}>
+                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `radial-gradient(circle at top right, ${themeColor} 0%, transparent 60%)`, opacity: 0.3, pointerEvents: 'none' }}></div>
+                 
+                 <div style={{ position: 'relative', zIndex: 10 }}>
+                    <div style={{ display: 'flex', gap: '0.4rem', marginBottom: '0.5rem' }}>
+                       <span style={{ fontSize: '0.65rem', padding: '0.2rem 0.5rem', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(4px)', color: '#fff', borderRadius: '4px', fontWeight: 700 }}>{formatName}</span>
+                    </div>
+                    <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.8rem', color: '#fff', margin: 0, lineHeight: 1.1, textShadow: '0 2px 8px rgba(0,0,0,0.4), 0 4px 20px rgba(0,0,0,0.2)' }}>
+                       {name || 'Tournament Title'}
+                    </h2>
+                    <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.8)', marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                       📍 {course ? `${course} ${city ? `· ${city}` : ''}` : 'Course TBD'}
+                    </div>
+                 </div>
+              </div>
+
+              <div style={{ padding: '1.5rem', background: '#fff' }}>
+                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
+                    <div>
+                       <div style={{ fontSize: '0.7rem', color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>Entry Fee</div>
+                       <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--forest)' }}>${totalFee.toFixed(2)}</div>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                       <div style={{ fontSize: '0.7rem', color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>Date</div>
+                       <div style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--ink)', fontFamily: 'DM Mono, monospace' }}>
+                          {date ? new Date(date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }) : 'TBD'}
+                       </div>
+                    </div>
+                 </div>
+
+                 {desc && (
+                    <div style={{ marginBottom: '1.5rem' }}>
+                       <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '0.5rem' }}>About Event</div>
+                       <div style={{ fontSize: '0.85rem', color: 'var(--mist)', lineHeight: 1.6, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{desc}</div>
+                    </div>
+                 )}
+
+                 <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '0.75rem' }}>Live Sponsors</div>
+                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '2rem' }}>
+                    {sponsors.map((s, idx) => (
+                       <div key={idx} style={{ padding: '1rem', background: '#f8faf9', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--forest)' }}>{s.tier}</span>
+                          <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--grass)' }}>${s.price}</span>
+                       </div>
+                    ))}
+                 </div>
+              </div>
+
+              <div style={{ position: 'sticky', bottom: 0, background: '#fff', padding: '1rem', borderTop: '1px solid rgba(0,0,0,0.05)', display: 'flex', justifyContent: 'center', zIndex: 50 }}>
+                 <button style={{ width: '100%', padding: '0.9rem', background: `linear-gradient(135deg, ${themeColor}, ${secondaryThemeColor})`, color: '#fff', fontWeight: 700, border: `1px solid ${secondaryThemeColor}40`, borderRadius: '12px', boxShadow: `0 8px 20px ${themeColor}40` }}>
+                    Register Now
+                 </button>
+              </div>
+           </div>
+        );
+     }
+     if (activeTab === 'finance') {
+        const entryFeeSubtotal = price * 4;
+        const totalAddon = addons.reduce((acc, a) => acc + a.price, 0);
+        const totalProcessing = passFees ? (stripeFee * 4) : 0;
+        const totalDue = entryFeeSubtotal + totalAddon + totalProcessing;
+        
+        return (
+           <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative', background: '#f8faf9', padding: '1.5rem' }}>
+             <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 10px 40px rgba(0,0,0,0.05)', padding: '1.5rem' }}>
+                <h3 style={{ margin: '0 0 0.5rem 0', fontFamily: 'Playfair Display, serif', fontSize: '1.4rem', color: 'var(--forest)' }}>Registration</h3>
+                <div style={{ fontSize: '0.75rem', color: 'var(--mist)', marginBottom: '1.5rem' }}>{name || 'Tournament Title'}</div>
+
+                <div style={{ borderTop: '1px solid rgba(0,0,0,0.05)', borderBottom: '1px solid rgba(0,0,0,0.05)', padding: '1.5rem 0', marginBottom: '1.5rem' }}>
+                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.85rem' }}>
+                      <span style={{ fontWeight: 600, color: 'var(--ink)' }}>Foursome Entry Fee</span>
+                      <span style={{ fontWeight: 700, color: 'var(--ink)' }}>${entryFeeSubtotal.toFixed(2)}</span>
+                   </div>
+                   {addons.map((a, i) => (
+                       <div key={i} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.8rem' }}>
+                          <span style={{ color: 'var(--mist)' }}>+ {a.name}</span>
+                          <span style={{ fontWeight: 600, color: 'var(--mist)' }}>${a.price.toFixed(2)}</span>
+                       </div>
+                   ))}
+                   {passFees && (
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.8rem' }}>
+                         <span style={{ color: 'var(--mist)' }}>+ Platform & Tax</span>
+                         <span style={{ fontWeight: 600, color: 'var(--mist)' }}>${(stripeFee * 4).toFixed(2)}</span>
+                      </div>
+                   )}
+                   <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
+                      <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.1rem' }}>Total Due</span>
+                      <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.1rem' }}>${totalDue.toFixed(2)}</span>
+                   </div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                   <button style={{ width: '100%', padding: '0.9rem', background: '#000', color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}> Apple Pay</button>
+                   <button style={{ width: '100%', padding: '0.9rem', background: '#0070ba', color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer' }}>PayPal</button>
+                   <button style={{ width: '100%', padding: '0.9rem', background: '#fff', color: '#3399FF', fontWeight: 800, border: '2px solid #3399FF', borderRadius: '8px', cursor: 'pointer', fontStyle: 'italic' }}>venmo</button>
+                   <button style={{ width: '100%', padding: '0.9rem', background: 'transparent', color: 'var(--forest)', fontWeight: 600, border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px', cursor: 'pointer', marginTop: '0.5rem', fontSize: '0.8rem' }}>Pay at Course (Cash/Check)</button>
+                </div>
+             </div>
+          </div>
+        );
+     }
+     
+     return (
+        <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative', background: '#0f1512', padding: '2rem 1.5rem' }}>
+           <div style={{ color: '#fff', fontSize: '1.3rem', fontFamily: 'Playfair Display, serif', marginBottom: '1.5rem', textAlign: 'center' }}>Player Scorecard</div>
+           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {sponsors.map((s, i) => (
+                 <div key={i} style={{ padding: '1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', textAlign: 'center' }}>
+                    <div style={{ color: 'var(--gold)', fontWeight: 700, fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>{s.tier}</div>
+                    <div style={{ color: '#fff', fontSize: '1.2rem', fontWeight: 800 }}>[Brand Logo/Ad]</div>
+                 </div>
+              ))}
+           </div>
+        </div>
+     );
+  };
+
   return (
     <div style={{ minHeight: '100vh', background: '#f4f7f5', paddingBottom: '4rem' }}>
        {/* Global Title Header */}
@@ -411,22 +694,27 @@ export default function HostLiveCampaignBuilder() {
           {/* EDITOR COLUMN (Left) */}
           <div style={{ flex: '1 1 600px', display: 'flex', flexDirection: 'column' }}>
              
-             {/* 3-State Tab Nav */}
-             <div style={{ display: 'flex', gap: '0.5rem', background: '#fff', padding: '0.5rem', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.05)', marginBottom: '2rem', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
+             {/* 4-State Tab Nav */}
+             <div style={{ display: 'flex', gap: '0.2rem', background: '#fff', padding: '0.3rem', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.05)', marginBottom: '2rem', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
                 <button 
                   onClick={() => setActiveTab('content')}
-                  style={{ flex: 1, padding: '0.8rem', background: activeTab === 'content' ? 'var(--forest)' : 'transparent', color: activeTab === 'content' ? '#fff' : 'var(--mist)', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: '0.2s' }}>
-                   <Settings size={16} /> Campaign Setup
+                  style={{ flex: 1, padding: '0.6rem 0.2rem', background: activeTab === 'content' ? 'var(--forest)' : 'transparent', color: activeTab === 'content' ? '#fff' : 'var(--mist)', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s' }}>
+                   1. Campaign Setup
                 </button>
                 <button 
                   onClick={() => setActiveTab('finance')}
-                  style={{ flex: 1, padding: '0.8rem', background: activeTab === 'finance' ? 'var(--forest)' : 'transparent', color: activeTab === 'finance' ? '#fff' : 'var(--mist)', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: '0.2s' }}>
-                   <DollarSign size={16} /> Financials
+                  style={{ flex: 1, padding: '0.6rem 0.2rem', background: activeTab === 'finance' ? 'var(--forest)' : 'transparent', color: activeTab === 'finance' ? '#fff' : 'var(--mist)', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s' }}>
+                   2. Financials
                 </button>
                 <button 
                   onClick={() => setActiveTab('sponsorships')}
-                  style={{ flex: 1, padding: '0.8rem', background: activeTab === 'sponsorships' ? 'var(--forest)' : 'transparent', color: activeTab === 'sponsorships' ? '#fff' : 'var(--mist)', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: '0.2s' }}>
-                   <ShoppingBag size={16} /> Sponsorships
+                  style={{ flex: 1, padding: '0.6rem 0.2rem', background: activeTab === 'sponsorships' ? 'var(--forest)' : 'transparent', color: activeTab === 'sponsorships' ? '#fff' : 'var(--mist)', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s' }}>
+                   3. Sponsorships
+                </button>
+                <button 
+                  onClick={() => setActiveTab('launch')}
+                  style={{ flex: 1, padding: '0.6rem 0.2rem', background: activeTab === 'launch' ? 'var(--gold)' : 'transparent', color: activeTab === 'launch' ? '#000' : 'var(--mist)', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 700, fontSize: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s' }}>
+                   4. Launch & Stripe
                 </button>
              </div>
 
@@ -434,6 +722,7 @@ export default function HostLiveCampaignBuilder() {
              {activeTab === 'content' && renderContentTab()}
              {activeTab === 'finance' && renderFinanceTab()}
              {activeTab === 'sponsorships' && renderSponsorTab()}
+             {activeTab === 'launch' && renderLaunchTab()}
 
           </div>
 
@@ -457,47 +746,7 @@ export default function HostLiveCampaignBuilder() {
                       </div>
                       
                       {/* Desktop Canvas */}
-                      <div style={{ height: '450px', overflowY: 'auto', background: '#f8faf9', display: 'flex', flexDirection: 'column' }}>
-                         <div style={{ padding: '2rem', background: heroImage ? `linear-gradient(135deg, ${secondaryThemeColor}99, ${themeColor}99), url(${heroImage}) ${heroPosition}/${heroZoom}% no-repeat` : `linear-gradient(135deg, ${secondaryThemeColor}, ${themeColor})`, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', textAlign: 'center' }}>
-                            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `radial-gradient(circle at top right, ${themeColor} 0%, transparent 60%)`, opacity: 0.3, pointerEvents: 'none' }}></div>
-                            <div style={{ position: 'relative', zIndex: 10 }}>
-                               <span style={{ fontSize: '0.7rem', padding: '0.2rem 0.6rem', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(4px)', color: '#fff', borderRadius: '4px', fontWeight: 700, marginBottom: '0.75rem', display: 'inline-block' }}>{formatName}</span>
-                               <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '2.5rem', color: '#fff', margin: 0, lineHeight: 1.1, textShadow: '0 2px 8px rgba(0,0,0,0.4), 0 4px 20px rgba(0,0,0,0.2)' }}>
-                                  {name || 'Tournament Title'}
-                               </h2>
-                               <div style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.8)', marginTop: '0.75rem', display: 'flex', justifyContent: 'center', gap: '0.5rem' }}>
-                                  <span>📍 {course || 'Course TBD'}</span>
-                                  <span>·</span>
-                                  <span>{date ? new Date(date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }) : 'Date TBD'}</span>
-                               </div>
-                            </div>
-                         </div>
-                         
-                         <div style={{ padding: '1.5rem', display: 'flex', gap: '1.5rem', flex: 1 }}>
-                            <div style={{ flex: '1 1 60%' }}>
-                               <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--forest)', marginBottom: '0.5rem' }}>About Event</div>
-                               <div style={{ fontSize: '0.85rem', color: 'var(--mist)', lineHeight: 1.6, marginBottom: '1.5rem', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{desc || 'Tournament description will appear here...'}</div>
-
-                               <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '0.75rem' }}>Sponsors</div>
-                               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-                                  {sponsors.map((s, idx) => (
-                                     <div key={idx} style={{ padding: '0.75rem', background: '#fff', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.05)', textAlign: 'center' }}>
-                                        <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)' }}>{s.tier}</div>
-                                        <div style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--grass)' }}>${s.price}</div>
-                                     </div>
-                                  ))}
-                               </div>
-                            </div>
-
-                            <div style={{ flex: '0 0 200px' }}>
-                                <div style={{ background: '#fff', padding: '1.25rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', textAlign: 'center', position: 'sticky', top: '10px' }}>
-                                   <div style={{ fontSize: '0.75rem', color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Registration</div>
-                                   <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--forest)', margin: '0.5rem 0' }}>${totalFee.toFixed(2)}</div>
-                                   <button style={{ width: '100%', padding: '0.8rem', background: `linear-gradient(135deg, ${themeColor}, ${secondaryThemeColor})`, color: '#fff', fontWeight: 700, border: `1px solid ${secondaryThemeColor}40`, borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem', boxShadow: `0 8px 20px ${themeColor}40`, transition: '0.2s' }}>Register Now</button>
-                                </div>
-                             </div>
-                         </div>
-                      </div>
+                      {renderDesktopSimulator()}
                    </div>
                 </div>
 
@@ -522,66 +771,7 @@ export default function HostLiveCampaignBuilder() {
                       <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '120px', height: '25px', background: '#0f1512', borderBottomLeftRadius: '16px', borderBottomRightRadius: '16px', zIndex: 50 }}></div>
 
                       {/* SIMULATED WEB BROWSER CANVAS */}
-                      <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative' }}>
-                         
-                         {/* Simulated Hero Section */}
-                         <div style={{ height: '300px', background: heroImage ? `linear-gradient(135deg, ${secondaryThemeColor}99, ${themeColor}99), url(${heroImage}) ${heroPosition}/${heroZoom}% no-repeat` : `linear-gradient(135deg, ${secondaryThemeColor}, ${themeColor})`, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '1.5rem', position: 'relative' }}>
-                            {/* Dynamic gradient wash over hero */}
-                            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `radial-gradient(circle at top right, ${themeColor} 0%, transparent 60%)`, opacity: 0.3, pointerEvents: 'none' }}></div>
-                            
-                            <div style={{ position: 'relative', zIndex: 10 }}>
-                               <div style={{ display: 'flex', gap: '0.4rem', marginBottom: '0.5rem' }}>
-                                  <span style={{ fontSize: '0.65rem', padding: '0.2rem 0.5rem', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(4px)', color: '#fff', borderRadius: '4px', fontWeight: 700 }}>{formatName}</span>
-                               </div>
-                               <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.8rem', color: '#fff', margin: 0, lineHeight: 1.1, textShadow: '0 2px 8px rgba(0,0,0,0.4), 0 4px 20px rgba(0,0,0,0.2)' }}>
-                                  {name || 'Tournament Title'}
-                               </h2>
-                               <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.8)', marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                                  📍 {course ? `${course} ${city ? `· ${city}` : ''}` : 'Course TBD'}
-                               </div>
-                            </div>
-                         </div>
-
-                         {/* Simulated Body Content */}
-                         <div style={{ padding: '1.5rem', background: '#fff' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
-                               <div>
-                                  <div style={{ fontSize: '0.7rem', color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>Entry Fee</div>
-                                  <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--forest)' }}>${totalFee.toFixed(2)}</div>
-                               </div>
-                               <div style={{ textAlign: 'right' }}>
-                                  <div style={{ fontSize: '0.7rem', color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>Date</div>
-                                  <div style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--ink)', fontFamily: 'DM Mono, monospace' }}>
-                                     {date ? new Date(date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }) : 'TBD'}
-                                  </div>
-                               </div>
-                            </div>
-
-                            {desc && (
-                               <div style={{ marginBottom: '1.5rem' }}>
-                                  <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '0.5rem' }}>About Event</div>
-                                  <div style={{ fontSize: '0.85rem', color: 'var(--mist)', lineHeight: 1.6, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{desc}</div>
-                               </div>
-                            )}
-
-                            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '0.75rem' }}>Live Sponsors</div>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '2rem' }}>
-                               {sponsors.map((s, idx) => (
-                                  <div key={idx} style={{ padding: '1rem', background: '#f8faf9', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                     <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--forest)' }}>{s.tier}</span>
-                                     <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--grass)' }}>${s.price}</span>
-                                  </div>
-                               ))}
-                            </div>
-                         </div>
-
-                         {/* Sticky Bottom Action Mobile */}
-                         <div style={{ position: 'sticky', bottom: 0, background: '#fff', padding: '1rem', borderTop: '1px solid rgba(0,0,0,0.05)', display: 'flex', justifyContent: 'center', zIndex: 50 }}>
-                            <button style={{ width: '100%', padding: '0.9rem', background: `linear-gradient(135deg, ${themeColor}, ${secondaryThemeColor})`, color: '#fff', fontWeight: 700, border: `1px solid ${secondaryThemeColor}40`, borderRadius: '12px', boxShadow: `0 8px 20px ${themeColor}40` }}>
-                               Register Now
-                            </button>
-                         </div>
-                      </div>
+                      {renderMobileSimulator()}
                    </div>
                 </div>
 
