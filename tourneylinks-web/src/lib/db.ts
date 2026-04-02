@@ -285,7 +285,8 @@ export const sponsorship_tiers = pgTable('sponsorship_tiers', {
 
 export const tournament_sponsors = pgTable('tournament_sponsors', {
   id: serial('id').primaryKey(),
-  tournamentId: integer('tournament_id').references(() => tournaments.id).notNull(),
+  tournamentId: integer('tournament_id').references(() => tournaments.id).notNull(), // The event they are sponsoring
+  clerkUserId: text('clerk_user_id'), // The UserID of the B2B person representing Ford
   name: text('name').notNull(),
   logoUrl: text('logo_url').notNull(),
   websiteUrl: text('website_url'),
@@ -378,6 +379,15 @@ export const live_telemetry = pgTable('live_telemetry', {
   longitude: real('longitude').notNull(),
   accuracy: real('accuracy'), // For resolving ping noise
   timestamp: timestamp('timestamp').defaultNow().notNull(),
+});
+
+// PHASE 13: B2B Multi-Role Architecture
+export const course_staff = pgTable('course_staff', {
+  id: serial('id').primaryKey(),
+  courseId: integer('course_id').references(() => courses.id, { onDelete: 'cascade' }).notNull(),
+  clerkUserId: text('clerk_user_id').notNull(),
+  role: text('role').notNull(), // 'HEAD_PRO', 'FOOD_AND_BEVERAGE', 'ASSISTANT', 'OWNER'
+  assignedAt: timestamp('assigned_at').defaultNow().notNull()
 });
 
 // PHASE 11: Beverage Cart & Banter Features

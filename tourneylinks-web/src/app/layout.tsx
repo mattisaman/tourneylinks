@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { DM_Sans, Playfair_Display, DM_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/ui/Navbar";
-import DemoController from "@/components/ui/DemoController";
 import Footer from "@/components/ui/Footer";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Analytics } from "@vercel/analytics/react";
@@ -55,7 +54,6 @@ export default function RootLayout({
         <body
           className={`${dmSans.variable} ${playfair.variable} ${dmMono.variable} antialiased font-sans`}
         >
-          <DemoController />
           <Navbar />
           {children}
           <Footer />

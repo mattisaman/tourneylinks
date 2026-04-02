@@ -153,9 +153,7 @@ export default async function CourseDetailPage(props: { params: Promise<{ id: st
                       Bring your tournament to life on these pristine fairways. We streamline the registration and management process, delivering a premium, transparent experience for organizers and players alike.
                     </p>
                     
-                    <a href={`mailto:${course.email || 'info@tourneylinks.com'}`} className="gold-foil-hover" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: '1.4rem 3.5rem', background: 'rgba(201,168,76,0.05)', border: '1px solid rgba(201,168,76,0.3)', color: 'var(--gold)', letterSpacing: '0.2em', textTransform: 'uppercase', fontSize: '0.9rem', fontWeight: 600, transition: 'all 0.3s ease', position: 'relative', zIndex: 10, textDecoration: 'none' }}
-                       onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(201,168,76,0.15)'; e.currentTarget.style.boxShadow = '0 0 30px rgba(201,168,76,0.2)'; e.currentTarget.style.borderColor = 'rgba(201,168,76,0.8)'; }}
-                       onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(201,168,76,0.05)'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.borderColor = 'rgba(201,168,76,0.3)'; }}>
+                    <a href={`mailto:${course.email || 'info@tourneylinks.com'}`} className="gold-foil-hover hover:brightness-125" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: '1.4rem 3.5rem', background: 'rgba(201,168,76,0.05)', border: '1px solid rgba(201,168,76,0.3)', color: 'var(--gold)', letterSpacing: '0.2em', textTransform: 'uppercase', fontSize: '0.9rem', fontWeight: 600, transition: 'all 0.3s ease', position: 'relative', zIndex: 10, textDecoration: 'none' }}>
                       Contact Director &rarr;
                     </a>
                  </div>
@@ -178,9 +176,7 @@ export default async function CourseDetailPage(props: { params: Promise<{ id: st
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
                 {hostedTournaments.map((t) => (
                   <Link href={`/tournaments/${t.id}`} key={t.id} style={{ textDecoration: 'none' }}>
-                    <div style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px', padding: '1.5rem', cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }} 
-                         onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-3px)'} 
-                         onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
+                    <div className="hover:-translate-y-1 hover:shadow-xl hover:shadow-[rgba(212,175,55,0.1)]" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px', padding: '1.5rem', cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}>
                       <div style={{ fontSize: '0.8rem', color: 'var(--gold)', fontWeight: 600, marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '1px' }}>
                         {new Date(t.dateStart).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                       </div>
