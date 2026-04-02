@@ -52,13 +52,13 @@ export default function HostLiveCampaignBuilder() {
   const [courseSearch, setCourseSearch] = useState('');
   const [courseResults, setCourseResults] = useState<any[]>([]);
   
-  const [sponsors, setSponsors] = useState<{tier: string, price: number, spots: number, incentives: string[], includesIntent: boolean}[]>([
-     { tier: 'Title Sponsor', price: 5000, spots: 1, incentives: ['Primary Logo on all Hero branding', 'Foursome included', 'Speaking opportunity at dinner'], includesIntent: true },
-     { tier: 'Beverage Cart', price: 1500, spots: 2, incentives: ['Logo on beverage cart', 'Custom branded napkins'], includesIntent: false }
+  const [sponsors, setSponsors] = useState<{tier: string, price: number, spots: number, incentives: string[], includesIntent: boolean, includesDinner: boolean}[]>([
+     { tier: 'Title Sponsor', price: 5000, spots: 1, incentives: ['Primary Logo on all Hero branding', 'Foursome included', 'Speaking opportunity at dinner'], includesIntent: true, includesDinner: true },
+     { tier: 'Beverage Cart', price: 1500, spots: 2, incentives: ['Logo on beverage cart', 'Custom branded napkins'], includesIntent: false, includesDinner: false }
   ]);
   const [showSponsorForm, setShowSponsorForm] = useState(false);
   const [editingSponsorIdx, setEditingSponsorIdx] = useState<number | null>(null);
-  const [newSponsor, setNewSponsor] = useState<{tier: string, price: number | string, spots: number, incentivesText: string, includesIntent: boolean}>({ tier: '', price: '', spots: 1, incentivesText: '', includesIntent: false });
+  const [newSponsor, setNewSponsor] = useState<{tier: string, price: number | string, spots: number, incentivesText: string, includesIntent: boolean, includesDinner: boolean}>({ tier: '', price: '', spots: 1, incentivesText: '', includesIntent: false, includesDinner: false });
   const [sponsorPreviewMode, setSponsorPreviewMode] = useState<'directory' | 'checkout'>('directory');
 
   useEffect(() => {
@@ -544,7 +544,7 @@ export default function HostLiveCampaignBuilder() {
                  onClick={() => {
                     setShowSponsorForm(!showSponsorForm);
                     setEditingSponsorIdx(null);
-                    setNewSponsor({ tier: '', price: '', spots: 1, incentivesText: '', includesIntent: false });
+                    setNewSponsor({ tier: '', price: '', spots: 1, incentivesText: '', includesIntent: false, includesDinner: false });
                  }} 
                  className="btn-hero-outline" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                  {showSponsorForm && editingSponsorIdx === null ? 'Cancel' : <><Plus size={14} /> Mint Sponsor Tier</>}
@@ -577,20 +577,36 @@ export default function HostLiveCampaignBuilder() {
                           <input type="number" value={newSponsor.spots} onChange={e => setNewSponsor({...newSponsor, spots: Number(e.target.value)})} style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }} />
                        </div>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fff', padding: '0.8rem 1rem', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.05)', marginTop: '0.2rem' }}>
-                       <div>
-                          <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--forest)' }}>Triggers Player Registration Flow?</div>
-                          <div style={{ fontSize: '0.65rem', color: 'var(--mist)' }}>Toggle ON if this tier includes a foursome. This triggers intent fields at checkout.</div>
-                       </div>
-                       <label className="toggle-switch">
-                          <input 
-                             type="checkbox" 
-                             checked={newSponsor.includesIntent} 
-                             onChange={(e) => setNewSponsor({...newSponsor, includesIntent: e.target.checked})} 
-                          />
-                          <span className="toggle-slider"></span>
-                       </label>
-                    </div>
+                    <div style={{ display: 'flex', gap: '1rem', marginTop: '0.2rem' }}>
+                        <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fff', padding: '0.8rem 1rem', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.05)' }}>
+                           <div>
+                              <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--forest)' }}>Player Flow?</div>
+                              <div style={{ fontSize: '0.65rem', color: 'var(--mist)' }}>Include foursome registration link.</div>
+                           </div>
+                           <label className="toggle-switch">
+                              <input 
+                                 type="checkbox" 
+                                 checked={newSponsor.includesIntent} 
+                                 onChange={(e) => setNewSponsor({...newSponsor, includesIntent: e.target.checked})} 
+                              />
+                              <span className="toggle-slider"></span>
+                           </label>
+                        </div>
+                        <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fff', padding: '0.8rem 1rem', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.05)' }}>
+                           <div>
+                              <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--forest)' }}>Hospitality Flow?</div>
+                              <div style={{ fontSize: '0.65rem', color: 'var(--mist)' }}>Include dinner seating link.</div>
+                           </div>
+                           <label className="toggle-switch">
+                              <input 
+                                 type="checkbox" 
+                                 checked={newSponsor.includesDinner} 
+                                 onChange={(e) => setNewSponsor({...newSponsor, includesDinner: e.target.checked})} 
+                              />
+                              <span className="toggle-slider"></span>
+                           </label>
+                        </div>
+                     </div>
                     <div>
                        <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>Incentives & Perks (One per line)</label>
                        <textarea 
@@ -607,7 +623,7 @@ export default function HostLiveCampaignBuilder() {
                           onClick={() => {
                              if (!newSponsor.tier || newSponsor.price === '' || Number(newSponsor.price) < 0) return;
                              const incArray = newSponsor.incentivesText.split('\n').map(i => i.trim()).filter(i => i !== '');
-                             const sponsorObj = { tier: newSponsor.tier, price: Number(newSponsor.price), spots: newSponsor.spots, incentives: incArray, includesIntent: newSponsor.includesIntent };
+                             const sponsorObj = { tier: newSponsor.tier, price: Number(newSponsor.price), spots: newSponsor.spots, incentives: incArray, includesIntent: newSponsor.includesIntent, includesDinner: newSponsor.includesDinner };
                              
                              if (editingSponsorIdx !== null) {
                                 const clone = [...sponsors];
@@ -618,7 +634,7 @@ export default function HostLiveCampaignBuilder() {
                              }
                              setShowSponsorForm(false);
                              setEditingSponsorIdx(null);
-                             setNewSponsor({ tier: '', price: '', spots: 1, incentivesText: '', includesIntent: false });
+                             setNewSponsor({ tier: '', price: '', spots: 1, incentivesText: '', includesIntent: false, includesDinner: false });
                           }}
                           style={{ flex: 1, padding: '0.8rem', background: 'var(--forest)', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 700, cursor: 'pointer' }}>
                           {editingSponsorIdx !== null ? 'Save Changes' : 'Mint Tier'}
@@ -646,7 +662,7 @@ export default function HostLiveCampaignBuilder() {
                           <div style={{ display: 'flex', gap: '0.5rem' }}>
                              <button onClick={() => {
                                 setEditingSponsorIdx(i);
-                                setNewSponsor({ tier: s.tier, price: s.price, spots: s.spots, incentivesText: (s.incentives || []).join('\n'), includesIntent: s.includesIntent || false });
+                                setNewSponsor({ tier: s.tier, price: s.price, spots: s.spots, incentivesText: (s.incentives || []).join('\n'), includesIntent: s.includesIntent || false, includesDinner: s.includesDinner || false });
                                 setShowSponsorForm(true);
                              }} style={{ background: 'none', border: 'none', color: '#3399FF', fontSize: '0.75rem', cursor: 'pointer', fontWeight: 600 }}>Edit</button>
                              <button onClick={() => setSponsors(sponsors.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: '#ff5f56', fontSize: '0.75rem', cursor: 'pointer', fontWeight: 600 }}>Remove</button>
@@ -865,7 +881,7 @@ export default function HostLiveCampaignBuilder() {
            );
         }
 
-        const topSponsor = sponsors.length > 0 ? sponsors[0] : { tier: 'Title Sponsor', price: 5000, spots: 1, incentives: [], includesIntent: true };
+        const topSponsor = sponsors.length > 0 ? sponsors[0] : { tier: 'Title Sponsor', price: 5000, spots: 1, incentives: [], includesIntent: true, includesDinner: true };
         // ACH is generally ~0.8% with a $5 cap. Let's accurately mock that calculation.
         const achFee = Math.min(topSponsor.price * 0.008, 5.00);
 
@@ -896,13 +912,13 @@ export default function HostLiveCampaignBuilder() {
                    </div>
                 </div>
 
-                {topSponsor.includesIntent && (
+                {(topSponsor.includesIntent || topSponsor.includesDinner) && (
                    <div style={{ marginBottom: '1.5rem' }}>
                       <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink)', marginBottom: '0.5rem' }}>Participant Intent</div>
                       <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                          <button style={{ flex: 1, minWidth: '120px', padding: '0.6rem', border: '2px solid var(--forest)', background: 'var(--forest)', color: '#fff', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>Sponsor Only</button>
-                         <button style={{ flex: 1, minWidth: '120px', padding: '0.6rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>Play & Sponsor</button>
-                         <button style={{ flex: 1, minWidth: '120px', padding: '0.6rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>Sponsor & Dinner</button>
+                         {topSponsor.includesIntent && <button style={{ flex: 1, minWidth: '120px', padding: '0.6rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>Play & Sponsor</button>}
+                         {topSponsor.includesDinner && <button style={{ flex: 1, minWidth: '120px', padding: '0.6rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>Sponsor & Dinner</button>}
                       </div>
                    </div>
                 )}
@@ -1100,7 +1116,7 @@ export default function HostLiveCampaignBuilder() {
            );
         }
 
-        const topSponsor = sponsors.length > 0 ? sponsors[0] : { tier: 'Title Sponsor', price: 5000, spots: 1, incentives: [], includesIntent: true };
+        const topSponsor = sponsors.length > 0 ? sponsors[0] : { tier: 'Title Sponsor', price: 5000, spots: 1, incentives: [], includesIntent: true, includesDinner: true };
         const achFee = Math.min(topSponsor.price * 0.008, 5.00);
 
         return (
@@ -1130,13 +1146,13 @@ export default function HostLiveCampaignBuilder() {
                    </div>
                 </div>
 
-                {topSponsor.includesIntent && (
+                {(topSponsor.includesIntent || topSponsor.includesDinner) && (
                    <div style={{ marginBottom: '1.5rem' }}>
                       <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--ink)', marginBottom: '0.5rem' }}>Participant Intent</div>
                       <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                          <button style={{ flex: 1, minWidth: '100px', padding: '0.5rem', border: '2px solid var(--forest)', background: 'var(--forest)', color: '#fff', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 600 }}>Sponsor Only</button>
-                         <button style={{ flex: 1, minWidth: '100px', padding: '0.5rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 600 }}>Play & Sponsor</button>
-                         <button style={{ flex: 1, minWidth: '100px', padding: '0.5rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 600 }}>Sponsor & Dinner</button>
+                         {topSponsor.includesIntent && <button style={{ flex: 1, minWidth: '100px', padding: '0.5rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 600 }}>Play & Sponsor</button>}
+                         {topSponsor.includesDinner && <button style={{ flex: 1, minWidth: '100px', padding: '0.5rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 600 }}>Sponsor & Dinner</button>}
                       </div>
                    </div>
                 )}
