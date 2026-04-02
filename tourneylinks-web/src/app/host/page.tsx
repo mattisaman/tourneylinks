@@ -820,7 +820,7 @@ export default function HostLiveCampaignBuilder() {
                        <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--mist)' }}>No sponsor tiers configured yet.</div>
                     ) : (
                        sponsors.map((sponsor, idx) => (
-                          <div key={idx} style={{ display: 'flex', background: '#fff', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', overflow: 'hidden' }}>
+                          <div key={idx} style={{ display: 'flex', background: 'linear-gradient(180deg, #ffffff 0%, #fcfefc 100%)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.6)', boxShadow: '0 8px 30px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)', overflow: 'hidden' }}>
                              <div style={{ padding: '2rem', flex: 1 }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
                                    <div>
@@ -839,7 +839,7 @@ export default function HostLiveCampaignBuilder() {
                                       ))}
                                    </div>
                                 )}
-                                <button style={{ padding: '0.75rem 1.5rem', background: 'var(--forest)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', transition: '0.2s', width: 'auto' }}>
+                                <button style={{ padding: '0.75rem 1.5rem', background: 'linear-gradient(135deg, var(--forest), #1a3a28)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', boxShadow: '0 4px 10px rgba(26, 58, 40, 0.3)', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', transition: '0.2s', width: 'auto' }}>
                                    Secure Partnership
                                 </button>
                              </div>
@@ -857,7 +857,7 @@ export default function HostLiveCampaignBuilder() {
 
         return (
            <div style={{ height: '450px', overflowY: 'auto', background: '#f8faf9', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: '3rem 2rem' }}>
-             <div style={{ width: '100%', maxWidth: '450px', background: '#fff', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 10px 40px rgba(0,0,0,0.05)', padding: '2rem' }}>
+             <div style={{ width: '100%', maxWidth: '450px', background: 'linear-gradient(180deg, #ffffff 0%, #fcfefc 100%)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.6)', boxShadow: '0 15px 50px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)', padding: '2rem' }}>
                 <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Secure Checkout</div>
                 <h3 style={{ margin: '0 0 0.5rem 0', fontFamily: 'Playfair Display, serif', fontSize: '1.5rem', color: 'var(--forest)' }}>{topSponsor.tier}</h3>
                 <div style={{ fontSize: '0.85rem', color: 'var(--mist)', marginBottom: '1.5rem', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
@@ -989,7 +989,7 @@ export default function HostLiveCampaignBuilder() {
         
         return (
            <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative', background: '#f8faf9', padding: '1.5rem' }}>
-             <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 10px 40px rgba(0,0,0,0.05)', padding: '1.5rem' }}>
+             <div style={{ background: 'linear-gradient(180deg, #ffffff 0%, #fcfefc 100%)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.6)', boxShadow: '0 10px 40px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)', padding: '1.5rem' }}>
                 <h3 style={{ margin: '0 0 0.5rem 0', fontFamily: 'Playfair Display, serif', fontSize: '1.4rem', color: 'var(--forest)' }}>Registration</h3>
                 <div style={{ fontSize: '0.75rem', color: 'var(--mist)', marginBottom: '1.5rem' }}>{name || 'Tournament Title'}</div>
 
@@ -1052,7 +1052,7 @@ export default function HostLiveCampaignBuilder() {
                        <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--mist)', fontSize: '0.85rem' }}>No tiers available.</div>
                     ) : (
                        sponsors.map((sponsor, idx) => (
-                          <div key={idx} style={{ background: '#fff', borderRadius: '10px', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 2px 10px rgba(0,0,0,0.02)', padding: '1.25rem' }}>
+                          <div key={idx} style={{ background: 'linear-gradient(180deg, #ffffff 0%, #fcfefc 100%)', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.6)', boxShadow: '0 4px 15px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)', padding: '1.25rem' }}>
                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
                                 <h3 style={{ margin: 0, fontFamily: 'Playfair Display, serif', fontSize: '1.1rem', color: 'var(--forest)' }}>{sponsor.tier}</h3>
                                 <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--grass)' }}>${sponsor.price}</div>
@@ -1072,7 +1072,7 @@ export default function HostLiveCampaignBuilder() {
                                    )}
                                 </div>
                              )}
-                             <button style={{ width: '100%', padding: '0.6rem', background: 'var(--forest)', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer' }}>
+                             <button style={{ width: '100%', padding: '0.6rem', background: 'linear-gradient(135deg, var(--forest), #1a3a28)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '6px', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer', boxShadow: '0 4px 10px rgba(26, 58, 40, 0.3)' }}>
                                 Secure Tier
                              </button>
                           </div>
@@ -1088,7 +1088,7 @@ export default function HostLiveCampaignBuilder() {
 
         return (
            <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative', background: '#f8faf9', padding: '1.5rem' }}>
-             <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 10px 40px rgba(0,0,0,0.05)', padding: '1.5rem' }}>
+             <div style={{ background: 'linear-gradient(180deg, #ffffff 0%, #fcfefc 100%)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.6)', boxShadow: '0 10px 40px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)', padding: '1.5rem' }}>
                 <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Secure Checkout</div>
                 <h3 style={{ margin: '0 0 0.5rem 0', fontFamily: 'Playfair Display, serif', fontSize: '1.3rem', color: 'var(--forest)' }}>{topSponsor.tier}</h3>
                 <div style={{ fontSize: '0.8rem', color: 'var(--mist)', marginBottom: '1.5rem', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
