@@ -1199,7 +1199,7 @@ export default function HostLiveCampaignBuilder() {
                 
                 {/* Sponsorship Mode Toggle */}
                 {activeTab === 'sponsorships' && (
-                   <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginBottom: '-1rem' }}>
+                   <div style={{ position: 'sticky', top: 0, zIndex: 100, width: '100%', display: 'flex', justifyContent: 'center', marginBottom: '-1rem', padding: '1rem 0', background: 'linear-gradient(to bottom, #f4f7f5 80%, transparent)' }}>
                       <div style={{ display: 'flex', background: '#fff', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '30px', overflow: 'hidden', padding: '0.2rem', boxShadow: '0 4px 10px rgba(0,0,0,0.05)' }}>
                          <button 
                             onClick={() => setSponsorPreviewMode('directory')}
