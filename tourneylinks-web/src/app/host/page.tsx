@@ -465,7 +465,7 @@ export default function HostLiveCampaignBuilder() {
                                <div style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.8)', marginTop: '0.75rem', display: 'flex', justifyContent: 'center', gap: '0.5rem' }}>
                                   <span>📍 {course || 'Course TBD'}</span>
                                   <span>·</span>
-                                  <span>{date ? new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }) : 'Date TBD'}</span>
+                                  <span>{date ? new Date(date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }) : 'Date TBD'}</span>
                                </div>
                             </div>
                          </div>
@@ -473,7 +473,7 @@ export default function HostLiveCampaignBuilder() {
                          <div style={{ padding: '1.5rem', display: 'flex', gap: '1.5rem', flex: 1 }}>
                             <div style={{ flex: '1 1 60%' }}>
                                <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--forest)', marginBottom: '0.5rem' }}>About Event</div>
-                               <div style={{ fontSize: '0.85rem', color: 'var(--mist)', lineHeight: 1.6, marginBottom: '1.5rem', whiteSpace: 'pre-wrap' }}>{desc || 'Tournament description will appear here...'}</div>
+                               <div style={{ fontSize: '0.85rem', color: 'var(--mist)', lineHeight: 1.6, marginBottom: '1.5rem', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{desc || 'Tournament description will appear here...'}</div>
 
                                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '0.75rem' }}>Sponsors</div>
                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
@@ -549,7 +549,7 @@ export default function HostLiveCampaignBuilder() {
                                <div style={{ textAlign: 'right' }}>
                                   <div style={{ fontSize: '0.7rem', color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>Date</div>
                                   <div style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--ink)', fontFamily: 'DM Mono, monospace' }}>
-                                     {date ? new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }) : 'TBD'}
+                                     {date ? new Date(date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }) : 'TBD'}
                                   </div>
                                </div>
                             </div>
@@ -557,7 +557,7 @@ export default function HostLiveCampaignBuilder() {
                             {desc && (
                                <div style={{ marginBottom: '1.5rem' }}>
                                   <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '0.5rem' }}>About Event</div>
-                                  <div style={{ fontSize: '0.85rem', color: 'var(--mist)', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{desc}</div>
+                                  <div style={{ fontSize: '0.85rem', color: 'var(--mist)', lineHeight: 1.6, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{desc}</div>
                                </div>
                             )}
 
