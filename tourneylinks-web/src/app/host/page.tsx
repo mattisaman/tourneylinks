@@ -35,7 +35,7 @@ export default function HostLiveCampaignBuilder() {
      { name: 'Mulligan', price: 20, type: 'per_player', maxQuantity: 2 }
   ]);
   const [showAddonForm, setShowAddonForm] = useState(false);
-  const [newAddon, setNewAddon] = useState<{name: string, price: number, type: 'per_player'|'per_team'|'flat', maxQuantity?: number}>({ name: '', price: 0, type: 'per_player' });
+  const [newAddon, setNewAddon] = useState<{name: string, price: number | string, type: 'per_player'|'per_team'|'flat', maxQuantity?: number}>({ name: '', price: '', type: 'per_player' });
 
   const [themeColor, setThemeColor] = useState('#c9a84c');
   const [secondaryThemeColor, setSecondaryThemeColor] = useState('#1a2e1a');
@@ -58,7 +58,8 @@ export default function HostLiveCampaignBuilder() {
   ]);
   const [showSponsorForm, setShowSponsorForm] = useState(false);
   const [editingSponsorIdx, setEditingSponsorIdx] = useState<number | null>(null);
-  const [newSponsor, setNewSponsor] = useState<{tier: string, price: number, spots: number, incentivesText: string}>({ tier: '', price: 0, spots: 1, incentivesText: '' });
+  const [newSponsor, setNewSponsor] = useState<{tier: string, price: number | string, spots: number, incentivesText: string}>({ tier: '', price: '', spots: 1, incentivesText: '' });
+  const [sponsorPreviewMode, setSponsorPreviewMode] = useState<'directory' | 'checkout'>('directory');
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -458,7 +459,7 @@ export default function HostLiveCampaignBuilder() {
                        </div>
                        <div style={{ flex: 1 }}>
                           <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>Price ($)</label>
-                          <input type="number" value={newAddon.price} onChange={e => setNewAddon({...newAddon, price: Number(e.target.value)})} style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }} />
+                          <input type="number" value={newAddon.price} onChange={e => setNewAddon({...newAddon, price: e.target.value === '' ? '' : Number(e.target.value)})} style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }} />
                        </div>
                     </div>
                     <div style={{ display: 'flex', gap: '1rem' }}>
@@ -477,9 +478,9 @@ export default function HostLiveCampaignBuilder() {
                     </div>
                     <button 
                        onClick={() => {
-                          if (newAddon.name && newAddon.price >= 0) {
-                             setAddons([...addons, newAddon]);
-                             setNewAddon({ name: '', price: 0, type: 'per_player', maxQuantity: undefined });
+                          if (newAddon.name && newAddon.price !== '' && Number(newAddon.price) >= 0) {
+                             setAddons([...addons, { ...newAddon, price: Number(newAddon.price) }]);
+                             setNewAddon({ name: '', price: '', type: 'per_player', maxQuantity: undefined });
                              setShowAddonForm(false);
                           }
                        }}
@@ -510,6 +511,11 @@ export default function HostLiveCampaignBuilder() {
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                        <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--ink)' }}>${a.price.toFixed(2)}</div>
+                       <button onClick={() => {
+                          setNewAddon(a);
+                          setAddons(addons.filter((_, idx) => idx !== i));
+                          setShowAddonForm(true);
+                       }} style={{ background: 'none', border: 'none', color: 'var(--forest)', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600 }}>Edit</button>
                        <button onClick={() => setAddons(addons.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: '#ff5f56', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600 }}>Remove</button>
                     </div>
                  </div>
@@ -564,7 +570,7 @@ export default function HostLiveCampaignBuilder() {
                        </div>
                        <div style={{ flex: 1 }}>
                           <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>Price ($)</label>
-                          <input type="number" value={newSponsor.price} onChange={e => setNewSponsor({...newSponsor, price: Number(e.target.value)})} style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }} />
+                          <input type="number" value={newSponsor.price} onChange={e => setNewSponsor({...newSponsor, price: e.target.value === '' ? '' : Number(e.target.value)})} style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }} />
                        </div>
                        <div style={{ flex: 1 }}>
                           <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>Inventory</label>
@@ -585,9 +591,9 @@ export default function HostLiveCampaignBuilder() {
                     <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
                        <button 
                           onClick={() => {
-                             if (!newSponsor.tier || newSponsor.price < 0) return;
+                             if (!newSponsor.tier || newSponsor.price === '' || Number(newSponsor.price) < 0) return;
                              const incArray = newSponsor.incentivesText.split('\n').map(i => i.trim()).filter(i => i !== '');
-                             const sponsorObj = { tier: newSponsor.tier, price: newSponsor.price, spots: newSponsor.spots, incentives: incArray };
+                             const sponsorObj = { tier: newSponsor.tier, price: Number(newSponsor.price), spots: newSponsor.spots, incentives: incArray };
                              
                              if (editingSponsorIdx !== null) {
                                 const clone = [...sponsors];
@@ -598,7 +604,7 @@ export default function HostLiveCampaignBuilder() {
                              }
                              setShowSponsorForm(false);
                              setEditingSponsorIdx(null);
-                             setNewSponsor({ tier: '', price: 0, spots: 1, incentivesText: '' });
+                             setNewSponsor({ tier: '', price: '', spots: 1, incentivesText: '' });
                           }}
                           style={{ flex: 1, padding: '0.8rem', background: 'var(--forest)', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 700, cursor: 'pointer' }}>
                           {editingSponsorIdx !== null ? 'Save Changes' : 'Mint Tier'}
@@ -801,6 +807,50 @@ export default function HostLiveCampaignBuilder() {
         );
      }
      if (activeTab === 'sponsorships') {
+        if (sponsorPreviewMode === 'directory') {
+           return (
+              <div style={{ padding: '3rem 2rem', background: '#f8faf9', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                 <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Partnership Opportunities</div>
+                    <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '2rem', color: 'var(--forest)', margin: 0 }}>Support Our Mission</h2>
+                 </div>
+                 
+                 <div style={{ width: '100%', maxWidth: '600px', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                    {sponsors.length === 0 ? (
+                       <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--mist)' }}>No sponsor tiers configured yet.</div>
+                    ) : (
+                       sponsors.map((sponsor, idx) => (
+                          <div key={idx} style={{ display: 'flex', background: '#fff', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', overflow: 'hidden' }}>
+                             <div style={{ padding: '2rem', flex: 1 }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                                   <div>
+                                      <h3 style={{ margin: '0 0 0.5rem 0', fontFamily: 'Playfair Display, serif', fontSize: '1.4rem', color: 'var(--forest)' }}>{sponsor.tier}</h3>
+                                      <div style={{ fontSize: '0.8rem', color: 'var(--mist)' }}>{sponsor.spots} {sponsor.spots === 1 ? 'Opportunity' : 'Opportunities'} Remaining</div>
+                                   </div>
+                                   <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--grass)' }}>${sponsor.price}</div>
+                                </div>
+                                {sponsor.incentives && sponsor.incentives.length > 0 && (
+                                   <div style={{ marginBottom: '1.5rem' }}>
+                                      {sponsor.incentives.map((inc, i) => (
+                                         <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.4rem', fontSize: '0.85rem', color: 'var(--ink)' }}>
+                                            <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: 'rgba(46, 204, 113, 0.1)', color: 'var(--forest)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '0.1rem', flexShrink: 0 }}>✓</div>
+                                            <span>{inc}</span>
+                                         </div>
+                                      ))}
+                                   </div>
+                                )}
+                                <button style={{ padding: '0.75rem 1.5rem', background: 'var(--forest)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', transition: '0.2s', width: 'auto' }}>
+                                   Secure Partnership
+                                </button>
+                             </div>
+                          </div>
+                       ))
+                    )}
+                 </div>
+              </div>
+           );
+        }
+
         const topSponsor = sponsors.length > 0 ? sponsors[0] : { tier: 'Title Sponsor', price: 5000, spots: 1, incentives: [] };
         // ACH is generally ~0.8% with a $5 cap. Let's accurately mock that calculation.
         const achFee = Math.min(topSponsor.price * 0.008, 5.00);
@@ -989,6 +1039,50 @@ export default function HostLiveCampaignBuilder() {
      }
      
      if (activeTab === 'sponsorships') {
+        if (sponsorPreviewMode === 'directory') {
+           return (
+              <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative', background: '#f8faf9', padding: '1.5rem' }}>
+                 <div style={{ textAlign: 'left', marginBottom: '2rem' }}>
+                    <div style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.3rem' }}>Partnerships</div>
+                    <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.6rem', color: 'var(--forest)', margin: 0, lineHeight: 1.1 }}>Sponsorship Opportunities</h2>
+                 </div>
+                 
+                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    {sponsors.length === 0 ? (
+                       <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--mist)', fontSize: '0.85rem' }}>No tiers available.</div>
+                    ) : (
+                       sponsors.map((sponsor, idx) => (
+                          <div key={idx} style={{ background: '#fff', borderRadius: '10px', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 2px 10px rgba(0,0,0,0.02)', padding: '1.25rem' }}>
+                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
+                                <h3 style={{ margin: 0, fontFamily: 'Playfair Display, serif', fontSize: '1.1rem', color: 'var(--forest)' }}>{sponsor.tier}</h3>
+                                <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--grass)' }}>${sponsor.price}</div>
+                             </div>
+                             <div style={{ fontSize: '0.75rem', color: 'var(--mist)', marginBottom: '1rem' }}>{sponsor.spots} {sponsor.spots === 1 ? 'Opportunity' : 'Opportunities'}</div>
+                             
+                             {sponsor.incentives && sponsor.incentives.length > 0 && (
+                                <div style={{ marginBottom: '1rem' }}>
+                                   {sponsor.incentives.slice(0, 3).map((inc, i) => (
+                                      <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.4rem', marginBottom: '0.3rem', fontSize: '0.75rem', color: 'var(--ink)' }}>
+                                         <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'rgba(46, 204, 113, 0.1)', color: 'var(--forest)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '0.1rem', flexShrink: 0, fontSize: '8px' }}>✓</div>
+                                         <span style={{ lineHeight: 1.3 }}>{inc}</span>
+                                      </div>
+                                   ))}
+                                   {sponsor.incentives.length > 3 && (
+                                      <div style={{ fontSize: '0.7rem', color: 'var(--mist)', marginTop: '0.3rem', fontStyle: 'italic' }}>+ {sponsor.incentives.length - 3} more perks</div>
+                                   )}
+                                </div>
+                             )}
+                             <button style={{ width: '100%', padding: '0.6rem', background: 'var(--forest)', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer' }}>
+                                Secure Tier
+                             </button>
+                          </div>
+                       ))
+                    )}
+                 </div>
+              </div>
+           );
+        }
+
         const topSponsor = sponsors.length > 0 ? sponsors[0] : { tier: 'Title Sponsor', price: 5000, spots: 1, incentives: [] };
         const achFee = Math.min(topSponsor.price * 0.008, 5.00);
 
@@ -1103,6 +1197,24 @@ export default function HostLiveCampaignBuilder() {
              {/* Sticky Wrapper */}
              <div style={{ position: 'sticky', top: '100px', width: '100%', height: 'calc(100vh - 120px)', overflowY: 'auto', paddingRight: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3rem', paddingBottom: '3rem' }}>
                 
+                {/* Sponsorship Mode Toggle */}
+                {activeTab === 'sponsorships' && (
+                   <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginBottom: '-1rem' }}>
+                      <div style={{ display: 'flex', background: '#fff', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '30px', overflow: 'hidden', padding: '0.2rem', boxShadow: '0 4px 10px rgba(0,0,0,0.05)' }}>
+                         <button 
+                            onClick={() => setSponsorPreviewMode('directory')}
+                            style={{ padding: '0.5rem 1.5rem', fontSize: '0.75rem', fontWeight: 700, borderRadius: '25px', cursor: 'pointer', border: 'none', background: sponsorPreviewMode === 'directory' ? 'var(--forest)' : 'transparent', color: sponsorPreviewMode === 'directory' ? '#fff' : 'var(--mist)', transition: '0.2s' }}>
+                            Partnership Opportunities
+                         </button>
+                         <button 
+                            onClick={() => setSponsorPreviewMode('checkout')}
+                            style={{ padding: '0.5rem 1.5rem', fontSize: '0.75rem', fontWeight: 700, borderRadius: '25px', cursor: 'pointer', border: 'none', background: sponsorPreviewMode === 'checkout' ? 'var(--gold)' : 'transparent', color: sponsorPreviewMode === 'checkout' ? '#000' : 'var(--mist)', transition: '0.2s' }}>
+                            Checkout Experience
+                         </button>
+                      </div>
+                   </div>
+                )}
+
                 {/* DESKTOP BROWSER ENVELOPE */}
                 <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                    <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
