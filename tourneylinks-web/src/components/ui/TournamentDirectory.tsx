@@ -199,11 +199,11 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'radial-gradient(ellipse at top, rgba(212,175,55,0.15) 0%, transparent 60%)', pointerEvents: 'none' }}></div>
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(212,175,55,1), transparent)', opacity: 0.9 }}></div>
         
-        <div style={{ position: 'relative', zIndex: 1, maxWidth: '800px', margin: '0 auto' }}>
+         <div style={{ position: 'relative', zIndex: 1, maxWidth: '1000px', margin: '0 auto' }}>
             <h1 style={{ 
               fontFamily: 'Playfair Display, serif', 
               fontSize: '3.5rem', 
-              marginBottom: '0.25rem', 
+              marginBottom: '0.1rem', 
               background: 'linear-gradient(to right, #d4af37, #fff9e6, #d4af37)', 
               WebkitBackgroundClip: 'text', 
               WebkitTextFillColor: 'transparent',
@@ -211,7 +211,7 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
             }}>
               Tournament Directory
             </h1>
-            <p style={{ fontSize: '1.15rem', color: 'rgba(255,255,255,0.9)', marginBottom: 0, lineHeight: 1.5, fontWeight: 300 }}>
+            <p className="hidden md:block" style={{ fontSize: '0.95rem', color: 'rgba(255,255,255,0.9)', marginBottom: 0, fontWeight: 300 }}>
               Browse the complete schedule of upcoming amateur championships, competitive leagues, and high-end charity scrambles.
             </p>
         </div>
@@ -226,14 +226,14 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
         padding: '1.25rem 0',
         boxShadow: '0 4px 30px rgba(0,0,0,0.06)'
       }}>
-        <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 2rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <form onSubmit={e => { e.preventDefault(); handleApplyFilters(); }} style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 2rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
          {/* Top Row: Primary Search & Actions */}
-         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', flexWrap: 'wrap' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 1 100%', flexWrap: 'wrap' }}>
-               <div className="wfield" style={{ flex: '1 1 300px', marginBottom: 0 }}>
+         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 1 500px', flexWrap: 'wrap' }}>
+               <div style={{ flex: '2 1 300px' }}>
                   <input type="text" placeholder="Search by event name, details, or swag..." value={keyword} onChange={e => setKeyword(e.target.value)} style={{ padding: '0.75rem 1rem', background: '#f4f7f5', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', width: '100%' }}/>
                </div>
-               <div className="wfield" style={{ flex: '1 1 200px', marginBottom: 0 }}>
+               <div style={{ flex: '1.5 1 200px' }}>
                  <input 
                    list="course-list" 
                    placeholder="All Courses" 
@@ -245,7 +245,7 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
                    {uniqueCourses.map(c => <option key={c} value={c} />)}
                  </datalist>
                </div>
-               <div className="wfield" style={{ flex: '1 1 200px', marginBottom: 0, display: 'flex', gap: '0.5rem' }}>
+               <div style={{ flex: '1.5 1 200px', display: 'flex', gap: '0.5rem' }}>
                  <input type="text" placeholder="Zip or City" value={zipCode} onChange={e => setZipCode(e.target.value)} style={{ padding: '0.75rem 1rem', background: '#f4f7f5', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', flex: 1, minWidth: '80px' }}/>
                  <select value={radius} onChange={e => setRadius(Number(e.target.value))} style={{ padding: '0.75rem 1rem', background: '#f4f7f5', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', width: '90px' }}>
                    <option value={5}>5 mi</option>
@@ -260,12 +260,12 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
             {/* Radar Button Action */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexShrink: 0 }}>
                {userId ? (
-                 <button className="btn-hero-outline" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.2rem', fontSize: '0.85rem', borderWidth: '2px' }} onClick={() => alert('Radar saved! Email notifications enabled.')}>
+                 <button type="button" className="btn-hero-outline" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.2rem', fontSize: '0.85rem', borderWidth: '2px' }} onClick={() => alert('Radar saved! Email notifications enabled.')}>
                     <Bell size={16} /> Save Radar Notification 
                  </button>
                ) : (
                  <SignInButton mode="modal" fallbackRedirectUrl="/tournaments">
-                   <button className="btn-hero-outline" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.2rem', fontSize: '0.85rem', borderWidth: '2px' }}>
+                   <button type="button" className="btn-hero-outline" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.2rem', fontSize: '0.85rem', borderWidth: '2px' }}>
                       <Bell size={16} /> Log In to Save Radar
                    </button>
                  </SignInButton>
@@ -315,11 +315,11 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
                <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--forest)', padding: '0.4rem 1rem', background: 'rgba(26,46,26,0.06)', borderRadius: '6px' }}>
                   {filteredTournaments.length} Matches Found
                </span>
-               <button onClick={handleApplyFilters} className="btn-primary" style={{ padding: '0.4rem 1.2rem', fontSize: '0.8rem', borderRadius: '6px' }}>Apply Filters</button>
-               <button onClick={handleClearFilters} style={{ background: 'none', border: 'none', color: '#f44336', fontSize: '0.8rem', cursor: 'pointer', padding: '0.4rem 0.5rem', fontWeight: 600 }}>Clear</button>
+               <button type="submit" className="btn-primary" style={{ padding: '0.4rem 1.2rem', fontSize: '0.8rem', borderRadius: '6px' }}>Apply Filters</button>
+               <button onClick={handleClearFilters} type="button" style={{ background: 'none', border: 'none', color: '#f44336', fontSize: '0.8rem', cursor: 'pointer', padding: '0.4rem 0.5rem', fontWeight: 600 }}>Clear</button>
              </div>
          </div>
-        </div>
+        </form>
       </div>
 
       {/* Main Results Grid (1400px Width) */}
