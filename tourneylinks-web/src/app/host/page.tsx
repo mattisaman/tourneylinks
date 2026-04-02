@@ -29,8 +29,10 @@ export default function HostLiveCampaignBuilder() {
   
   const [heroImage, setHeroImage] = useState<string | null>(null);
   const [heroPosition, setHeroPosition] = useState('center');
+  const [heroZoom, setHeroZoom] = useState(100);
   const [tileImage, setTileImage] = useState<string | null>(null);
   const [tilePosition, setTilePosition] = useState('center');
+  const [tileZoom, setTileZoom] = useState(100);
   
   const [coHostEmail, setCoHostEmail] = useState('');
   
@@ -212,14 +214,20 @@ export default function HostLiveCampaignBuilder() {
                 <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                    <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--mist)' }}>Hero Branding Image</span>
                    {heroImage && (
-                     <select value={heroPosition} onChange={e => setHeroPosition(e.target.value)} style={{ padding: '0.2rem 0.5rem', fontSize: '0.7rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }}>
-                        <option value="top">Align Top</option>
-                        <option value="center">Align Center</option>
-                        <option value="bottom">Align Bottom</option>
-                     </select>
+                     <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                            <span style={{ fontSize: '0.65rem', color: 'var(--mist)' }}>Zoom</span>
+                            <input type="range" min="50" max="250" value={heroZoom} onChange={e => setHeroZoom(Number(e.target.value))} style={{ width: '50px' }} />
+                         </div>
+                         <select value={heroPosition} onChange={e => setHeroPosition(e.target.value)} style={{ padding: '0.2rem 0.5rem', fontSize: '0.7rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }}>
+                            <option value="top">Align Top</option>
+                            <option value="center">Align Center</option>
+                            <option value="bottom">Align Bottom</option>
+                         </select>
+                     </div>
                    )}
                 </label>
-                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(0,0,0,0.1)', borderRadius: '8px', padding: '2rem', background: heroImage ? `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${heroImage}) ${heroPosition}/cover` : '#fafaf5', cursor: 'pointer', minHeight: '160px', position: 'relative' }}>
+                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(0,0,0,0.1)', borderRadius: '8px', padding: '2rem', background: heroImage ? `linear-gradient(135deg, ${secondaryThemeColor}99, ${themeColor}99), url(${heroImage}) ${heroPosition}/${heroZoom}%` : '#fafaf5', backgroundRepeat: 'no-repeat', cursor: 'pointer', minHeight: '160px', position: 'relative' }}>
                    <input type="file" style={{ display: 'none' }} accept="image/*" onChange={e => handleImageUpload(e, setHeroImage)} />
                    {!heroImage && (
                      <>
@@ -235,14 +243,20 @@ export default function HostLiveCampaignBuilder() {
                 <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                    <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--mist)' }}>Directory Tile Thumbnail</span>
                    {tileImage && (
-                     <select value={tilePosition} onChange={e => setTilePosition(e.target.value)} style={{ padding: '0.2rem 0.5rem', fontSize: '0.7rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }}>
-                        <option value="top">Align Top</option>
-                        <option value="center">Align Center</option>
-                        <option value="bottom">Align Bottom</option>
-                     </select>
+                     <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                            <span style={{ fontSize: '0.65rem', color: 'var(--mist)' }}>Zoom</span>
+                            <input type="range" min="50" max="250" value={tileZoom} onChange={e => setTileZoom(Number(e.target.value))} style={{ width: '50px' }} />
+                         </div>
+                         <select value={tilePosition} onChange={e => setTilePosition(e.target.value)} style={{ padding: '0.2rem 0.5rem', fontSize: '0.7rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }}>
+                            <option value="top">Align Top</option>
+                            <option value="center">Align Center</option>
+                            <option value="bottom">Align Bottom</option>
+                         </select>
+                     </div>
                    )}
                 </label>
-                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(0,0,0,0.1)', borderRadius: '8px', padding: '2rem', background: tileImage ? `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${tileImage}) ${tilePosition}/cover` : '#fafaf5', cursor: 'pointer', minHeight: '160px', position: 'relative' }}>
+                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(0,0,0,0.1)', borderRadius: '8px', padding: '2rem', background: tileImage ? `linear-gradient(135deg, ${secondaryThemeColor}99, ${themeColor}99), url(${tileImage}) ${tilePosition}/${tileZoom}%` : '#fafaf5', backgroundRepeat: 'no-repeat', cursor: 'pointer', minHeight: '160px', position: 'relative' }}>
                    <input type="file" style={{ display: 'none' }} accept="image/*" onChange={e => handleImageUpload(e, setTileImage)} />
                    {!tileImage && (
                      <>
@@ -256,7 +270,7 @@ export default function HostLiveCampaignBuilder() {
                 {/* Embedded Tile Preview */}
                 <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginTop: '0.5rem' }}>Search Page Preview</div>
                 <div style={{ width: '100%', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.1)', background: '#fff' }}>
-                   <div style={{ height: '140px', background: tileImage ? `url(${tileImage}) ${tilePosition}/cover no-repeat` : '#fafaf5' }}></div>
+                   <div style={{ height: '140px', background: tileImage ? `url(${tileImage}) ${tilePosition}/${tileZoom}% no-repeat` : '#fafaf5' }}></div>
                    <div style={{ padding: '0.75rem' }}>
                       <div style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--forest)' }}>{name || 'Tournament Title'}</div>
                       <div style={{ fontSize: '0.7rem', color: 'var(--mist)' }}>{course ? `${course} · ${city}` : 'Course Location'}</div>
@@ -441,11 +455,11 @@ export default function HostLiveCampaignBuilder() {
                       
                       {/* Desktop Canvas */}
                       <div style={{ height: '450px', overflowY: 'auto', background: '#f8faf9', display: 'flex', flexDirection: 'column' }}>
-                         <div style={{ padding: '2rem', background: heroImage ? `linear-gradient(135deg, rgba(26,46,26,0.8), rgba(17,40,20,0.9)), url(${heroImage}) ${heroPosition}/cover no-repeat` : `linear-gradient(135deg, ${secondaryThemeColor}, #112814)`, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', textAlign: 'center' }}>
+                         <div style={{ padding: '2rem', background: heroImage ? `linear-gradient(135deg, ${secondaryThemeColor}99, ${themeColor}99), url(${heroImage}) ${heroPosition}/${heroZoom}% no-repeat` : `linear-gradient(135deg, ${secondaryThemeColor}, ${themeColor})`, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', textAlign: 'center' }}>
                             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `radial-gradient(circle at top right, ${themeColor} 0%, transparent 60%)`, opacity: 0.3, pointerEvents: 'none' }}></div>
                             <div style={{ position: 'relative', zIndex: 10 }}>
                                <span style={{ fontSize: '0.7rem', padding: '0.2rem 0.6rem', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(4px)', color: '#fff', borderRadius: '4px', fontWeight: 700, marginBottom: '0.75rem', display: 'inline-block' }}>{formatName}</span>
-                               <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '2.5rem', color: 'var(--cream)', margin: 0, lineHeight: 1.1, textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
+                               <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '2.5rem', color: '#fff', margin: 0, lineHeight: 1.1, textShadow: '0 2px 8px rgba(0,0,0,0.4), 0 4px 20px rgba(0,0,0,0.2)' }}>
                                   {name || 'Tournament Title'}
                                </h2>
                                <div style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.8)', marginTop: '0.75rem', display: 'flex', justifyContent: 'center', gap: '0.5rem' }}>
@@ -473,12 +487,12 @@ export default function HostLiveCampaignBuilder() {
                             </div>
 
                             <div style={{ flex: '0 0 200px' }}>
-                               <div style={{ background: '#fff', padding: '1.25rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', textAlign: 'center', position: 'sticky', top: '10px' }}>
-                                  <div style={{ fontSize: '0.75rem', color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Registration</div>
-                                  <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--forest)', margin: '0.5rem 0' }}>${totalFee.toFixed(2)}</div>
-                                  <button style={{ width: '100%', padding: '0.75rem', background: themeColor, color: '#fff', fontWeight: 700, border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem' }}>Register Now</button>
-                               </div>
-                            </div>
+                                <div style={{ background: '#fff', padding: '1.25rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', textAlign: 'center', position: 'sticky', top: '10px' }}>
+                                   <div style={{ fontSize: '0.75rem', color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Registration</div>
+                                   <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--forest)', margin: '0.5rem 0' }}>${totalFee.toFixed(2)}</div>
+                                   <button style={{ width: '100%', padding: '0.8rem', background: `linear-gradient(135deg, ${themeColor}, ${secondaryThemeColor})`, color: '#fff', fontWeight: 700, border: `1px solid ${secondaryThemeColor}40`, borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem', boxShadow: `0 8px 20px ${themeColor}40`, transition: '0.2s' }}>Register Now</button>
+                                </div>
+                             </div>
                          </div>
                       </div>
                    </div>
@@ -508,7 +522,7 @@ export default function HostLiveCampaignBuilder() {
                       <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative' }}>
                          
                          {/* Simulated Hero Section */}
-                         <div style={{ height: '300px', background: heroImage ? `linear-gradient(135deg, rgba(26,46,26,0.8), rgba(17,40,20,0.9)), url(${heroImage}) ${heroPosition}/cover no-repeat` : `linear-gradient(135deg, ${secondaryThemeColor}, #112814)`, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '1.5rem', position: 'relative' }}>
+                         <div style={{ height: '300px', background: heroImage ? `linear-gradient(135deg, ${secondaryThemeColor}99, ${themeColor}99), url(${heroImage}) ${heroPosition}/${heroZoom}% no-repeat` : `linear-gradient(135deg, ${secondaryThemeColor}, ${themeColor})`, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '1.5rem', position: 'relative' }}>
                             {/* Dynamic gradient wash over hero */}
                             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `radial-gradient(circle at top right, ${themeColor} 0%, transparent 60%)`, opacity: 0.3, pointerEvents: 'none' }}></div>
                             
@@ -516,7 +530,7 @@ export default function HostLiveCampaignBuilder() {
                                <div style={{ display: 'flex', gap: '0.4rem', marginBottom: '0.5rem' }}>
                                   <span style={{ fontSize: '0.65rem', padding: '0.2rem 0.5rem', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(4px)', color: '#fff', borderRadius: '4px', fontWeight: 700 }}>{formatName}</span>
                                </div>
-                               <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.8rem', color: 'var(--cream)', margin: 0, lineHeight: 1.1, textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
+                               <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.8rem', color: '#fff', margin: 0, lineHeight: 1.1, textShadow: '0 2px 8px rgba(0,0,0,0.4), 0 4px 20px rgba(0,0,0,0.2)' }}>
                                   {name || 'Tournament Title'}
                                </h2>
                                <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.8)', marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
@@ -559,8 +573,8 @@ export default function HostLiveCampaignBuilder() {
                          </div>
 
                          {/* Sticky Bottom Action Mobile */}
-                         <div style={{ position: 'sticky', bottom: 0, background: '#fff', padding: '1rem', borderTop: '1px solid rgba(0,0,0,0.05)', display: 'flex', justifyContent: 'center' }}>
-                            <button style={{ width: '100%', padding: '0.8rem', background: themeColor, color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', boxShadow: `0 4px 14px ${themeColor}40` }}>
+                         <div style={{ position: 'sticky', bottom: 0, background: '#fff', padding: '1rem', borderTop: '1px solid rgba(0,0,0,0.05)', display: 'flex', justifyContent: 'center', zIndex: 50 }}>
+                            <button style={{ width: '100%', padding: '0.9rem', background: `linear-gradient(135deg, ${themeColor}, ${secondaryThemeColor})`, color: '#fff', fontWeight: 700, border: `1px solid ${secondaryThemeColor}40`, borderRadius: '12px', boxShadow: `0 8px 20px ${themeColor}40` }}>
                                Register Now
                             </button>
                          </div>
