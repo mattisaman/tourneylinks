@@ -145,7 +145,7 @@ export default function ScrambleStoreManager({ tournamentId }: { tournamentId: n
                  items.map(item => (
                      <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: '6px' }}>
                          <div>
-                            <div style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--cream)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <div style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--forest)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                {item.title}
                                {item.maxPerPlayer !== null && (
                                   <span style={{ fontSize: '0.65rem', background: 'var(--gold)', color: '#05120c', padding: '0.1rem 0.4rem', borderRadius: '10px', fontWeight: 800 }}>MAX {item.maxPerPlayer}</span>
