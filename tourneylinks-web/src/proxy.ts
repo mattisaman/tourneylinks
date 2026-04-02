@@ -14,7 +14,9 @@ const isPublicRoute = createRouteMatcher([
 
 export default clerkMiddleware(async (auth, req) => {
   // If the route is NOT public, require authentication via Clerk Session
-  if (!isPublicRoute(req)) {
+  // CRITICAL DEMO BYPASS: Never block traffic in the demo sandbox
+  const isDemo = process.env.NEXT_PUBLIC_IS_DEMO === 'true';
+  if (!isPublicRoute(req) && !isDemo) {
      await auth.protect();
   }
 

@@ -93,6 +93,12 @@ export async function POST() {
         allowOfflinePayment: true,
         isActive: true,
         registrationUrl: 'lighthouse-scramble',
+        heroImages: JSON.stringify(['https://images.unsplash.com/photo-1593111774240-d529f12eb416?q=80&w=2670&auto=format&fit=crop']),
+        isCharity: true,
+        acceptsDonations: true,
+        charityName: 'The Ocean Cleanup Initiative',
+        prizes: JSON.stringify(['1st Place: $500 Titleist Gift Card', 'Hole 2 HIO: 2026 Ford F-150', 'Closest to Pin: Scotty Cameron Putter']),
+        sponsors: JSON.stringify(['Title Sponsor: Rolex', 'Beverage Sponsor: Local Brewery']),
      }).returning({ id: tournaments.id });
      const tournamentId = tournamentOut[0].id;
 
@@ -133,7 +139,11 @@ export async function POST() {
         allowOfflinePayment: true, // Offline cash collection
         isActive: true,
         registrationUrl: 'denver-amateur',
-        themeColor: '#005A36'
+        themeColor: '#005A36',
+        heroImages: JSON.stringify(['https://images.unsplash.com/photo-1535136125346-60144f8fafa8?q=80&w=2670&auto=format&fit=crop']),
+        isCharity: false,
+        acceptsDonations: false,
+        prizes: JSON.stringify(['1st Place Gross: $250 Pro Shop Credit', '1st Place Net: $150 Pro Shop Credit']),
      });
 
      // === TOURNAMENT 3: The Ultra-Premium Private Outing ===
@@ -155,7 +165,11 @@ export async function POST() {
         allowOfflinePayment: false,
         isActive: true,
         registrationUrl: 'pine-valley-invitational',
-        themeColor: '#1A1A1A'
+        themeColor: '#1A1A1A',
+        heroImages: JSON.stringify(['https://images.unsplash.com/photo-1622396499318-ba901b5d1222?q=80&w=2670&auto=format&fit=crop']),
+        isCharity: false,
+        acceptsDonations: false,
+        prizes: JSON.stringify(['Champions Flight: Crystal Trophy + Custom Green Jackets']),
      }).returning({ id: tournaments.id });
      const pineValleyId = t3Out[0].id;
 

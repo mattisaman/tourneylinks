@@ -47,7 +47,8 @@ export default function Navbar() {
             </SignInButton>
           ) : (
             <>
-              <Link href="/profile" className="profile-link" style={{ marginRight: '0.5rem', color: '#f5f2ed', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600 }}>My Profile</Link>
+              <Link href="/admin" className="profile-link hidden md:inline" style={{ marginRight: '1.2rem', color: '#f5f2ed', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600 }}>Host Dashboard</Link>
+              <Link href="/profile" className="profile-link" style={{ marginRight: '0.8rem', color: '#f5f2ed', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600 }}>My Profile</Link>
               <UserButton 
                 appearance={{
                   elements: {

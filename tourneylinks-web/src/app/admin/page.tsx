@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { db, registrations, tournaments, users, stripe_accounts } from '@/lib/db';
 import { eq, desc } from 'drizzle-orm';
-import { currentUser } from '@clerk/nextjs/server';
+import { getCurrentUser } from '@/lib/auth-util';
 import { redirect } from 'next/navigation';
 import FlightBuilder from '@/components/admin/FlightBuilder';
 import TournamentQRCode from '@/components/admin/TournamentQRCode';
@@ -18,7 +18,7 @@ import ScrambleStoreManager from '@/components/admin/ScrambleStoreManager';
 export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboard() {
-  const clerkUser = await currentUser();
+  const clerkUser = await getCurrentUser();
   if (!clerkUser) redirect('/sign-in');
 
   const dbUserRow = await db.select().from(users).where(eq(users.clerkId, clerkUser.id)).limit(1);

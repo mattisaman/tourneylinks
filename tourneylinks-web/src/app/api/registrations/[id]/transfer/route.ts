@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
 import { db, registrations, registration_transfers, users } from '@/lib/db';
 import { eq, and } from 'drizzle-orm';
-import { auth } from '@clerk/nextjs/server';
+import { getUserId } from '@/lib/auth-util';
 import crypto from 'crypto';
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth();
+    const session = await getUserId();
     const clerkId = session?.userId;
     if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 

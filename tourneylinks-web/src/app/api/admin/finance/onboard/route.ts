@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { currentUser } from '@clerk/nextjs/server';
+import { getCurrentUser } from '@/lib/auth-util';
 import { db, users, stripe_accounts } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 import Stripe from 'stripe';
@@ -10,7 +10,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_fallback', {
 
 export async function POST(req: Request) {
   try {
-     const clerkUser = await currentUser();
+     const clerkUser = await getCurrentUser();
      if (!clerkUser) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
      const dbUserRow = await db.select().from(users).where(eq(users.clerkId, clerkUser.id)).limit(1);

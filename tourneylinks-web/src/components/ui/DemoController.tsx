@@ -3,7 +3,10 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 
+import { usePathname } from 'next/navigation';
+
 export default function DemoController() {
+    const pathname = usePathname();
     const [closed, setClosed] = useState(false);
 
     // Only render if we are definitively in explicitly set Demo Mode
@@ -33,10 +36,10 @@ export default function DemoController() {
                 <span className="hidden md:inline" style={{ opacity: 0.8 }}>Choose your experience:</span>
                 
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <Link href="/profile" style={{ background: 'rgba(0,0,0,0.1)', padding: '0.2rem 0.75rem', borderRadius: '12px', textDecoration: 'none', color: '#05120c', transition: '0.2s' }} onMouseOver={e => e.currentTarget.style.background = 'rgba(0,0,0,0.2)'} onMouseOut={e => e.currentTarget.style.background = 'rgba(0,0,0,0.1)'}>Golfer</Link>
-                    <Link href="/admin" style={{ background: 'rgba(0,0,0,0.1)', padding: '0.2rem 0.75rem', borderRadius: '12px', textDecoration: 'none', color: '#05120c', transition: '0.2s' }} onMouseOver={e => e.currentTarget.style.background = 'rgba(0,0,0,0.2)'} onMouseOut={e => e.currentTarget.style.background = 'rgba(0,0,0,0.1)'}>Organizer</Link>
-                    <Link href="/courses" style={{ background: 'rgba(0,0,0,0.1)', padding: '0.2rem 0.75rem', borderRadius: '12px', textDecoration: 'none', color: '#05120c', transition: '0.2s' }} onMouseOver={e => e.currentTarget.style.background = 'rgba(0,0,0,0.2)'} onMouseOut={e => e.currentTarget.style.background = 'rgba(0,0,0,0.1)'}>Course Pro</Link>
-                    <Link href="/tournaments/1/sponsor" style={{ background: 'rgba(0,0,0,0.1)', padding: '0.2rem 0.75rem', borderRadius: '12px', textDecoration: 'none', color: '#05120c', transition: '0.2s' }} onMouseOver={e => e.currentTarget.style.background = 'rgba(0,0,0,0.2)'} onMouseOut={e => e.currentTarget.style.background = 'rgba(0,0,0,0.1)'}>Sponsor</Link>
+                    <Link href="/profile" style={{ background: pathname.startsWith('/profile') || pathname === '/' ? 'rgba(255,255,255,1)' : 'rgba(0,0,0,0.1)', padding: '0.2rem 0.75rem', borderRadius: '12px', textDecoration: 'none', color: '#05120c', transition: '0.2s', fontWeight: pathname.startsWith('/profile') || pathname === '/' ? 900 : 700 }} onMouseOver={e => e.currentTarget.style.background = pathname.startsWith('/profile') || pathname === '/' ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.2)'} onMouseOut={e => e.currentTarget.style.background = pathname.startsWith('/profile') || pathname === '/' ? 'rgba(255,255,255,1)' : 'rgba(0,0,0,0.1)'}>Golfer</Link>
+                    <Link href="/admin" style={{ background: pathname.startsWith('/admin/tournaments') || pathname === '/admin' ? 'rgba(255,255,255,1)' : 'rgba(0,0,0,0.1)', padding: '0.2rem 0.75rem', borderRadius: '12px', textDecoration: 'none', color: '#05120c', transition: '0.2s', fontWeight: pathname.startsWith('/admin') ? 900 : 700 }} onMouseOver={e => e.currentTarget.style.background = pathname.startsWith('/admin') ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.2)'} onMouseOut={e => e.currentTarget.style.background = pathname.startsWith('/admin') ? 'rgba(255,255,255,1)' : 'rgba(0,0,0,0.1)'}>Organizer</Link>
+                    <Link href="/courses" style={{ background: pathname.startsWith('/courses') ? 'rgba(255,255,255,1)' : 'rgba(0,0,0,0.1)', padding: '0.2rem 0.75rem', borderRadius: '12px', textDecoration: 'none', color: '#05120c', transition: '0.2s', fontWeight: pathname.startsWith('/courses') ? 900 : 700 }} onMouseOver={e => e.currentTarget.style.background = pathname.startsWith('/courses') ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.2)'} onMouseOut={e => e.currentTarget.style.background = pathname.startsWith('/courses') ? 'rgba(255,255,255,1)' : 'rgba(0,0,0,0.1)'}>Course Pro</Link>
+                    <Link href="/tournaments/1/sponsor" style={{ background: pathname.includes('/sponsor') ? 'rgba(255,255,255,1)' : 'rgba(0,0,0,0.1)', padding: '0.2rem 0.75rem', borderRadius: '12px', textDecoration: 'none', color: '#05120c', transition: '0.2s', fontWeight: pathname.includes('/sponsor') ? 900 : 700 }} onMouseOver={e => e.currentTarget.style.background = pathname.includes('/sponsor') ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.2)'} onMouseOut={e => e.currentTarget.style.background = pathname.includes('/sponsor') ? 'rgba(255,255,255,1)' : 'rgba(0,0,0,0.1)'}>Sponsor</Link>
                 </div>
             </div>
 

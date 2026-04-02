@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { MapPin, Phone, Globe, ChevronLeft, Map, Flag } from 'lucide-react';
 import FavoriteButton from './FavoriteButton';
 import { getIsFavorited } from '@/app/actions/favoriteCourse';
-import { auth } from '@clerk/nextjs/server';
+import { getUserId } from '@/lib/auth-util';
 import EagleValePricing from '@/components/courses/EagleValePricing';
 
 export const dynamic = 'force-dynamic';
@@ -30,7 +30,7 @@ export default async function CourseDetailPage(props: { params: Promise<{ id: st
     .orderBy(asc(tournaments.dateStart));
 
   // Player Radar Tracking
-  const { userId } = await auth();
+  const { userId } = await getUserId();
   const isFavorited = await getIsFavorited(courseId);
 
   return (

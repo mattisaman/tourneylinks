@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { getUserId } from '@/lib/auth-util';
 import { db, users, ghin_history } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 import { GoogleGenAI } from '@google/genai';
@@ -10,7 +10,7 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 export async function POST(request: Request) {
   try {
     // 1. Authenticate the User
-    const { userId } = await auth();
+    const { userId } = await getUserId();
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }

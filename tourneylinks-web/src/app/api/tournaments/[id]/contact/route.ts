@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { tournament_inquiries } from '@/lib/db';
-import { auth } from '@clerk/nextjs/server';
+import { getUserId } from '@/lib/auth-util';
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth();
+    const session = await getUserId();
     const clerkId = session?.userId || null;
     const resolvedParams = await params;
     const tournamentId = parseInt(resolvedParams.id, 10);

@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import { db, support_tickets, users } from '@/lib/db';
 import { eq } from 'drizzle-orm';
-import { auth } from '@clerk/nextjs/server';
+import { getUserId } from '@/lib/auth-util';
 
 export async function POST(req: Request) {
   try {
-    const session = await auth();
+    const session = await getUserId();
     const clerkId = session.userId;
     const body = await req.json();
     const { email, type, message } = body;

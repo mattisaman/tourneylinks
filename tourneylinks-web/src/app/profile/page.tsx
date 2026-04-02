@@ -1,5 +1,6 @@
 import React from 'react';
-import { auth, currentUser } from '@clerk/nextjs/server';
+import { getCurrentUser } from '@/lib/auth-util';
+import { getUserId } from '@/lib/auth-util';
 import { redirect } from 'next/navigation';
 import { db, users, registrations, tournaments, saved_courses, courses } from '@/lib/db';
 import { eq, desc } from 'drizzle-orm';
@@ -7,7 +8,7 @@ import { UserPlus, Trophy, Link as LinkIcon, Edit3, MapPin } from 'lucide-react'
 import TransferTicketModal from '@/components/profile/TransferTicketModal';
 
 export default async function ProfilePage() {
-  const { userId } = await auth();
+  const { userId } = await getUserId();
 
   // 1. Defend the Route: Only Authed Players Allowed
   if (!userId) {
@@ -15,7 +16,7 @@ export default async function ProfilePage() {
   }
 
   // 2. Fetch the rich User Object from Clerk securely
-  const user = await currentUser();
+  const user = await getCurrentUser();
   if (!user) {
     redirect('/');
   }

@@ -1,12 +1,12 @@
 import React from 'react';
 import { db, stripe_accounts, users } from '@/lib/db';
 import { eq } from 'drizzle-orm';
-import { currentUser } from '@clerk/nextjs/server';
+import { getCurrentUser } from '@/lib/auth-util';
 import { redirect } from 'next/navigation';
 import StripeOnboardButton from './StripeOnboardButton';
 
 export default async function HostOnboardingPage() {
-  const clerkUser = await currentUser();
+  const clerkUser = await getCurrentUser();
   if (!clerkUser) {
     redirect('/sign-in');
   }

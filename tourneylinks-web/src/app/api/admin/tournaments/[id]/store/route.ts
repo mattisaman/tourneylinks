@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, store_inventory, tournaments } from '@/lib/db';
 import { eq, and } from 'drizzle-orm';
-import { currentUser } from '@clerk/nextjs/server';
+import { getCurrentUser } from '@/lib/auth-util';
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -22,7 +22,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-     const clerkUser = await currentUser();
+     const clerkUser = await getCurrentUser();
      if (!clerkUser) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
      const resolvedParams = await params;
@@ -47,7 +47,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-     const clerkUser = await currentUser();
+     const clerkUser = await getCurrentUser();
      if (!clerkUser) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
      const resolvedParams = await params;

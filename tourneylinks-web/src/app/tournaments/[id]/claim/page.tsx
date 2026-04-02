@@ -3,7 +3,7 @@ import { getTournamentById, db, split_invites, team_groups } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 import { notFound, redirect } from 'next/navigation';
 import ClaimClient from './ClaimClient';
-import { currentUser } from '@clerk/nextjs/server';
+import { getCurrentUser } from '@/lib/auth-util';
 
 export default async function TeamClaimPage({ params, searchParams }: { params: Promise<{ id: string }>, searchParams: Promise<{ [key: string]: string | undefined }> }) {
   const resolvedParams = await params;
@@ -58,7 +58,7 @@ export default async function TeamClaimPage({ params, searchParams }: { params: 
     entryFee: tournament.entryFee,
   };
 
-  const currentClerkUser = await currentUser();
+  const currentClerkUser = await getCurrentUser();
 
   return (
     <div style={{ minHeight: '100vh', background: '#f8faf9', paddingTop: '80px', paddingBottom: '6rem' }}>

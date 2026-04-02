@@ -2,11 +2,11 @@ import { NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { db, stripe_accounts, tournaments, users, store_inventory } from '@/lib/db';
 import { eq, inArray } from 'drizzle-orm';
-import { currentUser } from '@clerk/nextjs/server';
+import { getCurrentUser } from '@/lib/auth-util';
 
 export async function POST(req: Request) {
   try {
-    const clerkUser = await currentUser();
+    const clerkUser = await getCurrentUser();
     if (!clerkUser) {
       return NextResponse.json({ error: 'Unauthorized. Please sign in to register.' }, { status: 401 });
     }

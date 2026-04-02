@@ -2,11 +2,11 @@ import React from 'react';
 import { db, tournaments, courses, store_inventory, tournament_sponsors } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
-import { currentUser } from '@clerk/nextjs/server';
+import { getCurrentUser } from '@/lib/auth-util';
 import CampaignBuilderClient from './CampaignBuilderClient';
 
 export default async function CampaignBuilderPage({ params }: { params: Promise<{ id: string }> }) {
-  const clerkUser = await currentUser();
+  const clerkUser = await getCurrentUser();
   if (!clerkUser) redirect('/sign-in');
 
   const { id } = await params;

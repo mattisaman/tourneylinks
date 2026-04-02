@@ -2,11 +2,11 @@ import React from 'react';
 import { db, tournaments } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
-import { currentUser } from '@clerk/nextjs/server';
+import { getCurrentUser } from '@/lib/auth-util';
 import AdminInsightsClient from './AdminInsightsClient';
 
 export default async function InsightsPage({ params }: { params: Promise<{ id: string }> }) {
-  const clerkUser = await currentUser();
+  const clerkUser = await getCurrentUser();
   if (!clerkUser) redirect('/sign-in');
 
   const { id } = await params;

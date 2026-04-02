@@ -1,7 +1,8 @@
 import React from 'react';
 import { db, registration_transfers, registrations, tournaments, users } from '@/lib/db';
 import { eq, and } from 'drizzle-orm';
-import { auth, currentUser } from '@clerk/nextjs/server';
+import { getCurrentUser } from '@/lib/auth-util';
+import { getUserId } from '@/lib/auth-util';
 import { SignInButton } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
@@ -13,7 +14,7 @@ async function claimTransferAction(formData: FormData) {
   const token = formData.get('token') as string;
   if (!token) throw new Error('No token provided');
 
-  const session = await auth();
+  const session = await getUserId();
   const activeClerkId = session?.userId;
   if (!activeClerkId) throw new Error('You must be signed in to claim this spot');
 
@@ -102,9 +103,9 @@ export default async function ClaimTransferPage({ searchParams }: { searchParams
   const tournamentQ = await db.select().from(tournaments).where(eq(tournaments.id, registration.tournamentId));
   const tournament = tournamentQ[0];
 
-  const session = await auth();
+  const session = await getUserId();
   const userId = session?.userId;
-  const clerkUser = await currentUser();
+  const clerkUser = await getCurrentUser();
 
   const isEmailMatch = clerkUser?.emailAddresses[0]?.emailAddress.toLowerCase() === transfer.recipientEmail.toLowerCase();
 

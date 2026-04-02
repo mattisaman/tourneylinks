@@ -2,10 +2,10 @@
 
 import { db, saved_courses } from '@/lib/db';
 import { eq, and } from 'drizzle-orm';
-import { auth } from '@clerk/nextjs/server';
+import { getUserId } from '@/lib/auth-util';
 
 export async function toggleFavoriteCourse(courseId: number) {
-  const { userId } = await auth();
+  const { userId } = await getUserId();
   if (!userId) return { success: false, error: 'Unauthorized' };
 
   try {
@@ -34,7 +34,7 @@ export async function toggleFavoriteCourse(courseId: number) {
 }
 
 export async function getIsFavorited(courseId: number) {
-  const { userId } = await auth();
+  const { userId } = await getUserId();
   if (!userId) return false;
 
   try {
