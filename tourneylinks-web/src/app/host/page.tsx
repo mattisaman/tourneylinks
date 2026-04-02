@@ -28,7 +28,14 @@ export default function HostLiveCampaignBuilder() {
   const [secondaryThemeColor, setSecondaryThemeColor] = useState('#1a2e1a');
   
   const [heroImage, setHeroImage] = useState<string | null>(null);
+  const [heroPosition, setHeroPosition] = useState('center');
   const [tileImage, setTileImage] = useState<string | null>(null);
+  const [tilePosition, setTilePosition] = useState('center');
+  
+  const [coHostEmail, setCoHostEmail] = useState('');
+  
+  const [courseSearch, setCourseSearch] = useState('');
+  const [courseResults, setCourseResults] = useState<any[]>([]);
   
   const [sponsors, setSponsors] = useState([
      { tier: 'Title Sponsor', price: 5000, spots: 1 },
@@ -38,13 +45,41 @@ export default function HostLiveCampaignBuilder() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const p = new URLSearchParams(window.location.search);
-      if (p.get('courseName')) setCourse(p.get('courseName') || '');
+      if (p.get('courseName')) {
+         setCourse(p.get('courseName') || '');
+         setCourseSearch(p.get('courseName') || '');
+      }
       const ct = p.get('courseCity');
       const st = p.get('courseState');
       if (ct && st) setCity(`${ct}, ${st}`);
       else if (ct) setCity(ct);
     }
   }, []);
+
+  useEffect(() => {
+    if (courseSearch.length > 2 && courseSearch !== course) {
+      const fetchCourses = async () => {
+         try {
+            const res = await fetch(`/api/courses/search?q=${encodeURIComponent(courseSearch)}`);
+            if (res.ok) {
+               const data = await res.json();
+               setCourseResults(data.courses || []);
+            }
+         } catch (err) {}
+      };
+      const to = setTimeout(() => fetchCourses(), 300);
+      return () => clearTimeout(to);
+    } else {
+      setCourseResults([]);
+    }
+  }, [courseSearch, course]);
+
+  const selectCourse = (c: any) => {
+     setCourse(c.name);
+     setCourseSearch(c.name);
+     setCity(`${c.city}, ${c.state || ''}`);
+     setCourseResults([]);
+  };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, setter: (val: string) => void) => {
     const file = e.target.files?.[0];
@@ -99,9 +134,19 @@ export default function HostLiveCampaignBuilder() {
               <label>Tournament Name *</label>
               <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Oak Hill Classic Invitational" />
             </div>
-            <div className="wfield">
+            <div className="wfield" style={{ position: 'relative' }}>
               <label>Host Course</label>
-              <input type="text" value={course} onChange={e => setCourse(e.target.value)} placeholder="Full course name" />
+              <input type="text" value={courseSearch} onChange={e => { setCourseSearch(e.target.value); if (e.target.value === '') setCourse(''); }} placeholder="Type to search courses..." />
+              {courseResults.length > 0 && (
+                 <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#fff', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px', zIndex: 50, maxHeight: '200px', overflowY: 'auto', boxShadow: '0 10px 20px rgba(0,0,0,0.05)', marginTop: '0.2rem' }}>
+                    {courseResults.map(c => (
+                       <div key={c.id} onClick={() => selectCourse(c)} style={{ padding: '0.6rem 1rem', cursor: 'pointer', borderBottom: '1px solid rgba(0,0,0,0.05)', fontSize: '0.85rem' }}>
+                          <strong>{c.name}</strong>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>{c.city}, {c.state}</div>
+                       </div>
+                    ))}
+                 </div>
+              )}
             </div>
             <div className="wfield">
               <label>City & State</label>
@@ -118,6 +163,11 @@ export default function HostLiveCampaignBuilder() {
             <div className="wfield wform-full">
                <label>Public Description</label>
                <textarea rows={4} value={desc} onChange={e => setDesc(e.target.value)} placeholder="Tell players what makes this tournament special..."></textarea>
+            </div>
+            <div className="wfield wform-full">
+               <label>Co-Host UserID (Optional)</label>
+               <input type="email" value={coHostEmail} onChange={e => setCoHostEmail(e.target.value)} placeholder="e.g. josh@tourneylinks.com" />
+               <div style={{ fontSize: '0.7rem', color: 'var(--mist)', marginTop: '0.2rem' }}>Grant another email address full Administration Hub access to this event.</div>
             </div>
           </div>
         </div>
@@ -142,18 +192,34 @@ export default function HostLiveCampaignBuilder() {
                </select>
              </div>
              <div className="wfield">
-                <label>Primary Theme Color</label>
-                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                   <input type="color" value={themeColor} onChange={e => setThemeColor(e.target.value)} style={{ padding: 0, width: '40px', height: '40px', border: 'none', borderRadius: '4px', cursor: 'pointer' }} />
-                   <span style={{ fontSize: '0.8rem', fontFamily: 'monospace', color: 'var(--ink)' }}>{themeColor.toUpperCase()}</span>
-                </div>
-             </div>
+                 <label>Primary Theme Color</label>
+                 <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <input type="color" value={themeColor} onChange={e => setThemeColor(e.target.value)} style={{ padding: 0, width: '40px', height: '40px', border: 'none', borderRadius: '4px', cursor: 'pointer' }} />
+                    <span style={{ fontSize: '0.8rem', fontFamily: 'monospace', color: 'var(--ink)' }}>{themeColor.toUpperCase()}</span>
+                 </div>
+              </div>
+              <div className="wfield">
+                 <label>Secondary Theme Color</label>
+                 <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <input type="color" value={secondaryThemeColor} onChange={e => setSecondaryThemeColor(e.target.value)} style={{ padding: 0, width: '40px', height: '40px', border: 'none', borderRadius: '4px', cursor: 'pointer' }} />
+                    <span style={{ fontSize: '0.8rem', fontFamily: 'monospace', color: 'var(--ink)' }}>{secondaryThemeColor.toUpperCase()}</span>
+                 </div>
+              </div>
           </div>
           
           <div style={{ marginTop: '1.5rem', display: 'grid', gap: '1.5rem', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))' }}>
-             <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.5rem' }}>Hero Branding Image</label>
-                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(0,0,0,0.1)', borderRadius: '8px', padding: '2rem', background: heroImage ? `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${heroImage}) center/cover` : '#fafaf5', cursor: 'pointer', minHeight: '160px', position: 'relative' }}>
+             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                   <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--mist)' }}>Hero Branding Image</span>
+                   {heroImage && (
+                     <select value={heroPosition} onChange={e => setHeroPosition(e.target.value)} style={{ padding: '0.2rem 0.5rem', fontSize: '0.7rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }}>
+                        <option value="top">Align Top</option>
+                        <option value="center">Align Center</option>
+                        <option value="bottom">Align Bottom</option>
+                     </select>
+                   )}
+                </label>
+                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(0,0,0,0.1)', borderRadius: '8px', padding: '2rem', background: heroImage ? `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${heroImage}) ${heroPosition}/cover` : '#fafaf5', cursor: 'pointer', minHeight: '160px', position: 'relative' }}>
                    <input type="file" style={{ display: 'none' }} accept="image/*" onChange={e => handleImageUpload(e, setHeroImage)} />
                    {!heroImage && (
                      <>
@@ -165,9 +231,18 @@ export default function HostLiveCampaignBuilder() {
                 </label>
              </div>
              
-             <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.5rem' }}>Directory Tile Thumbnail</label>
-                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(0,0,0,0.1)', borderRadius: '8px', padding: '2rem', background: tileImage ? `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${tileImage}) center/cover` : '#fafaf5', cursor: 'pointer', minHeight: '160px', position: 'relative' }}>
+             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                   <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--mist)' }}>Directory Tile Thumbnail</span>
+                   {tileImage && (
+                     <select value={tilePosition} onChange={e => setTilePosition(e.target.value)} style={{ padding: '0.2rem 0.5rem', fontSize: '0.7rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }}>
+                        <option value="top">Align Top</option>
+                        <option value="center">Align Center</option>
+                        <option value="bottom">Align Bottom</option>
+                     </select>
+                   )}
+                </label>
+                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(0,0,0,0.1)', borderRadius: '8px', padding: '2rem', background: tileImage ? `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${tileImage}) ${tilePosition}/cover` : '#fafaf5', cursor: 'pointer', minHeight: '160px', position: 'relative' }}>
                    <input type="file" style={{ display: 'none' }} accept="image/*" onChange={e => handleImageUpload(e, setTileImage)} />
                    {!tileImage && (
                      <>
@@ -177,6 +252,16 @@ export default function HostLiveCampaignBuilder() {
                    )}
                    {tileImage && <span style={{ color: '#fff', fontWeight: 600, zIndex: 10 }}>Change Tile</span>}
                 </label>
+                
+                {/* Embedded Tile Preview */}
+                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginTop: '0.5rem' }}>Search Page Preview</div>
+                <div style={{ width: '100%', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.1)', background: '#fff' }}>
+                   <div style={{ height: '140px', background: tileImage ? `url(${tileImage}) ${tilePosition}/cover no-repeat` : '#fafaf5' }}></div>
+                   <div style={{ padding: '0.75rem' }}>
+                      <div style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--forest)' }}>{name || 'Tournament Title'}</div>
+                      <div style={{ fontSize: '0.7rem', color: 'var(--mist)' }}>{course ? `${course} · ${city}` : 'Course Location'}</div>
+                   </div>
+                </div>
              </div>
           </div>
         </div>
@@ -356,7 +441,7 @@ export default function HostLiveCampaignBuilder() {
                       
                       {/* Desktop Canvas */}
                       <div style={{ height: '450px', overflowY: 'auto', background: '#f8faf9', display: 'flex', flexDirection: 'column' }}>
-                         <div style={{ padding: '2rem', background: heroImage ? `linear-gradient(135deg, rgba(26,46,26,0.8), rgba(17,40,20,0.9)), url(${heroImage}) center/cover no-repeat` : `linear-gradient(135deg, ${secondaryThemeColor}, #112814)`, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', textAlign: 'center' }}>
+                         <div style={{ padding: '2rem', background: heroImage ? `linear-gradient(135deg, rgba(26,46,26,0.8), rgba(17,40,20,0.9)), url(${heroImage}) ${heroPosition}/cover no-repeat` : `linear-gradient(135deg, ${secondaryThemeColor}, #112814)`, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', textAlign: 'center' }}>
                             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `radial-gradient(circle at top right, ${themeColor} 0%, transparent 60%)`, opacity: 0.3, pointerEvents: 'none' }}></div>
                             <div style={{ position: 'relative', zIndex: 10 }}>
                                <span style={{ fontSize: '0.7rem', padding: '0.2rem 0.6rem', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(4px)', color: '#fff', borderRadius: '4px', fontWeight: 700, marginBottom: '0.75rem', display: 'inline-block' }}>{formatName}</span>
@@ -374,7 +459,7 @@ export default function HostLiveCampaignBuilder() {
                          <div style={{ padding: '1.5rem', display: 'flex', gap: '1.5rem', flex: 1 }}>
                             <div style={{ flex: '1 1 60%' }}>
                                <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--forest)', marginBottom: '0.5rem' }}>About Event</div>
-                               <div style={{ fontSize: '0.85rem', color: 'var(--mist)', lineHeight: 1.6, marginBottom: '1.5rem' }}>{desc || 'Tournament description will appear here...'}</div>
+                               <div style={{ fontSize: '0.85rem', color: 'var(--mist)', lineHeight: 1.6, marginBottom: '1.5rem', whiteSpace: 'pre-wrap' }}>{desc || 'Tournament description will appear here...'}</div>
 
                                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '0.75rem' }}>Sponsors</div>
                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
@@ -423,7 +508,7 @@ export default function HostLiveCampaignBuilder() {
                       <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative' }}>
                          
                          {/* Simulated Hero Section */}
-                         <div style={{ height: '300px', background: heroImage ? `linear-gradient(135deg, rgba(26,46,26,0.8), rgba(17,40,20,0.9)), url(${heroImage}) center/cover no-repeat` : `linear-gradient(135deg, ${secondaryThemeColor}, #112814)`, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '1.5rem', position: 'relative' }}>
+                         <div style={{ height: '300px', background: heroImage ? `linear-gradient(135deg, rgba(26,46,26,0.8), rgba(17,40,20,0.9)), url(${heroImage}) ${heroPosition}/cover no-repeat` : `linear-gradient(135deg, ${secondaryThemeColor}, #112814)`, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '1.5rem', position: 'relative' }}>
                             {/* Dynamic gradient wash over hero */}
                             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `radial-gradient(circle at top right, ${themeColor} 0%, transparent 60%)`, opacity: 0.3, pointerEvents: 'none' }}></div>
                             
@@ -458,7 +543,7 @@ export default function HostLiveCampaignBuilder() {
                             {desc && (
                                <div style={{ marginBottom: '1.5rem' }}>
                                   <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '0.5rem' }}>About Event</div>
-                                  <div style={{ fontSize: '0.85rem', color: 'var(--mist)', lineHeight: 1.6 }}>{desc}</div>
+                                  <div style={{ fontSize: '0.85rem', color: 'var(--mist)', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{desc}</div>
                                </div>
                             )}
 
