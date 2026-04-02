@@ -872,13 +872,13 @@ export default function HostLiveCampaignBuilder() {
                    </div>
                    
                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.85rem' }}>
-                      <span style={{ color: 'var(--mist)' }}>+ Bank Transfer (ACH - capped at $5)</span>
-                      <span style={{ fontWeight: 600, color: 'var(--mist)' }}>${achFee.toFixed(2)}</span>
+                      <span style={{ color: 'var(--mist)' }}>Bank Transfer (ACH)</span>
+                      <span style={{ fontWeight: 600, color: 'var(--mist)' }}>Absorbed</span>
                    </div>
                    
                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
                       <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.1rem' }}>Total Due</span>
-                      <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.1rem' }}>${(topSponsor.price + achFee).toFixed(2)}</span>
+                      <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.1rem' }}>${topSponsor.price.toFixed(2)}</span>
                    </div>
                 </div>
 
@@ -1103,13 +1103,13 @@ export default function HostLiveCampaignBuilder() {
                    </div>
                    
                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.8rem' }}>
-                      <span style={{ color: 'var(--mist)' }}>+ Bank Transfer (ACH - capped at $5)</span>
-                      <span style={{ fontWeight: 600, color: 'var(--mist)' }}>${achFee.toFixed(2)}</span>
+                      <span style={{ color: 'var(--mist)' }}>Bank Transfer (ACH)</span>
+                      <span style={{ fontWeight: 600, color: 'var(--mist)' }}>Absorbed</span>
                    </div>
                    
                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
                       <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.05rem' }}>Total Due</span>
-                      <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.05rem' }}>${(topSponsor.price + achFee).toFixed(2)}</span>
+                      <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.05rem' }}>${topSponsor.price.toFixed(2)}</span>
                    </div>
                 </div>
 
