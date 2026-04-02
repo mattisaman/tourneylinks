@@ -720,12 +720,24 @@ export default function HostLiveCampaignBuilder() {
                  </div>
 
                  <div style={{ flex: '0 0 200px' }}>
-                     <div style={{ background: '#fff', padding: '1.25rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', textAlign: 'center', position: 'sticky', top: '10px' }}>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Registration</div>
-                        <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--forest)', margin: '0.5rem 0' }}>${totalFee.toFixed(2)}</div>
-                        <button style={{ width: '100%', padding: '0.8rem', background: `linear-gradient(135deg, ${themeColor}, ${secondaryThemeColor})`, color: '#fff', fontWeight: 700, border: `1px solid ${secondaryThemeColor}40`, borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem', boxShadow: `0 8px 20px ${themeColor}40`, transition: '0.2s' }}>Register Now</button>
-                     </div>
-                  </div>
+                    <div style={{ background: '#fff', padding: '1.25rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', textAlign: 'center', position: 'sticky', top: '10px' }}>
+                       <div style={{ fontSize: '0.75rem', color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Registration</div>
+                       <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--forest)', margin: '0.5rem 0' }}>${totalFee.toFixed(2)}</div>
+                       <button style={{ width: '100%', padding: '0.8rem', background: `linear-gradient(135deg, ${themeColor}, ${secondaryThemeColor})`, color: '#fff', fontWeight: 700, border: `1px solid ${secondaryThemeColor}40`, borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem', boxShadow: `0 8px 20px ${themeColor}40`, transition: '0.2s', marginBottom: packages.length > 0 ? '1rem' : 0 }}>Register Now</button>
+                       
+                       {packages.length > 0 && (
+                          <div style={{ borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '1rem', textAlign: 'left' }}>
+                             <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '0.5rem' }}>Available Packages</div>
+                             {packages.map((p, idx) => (
+                                <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem', fontSize: '0.75rem' }}>
+                                   <span style={{ color: 'var(--mist)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100px' }}>{p.name}</span>
+                                   <span style={{ fontWeight: 600, color: 'var(--ink)' }}>${p.price}</span>
+                                </div>
+                             ))}
+                          </div>
+                       )}
+                    </div>
+                 </div>
               </div>
            </div>
         );
