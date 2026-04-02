@@ -17,23 +17,19 @@ export default function HostLiveCampaignBuilder() {
   const [selectedFormat, setSelectedFormat] = useState('scramble');
   const [selectedVis, setSelectedVis] = useState('private');
 
-  const [price, setPrice] = useState(125);
-  const [dinnerPrice, setDinnerPrice] = useState(50);
   const [maxPlayers, setMaxPlayers] = useState(80);
   const [holes, setHoles] = useState('18 Holes');
   const [org, setOrg] = useState('');
   const [email, setEmail] = useState('');
   const [passFees, setPassFees] = useState(false);
-  
-  const [activeIntents, setActiveIntents] = useState({
-     foursome: true,
-     dinnerOnly: true,
-     sponsorGolf: true,
-     sponsorDinner: true,
-     sponsorOnly: true,
-     donateDinner: true,
-     donateOnly: true
-  });
+
+  const [packages, setPackages] = useState<{name: string, price: number, isTeam: boolean}[]>([
+     { name: 'Foursome & Golf', price: 500, isTeam: true },
+     { name: 'Individual Golfer', price: 125, isTeam: false },
+     { name: 'Dinner Ticket Only', price: 50, isTeam: false }
+  ]);
+  const [showPackageForm, setShowPackageForm] = useState(false);
+  const [newPackage, setNewPackage] = useState<{name: string, price: number, isTeam: boolean}>({ name: '', price: 0, isTeam: false });
 
   const [addons, setAddons] = useState<{name: string, price: number, type: 'per_player'|'per_team'|'flat', maxQuantity?: number}[]>([
      { name: 'Mulligan', price: 20, type: 'per_player', maxQuantity: 2 }
@@ -125,13 +121,14 @@ export default function HostLiveCampaignBuilder() {
 
   const formatName = formatNames[selectedFormat] || selectedFormat;
 
-  const fee = price || 0;
+  const fee = packages.length > 0 ? packages[0].price : 0;
   const stripeFee = fee > 0 ? (fee * 0.029 + 0.30) : 0;
   let totalFee = fee;
   let organizerRevenue = fee - stripeFee;
 
   if (passFees) {
     totalFee = fee + stripeFee;
+    organizerRevenue = fee;
     organizerRevenue = fee;
   }
 
@@ -318,106 +315,109 @@ export default function HostLiveCampaignBuilder() {
   const renderFinanceTab = () => (
      <div className="builder-section fade-in">
         <div className="wizard-card" style={{ marginBottom: '2rem' }}>
-          <div className="wizard-card-title">Registration Engine</div>
-          
-          <div className="wform-grid" style={{ marginBottom: '1.5rem' }}>
-            <div className="wfield">
-              <label>Entry Fee (per player)</label>
-              <div style={{ position: 'relative' }}>
-                 <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', fontWeight: 600, color: 'var(--mist)' }}>$</span>
-                 <input type="number" value={price} onChange={e => setPrice(Number(e.target.value))} style={{ paddingLeft: '2rem' }} />
-              </div>
-            </div>
-            <div className="wfield">
-              <label>Max Field Size</label>
-              <input type="number" value={maxPlayers} onChange={e => setMaxPlayers(Number(e.target.value))} />
-            </div>
-          </div>
-
-          <div className="pricing-box" style={{ background: '#f8faf9', padding: '1.25rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.05)' }}>
-            <div className="pricing-row" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-               <span style={{ color: 'var(--mist)' }}>Entry fee subtotal</span>
-               <strong>${fee.toFixed(2)}</strong>
-            </div>
-            <div className="pricing-row" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.9rem' }}>
-              <span style={{ color: 'var(--mist)' }}>
-                 Credit Card Processing Fee <br/>
-                 <span style={{ fontSize: '0.75rem' }}>{passFees ? '(Paid by Registrant)' : '(Deducted from Payout)'}</span>
-              </span>
-              <strong style={{ color: passFees ? 'var(--mist)' : '#e74c3c' }}>{passFees ? '' : '-'}${stripeFee.toFixed(2)}</strong>
-            </div>
-            
-            <div className="notif-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '1rem 0', padding: '1rem', background: '#fff', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.1)' }}>
-              <div>
-                <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--ink)' }}>Pass Fees to Registrant</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>Automatically append standard 2.9% + 30¢ processor costs to checkout.</div>
-              </div>
-              <label className="toggle-switch">
-                <input type="checkbox" checked={passFees} onChange={e => setPassFees(e.target.checked)} />
-                <span className="toggle-slider"></span>
-              </label>
-            </div>
-
-            <div style={{ height: '1px', background: 'rgba(0,0,0,0.1)', margin: '1rem 0' }}></div>
-
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontWeight: 700, color: 'var(--ink)' }}>Registrant Pays</span>
-              <span style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--ink)' }}>${totalFee.toFixed(2)}</span>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem' }}>
-               <span style={{ fontWeight: 700, color: 'var(--grass)' }}>You Receive</span>
-               <span style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--grass)' }}>${organizerRevenue.toFixed(2)}</span>
-            </div>
-          </div>
-        </div>
-        
-        <div className="wizard-card" style={{ marginBottom: '2rem' }}>
-           <div className="wizard-card-title">Participant Intent Options</div>
-           <div style={{ color: 'var(--mist)', fontSize: '0.8rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>
-              Toggle which registration pathways are available to your audience during checkout.
+           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <div className="wizard-card-title" style={{ marginBottom: 0 }}>Registration Packages</div>
+              <button onClick={() => setShowPackageForm(!showPackageForm)} className="btn-hero-outline" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                 {showPackageForm ? 'Cancel' : <><Plus size={14} /> Mint Package</>}
+              </button>
            </div>
            
-           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fff', padding: '0.8rem', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '6px', cursor: 'pointer' }}>
-                 <input type="checkbox" checked={activeIntents.foursome} onChange={e => setActiveIntents({...activeIntents, foursome: e.target.checked})} />
-                 <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink)' }}>Foursome & Golf</span>
-              </label>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fff', padding: '0.8rem', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '6px', cursor: 'pointer' }}>
-                 <input type="checkbox" checked={activeIntents.sponsorGolf} onChange={e => setActiveIntents({...activeIntents, sponsorGolf: e.target.checked})} />
-                 <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink)' }}>Sponsor & Golf</span>
-              </label>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fff', padding: '0.8rem', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '6px', cursor: 'pointer' }}>
-                 <input type="checkbox" checked={activeIntents.sponsorOnly} onChange={e => setActiveIntents({...activeIntents, sponsorOnly: e.target.checked})} />
-                 <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink)' }}>Sponsor Only</span>
-              </label>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fff', padding: '0.8rem', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '6px', cursor: 'pointer' }}>
-                 <input type="checkbox" checked={activeIntents.dinnerOnly} onChange={e => setActiveIntents({...activeIntents, dinnerOnly: e.target.checked})} />
-                 <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink)' }}>Dinner Only</span>
-              </label>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fff', padding: '0.8rem', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '6px', cursor: 'pointer' }}>
-                 <input type="checkbox" checked={activeIntents.sponsorDinner} onChange={e => setActiveIntents({...activeIntents, sponsorDinner: e.target.checked})} />
-                 <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink)' }}>Sponsor & Dinner</span>
-              </label>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fff', padding: '0.8rem', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '6px', cursor: 'pointer' }}>
-                 <input type="checkbox" checked={activeIntents.donateDinner} onChange={e => setActiveIntents({...activeIntents, donateDinner: e.target.checked})} />
-                 <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink)' }}>Donate & Dinner</span>
-              </label>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fff', padding: '0.8rem', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '6px', cursor: 'pointer' }}>
-                 <input type="checkbox" checked={activeIntents.donateOnly} onChange={e => setActiveIntents({...activeIntents, donateOnly: e.target.checked})} />
-                 <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink)' }}>Donate Only</span>
-              </label>
-           </div>
-           
-           {(activeIntents.dinnerOnly || activeIntents.sponsorDinner || activeIntents.donateDinner) && (
-              <div className="wfield" style={{ maxWidth: '300px', borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '1.5rem' }}>
-                 <label>Dinner Ticket Price ($)</label>
-                 <div style={{ position: 'relative' }}>
-                    <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', fontWeight: 600, color: 'var(--mist)' }}>$</span>
-                    <input type="number" value={dinnerPrice} onChange={e => setDinnerPrice(Number(e.target.value))} style={{ paddingLeft: '2rem' }} />
+           {showPackageForm && (
+              <div style={{ padding: '1.5rem', background: '#f4f7f5', borderRadius: '8px', border: '1px dashed rgba(0,0,0,0.1)', marginBottom: '1.5rem' }}>
+                 <div style={{ fontWeight: 700, color: 'var(--forest)', marginBottom: '1rem', fontSize: '0.9rem' }}>Create Custom Package</div>
+                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <div style={{ display: 'flex', gap: '1rem' }}>
+                       <div style={{ flex: 2 }}>
+                          <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>Package Name</label>
+                          <input type="text" value={newPackage.name} onChange={e => setNewPackage({...newPackage, name: e.target.value})} placeholder="e.g. Foursome & Golf" style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }} />
+                       </div>
+                       <div style={{ flex: 1 }}>
+                          <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>Price ($)</label>
+                          <input type="number" value={newPackage.price} onChange={e => setNewPackage({...newPackage, price: Number(e.target.value)})} style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }} />
+                       </div>
+                    </div>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                       <input type="checkbox" checked={newPackage.isTeam} onChange={e => setNewPackage({...newPackage, isTeam: e.target.checked})} />
+                       <span style={{ fontSize: '0.8rem', color: 'var(--ink)', fontWeight: 600 }}>This is a Foursome/Team Package (Scales natively to 4 players)</span>
+                    </label>
+                    <button 
+                       onClick={() => {
+                          if (newPackage.name && newPackage.price >= 0) {
+                             setPackages([...packages, newPackage]);
+                             setNewPackage({ name: '', price: 0, isTeam: false });
+                             setShowPackageForm(false);
+                          }
+                       }}
+                       style={{ padding: '0.8rem', background: 'var(--forest)', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 700, cursor: 'pointer' }}>
+                       Save Package to Registration
+                    </button>
                  </div>
               </div>
            )}
+
+           {!showPackageForm && packages.length === 0 && (
+              <div style={{ color: 'var(--mist)', fontSize: '0.8rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>
+                 Mint packages for users to purchase (e.g. Foursome & Golf, Individual Golfer, Dinner Only ticket).
+              </div>
+           )}
+           
+           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {packages.map((p, i) => (
+                 <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', background: '#f8faf9' }}>
+                    <div>
+                       <div style={{ fontWeight: 600, color: 'var(--forest)', fontSize: '0.95rem' }}>{p.name}</div>
+                       <div style={{ fontSize: '0.75rem', color: 'var(--mist)', marginTop: '0.2rem' }}>
+                          {p.isTeam ? 'Foursome / Team Registration' : 'Individual Registration'}
+                       </div>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                       <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--grass)' }}>${p.price.toFixed(2)}</span>
+                       <button onClick={() => setPackages(packages.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: '#e74c3c', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600 }}>Remove</button>
+                    </div>
+                 </div>
+              ))}
+           </div>
+           
+           {/* Revenue Tracker tied to the primary top-level package */}
+           {packages.length > 0 && (
+             <div className="pricing-box" style={{ background: '#f8faf9', padding: '1.25rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.05)', marginTop: '1.5rem' }}>
+                <div className="pricing-row" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+                   <span style={{ color: 'var(--mist)' }}>Primary Package fee ({packages[0].name})</span>
+                   <strong>${fee.toFixed(2)}</strong>
+                </div>
+                <div className="pricing-row" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.9rem' }}>
+                  <span style={{ color: 'var(--mist)' }}>
+                     Credit Card Processing Fee <br/>
+                     <span style={{ fontSize: '0.75rem' }}>{passFees ? '(Paid by Registrant)' : '(Deducted from Payout)'}</span>
+                  </span>
+                  <strong style={{ color: passFees ? 'var(--mist)' : '#e74c3c' }}>{passFees ? '' : '-'}${stripeFee.toFixed(2)}</strong>
+                </div>
+                
+                <div className="notif-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '1rem 0', padding: '1rem', background: '#fff', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.1)' }}>
+                  <div>
+                    <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--ink)' }}>Pass Fees to Registrant</div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>Automatically append standard CC processor costs to checkout.</div>
+                  </div>
+                  <label className="toggle-switch">
+                    <input type="checkbox" checked={passFees} onChange={e => setPassFees(e.target.checked)} />
+                    <span className="toggle-slider"></span>
+                  </label>
+                </div>
+    
+                <div style={{ height: '1px', background: 'rgba(0,0,0,0.1)', margin: '1rem 0' }}></div>
+    
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontWeight: 700, color: 'var(--ink)' }}>Registrant Pays</span>
+                  <span style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--ink)' }}>${totalFee.toFixed(2)}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem' }}>
+                   <span style={{ fontWeight: 700, color: 'var(--grass)' }}>You Receive</span>
+                   <span style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--grass)' }}>${organizerRevenue.toFixed(2)}</span>
+                </div>
+             </div>
+           )}
         </div>
+        
         
         <div className="wizard-card" style={{ marginBottom: '2rem' }}>
            <div className="wizard-card-title">Prizes & Raffles</div>
@@ -726,7 +726,7 @@ export default function HostLiveCampaignBuilder() {
         );
      }
      if (activeTab === 'finance') {
-        const entryFeeSubtotal = price * 4;
+        const entryFeeSubtotal = fee;
         const totalAddon = addons.reduce((acc, a) => acc + a.price, 0);
         const totalProcessing = passFees ? (stripeFee * 4) : 0;
         const totalDue = entryFeeSubtotal + totalAddon + totalProcessing;
@@ -814,9 +814,9 @@ export default function HostLiveCampaignBuilder() {
                 <div style={{ marginBottom: '1.5rem' }}>
                    <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink)', marginBottom: '0.5rem' }}>Participant Intent</div>
                    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                      {activeIntents.sponsorOnly && <button style={{ flex: 1, minWidth: '120px', padding: '0.6rem', border: '2px solid var(--forest)', background: 'var(--forest)', color: '#fff', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>Sponsor Only</button>}
-                      {activeIntents.sponsorGolf && <button style={{ flex: 1, minWidth: '120px', padding: '0.6rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>Play & Sponsor</button>}
-                      {activeIntents.sponsorDinner && <button style={{ flex: 1, minWidth: '120px', padding: '0.6rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>Sponsor & Dinner</button>}
+                      <button style={{ flex: 1, minWidth: '120px', padding: '0.6rem', border: '2px solid var(--forest)', background: 'var(--forest)', color: '#fff', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>Sponsor Only</button>
+                      <button style={{ flex: 1, minWidth: '120px', padding: '0.6rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>Play & Sponsor</button>
+                      <button style={{ flex: 1, minWidth: '120px', padding: '0.6rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>Sponsor & Dinner</button>
                    </div>
                 </div>
 
@@ -897,7 +897,7 @@ export default function HostLiveCampaignBuilder() {
         );
      }
      if (activeTab === 'finance') {
-        const entryFeeSubtotal = price * 4;
+        const entryFeeSubtotal = fee;
         const totalAddon = addons.reduce((acc, a) => acc + a.price, 0);
         const totalProcessing = passFees ? (stripeFee * 4) : 0;
         const totalDue = entryFeeSubtotal + totalAddon + totalProcessing;
@@ -985,9 +985,9 @@ export default function HostLiveCampaignBuilder() {
                 <div style={{ marginBottom: '1.5rem' }}>
                    <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--ink)', marginBottom: '0.5rem' }}>Participant Intent</div>
                    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                      {activeIntents.sponsorOnly && <button style={{ flex: 1, minWidth: '100px', padding: '0.5rem', border: '2px solid var(--forest)', background: 'var(--forest)', color: '#fff', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 600 }}>Sponsor Only</button>}
-                      {activeIntents.sponsorGolf && <button style={{ flex: 1, minWidth: '100px', padding: '0.5rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 600 }}>Play & Sponsor</button>}
-                      {activeIntents.sponsorDinner && <button style={{ flex: 1, minWidth: '100px', padding: '0.5rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 600 }}>Sponsor & Dinner</button>}
+                      <button style={{ flex: 1, minWidth: '100px', padding: '0.5rem', border: '2px solid var(--forest)', background: 'var(--forest)', color: '#fff', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 600 }}>Sponsor Only</button>
+                      <button style={{ flex: 1, minWidth: '100px', padding: '0.5rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 600 }}>Play & Sponsor</button>
+                      <button style={{ flex: 1, minWidth: '100px', padding: '0.5rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 600 }}>Sponsor & Dinner</button>
                    </div>
                 </div>
 
