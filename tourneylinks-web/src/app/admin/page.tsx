@@ -113,29 +113,29 @@ export default async function AdminDashboard() {
 
           {/* KPIs */}
           <div className="kpi-grid">
-            <div className="kpi-card">
-              <div className="kpi-icon">👥</div>
-              <div className="kpi-val">{finalRegs.length}</div>
-              <div className="kpi-label">Registrants</div>
-              <div className="kpi-change">↑ {Math.max(finalRegs.length - 12, 0)} total players</div>
+            <div className="kpi-card" style={{ padding: '1rem' }}>
+              <div className="kpi-icon" style={{ width: '32px', height: '32px', fontSize: '1rem', marginBottom: '0.5rem' }}>👥</div>
+              <div className="kpi-val" style={{ fontSize: '1.5rem' }}>{finalRegs.length}</div>
+              <div className="kpi-label" style={{ fontSize: '0.7rem' }}>Registrants</div>
+              <div className="kpi-change" style={{ fontSize: '0.65rem' }}>↑ {Math.max(finalRegs.length - 12, 0)} total players</div>
             </div>
-            <div className="kpi-card">
-              <div className="kpi-icon">✅</div>
-              <div className="kpi-val">{finalRegs.length - 1}</div>
-              <div className="kpi-label">Paid</div>
-              <div className="kpi-change">1 pending payment</div>
+            <div className="kpi-card" style={{ padding: '1rem' }}>
+              <div className="kpi-icon" style={{ width: '32px', height: '32px', fontSize: '1rem', marginBottom: '0.5rem' }}>✅</div>
+              <div className="kpi-val" style={{ fontSize: '1.5rem' }}>{finalRegs.length - 1}</div>
+              <div className="kpi-label" style={{ fontSize: '0.7rem' }}>Paid</div>
+              <div className="kpi-change" style={{ fontSize: '0.65rem' }}>1 pending payment</div>
             </div>
-            <div className="kpi-card">
-              <div className="kpi-icon">💰</div>
-              <div className="kpi-val">${displayRevenue.toLocaleString()}</div>
-              <div className="kpi-label">Revenue Collected</div>
-              <div className="kpi-change">Based on $150 avg fee</div>
+            <div className="kpi-card" style={{ padding: '1rem' }}>
+              <div className="kpi-icon" style={{ width: '32px', height: '32px', fontSize: '1rem', marginBottom: '0.5rem' }}>💰</div>
+              <div className="kpi-val" style={{ fontSize: '1.5rem' }}>${displayRevenue.toLocaleString()}</div>
+              <div className="kpi-label" style={{ fontSize: '0.7rem' }}>Revenue Collected</div>
+              <div className="kpi-change" style={{ fontSize: '0.65rem' }}>Based on $150 avg fee</div>
             </div>
-            <div className="kpi-card">
-              <div className="kpi-icon">🏌️</div>
-              <div className="kpi-val">{displayAvgHcp}</div>
-              <div className="kpi-label">Avg Handicap</div>
-              <div className="kpi-change">Field Index Balance</div>
+            <div className="kpi-card" style={{ padding: '1rem' }}>
+              <div className="kpi-icon" style={{ width: '32px', height: '32px', fontSize: '1rem', marginBottom: '0.5rem' }}>🏌️</div>
+              <div className="kpi-val" style={{ fontSize: '1.5rem' }}>{displayAvgHcp}</div>
+              <div className="kpi-label" style={{ fontSize: '0.7rem' }}>Avg Handicap</div>
+              <div className="kpi-change" style={{ fontSize: '0.65rem' }}>Field Index Balance</div>
             </div>
           </div>
 
@@ -225,9 +225,9 @@ export default async function AdminDashboard() {
               <div id="builder" style={{ background: '#05120c', padding: '2rem', borderRadius: '16px', color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}>
                  <div>
                     <h3 style={{ fontSize: '1.4rem', fontWeight: 900, marginBottom: '0.3rem' }}>Live Campaign Builder</h3>
-                    <p style={{ color: 'var(--mist)', fontSize: '0.9rem', maxWidth: '400px', lineHeight: 1.6 }}>Step into the immersive setup studio. Configure entry fees, sponsors, and content side-by-side with a live preview of exactly what players will see.</p>
+                    <p style={{ color: 'var(--mist)', fontSize: '0.9rem', maxWidth: '400px', lineHeight: 1.6 }}>Return to your setup wizard to edit forms, sponsorships, and settings.</p>
                  </div>
-                 <Link href={`/admin/tournaments/${tournamentId}/builder`} style={{ padding: '1rem 2rem', background: 'var(--gold)', color: '#000', fontWeight: 800, borderRadius: '8px', textDecoration: 'none', transition: 'transform 0.2s' }}>
+                 <Link href={`/host?tournamentId=${tournamentId}`} style={{ padding: '1rem 2rem', background: 'var(--gold)', color: '#000', fontWeight: 800, borderRadius: '8px', textDecoration: 'none', transition: 'transform 0.2s' }}>
                     Launch Builder 🚀
                  </Link>
               </div>
@@ -239,7 +239,7 @@ export default async function AdminDashboard() {
                   <span className="status-pill status-pending" style={{ fontSize: '0.75rem' }}>Active</span>
                 </div>
                 <div style={{ padding: '1.5rem' }}>
-                  <p style={{ fontSize: '0.875rem', color: 'var(--mist)', marginBottom: '1rem' }}>Share this private link with loyal players before going public. They can register immediately — others will see the tournament once you switch to Public.</p>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--mist)', marginBottom: '1rem' }}>Share this private link with loyal players before going public.</p>
                   <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
                     <input 
                       type="text" 
@@ -248,10 +248,6 @@ export default async function AdminDashboard() {
                       style={{ flex: 1, padding: '0.6rem 0.85rem', border: '1px solid rgba(26,46,26,0.12)', borderRadius: '2px', fontSize: '0.8rem', fontFamily: "'DM Mono', monospace", color: 'var(--mist)', background: '#fafaf5', outline: 'none' }} 
                     />
                     <button className="btn-primary" style={{ padding: '0.6rem 1rem', fontSize: '0.8rem' }}>Copy</button>
-                  </div>
-                  <div style={{ display: 'flex', gap: '0.75rem' }}>
-                    <button className="btn-ghost" style={{ color: 'var(--forest)', borderColor: 'rgba(26,46,26,0.15)', fontSize: '0.8rem', padding: '0.5rem 1rem' }}>🌐 Go Public Now</button>
-                    <button className="btn-ghost" style={{ color: 'var(--forest)', borderColor: 'rgba(26,46,26,0.15)', fontSize: '0.8rem', padding: '0.5rem 1rem' }}>Schedule Public Date</button>
                   </div>
                 </div>
               </div>
@@ -264,32 +260,32 @@ export default async function AdminDashboard() {
                  <SponsorManager tournamentId={tournamentId} />
               </div>
 
-              {/* Phase 6: Gemini Vision OCR Dropzone */}
-              <div id="vision-scoring">
-                 <ScorecardVisionScanner courseId={tourney ? (tourney as any).courseId || 1 : 1} />
-              </div>
-
-              {/* Phase 7: GPS Coordinate Definition (Haversine Source) */}
-              <div id="course-gps">
-                 <CourseGPSMapper courseId={tourney ? (tourney as any).courseId || 1 : 1} />
-              </div>
+              {/* Note: Geospatial tools extracted to Advanced Settings page */}
             </div>
 
             {/* Right Column */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               
-              {/* QR & Print Station */}
+              {/* Print Station */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem' }}>
-                 <TournamentQRCode tournamentId={tournamentId} publicName={tourney?.name || 'Tournament'} />
                  
                  <div className="dash-card">
                    <div className="dash-card-header">
                      <div className="dash-card-title">🖨️ The Print Station</div>
                    </div>
-                   <div style={{ padding: '1.5rem', textAlign: 'center' }}>
+                   <div style={{ padding: '1.5rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                      <p style={{ fontSize: '0.85rem', color: 'var(--mist)', marginBottom: '1.25rem' }}>
-                       Generate formatted, high-contrast Cart Signs, Team Pairings, and Blank Scorecards instantly.
+                       Generate formatted, high-contrast Cart Signs, Team Pairings, Blank Scorecards, and Live Event QR Codes instantly.
                      </p>
+                     
+                     <div style={{ background: '#fafaf5', border: '1px dashed rgba(0,0,0,0.1)', padding: '1rem', borderRadius: '8px', marginBottom: '1.25rem', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
+                        <div style={{ textAlign: 'left' }}>
+                          <div style={{ fontWeight: 600, fontSize: '0.8rem' }}>Live Event QR Code</div>
+                          <div style={{ fontSize: '0.7rem', color: 'var(--mist)' }}>Automatically included on Cart Signs.</div>
+                        </div>
+                        <img src={`https://api.qrserver.com/v1/create-qr-code/?size=60x60&data=https://tourneylinks.com/tournaments/${tournamentId}`} alt="QR" style={{ width: 60, height: 60, borderRadius: '4px' }} />
+                     </div>
+
                      <Link href={`/admin/tournaments/${tournamentId}/print`} className="btn-primary" style={{ display: 'block', width: '100%', padding: '0.75rem', textDecoration: 'none' }}>
                        Open Print Station →
                      </Link>

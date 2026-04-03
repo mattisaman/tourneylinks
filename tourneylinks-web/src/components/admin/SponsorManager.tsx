@@ -38,6 +38,30 @@ export default function SponsorManager({ tournamentId }: { tournamentId: number 
     setSubmitting(false);
   };
 
+  const handleUpdateAssignment = async (sponsorId: number, newHole: string) => {
+    const res = await fetch(`/api/admin/tournaments/${tournamentId}/sponsors`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sponsorId, holeAssignment: newHole })
+    });
+    if (res.ok) {
+       const { sponsor } = await res.json();
+       setSponsors(sponsors.map(s => s.id === sponsorId ? sponsor : s));
+    }
+  };
+
+  const handleDelete = async (sponsorId: number) => {
+    if (!confirm('Remove this sponsor permanently?')) return;
+    const res = await fetch(`/api/admin/tournaments/${tournamentId}/sponsors`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sponsorId })
+    });
+    if (res.ok) {
+       setSponsors(sponsors.filter(s => s.id !== sponsorId));
+    }
+  };
+
   return (
     <div className="dash-card" style={{ marginBottom: '1.5rem' }}>
       <div className="dash-card-header">
@@ -56,13 +80,22 @@ export default function SponsorManager({ tournamentId }: { tournamentId: number 
            ) : sponsors.length === 0 ? (
              <div style={{ fontSize: '0.8rem', color: 'var(--mist)', fontStyle: 'italic' }}>No active hole sponsors.</div>
            ) : sponsors.map(sp => (
-               <div key={sp.id} style={{ border: '1px solid rgba(0,0,0,0.1)', padding: '1rem', borderRadius: '8px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+               <div key={sp.id} style={{ border: '1px solid rgba(0,0,0,0.1)', padding: '1rem', borderRadius: '8px', display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
+                 <button onClick={() => handleDelete(sp.id)} style={{ position: 'absolute', top: '0.5rem', right: '0.5rem', background: 'none', border: 'none', color: '#c0392b', cursor: 'pointer', opacity: 0.7, padding: '0.2rem' }}>✖</button>
                  <div style={{ width: '100%', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.5rem' }}>
                     <img src={sp.logoUrl} alt={sp.name} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} onError={(e) => (e.currentTarget.style.display = 'none')} />
                  </div>
-                 <div style={{ fontWeight: 600, fontSize: '0.9rem', textAlign: 'center' }}>{sp.name}</div>
-                 <div style={{ fontSize: '0.75rem', color: 'var(--gold)', fontWeight: 700, marginTop: '0.2rem' }}>
-                    {sp.holeAssignment ? `HOLE ${sp.holeAssignment}` : 'GENERAL SPONSOR'}
+                 <div style={{ fontWeight: 600, fontSize: '0.9rem', textAlign: 'center', marginBottom: '0.5rem' }}>{sp.name}</div>
+                 <div style={{ width: '100%' }}>
+                   <select 
+                     value={sp.holeAssignment || ''} 
+                     onChange={(e) => handleUpdateAssignment(sp.id, e.target.value)}
+                     style={{ width: '100%', padding: '0.4rem', fontSize: '0.75rem', borderRadius: '4px', border: '1px solid rgba(201,168,76,0.3)', background: 'rgba(201,168,76,0.05)', color: 'var(--forest)', outline: 'none', fontWeight: 600, textAlign: 'center' }}>
+                     <option value="">GENERAL SPONSOR</option>
+                     {[...Array(18)].map((_, i) => (
+                       <option key={i} value={i+1}>HOLE {i+1}</option>
+                     ))}
+                   </select>
                  </div>
                </div>
            ))}

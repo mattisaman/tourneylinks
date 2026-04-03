@@ -51,6 +51,37 @@ export default function FlightBuilder({
     setMovingId(null);
   };
 
+  const findPlayerFlight = (requestName: string) => {
+    if (!requestName || requestName.toLowerCase() === 'none') return null;
+    const searchName = requestName.toLowerCase().trim();
+    for (const [tId, players] of Object.entries(teamsMap)) {
+      for (const p of players) {
+        if (p.name && p.name.toLowerCase().includes(searchName)) {
+           return tId;
+        }
+      }
+    }
+    return null;
+  };
+
+  const renderPairingInfo = (requestStr: string | null) => {
+     if (!requestStr || requestStr === 'None') return <strong style={{ color: 'inherit' }}>None</strong>;
+     const names = requestStr.split(',').map(s => s.trim()).filter(Boolean);
+     return (
+        <span style={{ color: 'var(--gold)' }}>
+           {names.map((name, idx) => {
+              const fId = findPlayerFlight(name);
+              return (
+                <span key={idx}>
+                  <strong>{name}</strong> {fId ? <span style={{ color: 'var(--grass)', fontSize: '0.65rem', fontWeight: 600, border: '1px solid rgba(15,110,64,0.3)', padding: '0.1rem 0.3rem', borderRadius: '4px', marginLeft: '0.3rem' }}>⇨ Flight {fId}</span> : <span style={{ color: 'var(--mist)', fontSize: '0.65rem', marginLeft: '0.2rem' }}>(Unassigned)</span>}
+                  {idx < names.length - 1 ? ', ' : ''}
+                </span>
+              )
+           })}
+        </span>
+     );
+  };
+
   const activeTeams = Object.keys(teamsMap).sort((a,b) => parseInt(a) - parseInt(b));
   const maxTeamNumber = activeTeams.length > 0 ? Math.max(...activeTeams.map(t => parseInt(t))) : 4;
   
@@ -108,7 +139,7 @@ export default function FlightBuilder({
                           <div style={{ fontSize: '0.8rem', fontWeight: 500, color: '#111' }}>{p.name}</div>
                           <div style={{ fontSize: '0.65rem', color: 'var(--mist)', marginTop: '0.1rem', display: 'flex', gap: '0.75rem' }}>
                             <span>HCP: <strong>{p.handicap?.toFixed(1) || 'N/A'}</strong></span>
-                            <span>Requested: <strong style={{ color: p.pairingRequest ? 'var(--gold)' : 'inherit' }}>{p.pairingRequest || 'None'}</strong></span>
+                            <span>Requested: {renderPairingInfo(p.pairingRequest)}</span>
                           </div>
                         </div>
                         <div>

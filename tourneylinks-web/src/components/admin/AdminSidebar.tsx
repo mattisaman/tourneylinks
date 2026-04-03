@@ -81,8 +81,6 @@ export default function AdminSidebar({ tournamentId, mockTournaments }: { tourna
           <div className="dash-section-label" style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '2rem', marginBottom: '0.8rem', paddingLeft: '1rem' }}>Management Hub</div>
           <a href="#registrants" onClick={(e) => navClick('registrants', e)} style={getNavStyle('registrants')}><span>👥</span> Registrants Tracker</a>
           <a href="#flights" onClick={(e) => navClick('flights', e)} style={getNavStyle('flights')}><span>🏌️</span> Flight Builder</a>
-          <a href="#course-gps" onClick={(e) => navClick('course-gps', e)} style={getNavStyle('course-gps')}><span>⛳</span> Course & GPS Mapper</a>
-          <a href="#vision-scoring" onClick={(e) => navClick('vision-scoring', e)} style={getNavStyle('vision-scoring')}><span>📸</span> Scorecard Vision AI</a>
 
           <div className="dash-section-label" style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '2rem', marginBottom: '0.8rem', paddingLeft: '1rem' }}>Sponsors & Revenue</div>
           <a href="#payments" onClick={(e) => navClick('payments', e)} style={getNavStyle('payments')}><span>💰</span> Payouts & Stripe</a>
@@ -93,6 +91,9 @@ export default function AdminSidebar({ tournamentId, mockTournaments }: { tourna
           <a href="#private-link" onClick={(e) => navClick('private-link', e)} style={getNavStyle('private-link')}><span>🔒</span> Private Pre-Link</a>
           <a href="#notifications" onClick={(e) => navClick('notifications', e)} style={getNavStyle('notifications')}><span>📢</span> Mass Notifications</a>
           <a href="#builder" onClick={(e) => navClick('builder', e)} style={getNavStyle('builder')}><span>🖼️</span> Landing Page Builder</a>
+          
+          <div className="dash-section-label" style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '2rem', marginBottom: '0.8rem', paddingLeft: '1rem' }}>Advanced Engine</div>
+          <Link href={`/admin/tournaments/${tournamentId}/advanced`} style={{ ...getNavStyle('advanced'), color: 'rgba(255,255,255,0.5)', borderLeft: '4px solid transparent' }}><span>⛳</span> Geospatial Settings</Link>
         </div>
    )
 }
