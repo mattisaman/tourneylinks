@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 
 export default function MobileScorerDemo() {
-  const [score1, setScore1] = useState(4);
+  const [teamScores, setTeamScores] = useState<number[]>([3,3,4,4,3,3,4,3,4, 4,4,3,5,4,0,0,0,0]);
   const [submitted, setSubmitted] = useState(false);
   const [viewScorecard, setViewScorecard] = useState(false);
   const [viewGps, setViewGps] = useState(false);
@@ -18,6 +18,7 @@ export default function MobileScorerDemo() {
     { p: 4, y: 421 }, { p: 4, y: 385 }, { p: 3, y: 155 }, { p: 4, y: 440 }, { p: 5, y: 530 }
   ];
   const holeConfig = courseData[currentHole - 1];
+  const tempScore = teamScores[currentHole - 1] === 0 ? holeConfig.p : teamScores[currentHole - 1];
 
   return (
     <div style={{ background: '#e0e5e2', minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '2rem 1rem' }}>
@@ -45,7 +46,7 @@ export default function MobileScorerDemo() {
            {/* Hole Navigation & Header */}
            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
               <button 
-                 onClick={() => { if(currentHole > 1) setCurrentHole(currentHole - 1); setScore1(4); }}
+                 onClick={() => { if(currentHole > 1) setCurrentHole(currentHole - 1); }}
                  style={{ background: '#f8faf9', border: '1px solid rgba(0,0,0,0.1)', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontWeight: 900, cursor: 'pointer', color: 'var(--forest)' }}>←</button>
               
               <div style={{ textAlign: 'center' }}>
@@ -54,7 +55,7 @@ export default function MobileScorerDemo() {
               </div>
 
               <button 
-                 onClick={() => { if(currentHole < 18) setCurrentHole(currentHole + 1); setScore1(4); }}
+                 onClick={() => { if(currentHole < 18) setCurrentHole(currentHole + 1); }}
                  style={{ background: '#f8faf9', border: '1px solid rgba(0,0,0,0.1)', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontWeight: 900, cursor: 'pointer', color: 'var(--forest)' }}>→</button>
            </div>
 
@@ -130,13 +131,13 @@ export default function MobileScorerDemo() {
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(9, 1fr)', textAlign: 'center', fontSize: '0.7rem' }}>
                       {[1,2,3,4,5,6,7,8,9].map(h => <div key={h} style={{ borderBottom: '1px solid #eee', borderRight: h===9?'none':'1px solid #eee', padding: '0.5rem 0', fontWeight: 700, background: '#f8faf9' }}>{h}</div>)}
                       {[4,3,4,5,4,3,4,4,5].map((p,i) => <div key={i} style={{ borderBottom: '1px solid #eee', borderRight: i===8?'none':'1px solid #eee', padding: '0.5rem 0', color: 'var(--mist)' }}>{p}</div>)}
-                      {[3,3,4,4,3,3,4,3,4].map((s,i) => <div key={i} style={{ borderBottom: '1px solid #eee', borderRight: i===8?'none':'1px solid #eee', padding: '0.5rem 0', fontWeight: 800, color: s < [4,3,4,5,4,3,4,4,5][i] ? 'var(--gold)' : 'var(--ink)' }}>{s}</div>)}
+                      {teamScores.slice(0, 9).map((s,i) => <div key={i} style={{ borderBottom: '1px solid #eee', borderRight: i===8?'none':'1px solid #eee', padding: '0.5rem 0', fontWeight: 800, color: s===0 ? 'transparent' : (s < [4,3,4,5,4,3,4,4,5][i] ? 'var(--gold)' : (s > [4,3,4,5,4,3,4,4,5][i] ? '#ff4d4f' : 'var(--ink)')) }}>{s===0 ? '-' : s}</div>)}
                   </div>
                   <div style={{ background: 'var(--forest)', color: '#fff', padding: '0.75rem', fontWeight: 800, fontSize: '0.8rem', textAlign: 'center', letterSpacing: '1px', textTransform: 'uppercase' }}>Back 9 (-7)</div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(9, 1fr)', textAlign: 'center', fontSize: '0.7rem' }}>
                       {[10,11,12,13,14,15,16,17,18].map((h,i) => <div key={h} style={{ borderBottom: '1px solid #eee', borderRight: i===8?'none':'1px solid #eee', padding: '0.5rem 0', fontWeight: h===currentHole?900:700, background: h===currentHole?'rgba(212,175,55,0.2)':'#f8faf9', color: h===currentHole ? 'var(--forest)' : 'inherit' }}>{h}</div>)}
                       {[4,4,3,5,4,4,3,4,5].map((p,i) => <div key={i} style={{ borderBottom: '1px solid #eee', borderRight: i===8?'none':'1px solid #eee', padding: '0.5rem 0', color: 'var(--mist)' }}>{p}</div>)}
-                      {[3,3,3,4,score1,0,0,0,0].map((s,i) => <div key={i} style={{ borderBottom: '1px solid #eee', borderRight: i===8?'none':'1px solid #eee', padding: '0.5rem 0', fontWeight: 800, color: s===0 ? 'transparent' : (s < [4,4,3,5,4,4,3,4,5][i] ? 'var(--gold)' : (s > [4,4,3,5,4,4,3,4,5][i] ? '#ff4d4f' : 'var(--ink)')) }}>{s===0 ? '-' : s}</div>)}
+                      {teamScores.slice(9, 18).map((s,i) => <div key={i} style={{ borderBottom: '1px solid #eee', borderRight: i===8?'none':'1px solid #eee', padding: '0.5rem 0', fontWeight: 800, color: s===0 ? 'transparent' : (s < [4,4,3,5,4,4,3,4,5][i] ? 'var(--gold)' : (s > [4,4,3,5,4,4,3,4,5][i] ? '#ff4d4f' : 'var(--ink)')) }}>{s===0 ? '-' : s}</div>)}
                   </div>
                </div>
            ) : (
@@ -145,16 +146,24 @@ export default function MobileScorerDemo() {
                    
                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1.5rem' }}>
                        <button 
-                          onClick={() => setScore1(Math.max(1, score1 - 1))}
+                          onClick={() => {
+                              const newScores = [...teamScores];
+                              newScores[currentHole - 1] = Math.max(1, tempScore - 1);
+                              setTeamScores(newScores);
+                          }}
                           style={{ width: '50px', height: '50px', borderRadius: '50%', border: '1px solid rgba(0,0,0,0.1)', background: '#f8faf9', color: 'var(--forest)', fontSize: '1.5rem', fontWeight: 600, display: 'flex', justifyContent: 'center', alignItems: 'center', cursor: 'pointer' }}
                        >-</button>
 
-                       <div style={{ fontSize: '3.5rem', fontWeight: 900, width: '60px', textAlign: 'center', color: score1 < 4 ? 'var(--gold)' : (score1 > 4 ? '#ff4d4f' : 'var(--ink)'), lineHeight: 1 }}>
-                          {score1}
+                       <div style={{ fontSize: '3.5rem', fontWeight: 900, width: '60px', textAlign: 'center', color: tempScore < holeConfig.p ? 'var(--gold)' : (tempScore > holeConfig.p ? '#ff4d4f' : 'var(--ink)'), lineHeight: 1 }}>
+                          {tempScore}
                        </div>
 
                        <button 
-                          onClick={() => setScore1(Math.min(15, score1 + 1))}
+                          onClick={() => {
+                              const newScores = [...teamScores];
+                              newScores[currentHole - 1] = Math.min(15, tempScore + 1);
+                              setTeamScores(newScores);
+                          }}
                           style={{ width: '50px', height: '50px', borderRadius: '50%', border: 'none', background: 'var(--forest)', color: '#fff', fontSize: '1.5rem', fontWeight: 600, display: 'flex', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', boxShadow: '0 4px 8px rgba(26,46,26,0.2)' }}
                        >+</button>
                    </div>
