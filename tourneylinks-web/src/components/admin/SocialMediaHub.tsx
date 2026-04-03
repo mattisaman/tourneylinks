@@ -105,7 +105,7 @@ export default function SocialMediaHub({ tournament }: { tournament: any }) {
                         }
                      }}
                      style={{ background: '#f4f7f5', border: '1px solid #e5e7eb', borderRadius: '4px', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 700, color: 'var(--forest)', padding: '0.2rem 0.6rem', display: 'flex', alignItems: 'center', gap: '0.3rem', marginRight: '0.5rem' }}
-                     title="Copy Caption"
+                     title="Copies text to your clipboard. Images cannot be copied alongside text natively in web browsers; right-click 'Save Image' first."
                    >
                       📋 Copy
                    </button>

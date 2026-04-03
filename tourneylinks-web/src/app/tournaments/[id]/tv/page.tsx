@@ -21,22 +21,36 @@ export default function TVLeaderboard() {
 
   const [players, setPlayers] = useState<Player[]>([]);
   const [scores, setScores] = useState<Score[]>([]);
+  const [sponsors, setSponsors] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Poll for live scoring data every 10 seconds
+  // Poll for live scoring data and sponsor rotations every 10 seconds
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [playersRes, scoresRes] = await Promise.all([
+        const [playersRes, scoresRes, tourneyRes] = await Promise.all([
           fetch(`/api/admin/tournaments/${tournamentId}/registrants`),
-          fetch(`/api/tournaments/${tournamentId}/scores`)
+          fetch(`/api/tournaments/${tournamentId}/scores`),
+          fetch(`/api/admin/tournaments/${tournamentId}`)
         ]);
         
         const pData = await playersRes.json();
         const sData = await scoresRes.json();
+        const tData = await tourneyRes.json();
         
         if (Array.isArray(pData)) setPlayers(pData);
         if (Array.isArray(sData)) setScores(sData);
+        if (tData && tData.sponsors) {
+           try {
+             // Parse sponsors and pull premium tiers or anything explicitly named
+             const sp = typeof tData.sponsors === 'string' ? JSON.parse(tData.sponsors) : tData.sponsors;
+             if (Array.isArray(sp)) {
+                // Filter for sponsors explicitly flagged by the organizer to rotate on TV
+                const premiumSponsors = sp.filter(s => s.rotatesOnTv === true);
+                setSponsors(premiumSponsors);
+             }
+           } catch(e) {}
+        }
       } catch (err) {
         console.error("TV Polling Error:", err);
       } finally {
@@ -142,6 +156,26 @@ export default function TVLeaderboard() {
         </div>
 
       </div>
+
+      {/* Sponsor Marquee */}
+      {sponsors.length > 0 && (
+         <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: 'var(--gold)', color: '#05120c', padding: '1rem 0', whiteSpace: 'nowrap', overflow: 'hidden', zIndex: 100, borderTop: '4px solid #fff' }}>
+            <style dangerouslySetInnerHTML={{__html: `
+              @keyframes slideSponsors {
+                 0% { transform: translateX(100vw); }
+                 100% { transform: translateX(-100%); }
+              }
+            `}} />
+            <div style={{ display: 'inline-block', animation: 'slideSponsors 25s linear infinite', fontWeight: 900, textTransform: 'uppercase', fontSize: '1.5rem', letterSpacing: '0.1em' }}>
+               Thank you to our premium tournament partners: &nbsp;&nbsp;&nbsp;&nbsp;
+               {sponsors.map((s, idx) => (
+                  <span key={idx} style={{ margin: '0 4rem' }}>⭐ {s.tier}</span>
+               ))}
+               &nbsp;&nbsp;&nbsp;&nbsp; Thank you for making today incredible!
+            </div>
+         </div>
+      )}
+
     </div>
   );
 }

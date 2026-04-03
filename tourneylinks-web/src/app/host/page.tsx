@@ -52,13 +52,13 @@ export default function HostLiveCampaignBuilder() {
   const [courseSearch, setCourseSearch] = useState('');
   const [courseResults, setCourseResults] = useState<any[]>([]);
   
-  const [sponsors, setSponsors] = useState<{tier: string, price: number, spots: number, incentives: string[], includesIntent: boolean, includesDinner: boolean}[]>([
-     { tier: 'Title Sponsor', price: 5000, spots: 1, incentives: ['Primary Logo on all Hero branding', 'Foursome included', 'Speaking opportunity at dinner'], includesIntent: true, includesDinner: true },
-     { tier: 'Beverage Cart', price: 1500, spots: 2, incentives: ['Logo on beverage cart', 'Custom branded napkins'], includesIntent: false, includesDinner: false }
+  const [sponsors, setSponsors] = useState<{tier: string, price: number, spots: number, incentives: string[], includesIntent: boolean, includesDinner: boolean, rotatesOnTv?: boolean}[]>([
+     { tier: 'Title Sponsor', price: 5000, spots: 1, incentives: ['Primary Logo on all Hero branding', 'Foursome included', 'Speaking opportunity at dinner'], includesIntent: true, includesDinner: true, rotatesOnTv: true },
+     { tier: 'Beverage Cart', price: 1500, spots: 2, incentives: ['Logo on beverage cart', 'Custom branded napkins'], includesIntent: false, includesDinner: false, rotatesOnTv: true }
   ]);
   const [showSponsorForm, setShowSponsorForm] = useState(false);
   const [editingSponsorIdx, setEditingSponsorIdx] = useState<number | null>(null);
-  const [newSponsor, setNewSponsor] = useState<{tier: string, price: number | string, spots: number, incentivesText: string, includesIntent: boolean, includesDinner: boolean}>({ tier: '', price: '', spots: 1, incentivesText: '', includesIntent: false, includesDinner: false });
+  const [newSponsor, setNewSponsor] = useState<{tier: string, price: number | string, spots: number, incentivesText: string, includesIntent: boolean, includesDinner: boolean, rotatesOnTv: boolean}>({ tier: '', price: '', spots: 1, incentivesText: '', includesIntent: false, includesDinner: false, rotatesOnTv: false });
   const [sponsorPreviewMode, setSponsorPreviewMode] = useState<'directory' | 'checkout'>('directory');
 
   const [isLoadingForm, setIsLoadingForm] = useState(false);
@@ -623,7 +623,7 @@ export default function HostLiveCampaignBuilder() {
                  onClick={() => {
                     setShowSponsorForm(!showSponsorForm);
                     setEditingSponsorIdx(null);
-                    setNewSponsor({ tier: '', price: '', spots: 1, incentivesText: '', includesIntent: false, includesDinner: false });
+                    setNewSponsor({ tier: '', price: '', spots: 1, incentivesText: '', includesIntent: false, includesDinner: false, rotatesOnTv: false });
                  }} 
                  className="btn-hero-outline" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                  {showSponsorForm && editingSponsorIdx === null ? 'Cancel' : <><Plus size={14} /> Mint Sponsor Tier</>}
@@ -686,6 +686,20 @@ export default function HostLiveCampaignBuilder() {
                            </label>
                         </div>
                      </div>
+                     <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fff', padding: '0.8rem 1rem', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.05)' }}>
+                           <div>
+                              <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--forest)' }}>Rotate on TV?</div>
+                              <div style={{ fontSize: '0.65rem', color: 'var(--mist)' }}>Include in live leaderboard rotation.</div>
+                           </div>
+                           <label className="toggle-switch">
+                              <input 
+                                 type="checkbox" 
+                                 checked={newSponsor.rotatesOnTv} 
+                                 onChange={(e) => setNewSponsor({...newSponsor, rotatesOnTv: e.target.checked})} 
+                              />
+                              <span className="toggle-slider"></span>
+                           </label>
+                        </div>
                     <div>
                        <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>Incentives & Perks (One per line)</label>
                        <textarea 
@@ -702,7 +716,7 @@ export default function HostLiveCampaignBuilder() {
                           onClick={() => {
                              if (!newSponsor.tier || newSponsor.price === '' || Number(newSponsor.price) < 0) return;
                              const incArray = newSponsor.incentivesText.split('\n').map(i => i.trim()).filter(i => i !== '');
-                             const sponsorObj = { tier: newSponsor.tier, price: Number(newSponsor.price), spots: newSponsor.spots, incentives: incArray, includesIntent: newSponsor.includesIntent, includesDinner: newSponsor.includesDinner };
+                             const sponsorObj = { tier: newSponsor.tier, price: Number(newSponsor.price), spots: newSponsor.spots, incentives: incArray, includesIntent: newSponsor.includesIntent, includesDinner: newSponsor.includesDinner, rotatesOnTv: newSponsor.rotatesOnTv };
                              
                              if (editingSponsorIdx !== null) {
                                 const clone = [...sponsors];
@@ -711,9 +725,9 @@ export default function HostLiveCampaignBuilder() {
                              } else {
                                 setSponsors([...sponsors, sponsorObj]);
                              }
+                             setNewSponsor({ tier: '', price: '', spots: 1, incentivesText: '', includesIntent: false, includesDinner: false, rotatesOnTv: false });
                              setShowSponsorForm(false);
                              setEditingSponsorIdx(null);
-                             setNewSponsor({ tier: '', price: '', spots: 1, incentivesText: '', includesIntent: false, includesDinner: false });
                           }}
                           style={{ flex: 1, padding: '0.8rem', background: 'var(--forest)', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 700, cursor: 'pointer' }}>
                           {editingSponsorIdx !== null ? 'Save Changes' : 'Mint Tier'}
@@ -741,7 +755,7 @@ export default function HostLiveCampaignBuilder() {
                           <div style={{ display: 'flex', gap: '0.5rem' }}>
                              <button onClick={() => {
                                 setEditingSponsorIdx(i);
-                                setNewSponsor({ tier: s.tier, price: s.price, spots: s.spots, incentivesText: (s.incentives || []).join('\n'), includesIntent: s.includesIntent || false, includesDinner: s.includesDinner || false });
+                                setNewSponsor({ tier: s.tier, price: s.price, spots: s.spots, incentivesText: (s.incentives || []).join('\n'), includesIntent: s.includesIntent || false, includesDinner: s.includesDinner || false, rotatesOnTv: s.rotatesOnTv || false });
                                 setShowSponsorForm(true);
                              }} style={{ background: 'none', border: 'none', color: '#3399FF', fontSize: '0.75rem', cursor: 'pointer', fontWeight: 600 }}>Edit</button>
                              <button onClick={() => setSponsors(sponsors.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: '#ff5f56', fontSize: '0.75rem', cursor: 'pointer', fontWeight: 600 }}>Remove</button>
