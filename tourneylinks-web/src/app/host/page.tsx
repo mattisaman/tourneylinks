@@ -80,9 +80,16 @@ export default function HostLiveCampaignBuilder() {
                 setCourse(data.courseName || '');
                 setCity(data.city || '');
                 setDesc(data.description || '');
-                if (data.activeFormat) setSelectedFormat(data.activeFormat);
-                if (data.isPublic !== undefined) setSelectedVis(data.isPublic ? 'public' : 'private');
-                if (data.heroImageUrl) setHeroImage(data.heroImageUrl);
+                if (data.format) setSelectedFormat(data.format);
+                if (data.isPrivate !== undefined) setSelectedVis(data.isPrivate ? 'private' : 'public');
+                if (data.heroImages) {
+                   try {
+                     const imgs = JSON.parse(data.heroImages);
+                     if (imgs && imgs.length > 0) setHeroImage(imgs[0]);
+                   } catch(e) {}
+                }
+                if (data.themeColor) setThemeColor(data.themeColor);
+                if (data.secondaryThemeColor) setSecondaryThemeColor(data.secondaryThemeColor);
              }
              setIsLoadingForm(false);
            });
@@ -122,6 +129,47 @@ export default function HostLiveCampaignBuilder() {
      setCourseSearch(c.name);
      setCity(`${c.city}, ${c.state || ''}`);
      setCourseResults([]);
+  };
+
+  const handleSaveCampaign = async () => {
+     let tid;
+     if (typeof window !== 'undefined') {
+        tid = new URLSearchParams(window.location.search).get('tournamentId');
+     }
+     
+     if (!tid) {
+        alert("Creating NEW tournaments is not yet synced in this prototype.");
+        return;
+     }
+
+     const payload = {
+        name,
+        dateStart: date,
+        courseName: course,
+        city,
+        description: desc,
+        format: selectedFormat,
+        themeColor,
+        secondaryThemeColor,
+        heroImages: heroImage ? JSON.stringify([heroImage]) : null,
+        sponsors: JSON.stringify(sponsors)
+     };
+
+     try {
+       const res = await fetch(`/api/admin/tournaments/${tid}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+       });
+       if (res.ok) {
+          alert('✅ Successfully saved Live Campaign edits to the Database!');
+       } else {
+          alert('Error saving campaign changes.');
+       }
+     } catch (err) {
+       console.error(err);
+       alert('Network error saving campaign.');
+     }
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, setter: (val: string) => void) => {
@@ -733,10 +781,10 @@ export default function HostLiveCampaignBuilder() {
         <div className="wizard-card">
            <div className="wizard-card-title">Launch Protocol</div>
            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1rem' }}>
-             <button className="btn-primary" style={{ flex: 1, padding: '1rem', background: 'var(--gold)', color: '#000', fontWeight: 700, border: 'none', borderRadius: '8px', boxShadow: '0 4px 15px rgba(212,175,55,0.4)' }}>
+             <button onClick={handleSaveCampaign} className="btn-primary" style={{ flex: 1, padding: '1rem', background: 'var(--gold)', color: '#000', fontWeight: 700, border: 'none', borderRadius: '8px', boxShadow: '0 4px 15px rgba(212,175,55,0.4)', cursor: 'pointer' }}>
                Pay $99 to Publish 🚀
              </button>
-             <button className="btn-hero-outline" style={{ flex: 1, padding: '1rem', borderRadius: '8px' }} onClick={() => alert('Saved to Drafts')}>
+             <button className="btn-hero-outline" style={{ flex: 1, padding: '1rem', borderRadius: '8px', cursor: 'pointer' }} onClick={handleSaveCampaign}>
                Save as Draft
              </button>
            </div>

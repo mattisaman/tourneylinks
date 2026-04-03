@@ -97,6 +97,18 @@ export default function SocialMediaHub({ tournament }: { tournament: any }) {
              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '0.5rem', position: 'relative' }}>
                 <label style={{ color: 'var(--forest)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 700 }}>Edit Caption Live</label>
                 <div style={{ display: 'flex', gap: '0.2rem', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '6px', padding: '0.25rem 0.5rem', alignItems: 'center' }}>
+                   <button 
+                     onClick={() => {
+                        if (typeof navigator !== 'undefined') {
+                           navigator.clipboard.writeText(customCaptions[activeNetwork]);
+                           alert('✅ Caption copied to clipboard!');
+                        }
+                     }}
+                     style={{ background: '#f4f7f5', border: '1px solid #e5e7eb', borderRadius: '4px', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 700, color: 'var(--forest)', padding: '0.2rem 0.6rem', display: 'flex', alignItems: 'center', gap: '0.3rem', marginRight: '0.5rem' }}
+                     title="Copy Caption"
+                   >
+                      📋 Copy
+                   </button>
                    {['⛳', '🏌️‍♂️', '🏆', '🚨', '📅'].map(emoji => (
                       <button 
                          key={emoji} 
