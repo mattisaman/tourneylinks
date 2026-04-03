@@ -36,7 +36,7 @@ export default function Navbar() {
   };
 
   // Instantly detach the Global Marketing Chrome if we are inside a Live Utility Route
-  if (pathname?.includes('/tv') || pathname?.includes('/play') || pathname?.includes('/print')) {
+  if (pathname?.includes('/tv') || pathname?.includes('/play')) {
     return null;
   }
 
