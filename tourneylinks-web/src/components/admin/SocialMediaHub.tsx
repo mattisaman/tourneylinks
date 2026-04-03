@@ -3,6 +3,12 @@
 import React, { useState } from 'react';
 
 export default function SocialMediaHub({ tournament }: { tournament: any }) {
+  const defaultTemplates = {
+     instagram: `🏌️‍♂️ Spots are filling up fast for the ${tournament.name || 'Tournament'} at ${tournament.courseName || 'the course'}! ⛳\n\nWe have amazing sponsor opportunities still available and an incredible day of golf planned.\n\nSecure your foursome now! Link in bio. 🏆\n\n#GolfRegistration #CharityGolf #${(tournament.city || 'Local').replace(/[^a-zA-Z]/g,'')}Golf`,
+     facebook: `It's time to hit the links! We are officially opening registration for the ${tournament.name} on ${new Date(tournament.dateStart || Date.now()).toLocaleDateString()}.\n\nThis event is hosted at ${tournament.courseName} and we are looking for local business partners to sponsor holes! Click the link below to get your team registered before we sell out.`,
+     x: `🚨 Registration is LIVE for the ${tournament.name}!🚨\n\n📍 ${tournament.courseName}\n📅 ${new Date(tournament.dateStart || Date.now()).toLocaleDateString()}\n\nClick here to grab your team spot or become a hole sponsor before they are gone! 👇\nhttps://tourneylinks.com/t/${tournament.id}`
+  };
+
   const [activeNetwork, setActiveNetwork] = useState<'instagram' | 'facebook' | 'x'>('instagram');
   const [isConnecting, setIsConnecting] = useState(false);
   const [mockConnected, setMockConnected] = useState<Record<string, boolean>>({
@@ -10,16 +16,16 @@ export default function SocialMediaHub({ tournament }: { tournament: any }) {
      facebook: false,
      x: false
   });
+  
+  const [customCaptions, setCustomCaptions] = useState(defaultTemplates);
 
   const handleConnect = (network: string) => {
      setIsConnecting(true);
-     // Simulate an OAuth redirect workflow
      setTimeout(() => {
         window.location.href = `/api/oauth/social/connect?network=${network}&context=print-hub`;
      }, 600);
   };
 
-  // Mock checking URL parameters to see if we just came back from a successful OAuth
   React.useEffect(() => {
      if (typeof window !== 'undefined') {
         const query = new URLSearchParams(window.location.search);
@@ -27,27 +33,15 @@ export default function SocialMediaHub({ tournament }: { tournament: any }) {
            const net = query.get('network') || 'instagram';
            setMockConnected(prev => ({ ...prev, [net]: true }));
            setActiveNetwork(net as 'instagram' | 'facebook' | 'x');
-           
-           // Clean up URL
            window.history.replaceState({}, document.title, window.location.pathname);
         }
      }
   }, []);
 
-  const templates = {
-     instagram: {
-        caption: `🏌️‍♂️ Spots are filling up fast for the ${tournament.name || 'Tournament'} at ${tournament.courseName || 'the course'}! ⛳\n\nWe have amazing sponsor opportunities still available and an incredible day of golf planned.\n\nSecure your foursome now! Link in bio. 🏆\n\n#GolfRegistration #CharityGolf #${(tournament.city || 'Local').replace(/[^a-zA-Z]/g,'')}Golf`,
-        imageLabel: 'Sponsorship Flyer & Hero Image Carousel'
-     },
-     facebook: {
-        caption: `It's time to hit the links! We are officially opening registration for the ${tournament.name} on ${new Date(tournament.dateStart || Date.now()).toLocaleDateString()}.\n\nThis event is hosted at ${tournament.courseName} and we are looking for local business partners to sponsor holes! Click the link below to get your team registered before we sell out.`,
-        imageLabel: 'Event Hero Graphic + Registration Link Card'
-     },
-     x: {
-        caption: `🚨 Registration is LIVE for the ${tournament.name}!🚨\n\n📍 ${tournament.courseName}\n📅 ${new Date(tournament.dateStart || Date.now()).toLocaleDateString()}\n\nClick here to grab your team spot or become a hole sponsor before they are gone! 👇\nhttps://tourneylinks.com/t/${tournament.id}`,
-        imageLabel: 'Link Preview Card'
-     }
-  };
+  // Use the imagery populated from the tournament, fallback to gradient if not present
+  const heroStyle = tournament.heroImage 
+    ? { backgroundImage: `url(${tournament.heroImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }
+    : { background: 'linear-gradient(to bottom, var(--forest), #112211)' };
 
   return (
     <div style={{ background: '#111', color: '#fff', padding: '2rem', borderRadius: '16px', marginBottom: '2rem', border: '1px solid #333' }}>
@@ -58,11 +52,11 @@ export default function SocialMediaHub({ tournament }: { tournament: any }) {
          </div>
        </div>
 
-       <div style={{ display: 'flex', gap: '1.5rem' }}>
+       <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr 300px', gap: '1.5rem' }}>
           
-          {/* Navigation */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '200px' }}>
-             <button onClick={() => setActiveNetwork('instagram')} style={{ padding: '0.75rem 1rem', background: activeNetwork === 'instagram' ? 'var(--gold)' : '#222', color: activeNetwork === 'instagram' ? '#000' : '#fff', fontWeight: 600, border: 'none', borderRadius: '8px', cursor: 'pointer', textAlign: 'left', transition: '0.2s' }}>
+          {/* Column 1: Navigation */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+             <button onClick={() => setActiveNetwork('instagram')} style={{ padding: '0.75rem 1rem', background: activeNetwork === 'instagram' ? 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)' : '#222', color: '#fff', fontWeight: 600, border: 'none', borderRadius: '8px', cursor: 'pointer', textAlign: 'left', transition: '0.2s' }}>
                 📸 Instagram
              </button>
              <button onClick={() => setActiveNetwork('facebook')} style={{ padding: '0.75rem 1rem', background: activeNetwork === 'facebook' ? '#1877F2' : '#222', color: '#fff', fontWeight: 600, border: 'none', borderRadius: '8px', cursor: 'pointer', textAlign: 'left', transition: '0.2s' }}>
@@ -73,45 +67,93 @@ export default function SocialMediaHub({ tournament }: { tournament: any }) {
              </button>
           </div>
 
-          {/* Editor & Preview */}
-          <div style={{ flex: 1, background: '#1c1c1c', borderRadius: '12px', padding: '1.5rem', border: '1px solid #333' }}>
+          {/* Column 2: Editor & Auth */}
+          <div style={{ background: '#1c1c1c', borderRadius: '12px', padding: '1.5rem', border: '1px solid #333', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+             <label style={{ display: 'block', color: 'var(--gold)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem', fontWeight: 700 }}>Edit Caption Live</label>
+             <textarea 
+                value={customCaptions[activeNetwork]}
+                onChange={(e) => setCustomCaptions({ ...customCaptions, [activeNetwork]: e.target.value })}
+                style={{ width: '100%', flex: 1, background: '#2a2a2a', color: '#fff', border: '1px solid #444', borderRadius: '8px', padding: '1rem', fontFamily: 'inherit', lineHeight: 1.5, resize: 'none', marginBottom: '1.5rem' }}
+             />
              
              {!mockConnected[activeNetwork] ? (
-                <div style={{ textAlign: 'center', padding: '3rem 1rem' }}>
-                   <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🔗</div>
-                   <h3 style={{ marginBottom: '0.5rem', fontWeight: 600 }}>Connect Your {activeNetwork.charAt(0).toUpperCase() + activeNetwork.slice(1)} Account</h3>
-                   <p style={{ color: '#aaa', fontSize: '0.85rem', marginBottom: '1.5rem', maxWidth: '400px', margin: '0 auto 1.5rem auto' }}>
-                      Securely authenticate TourneyLinks to allow 1-click publishing of your marketing flyers directly to your feed.
-                   </p>
-                   <button 
-                     onClick={() => handleConnect(activeNetwork)}
-                     disabled={isConnecting}
-                     style={{ padding: '0.75rem 2rem', background: '#fff', color: '#000', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer' }}
-                   >
-                      {isConnecting ? 'Authenticating with OAuth...' : 'Connect Account'}
-                   </button>
-                </div>
+                 <button 
+                   onClick={() => handleConnect(activeNetwork)}
+                   disabled={isConnecting}
+                   style={{ padding: '1rem', background: '#fff', color: '#000', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer' }}
+                 >
+                    {isConnecting ? 'Authenticating...' : `Connect ${activeNetwork.charAt(0).toUpperCase() + activeNetwork.slice(1)} Account`}
+                 </button>
              ) : (
-                <div style={{ display: 'flex', gap: '1.5rem' }}>
-                   <div style={{ flex: 1 }}>
-                     <label style={{ display: 'block', color: 'var(--gold)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem', fontWeight: 700 }}>Generated Caption</label>
-                     <textarea 
-                        defaultValue={templates[activeNetwork].caption}
-                        style={{ width: '100%', height: '150px', background: '#2a2a2a', color: '#fff', border: '1px solid #444', borderRadius: '8px', padding: '1rem', fontFamily: 'inherit', lineHeight: 1.5, resize: 'none' }}
-                     />
-                     <button style={{ marginTop: '1rem', padding: '0.75rem 1rem', width: '100%', background: 'linear-gradient(45deg, var(--gold), #e6c86e)', color: '#000', fontWeight: 800, border: 'none', borderRadius: '8px', cursor: 'pointer' }}>
-                        Post Live to {activeNetwork.charAt(0).toUpperCase() + activeNetwork.slice(1)} Now 🚀
-                     </button>
-                   </div>
-                   <div style={{ width: '250px', background: '#000', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px dashed #444', padding: '1rem', textAlign: 'center' }}>
-                      <div>
-                         <p style={{ fontSize: '0.8rem', color: '#aaa', marginBottom: '0.5rem' }}>Attached Media</p>
-                         <p style={{ fontWeight: 600, color: 'var(--gold)' }}>{templates[activeNetwork].imageLabel}</p>
-                         <p style={{ fontSize: '0.7rem', color: '#666', marginTop: '1rem' }}>(Pulls automatically from your Print Station flyer settings)</p>
-                      </div>
-                   </div>
-                </div>
+                 <button style={{ padding: '1rem', background: 'linear-gradient(45deg, var(--gold), #e6c86e)', color: '#000', fontWeight: 800, border: 'none', borderRadius: '8px', cursor: 'pointer' }}>
+                    Post Live to {activeNetwork.charAt(0).toUpperCase() + activeNetwork.slice(1)} Now 🚀
+                 </button>
              )}
+          </div>
+
+          {/* Column 3: Live Visual Preview */}
+          <div style={{ background: activeNetwork === 'x' ? '#000' : '#fff', borderRadius: '12px', border: activeNetwork === 'x' ? '1px solid #333' : '1px solid #e1e8ed', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.5)', display: 'flex', flexDirection: 'column' }}>
+              
+              {/* Instagram Mock */}
+              {activeNetwork === 'instagram' && (
+                 <>
+                    <div style={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', borderBottom: '1px solid #efefef', color: '#000' }}>
+                       <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#ccc' }}></div>
+                       <div style={{ fontWeight: 600, fontSize: '0.85rem' }}>YourProfile</div>
+                    </div>
+                    <div style={{ height: '250px', ...heroStyle, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', textAlign: 'center', padding: '1rem' }}>
+                       {!tournament.heroImage && <h2 style={{ fontFamily: 'serif', fontSize: '1.5rem', color: 'var(--gold)' }}>{tournament.name}</h2>}
+                    </div>
+                    <div style={{ padding: '1rem', color: '#000', fontSize: '0.8rem', flex: 1, overflowY: 'auto' }}>
+                       <div style={{ fontWeight: 600, marginBottom: '0.2rem' }}>YourProfile</div>
+                       <div style={{ whiteSpace: 'pre-wrap' }}>{customCaptions.instagram}</div>
+                    </div>
+                 </>
+              )}
+
+              {/* Facebook Mock */}
+              {activeNetwork === 'facebook' && (
+                 <>
+                    <div style={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#050505' }}>
+                       <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#ccc' }}></div>
+                       <div>
+                          <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>Your Page Name</div>
+                          <div style={{ fontSize: '0.75rem', color: '#65676B' }}>Just now · 🌎</div>
+                       </div>
+                    </div>
+                    <div style={{ padding: '0 1rem 1rem 1rem', color: '#050505', fontSize: '0.9rem', whiteSpace: 'pre-wrap' }}>
+                       {customCaptions.facebook}
+                    </div>
+                    <div style={{ height: '180px', ...heroStyle, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+                       {!tournament.heroImage && <div style={{ color: 'var(--forest)', fontWeight: 700, fontSize: '1.2rem', textAlign: 'center' }}>{tournament.name}</div>}
+                    </div>
+                 </>
+              )}
+
+              {/* X Mock */}
+              {activeNetwork === 'x' && (
+                 <>
+                    <div style={{ padding: '1rem', display: 'flex', gap: '0.75rem', color: '#fff' }}>
+                       <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#333', flexShrink: 0 }}></div>
+                       <div>
+                          <div style={{ display: 'flex', gap: '0.3rem', alignItems: 'center' }}>
+                             <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>YourProfile</div>
+                             <div style={{ color: '#71767b', fontSize: '0.9rem' }}>@yourhandle · 1m</div>
+                          </div>
+                          <div style={{ marginTop: '0.2rem', fontSize: '0.95rem', whiteSpace: 'pre-wrap', lineHeight: 1.4 }}>
+                             {customCaptions.x}
+                          </div>
+                          <div style={{ marginTop: '0.75rem', borderRadius: '16px', overflow: 'hidden', border: '1px solid #2f3336' }}>
+                             <div style={{ height: '120px', ...heroStyle }}></div>
+                             <div style={{ padding: '0.5rem 0.75rem', background: '#000', borderTop: '1px solid #2f3336' }}>
+                                <div style={{ fontSize: '0.8rem', color: '#71767b' }}>tourneylinks.com</div>
+                                <div style={{ fontSize: '0.9rem', color: '#fff', marginTop: '0.1rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Register for {tournament.name}</div>
+                             </div>
+                          </div>
+                       </div>
+                    </div>
+                 </>
+              )}
           </div>
        </div>
     </div>
