@@ -106,6 +106,7 @@ export default async function AdminDashboard() {
               <div className="dash-date">{finalTourney ? `${new Date(finalTourney.dateStart).toLocaleDateString()} · ${finalTourney.courseName}` : 'Date TBD'}</div>
             </div>
             <div style={{ display: 'flex', gap: '0.75rem' }}>
+              <Link href={`/admin/tournaments/${tournamentId}/print`} className="btn-primary" style={{ background: '#000', color: '#fff', border: 'none' }}>🖨️ Print & Post Hub</Link>
               <Link href={`/host?tournamentId=${tournamentId}`} className="btn-ghost" style={{ color: 'var(--forest)', borderColor: 'rgba(26,46,26,0.2)' }}>✏️ Edit Campaign</Link>
               <button className="btn-primary">📢 Send Notification</button>
             </div>

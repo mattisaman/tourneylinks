@@ -36,7 +36,7 @@ export default function SocialMediaHub({ tournament }: { tournament: any }) {
 
   const templates = {
      instagram: {
-        caption: `🏌️‍♂️ Spots are filling up fast for the ${tournament.name} at ${tournament.courseName}! ⛳\n\nWe have amazing sponsor opportunities still available and an incredible day of golf planned.\n\nSecure your foursome now! Link in bio. 🏆\n\n#GolfRegistration #CharityGolf #${tournament.city.replace(/[^a-zA-Z]/g,'')}Golf`,
+        caption: `🏌️‍♂️ Spots are filling up fast for the ${tournament.name || 'Tournament'} at ${tournament.courseName || 'the course'}! ⛳\n\nWe have amazing sponsor opportunities still available and an incredible day of golf planned.\n\nSecure your foursome now! Link in bio. 🏆\n\n#GolfRegistration #CharityGolf #${(tournament.city || 'Local').replace(/[^a-zA-Z]/g,'')}Golf`,
         imageLabel: 'Sponsorship Flyer & Hero Image Carousel'
      },
      facebook: {
