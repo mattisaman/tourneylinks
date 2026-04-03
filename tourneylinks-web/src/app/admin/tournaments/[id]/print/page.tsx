@@ -69,31 +69,34 @@ export default async function PrintStationPage({ params }: { params: Promise<{ i
         }
       `}} />
 
-      {/* TOP NAVIGATION BAR */}
-      <div className="no-print" style={{ height: '60px', background: '#05120c', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', padding: '0 2rem', color: 'white', justifyContent: 'space-between' }}>
-         <div style={{ fontWeight: 800, fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <a href="/admin" style={{ color: 'var(--mist)', textDecoration: 'none', marginRight: '0.5rem' }}>← Back</a>
-            Dashboard <span style={{ color: 'var(--gold)' }}>/</span> {tourney.name} <span style={{ color: 'var(--gold)' }}>/</span> Print Hub
-         </div>
-         <div style={{ fontSize: '0.85rem', color: 'var(--mist)' }}>Live Organizer Studio</div>
-      </div>
-
-      <div className="dashboard-wrap no-print" style={{ minHeight: 'calc(100vh - 60px)', display: 'flex', alignItems: 'stretch' }}>
+      <div className="dashboard-wrap no-print" style={{ minHeight: '100vh', display: 'flex', alignItems: 'stretch' }}>
          <AdminSidebar tournamentId={tourneyId} mockTournaments={mockTournaments} />
          
-         <div className="dash-main" style={{ padding: '2rem 3rem' }}>
-            <div className="dash-header" style={{ marginBottom: '2rem' }}>
-               <div>
-                 <div className="dash-greeting">🖨️ The Print & Post Hub</div>
-                 <div className="dash-date">Generate your social posts and print physical collateral instantly.</div>
+         <div className="dash-main" style={{ flex: 1, padding: 0, display: 'flex', flexDirection: 'column' }}>
+            
+            {/* TOP NAVIGATION BAR */}
+            <div className="no-print" style={{ height: '60px', background: '#05120c', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', padding: '0 2rem', color: 'white', justifyContent: 'space-between', flexShrink: 0 }}>
+               <div style={{ fontWeight: 800, fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <a href="/admin" style={{ color: 'var(--mist)', textDecoration: 'none', marginRight: '0.5rem' }}>← Back</a>
+                  Dashboard <span style={{ color: 'var(--gold)' }}>/</span> {tourney.name} <span style={{ color: 'var(--gold)' }}>/</span> Print Hub
                </div>
-               <PrintButton />
+               <div style={{ fontSize: '0.85rem', color: 'var(--mist)' }}>Live Organizer Studio</div>
             </div>
+
+            <div style={{ padding: '2rem 3rem' }}>
+               <div className="dash-header" style={{ marginBottom: '2rem' }}>
+                  <div>
+                    <div className="dash-greeting">🖨️ The Print & Post Hub</div>
+                    <div className="dash-date">Generate your social posts and print physical collateral instantly.</div>
+                  </div>
+                  <PrintButton />
+               </div>
         
-        <div style={{ maxWidth: '1400px', margin: '0 auto', textAlign: 'left' }}>
-           <SocialMediaHub tournament={tourney} />
-        </div>
-        </div> {/* CLOSE dash-main */}
+               <div style={{ maxWidth: '1400px', margin: '0 auto', textAlign: 'left' }}>
+                  <SocialMediaHub tournament={tourney} />
+               </div>
+            </div>
+         </div> {/* CLOSE dash-main */}
       </div> {/* CLOSE dashboard-wrap */}
 
       <div className="print-container" style={{ padding: '2rem', background: '#f4f3ef' }}>
