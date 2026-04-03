@@ -34,9 +34,15 @@ export default async function AdminDashboard() {
   //   redirect('/host/onboarding');
   // }
 
-  // Hardcoded for the prototype to point to the first tournament matching our mock seed
-  const tourneys = await db.select().from(tournaments).limit(1);
-  const tournamentId = tourneys.length > 0 ? tourneys[0].id : 1;
+  // Enforce IDOR protection on the root admin dashboard too, unless in Sandbox demo
+  let tourneys = [];
+  if (process.env.NODE_ENV === 'production') {
+     tourneys = await db.select().from(tournaments).where(eq(tournaments.hostUserId, dbUser.id)).limit(1);
+  } else {
+     tourneys = await db.select().from(tournaments).limit(1);
+  }
+     
+  const tournamentId = tourneys.length > 0 ? tourneys[0].id : -1;
   const tourney = tourneys.length > 0 ? tourneys[0] : null;
 
   const allRegs = await db.select()
