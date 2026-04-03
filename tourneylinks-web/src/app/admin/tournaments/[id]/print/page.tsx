@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 
 import PrintButton from '@/components/admin/PrintButton';
 import SocialMediaHub from '@/components/admin/SocialMediaHub';
+import AdminSidebar from '@/components/admin/AdminSidebar';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,9 +35,10 @@ export default async function PrintStationPage({ params }: { params: Promise<{ i
   });
   
   const teamKeys = Object.keys(teamsMap).map(Number).sort((a,b)=>a-b);
+  const mockTournaments = [{ id: tourneyId, name: tourney.name || 'Tournament' }];
 
   return (
-    <div style={{ background: '#f0f0f0', minHeight: '100vh', fontFamily: 'sans-serif' }}>
+    <div style={{ minHeight: 'calc(100vh - 80px)', background: '#F9FAFB' }}>
       
       {/* GLOBAL CSS FOR PRINTING - Hide Navbars & Configure Pages */}
       <style dangerouslySetInnerHTML={{__html: `
@@ -48,6 +50,9 @@ export default async function PrintStationPage({ params }: { params: Promise<{ i
           header { display: none !important; }
           .page-break { page-break-after: always; break-after: page; }
           .print-container { padding: 0 !important; margin: 0 !important; background: transparent !important; box-shadow: none !important; }
+          .dashboard-wrap { display: block !important; padding: 0 !important; }
+          .dash-sidebar { display: none !important; }
+          .dash-main { padding: 0 !important; margin: 0 !important; max-width: 100% !important; border: none !important; }
         }
         .print-btn {
           position: fixed; bottom: 2rem; right: 2rem;
@@ -63,17 +68,23 @@ export default async function PrintStationPage({ params }: { params: Promise<{ i
         }
       `}} />
 
-      <div className="no-print" style={{ padding: '2rem', textAlign: 'center', background: '#05120c', color: 'white' }}>
-        <h1 style={{ marginBottom: '1rem' }}>🖨️ TourneyLinks Print & Post Hub</h1>
-        <p style={{ color: 'var(--mist)', marginBottom: '2rem' }}>Wait for the pages to render below, then click Print. Make sure "Background Graphics" is enabled in your print dialog.</p>
+      <div className="dashboard-wrap no-print" style={{ minHeight: '100%', alignItems: 'stretch' }}>
+         <AdminSidebar tournamentId={tourneyId} mockTournaments={mockTournaments} />
+         
+         <div className="dash-main" style={{ padding: '2rem 3rem' }}>
+            <div className="dash-header" style={{ marginBottom: '2rem' }}>
+               <div>
+                 <div className="dash-greeting">🖨️ The Print & Post Hub</div>
+                 <div className="dash-date">Generate your social posts and print physical collateral instantly.</div>
+               </div>
+               <PrintButton />
+            </div>
         
-        {/* The new Social Media action center blocks out the top area before rendering the PDF previews */}
         <div style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'left' }}>
            <SocialMediaHub tournament={tourney} />
         </div>
-
-        <PrintButton />
-      </div>
+        </div> {/* CLOSE dash-main */}
+      </div> {/* CLOSE dashboard-wrap */}
 
       <div className="print-container" style={{ padding: '2rem', background: '#f4f3ef' }}>
         
