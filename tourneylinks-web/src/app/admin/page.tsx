@@ -106,7 +106,7 @@ export default async function AdminDashboard() {
               <div className="dash-date">{finalTourney ? `${new Date(finalTourney.dateStart).toLocaleDateString()} · ${finalTourney.courseName}` : 'Date TBD'}</div>
             </div>
             <div style={{ display: 'flex', gap: '0.75rem' }}>
-              <button className="btn-ghost" style={{ color: 'var(--forest)', borderColor: 'rgba(26,46,26,0.2)' }}>🔒 Private Link</button>
+              <Link href={`/host?tournamentId=${tournamentId}`} className="btn-ghost" style={{ color: 'var(--forest)', borderColor: 'rgba(26,46,26,0.2)' }}>✏️ Edit Campaign</Link>
               <button className="btn-primary">📢 Send Notification</button>
             </div>
           </div>
@@ -216,21 +216,7 @@ export default async function AdminDashboard() {
                 </div>
               </div>
 
-              {/* Phase 8: Financial Architecture & Organizer Setup */}
-              <div id="payments">
-                 <StripeConnectWidget account={existingAccount || null} />
-              </div>
-
-              {/* Phase 10: The Live Campaign Builder Launchpad */}
-              <div id="builder" style={{ background: '#05120c', padding: '2rem', borderRadius: '16px', color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}>
-                 <div>
-                    <h3 style={{ fontSize: '1.4rem', fontWeight: 900, marginBottom: '0.3rem' }}>Live Campaign Builder</h3>
-                    <p style={{ color: 'var(--mist)', fontSize: '0.9rem', maxWidth: '400px', lineHeight: 1.6 }}>Return to your setup wizard to edit forms, sponsorships, and settings.</p>
-                 </div>
-                 <Link href={`/host?tournamentId=${tournamentId}`} style={{ padding: '1rem 2rem', background: 'var(--gold)', color: '#000', fontWeight: 800, borderRadius: '8px', textDecoration: 'none', transition: 'transform 0.2s' }}>
-                    Launch Builder 🚀
-                 </Link>
-              </div>
+              {/* (Stripe Payment logic removed - Moved to /payments ledger) */}
 
               {/* Private Link Panel */}
               <div id="private-link" className="dash-card">
@@ -292,10 +278,7 @@ export default async function AdminDashboard() {
                    </div>
                  </div>
 
-                 {/* Phase 8: E-Commerce Store Config */}
-                 <div id="store">
-                    <ScrambleStoreManager tournamentId={tournamentId} />
-                 </div>
+                 {/* (Store config removed - moved to /store) */}
               </div>
 
               {/* Send Notification */}

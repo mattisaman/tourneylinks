@@ -83,14 +83,14 @@ export default function AdminSidebar({ tournamentId, mockTournaments }: { tourna
           <a href="#flights" onClick={(e) => navClick('flights', e)} style={getNavStyle('flights')}><span>🏌️</span> Flight Builder</a>
 
           <div className="dash-section-label" style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '2rem', marginBottom: '0.8rem', paddingLeft: '1rem' }}>Sponsors & Revenue</div>
-          <a href="#payments" onClick={(e) => navClick('payments', e)} style={getNavStyle('payments')}><span>💰</span> Payouts & Stripe</a>
-          <a href="#store" onClick={(e) => navClick('store', e)} style={getNavStyle('store')}><span>🛍️</span> E-Commerce Store</a>
+          <Link href={`/admin/tournaments/${tournamentId}/payments`} style={{ ...getNavStyle('payments'), color: 'rgba(255,255,255,0.5)', borderLeft: '4px solid transparent' }}><span>💰</span> Financial Ledger</Link>
+          <Link href={`/admin/tournaments/${tournamentId}/store`} style={{ ...getNavStyle('store'), color: 'rgba(255,255,255,0.5)', borderLeft: '4px solid transparent' }}><span>🛍️</span> Swag Store Items</Link>
           <a href="#sponsor" onClick={(e) => navClick('sponsor', e)} style={getNavStyle('sponsor')}><span>🤝</span> Sponsorship Grid</a>
 
           <div className="dash-section-label" style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '2rem', marginBottom: '0.8rem', paddingLeft: '1rem' }}>Engagement Tools</div>
           <a href="#private-link" onClick={(e) => navClick('private-link', e)} style={getNavStyle('private-link')}><span>🔒</span> Private Pre-Link</a>
           <a href="#notifications" onClick={(e) => navClick('notifications', e)} style={getNavStyle('notifications')}><span>📢</span> Mass Notifications</a>
-          <a href="#builder" onClick={(e) => navClick('builder', e)} style={getNavStyle('builder')}><span>🖼️</span> Landing Page Builder</a>
+          <Link href={`/host?tournamentId=${tournamentId}`} style={{ ...getNavStyle('builder'), color: 'rgba(255,255,255,0.5)', borderLeft: '4px solid transparent' }}><span>✏️</span> Edit Campaign</Link>
           
           <div className="dash-section-label" style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '2rem', marginBottom: '0.8rem', paddingLeft: '1rem' }}>Advanced Engine</div>
           <Link href={`/admin/tournaments/${tournamentId}/advanced`} style={{ ...getNavStyle('advanced'), color: 'rgba(255,255,255,0.5)', borderLeft: '4px solid transparent' }}><span>⛳</span> Geospatial Settings</Link>
