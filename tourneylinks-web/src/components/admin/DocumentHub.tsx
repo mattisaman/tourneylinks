@@ -25,8 +25,27 @@ export default function DocumentHub({
   const [cartShowSponsor, setCartShowSponsor] = useState(false);
   const [scorecardSize, setScorecardSize] = useState<18 | 9>(18);
 
+  // --- MOCK DATA ENGINE ---
+  const isDemoEnv = typeof process !== 'undefined' && process.env.NEXT_PUBLIC_IS_DEMO === 'true';
+  const effectivePlayers = (players.length === 0 && isDemoEnv) ? [
+    { id: 901, name: "Tiger Woods", handicap: 0, assignedTeam: 1, email: 'tiger@demo.com' },
+    { id: 902, name: "Charlie Woods", handicap: 2, assignedTeam: 1, email: 'charlie@demo.com' },
+    { id: 903, name: "Rory McIlroy", handicap: -1, assignedTeam: 1, email: 'rory@demo.com' },
+    { id: 904, name: "Scottie Scheffler", handicap: -2, assignedTeam: 1, email: 'scottie@demo.com' },
+    { id: 905, name: "Rickie Fowler", handicap: 1, assignedTeam: 2, email: 'rickie@demo.com' },
+    { id: 906, name: "Justin Thomas", handicap: 0, assignedTeam: 2, email: 'jt@demo.com' },
+    { id: 907, name: "Jordan Spieth", handicap: 1, assignedTeam: 2, email: 'jordan@demo.com' },
+    { id: 908, name: "Max Homa", handicap: 2, assignedTeam: 2, email: 'max@demo.com' }
+  ] : players;
+
+  const effectiveTeamKeys = (teamKeys.length === 0 && isDemoEnv) ? [1, 2] : teamKeys;
+  const effectiveTeamsMap = (Object.keys(teamsMap).length === 0 && isDemoEnv) ? {
+    1: effectivePlayers.slice(0, 4),
+    2: effectivePlayers.slice(4, 8)
+  } : teamsMap;
+
   // Sorting Ledger Data
-  let displayPlayers = [...players];
+  let displayPlayers = [...effectivePlayers];
   if (ledgerUnpaidOnly) {
      displayPlayers = displayPlayers.filter((p, index) => index % 5 === 0);
   }
@@ -164,61 +183,74 @@ export default function DocumentHub({
          {/* --- CONDITIONAL RENDERS FOR DOCUMENTS --- */}
 
          {activeDoc === 'flyer' && (
-            <div className="sheet page-break" style={{ padding: 0, border: '1px solid #ccc', background: '#fff' }}>
-               <div style={{ minHeight: '30vh', background: 'linear-gradient(to bottom, var(--forest), #112211)', color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem', textAlign: 'center' }}>
-                  <div style={{ textTransform: 'uppercase', letterSpacing: '0.2em', color: 'var(--gold)', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 700 }}>{flyerSubtitle}</div>
-                  <h1 style={{ fontSize: '3.5rem', fontFamily: "'Playfair Display', serif", margin: '0.5rem 0', lineHeight: 1.1 }}>{tourney.name}</h1>
-                  <div style={{ fontSize: '1.2rem', opacity: 0.9, marginTop: '1rem' }}>Hosted at {tourney.courseName}.</div>
+            <div className="sheet page-break flyer-container" style={{ padding: 0, border: '1px solid #ccc', background: '#fff', position: 'relative' }}>
+               <style dangerouslySetInnerHTML={{__html: `
+                  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Pinyon+Script&display=swap');
+               `}} />
+               
+               {/* Hero Background */}
+               <div style={{ position: 'relative', height: '4in', backgroundImage: 'url("/flyer_bg.png")', backgroundSize: 'cover', backgroundPosition: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', paddingTop: '1in' }}>
+                  <div style={{ fontFamily: '"Pinyon Script", cursive', fontSize: '100px', color: '#164E2A', textShadow: '2px 2px 4px rgba(255,255,255,0.7)', zIndex: 10, lineHeight: '0.6', transform: 'rotate(-4deg)' }}>
+                    {flyerSubtitle.split(' ')[0] || 'Charity'}
+                  </div>
+                  <div style={{ fontFamily: '"Playfair Display", serif', fontSize: '65px', color: '#C06616', textShadow: '2px 2px 4px rgba(255,255,255,0.8)', zIndex: 10, lineHeight: 1, textTransform: 'uppercase', marginTop: '0px' }}>
+                    {flyerSubtitle.substring(flyerSubtitle.indexOf(' ') + 1) || 'Golf Tournament'}
+                  </div>
                </div>
 
-               <div style={{ padding: '3rem' }}>
-                  <h2 style={{ textAlign: 'center', color: 'var(--forest)', fontSize: '2rem', marginBottom: '2rem', borderBottom: '2px solid var(--gold)', paddingBottom: '1rem', display: 'inline-block', width: '100%' }}>
-                     Sponsorship Opportunities
-                  </h2>
-                  <p style={{ textAlign: 'center', fontStyle: 'italic', color: '#555', marginBottom: '3rem' }}>
-                     Become a sponsor and join us in making an impact in our local community.
-                  </p>
+               {/* Orange Ribbon */}
+               <div style={{ display: 'flex', justifyContent: 'center', marginTop: '-30px', zIndex: 20, position: 'relative' }}>
+                 <div style={{ borderTop: '25px solid transparent', borderBottom: '25px solid transparent', borderRight: '25px solid #D95C14' }} />
+                 <div style={{ background: '#D95C14', color: '#fff', padding: '0 2rem', display: 'flex', alignItems: 'center', fontSize: '1.4rem', letterSpacing: '0.15em', textTransform: 'uppercase', boxShadow: '0 4px 6px rgba(0,0,0,0.2)' }}>
+                    Benefitting {tourney.charityName || 'A Local Family in Need'}
+                 </div>
+                 <div style={{ borderTop: '25px solid transparent', borderBottom: '25px solid transparent', borderLeft: '25px solid #D95C14' }} />
+               </div>
 
-                  <div style={{ display: 'grid', gap: '1.5rem' }}>
-                     <div style={{ background: '#faf9f6', borderLeft: '8px solid var(--gold)', padding: '1.5rem 2rem' }}>
-                        <h3 style={{ fontSize: '1.5rem', color: 'var(--forest)', margin: 0, display: 'flex', justifyContent: 'space-between' }}>
-                           <span>Hole Sponsor</span>
-                           <span style={{ color: '#000', fontWeight: 800 }}>$150</span>
-                        </h3>
-                        <ul style={{ margin: '1rem 0 0 0', paddingLeft: '1.5rem', color: '#444' }}>
-                           <li>Yard Sign at Specific Hole</li>
-                           <li>Online Recognition on GPS Dashboard</li>
-                        </ul>
-                     </div>
+               {/* Body Content */}
+               <div style={{ padding: '0.5in 1in' }}>
+                   <div style={{ textAlign: 'center', fontSize: '1.4rem', fontFamily: 'serif', color: '#333', marginBottom: '1.5rem' }}>
+                       Join us for a day of golf to support an amazing local family facing a challenging time.
+                   </div>
 
-                     <div style={{ background: '#faf9f6', borderLeft: '8px solid var(--gold)', padding: '1.5rem 2rem' }}>
-                        <h3 style={{ fontSize: '1.5rem', color: 'var(--forest)', margin: 0, display: 'flex', justifyContent: 'space-between' }}>
-                           <span>Silver Sponsor</span>
-                           <span style={{ color: '#000', fontWeight: 800 }}>$750</span>
-                        </h3>
-                        <ul style={{ margin: '1rem 0 0 0', paddingLeft: '1.5rem', color: '#444' }}>
-                           <li>Complimentary Foursome Entry</li>
-                           <li>Big Screen Recognition</li>
-                           <li>Yard Sign at Specific Hole</li>
-                        </ul>
-                     </div>
+                   <hr style={{ border: 'none', borderTop: '2px solid #ddd', margin: '0 40px 10px 40px' }} />
 
-                     <div style={{ background: '#faf9f6', borderLeft: '8px solid var(--forest)', padding: '1.5rem 2rem' }}>
-                        <h3 style={{ fontSize: '1.5rem', color: 'var(--forest)', margin: 0, display: 'flex', justifyContent: 'space-between' }}>
-                           <span>Title Executive Sponsor</span>
-                           <span style={{ color: '#000', fontWeight: 800 }}>$2,500</span>
-                        </h3>
-                        <ul style={{ margin: '1rem 0 0 0', paddingLeft: '1.5rem', color: '#444' }}>
-                           <li>Premium Large Banner Placement at Check-In</li>
-                           <li>Complimentary Two Foursome Entries</li>
-                        </ul>
-                     </div>
-                  </div>
+                   <div style={{ textAlign: 'center' }}>
+                       <div style={{ fontSize: '2.5rem', color: '#164E2A', fontWeight: 800, fontFamily: 'serif' }}>{tourney.courseName || 'Eagle Vale'}</div>
+                       <div style={{ fontSize: '1.6rem', color: '#B24D0A', fontFamily: 'serif', fontWeight: 700, margin: '10px 0' }}>
+                           {tourney.dateStart || 'June 19th'} • {tourney.format || 'Shotgun Start'} at 9AM
+                       </div>
+                   </div>
 
-                  <div style={{ marginTop: 'auto', textAlign: 'center', paddingTop: '4rem' }}>
-                     <div style={{ fontWeight: 800, fontSize: '1.2rem' }}>Register securely online at:</div>
-                     <div style={{ color: 'var(--forest)', fontSize: '1.5rem', marginTop: '0.5rem' }}>tourneylinks.com/t/{tourney.id}</div>
-                  </div>
+                   <hr style={{ border: 'none', borderTop: '2px solid #ddd', margin: '10px 40px' }} />
+
+                   <div style={{ textAlign: 'center', margin: '20px 0', color: '#B24D0A', fontSize: '1.4rem', fontWeight: 700 }}>
+                       {tourney.entryFee ? `$${Math.round(tourney.entryFee/100)}` : '$175'} per Golfer • {tourney.entryFee ? `$${Math.round(tourney.entryFee/100) * 4}` : '$700'} per Foursome
+                   </div>
+                   
+                   <div style={{ textAlign: 'center', color: '#333', fontSize: '1.1rem', marginBottom: '1.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                       {tourney.courseAddress || '4344 Fairport Nine Mile Point Rd, Fairport, NY 14450'}
+                   </div>
+
+                   {/* We are seeking */}
+                   <div style={{ margin: '30px 40px' }}>
+                       <div style={{ textAlign: 'center', color: '#B24D0A', fontSize: '1.8rem', fontStyle: 'italic', fontFamily: 'serif', marginBottom: '10px' }}>— We are seeking: —</div>
+                       <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '1.3rem', gap: '5px', color: '#333', fontWeight: 600 }}>
+                          <li><span style={{color: '#B24D0A'}}>•</span> Golfers & Foursomes</li>
+                          <li><span style={{color: '#B24D0A'}}>•</span> Event Sponsors</li>
+                          <li><span style={{color: '#B24D0A'}}>•</span> Raffle Basket Donors</li>
+                          <li><span style={{color: '#B24D0A'}}>•</span> Beer, Wine & Liquor Donors</li>
+                       </ul>
+                   </div>
+
+                   <div style={{ background: '#EAE1B8', padding: '10px', textAlign: 'center', fontWeight: 'bold', margin: '30px 40px', fontSize: '1.4rem', color: '#333', border: '1px solid #d4c9a3' }}>
+                       Lunch & Dinner Provided
+                   </div>
+               </div>
+
+               {/* Footer Banner */}
+               <div style={{ background: '#D95C14', color: '#fff', padding: '20px 0', textAlign: 'center', fontSize: '1.3rem', position: 'absolute', bottom: 0, left: 0, right: 0 }}>
+                   {tourney.courseAddress || '4344 Fairport Nine Mile Point Rd, Fairport, NY 14450'}
                </div>
             </div>
          )}
@@ -262,13 +294,13 @@ export default function DocumentHub({
             </div>
          )}
 
-         {activeDoc === 'cart' && teamKeys.reduce((result: number[][], item, index) => {
-            if (index % 2 === 0) result.push(teamKeys.slice(index, index + 2));
+         {activeDoc === 'cart' && effectiveTeamKeys.reduce((result: number[][], item, index) => {
+            if (index % 2 === 0) result.push(effectiveTeamKeys.slice(index, index + 2));
             return result;
           }, []).map((teamPair, pageIndex) => (
             <div key={`cart-page-${pageIndex}`} className="sheet page-break" style={{ display: 'flex', flexDirection: 'column', background: '#fff' }}>
               {teamPair.map((teamId, i) => {
-                const teamPlayers = teamsMap[teamId];
+                const teamPlayers = effectiveTeamsMap[teamId];
                 return (
                   <div key={`cart-${teamId}`} style={{ 
                     flex: 1, border: '4px solid #05120c', borderRadius: '12px', 
@@ -311,8 +343,8 @@ export default function DocumentHub({
             </div>
          ))}
 
-         {activeDoc === 'scorecard' && teamKeys.map((teamId) => {
-            const teamPlayers = teamsMap[teamId];
+         {activeDoc === 'scorecard' && effectiveTeamKeys.map((teamId) => {
+            const teamPlayers = effectiveTeamsMap[teamId];
             return (
                <div key={`scorecard-${teamId}`} className="sheet page-break" style={{ padding: '0.5in', background: '#fff' }}>
                   <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
@@ -397,7 +429,7 @@ export default function DocumentHub({
             );
          })}
 
-         {activeDoc !== 'flyer' && activeDoc !== 'ledger' && teamKeys.length === 0 && (
+         {activeDoc !== 'flyer' && activeDoc !== 'ledger' && effectiveTeamKeys.length === 0 && (
             <div className="sheet" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#666', background: '#fff' }}>
               <h1>No teams have been flighted yet. Assign teams first!</h1>
             </div>
