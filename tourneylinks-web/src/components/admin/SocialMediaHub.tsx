@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import EmojiPicker, { Theme } from 'emoji-picker-react';
 
 export default function SocialMediaHub({ tournament }: { tournament: any }) {
   const defaultTemplates = {
@@ -11,6 +12,7 @@ export default function SocialMediaHub({ tournament }: { tournament: any }) {
 
   const [activeNetwork, setActiveNetwork] = useState<'instagram' | 'facebook' | 'x'>('instagram');
   const [isConnecting, setIsConnecting] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [mockConnected, setMockConnected] = useState<Record<string, boolean>>({
      instagram: false,
      facebook: false,
@@ -90,10 +92,10 @@ export default function SocialMediaHub({ tournament }: { tournament: any }) {
 
           {/* Column 2: Editor & Auth */}
           <div style={{ background: '#f9fafb', borderRadius: '12px', padding: '1.5rem', border: '1px solid #e5e7eb', display: 'flex', flexDirection: 'column', position: 'relative' }}>
-             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '0.5rem' }}>
+             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '0.5rem', position: 'relative' }}>
                 <label style={{ color: 'var(--forest)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 700 }}>Edit Caption Live</label>
-                <div style={{ display: 'flex', gap: '0.2rem', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '6px', padding: '0.25rem 0.5rem' }}>
-                   {['⛳', '🏌️‍♂️', '🏆', '🚨', '📅', '📍', '👀', '👇'].map(emoji => (
+                <div style={{ display: 'flex', gap: '0.2rem', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '6px', padding: '0.25rem 0.5rem', alignItems: 'center' }}>
+                   {['⛳', '🏌️‍♂️', '🏆', '🚨', '📅'].map(emoji => (
                       <button 
                          key={emoji} 
                          onClick={() => setCustomCaptions(prev => ({ ...prev, [activeNetwork]: prev[activeNetwork] + emoji }))} 
@@ -103,6 +105,21 @@ export default function SocialMediaHub({ tournament }: { tournament: any }) {
                          {emoji}
                       </button>
                    ))}
+                   <div style={{ width: '1px', height: '1.2rem', background: '#e5e7eb', margin: '0 0.3rem' }}></div>
+                   <button onClick={() => setShowEmojiPicker(!showEmojiPicker)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', padding: '0.2rem' }} title="Full Emoji Library">
+                      ➕😊
+                   </button>
+                   {showEmojiPicker && (
+                      <div style={{ position: 'absolute', top: '100%', right: 0, zIndex: 100, marginTop: '0.5rem', boxShadow: '0 10px 40px rgba(0,0,0,0.2)' }}>
+                         <EmojiPicker 
+                            theme={Theme.LIGHT} 
+                            onEmojiClick={(emojiData) => {
+                               setCustomCaptions(prev => ({ ...prev, [activeNetwork]: prev[activeNetwork] + emojiData.emoji }));
+                               setShowEmojiPicker(false);
+                            }} 
+                         />
+                      </div>
+                   )}
                 </div>
              </div>
              <textarea 
