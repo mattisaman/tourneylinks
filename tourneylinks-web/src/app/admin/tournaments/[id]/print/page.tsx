@@ -69,7 +69,16 @@ export default async function PrintStationPage({ params }: { params: Promise<{ i
         }
       `}} />
 
-      <div className="dashboard-wrap no-print" style={{ minHeight: '100%', alignItems: 'stretch' }}>
+      {/* TOP NAVIGATION BAR */}
+      <div className="no-print" style={{ height: '60px', background: '#05120c', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', padding: '0 2rem', color: 'white', justifyContent: 'space-between' }}>
+         <div style={{ fontWeight: 800, fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <a href="/admin" style={{ color: 'var(--mist)', textDecoration: 'none', marginRight: '0.5rem' }}>← Back</a>
+            Dashboard <span style={{ color: 'var(--gold)' }}>/</span> {tourney.name} <span style={{ color: 'var(--gold)' }}>/</span> Print Hub
+         </div>
+         <div style={{ fontSize: '0.85rem', color: 'var(--mist)' }}>Live Organizer Studio</div>
+      </div>
+
+      <div className="dashboard-wrap no-print" style={{ minHeight: 'calc(100vh - 60px)', display: 'flex', alignItems: 'stretch' }}>
          <AdminSidebar tournamentId={tourneyId} mockTournaments={mockTournaments} />
          
          <div className="dash-main" style={{ padding: '2rem 3rem' }}>
