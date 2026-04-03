@@ -55,13 +55,19 @@ export default function LiveTelemetry({ tournamentId, showProLink }: { tournamen
               <span style={{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '50%', background: '#ff4d4f', boxShadow: '0 0 10px #ff4d4f', animation: 'pulse 2s infinite' }}></span>
               Live Tournament Telemetry
            </div>
-           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <Link href={`/demo/mobile-scorer`} target="_blank" style={{ color: '#fff', textDecoration: 'none', fontSize: '0.75rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.25rem', padding: '0.4rem 0.8rem', background: 'var(--forest)', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                 📱 Launch Mobile Scorer
+              </Link>
+              <Link href={`/demo/tv-scoreboard`} target="_blank" style={{ color: '#000', textDecoration: 'none', fontSize: '0.75rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.25rem', padding: '0.4rem 0.8rem', background: 'var(--gold)', borderRadius: '4px', border: '1px solid rgba(212,175,55,0.2)' }}>
+                 📺 TV Leaderboard
+              </Link>
               {showProLink && (
                  <Link href={`/tournaments/${tournamentId}/pro`} target="_blank" style={{ color: 'var(--gold)', textDecoration: 'none', fontSize: '0.75rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.25rem', padding: '0.4rem 0.8rem', background: 'rgba(212,175,55,0.1)', borderRadius: '4px', border: '1px solid rgba(212,175,55,0.2)' }}>
-                    ↗ Open Ranger Radar
+                    ↗ Ranger Radar
                  </Link>
               )}
-              <span className="status-pill status-paid" style={{ fontSize: '0.75rem' }}>Operational</span>
+              <span className="status-pill status-paid" style={{ fontSize: '0.75rem' }}>Live</span>
            </div>
         </div>
         
