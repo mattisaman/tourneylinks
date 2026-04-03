@@ -9,6 +9,15 @@ export default function MobileScorerDemo() {
   const [viewScorecard, setViewScorecard] = useState(false);
   const [viewGps, setViewGps] = useState(false);
   const [viewLeaderboard, setViewLeaderboard] = useState(false);
+  const [currentHole, setCurrentHole] = useState(14);
+
+  const courseData = [
+    { p: 4, y: 390 }, { p: 4, y: 410 }, { p: 3, y: 165 }, { p: 5, y: 520 }, 
+    { p: 4, y: 400 }, { p: 3, y: 180 }, { p: 4, y: 420 }, { p: 4, y: 380 }, { p: 5, y: 540 },
+    { p: 4, y: 415 }, { p: 4, y: 395 }, { p: 3, y: 210 }, { p: 5, y: 560 }, 
+    { p: 4, y: 421 }, { p: 4, y: 385 }, { p: 3, y: 155 }, { p: 4, y: 440 }, { p: 5, y: 530 }
+  ];
+  const holeConfig = courseData[currentHole - 1];
 
   return (
     <div style={{ background: '#e0e5e2', minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '2rem 1rem' }}>
@@ -26,7 +35,7 @@ export default function MobileScorerDemo() {
 
         {/* Sponsor Banner (Rotating Top) */}
         <div style={{ background: 'linear-gradient(135deg, #f4f6f5, #eef1f0)', borderBottom: '1px solid rgba(0,0,0,0.05)', padding: '1.25rem', textAlign: 'center', boxShadow: 'inset 0 -10px 20px rgba(0,0,0,0.02)' }}>
-          <div style={{ fontSize: '0.7rem', color: 'var(--mist)', textTransform: 'uppercase', fontWeight: 800, marginBottom: '0.4rem', letterSpacing: '1px' }}>Hole 14 Sponsored By</div>
+          <div style={{ fontSize: '0.7rem', color: 'var(--mist)', textTransform: 'uppercase', fontWeight: 800, marginBottom: '0.4rem', letterSpacing: '1px' }}>Hole {currentHole} Sponsored By</div>
           <div style={{ fontWeight: 900, color: '#0056b3', fontSize: '2rem', fontFamily: 'serif', lineHeight: 1 }}>CHASE <span style={{ color: '#aaa'}}>&bull;</span> PLATINUM</div>
         </div>
 
@@ -35,14 +44,18 @@ export default function MobileScorerDemo() {
            
            {/* Hole Navigation & Header */}
            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <button style={{ background: '#f8faf9', border: '1px solid rgba(0,0,0,0.1)', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontWeight: 900, cursor: 'pointer', color: 'var(--forest)' }}>←</button>
+              <button 
+                 onClick={() => { if(currentHole > 1) setCurrentHole(currentHole - 1); setScore1(4); }}
+                 style={{ background: '#f8faf9', border: '1px solid rgba(0,0,0,0.1)', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontWeight: 900, cursor: 'pointer', color: 'var(--forest)' }}>←</button>
               
               <div style={{ textAlign: 'center' }}>
-                 <div style={{ fontSize: '1.8rem', fontWeight: 900, color: 'var(--forest)', lineHeight: 1 }}>Hole 14</div>
-                 <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--mist)', marginTop: '0.2rem' }}>Par 4 • 421 yds</div>
+                 <div style={{ fontSize: '1.8rem', fontWeight: 900, color: 'var(--forest)', lineHeight: 1 }}>Hole {currentHole}</div>
+                 <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--mist)', marginTop: '0.2rem' }}>Par {holeConfig.p} • {holeConfig.y} yds</div>
               </div>
 
-              <button style={{ background: '#f8faf9', border: '1px solid rgba(0,0,0,0.1)', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontWeight: 900, cursor: 'pointer', color: 'var(--forest)' }}>→</button>
+              <button 
+                 onClick={() => { if(currentHole < 18) setCurrentHole(currentHole + 1); setScore1(4); }}
+                 style={{ background: '#f8faf9', border: '1px solid rgba(0,0,0,0.1)', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontWeight: 900, cursor: 'pointer', color: 'var(--forest)' }}>→</button>
            </div>
 
            {/* Live Leaderboard / GPS Action Row */}
@@ -100,7 +113,7 @@ export default function MobileScorerDemo() {
                   <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundImage: 'url("https://images.unsplash.com/photo-1587174486073-ae5e1c4391a1?fm=jpg&w=800&q=80")', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.8 }}></div>
                   <div style={{ position: 'relative', zIndex: 10, padding: '1rem', display: 'flex', justifyContent: 'space-between' }}>
                       <div style={{ background: '#fff', color: 'var(--ink)', padding: '0.5rem 1rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 800, boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}>🎯 Pin: Center</div>
-                      <div style={{ background: 'var(--forest)', color: '#fff', padding: '0.5rem 1rem', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 900, boxShadow: '0 4px 10px rgba(0,0,0,0.2)' }}>164 Yds</div>
+                      <div style={{ background: 'var(--forest)', color: '#fff', padding: '0.5rem 1rem', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 900, boxShadow: '0 4px 10px rgba(0,0,0,0.2)' }}>{Math.max(50, holeConfig.y - 250)} Yds</div>
                   </div>
                   {/* Fake Crosshair / Lines */}
                   <div style={{ flex: 1, position: 'relative', zIndex: 10 }}>
@@ -121,7 +134,7 @@ export default function MobileScorerDemo() {
                   </div>
                   <div style={{ background: 'var(--forest)', color: '#fff', padding: '0.75rem', fontWeight: 800, fontSize: '0.8rem', textAlign: 'center', letterSpacing: '1px', textTransform: 'uppercase' }}>Back 9 (-7)</div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(9, 1fr)', textAlign: 'center', fontSize: '0.7rem' }}>
-                      {[10,11,12,13,14,15,16,17,18].map((h,i) => <div key={h} style={{ borderBottom: '1px solid #eee', borderRight: i===8?'none':'1px solid #eee', padding: '0.5rem 0', fontWeight: h===14?900:700, background: h===14?'rgba(212,175,55,0.2)':'#f8faf9', color: h===14 ? 'var(--forest)' : 'inherit' }}>{h}</div>)}
+                      {[10,11,12,13,14,15,16,17,18].map((h,i) => <div key={h} style={{ borderBottom: '1px solid #eee', borderRight: i===8?'none':'1px solid #eee', padding: '0.5rem 0', fontWeight: h===currentHole?900:700, background: h===currentHole?'rgba(212,175,55,0.2)':'#f8faf9', color: h===currentHole ? 'var(--forest)' : 'inherit' }}>{h}</div>)}
                       {[4,4,3,5,4,4,3,4,5].map((p,i) => <div key={i} style={{ borderBottom: '1px solid #eee', borderRight: i===8?'none':'1px solid #eee', padding: '0.5rem 0', color: 'var(--mist)' }}>{p}</div>)}
                       {[3,3,3,4,score1,0,0,0,0].map((s,i) => <div key={i} style={{ borderBottom: '1px solid #eee', borderRight: i===8?'none':'1px solid #eee', padding: '0.5rem 0', fontWeight: 800, color: s===0 ? 'transparent' : (s < [4,4,3,5,4,4,3,4,5][i] ? 'var(--gold)' : (s > [4,4,3,5,4,4,3,4,5][i] ? '#ff4d4f' : 'var(--ink)')) }}>{s===0 ? '-' : s}</div>)}
                   </div>
@@ -169,7 +182,7 @@ export default function MobileScorerDemo() {
                  }
               }}
               style={{ width: '100%', padding: '1rem', borderRadius: '12px', fontSize: '1.1rem', fontWeight: 700, color: '#ffffff', boxShadow: '0 4px 15px rgba(26,46,26,0.2)', transition: '0.3s', background: submitted ? '#10b981' : ((viewGps || viewScorecard || viewLeaderboard) ? '#333' : 'var(--forest)'), border: 'none' }}>
-              {submitted ? '✓ Scores Recorded' : ((viewGps || viewScorecard || viewLeaderboard) ? '← Back to Score Input' : 'Save Hole 14')}
+              {submitted ? '✓ Scores Recorded' : ((viewGps || viewScorecard || viewLeaderboard) ? '← Back to Score Input' : `Save Hole ${currentHole}`)}
            </button>
         </div>
 
