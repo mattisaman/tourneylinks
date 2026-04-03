@@ -62,6 +62,7 @@ export default function HostLiveCampaignBuilder() {
   const [sponsorPreviewMode, setSponsorPreviewMode] = useState<'directory' | 'checkout'>('directory');
 
   const [isLoadingForm, setIsLoadingForm] = useState(false);
+  const [isSuggestingPrice, setIsSuggestingPrice] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -411,9 +412,44 @@ export default function HostLiveCampaignBuilder() {
                           <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>Package Name</label>
                           <input type="text" value={newPackage.name} onChange={e => setNewPackage({...newPackage, name: e.target.value})} placeholder="e.g. Foursome" style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }} />
                        </div>
-                       <div style={{ flex: 1 }}>
-                          <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>Price ($)</label>
-                          <input type="number" value={newPackage.price} onChange={e => setNewPackage({...newPackage, price: e.target.value === '' ? '' : Number(e.target.value)})} style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }} />
+                       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                          <label style={{ fontSize: '0.85rem', fontWeight: 600, color: '#555' }}>PRICE</label>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                             <input type="number" value={newPackage.price} onChange={e => setNewPackage({...newPackage, price: e.target.value === '' ? '' : Number(e.target.value)})} style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }} />
+                             
+                             {/* AI Target Suggestion Button */}
+                             <button
+                               onClick={async () => {
+                                  if (!course) {
+                                     alert('Please enter your Golf Course Name on the Content tab first so our AI knows the venue!');
+                                     return;
+                                  }
+                                  setIsSuggestingPrice(true);
+                                  try {
+                                     const res = await fetch('/api/ai/price-engine', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ courseName: course, players: 144, type: 'charity' })
+                                     });
+                                     const data = await res.json();
+                                     if (data.recommendedPrice) {
+                                        setNewPackage({ ...newPackage, price: data.recommendedPrice });
+                                        alert(`🧠 AI Insight: ${data.demographicNote}\n\nSuggested Price: $${data.recommendedPrice}`);
+                                     } else {
+                                        alert(data.error || 'Failed to calculate price.');
+                                     }
+                                  } catch (err) {
+                                     alert('Network error communicating with AI.');
+                                  }
+                                  setIsSuggestingPrice(false);
+                               }}
+                               disabled={isSuggestingPrice}
+                               title="Auto-calculate the perfect price using venue intelligence"
+                               style={{ background: 'var(--gold)', color: '#000', border: 'none', borderRadius: '4px', padding: '0.6rem 0.8rem', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer', opacity: isSuggestingPrice ? 0.6 : 1, whiteSpace: 'nowrap' }}
+                             >
+                               {isSuggestingPrice ? '...' : '✨'}
+                             </button>
+                          </div>
                        </div>
                     </div>
                     <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
