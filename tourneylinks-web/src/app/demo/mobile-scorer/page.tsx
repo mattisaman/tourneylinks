@@ -67,22 +67,28 @@ export default function MobileScorerDemo() {
                   <div style={{ background: 'var(--forest)', color: '#fff', padding: '0.75rem', fontWeight: 800, fontSize: '0.8rem', textAlign: 'center', letterSpacing: '1px', textTransform: 'uppercase' }}>Live Tourney Leaderboard</div>
                   <div style={{ overflowY: 'auto', flex: 1 }}>
                       {[
-                        { pos: '1', name: 'Woods / Jordan', score: '-14', thru: 'F', self: true },
-                        { pos: '2', name: 'Mickelson / McIlroy', score: '-12', thru: '17' },
-                        { pos: '3', name: 'Spieth / Fowler', score: '-11', thru: '16' },
-                        { pos: 'T4', name: 'Curry / Thompson', score: '-10', thru: 'F' },
-                        { pos: 'T4', name: 'Romo / Allen', score: '-10', thru: '15' },
-                        { pos: '6', name: 'Scheffler / Burns', score: '-9', thru: '14' },
-                        { pos: 'T7', name: 'Rahm / Garcia', score: '-8', thru: '17' },
-                        { pos: 'T7', name: 'Thomas / Cantlay', score: '-8', thru: '16' },
+                        { pos: '1', name: 'Woods / Jordan', score: -14, thru: 'F', self: true },
+                        { pos: '2', name: 'Mickelson / McIlroy', score: -12, thru: '17' },
+                        { pos: '3', name: 'Spieth / Fowler', score: -11, thru: '16' },
+                        { pos: 'T4', name: 'Curry / Thompson', score: -10, thru: 'F' },
+                        { pos: 'T4', name: 'Romo / Allen', score: -10, thru: '15' },
+                        { pos: '6', name: 'Scheffler / Burns', score: -9, thru: '14' },
+                        { pos: 'T7', name: 'Rahm / Garcia', score: -8, thru: '17' },
+                        { pos: 'T7', name: 'Thomas / Cantlay', score: -8, thru: '16' },
+                        ...Array.from({ length: 22 }, (_, i) => ({
+                           pos: `T${9 + Math.floor(i/3)}`,
+                           name: `Corporate Team ${i+1}`,
+                           score: -7 + Math.floor(i/4),
+                           thru: ['12', '13', '14', '15', 'F'][Math.floor(Math.random() * 5)]
+                        }))
                       ].map((t, i) => (
-                         <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.8rem 1rem', borderBottom: '1px solid rgba(0,0,0,0.05)', background: t.self ? 'rgba(212,175,55,0.1)' : 'transparent', fontWeight: t.self ? 800 : 600 }}>
+                         <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.8rem 1rem', borderBottom: '1px solid rgba(0,0,0,0.05)', background: (t as any).self ? 'rgba(212,175,55,0.1)' : 'transparent', fontWeight: (t as any).self ? 800 : 600 }}>
                             <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                                <div style={{ color: t.self ? 'var(--gold)' : 'var(--mist)', width: '25px', fontSize: '0.75rem' }}>{t.pos}</div>
+                                <div style={{ color: (t as any).self ? 'var(--gold)' : 'var(--mist)', width: '25px', fontSize: '0.75rem' }}>{t.pos}</div>
                                 <div style={{ color: 'var(--ink)', fontSize: '0.85rem' }}>{t.name}</div>
                             </div>
                             <div style={{ display: 'flex', gap: '1rem', textAlign: 'right', alignItems: 'center' }}>
-                                <div style={{ width: '25px', color: t.self ? 'var(--forest)' : '#ff4d4f', fontSize: '0.9rem' }}>{t.score}</div>
+                                <div style={{ width: '25px', color: (t as any).self ? 'var(--forest)' : (t.score < 0 ? '#ff4d4f' : 'inherit'), fontSize: '0.9rem', fontWeight: 800 }}>{t.score > 0 ? `+${t.score}` : t.score}</div>
                                 <div style={{ width: '25px', color: 'var(--mist)', fontSize: '0.75rem' }}>{t.thru}</div>
                             </div>
                          </div>
@@ -153,11 +159,17 @@ export default function MobileScorerDemo() {
            <button 
               className={`btn-primary ${submitted ? 'success' : ''}`}
               onClick={() => {
-                 setSubmitted(true);
-                 setTimeout(() => setSubmitted(false), 2000);
+                 if (viewGps || viewScorecard || viewLeaderboard) {
+                     setViewGps(false);
+                     setViewScorecard(false);
+                     setViewLeaderboard(false);
+                 } else {
+                     setSubmitted(true);
+                     setTimeout(() => setSubmitted(false), 2000);
+                 }
               }}
-              style={{ width: '100%', padding: '1rem', borderRadius: '12px', fontSize: '1.1rem', fontWeight: 700, color: '#ffffff', boxShadow: '0 4px 15px rgba(26,46,26,0.2)', transition: '0.3s', background: submitted ? '#10b981' : 'var(--forest)', border: 'none' }}>
-              {submitted ? '✓ Scores Recorded' : 'Save Hole 14'}
+              style={{ width: '100%', padding: '1rem', borderRadius: '12px', fontSize: '1.1rem', fontWeight: 700, color: '#ffffff', boxShadow: '0 4px 15px rgba(26,46,26,0.2)', transition: '0.3s', background: submitted ? '#10b981' : ((viewGps || viewScorecard || viewLeaderboard) ? '#333' : 'var(--forest)'), border: 'none' }}>
+              {submitted ? '✓ Scores Recorded' : ((viewGps || viewScorecard || viewLeaderboard) ? '← Back to Score Input' : 'Save Hole 14')}
            </button>
         </div>
 
