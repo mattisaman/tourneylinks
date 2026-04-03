@@ -445,9 +445,9 @@ export default function HostLiveCampaignBuilder() {
                                }}
                                disabled={isSuggestingPrice}
                                title="Auto-calculate the perfect price using venue intelligence"
-                               style={{ background: 'var(--gold)', color: '#000', border: 'none', borderRadius: '4px', padding: '0.6rem 0.8rem', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer', opacity: isSuggestingPrice ? 0.6 : 1, whiteSpace: 'nowrap' }}
+                               style={{ background: 'var(--gold)', color: '#000', border: 'none', borderRadius: '4px', padding: '0.6rem 0.8rem', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer', opacity: isSuggestingPrice ? 0.6 : 1, whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
                              >
-                               {isSuggestingPrice ? '...' : '✨'}
+                               {isSuggestingPrice ? 'Calculating...' : '✨ AI Suggest'}
                              </button>
                           </div>
                        </div>
