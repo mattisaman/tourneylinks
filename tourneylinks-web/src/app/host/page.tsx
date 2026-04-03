@@ -61,17 +61,41 @@ export default function HostLiveCampaignBuilder() {
   const [newSponsor, setNewSponsor] = useState<{tier: string, price: number | string, spots: number, incentivesText: string, includesIntent: boolean, includesDinner: boolean}>({ tier: '', price: '', spots: 1, incentivesText: '', includesIntent: false, includesDinner: false });
   const [sponsorPreviewMode, setSponsorPreviewMode] = useState<'directory' | 'checkout'>('directory');
 
+  const [isLoadingForm, setIsLoadingForm] = useState(false);
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const p = new URLSearchParams(window.location.search);
-      if (p.get('courseName')) {
-         setCourse(p.get('courseName') || '');
-         setCourseSearch(p.get('courseName') || '');
+      
+      const tid = p.get('tournamentId');
+      if (tid) {
+         setIsLoadingForm(true);
+         fetch(`/api/admin/tournaments/${tid}`)
+           .then(r => r.ok ? r.json() : null)
+           .then(data => {
+             if (data) {
+                // Hydrate core
+                setName(data.name || '');
+                setDate(data.dateStart ? new Date(data.dateStart).toISOString().split('T')[0] : '');
+                setCourse(data.courseName || '');
+                setCity(data.city || '');
+                setDesc(data.description || '');
+                if (data.activeFormat) setSelectedFormat(data.activeFormat);
+                if (data.isPublic !== undefined) setSelectedVis(data.isPublic ? 'public' : 'private');
+                if (data.heroImageUrl) setHeroImage(data.heroImageUrl);
+             }
+             setIsLoadingForm(false);
+           });
+      } else {
+         if (p.get('courseName')) {
+            setCourse(p.get('courseName') || '');
+            setCourseSearch(p.get('courseName') || '');
+         }
+         const ct = p.get('courseCity');
+         const st = p.get('courseState');
+         if (ct && st) setCity(`${ct}, ${st}`);
+         else if (ct) setCity(ct);
       }
-      const ct = p.get('courseCity');
-      const st = p.get('courseState');
-      if (ct && st) setCity(`${ct}, ${st}`);
-      else if (ct) setCity(ct);
     }
   }, []);
 
