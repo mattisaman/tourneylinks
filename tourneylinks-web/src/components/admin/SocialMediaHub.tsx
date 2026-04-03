@@ -6,24 +6,22 @@ import EmojiPicker, { Theme } from 'emoji-picker-react';
 export default function SocialMediaHub({ tournament }: { tournament: any }) {
   const defaultTemplates = {
      instagram: `🏌️‍♂️ Spots are filling up fast for the ${tournament.name || 'Tournament'} at ${tournament.courseName || 'the course'}! ⛳\n\nWe have amazing sponsor opportunities still available and an incredible day of golf planned.\n\nSecure your foursome now! Link in bio. 🏆\n\n#GolfRegistration #CharityGolf #${(tournament.city || 'Local').replace(/[^a-zA-Z]/g,'')}Golf`,
-     facebook: `It's time to hit the links! We are officially opening registration for the ${tournament.name} on ${new Date(tournament.dateStart || Date.now()).toLocaleDateString()}.\n\nThis event is hosted at ${tournament.courseName} and we are looking for local business partners to sponsor holes! Click the link below to get your team registered before we sell out.`,
-     x: `🚨 Registration is LIVE for the ${tournament.name}!🚨\n\n📍 ${tournament.courseName}\n📅 ${new Date(tournament.dateStart || Date.now()).toLocaleDateString()}\n\nClick here to grab your team spot or become a hole sponsor before they are gone! 👇\nhttps://tourneylinks.com/t/${tournament.id}`
+     facebook: `It's time to hit the links! We are officially opening registration for the ${tournament.name} on ${new Date(tournament.dateStart || Date.now()).toLocaleDateString()}.\n\nThis event is hosted at ${tournament.courseName} and we are looking for local business partners to sponsor holes! Click the link below to get your team registered before we sell out.`
   };
 
-  const [activeNetwork, setActiveNetwork] = useState<'instagram' | 'facebook' | 'x'>('instagram');
+  const [activeNetwork, setActiveNetwork] = useState<'instagram' | 'facebook'>('instagram');
   const [isConnecting, setIsConnecting] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [mockConnected, setMockConnected] = useState<Record<string, boolean>>({
      instagram: false,
-     facebook: false,
-     x: false
+     facebook: false
   });
   
   const [customCaptions, setCustomCaptions] = useState(defaultTemplates);
   // Image Config Overrides
   const [customImages, setCustomImages] = useState<Record<string, string>>({});
-  const [imageZooms, setImageZooms] = useState<Record<string, number>>({ instagram: 100, facebook: 100, x: 100 });
-  const [imageYPos, setImageYPos] = useState<Record<string, number>>({ instagram: 50, facebook: 50, x: 50 });
+  const [imageZooms, setImageZooms] = useState<Record<string, number>>({ instagram: 100, facebook: 100 });
+  const [imageYPos, setImageYPos] = useState<Record<string, number>>({ instagram: 50, facebook: 50 });
 
   const handleConnect = (network: string) => {
      setIsConnecting(true);
@@ -38,7 +36,7 @@ export default function SocialMediaHub({ tournament }: { tournament: any }) {
         if (query.get('social_success') === 'true') {
            const net = query.get('network') || 'instagram';
            setMockConnected(prev => ({ ...prev, [net]: true }));
-           setActiveNetwork(net as 'instagram' | 'facebook' | 'x');
+           setActiveNetwork(net as 'instagram' | 'facebook');
            window.history.replaceState({}, document.title, window.location.pathname);
         }
      }
@@ -85,15 +83,12 @@ export default function SocialMediaHub({ tournament }: { tournament: any }) {
        <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr 300px', gap: '1.5rem' }}>
           
           {/* Column 1: Navigation */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-             <button onClick={() => setActiveNetwork('instagram')} style={{ padding: '0.75rem 1rem', background: activeNetwork === 'instagram' ? 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)' : '#f9fafb', color: activeNetwork === 'instagram' ? '#fff' : '#111', fontWeight: 600, border: '1px solid #e5e7eb', borderRadius: '8px', cursor: 'pointer', textAlign: 'left', transition: '0.2s' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', height: '100%' }}>
+             <button onClick={() => setActiveNetwork('instagram')} style={{ flex: 1, padding: '1rem', fontSize: '1.1rem', background: activeNetwork === 'instagram' ? 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)' : '#f9fafb', color: activeNetwork === 'instagram' ? '#fff' : '#111', fontWeight: 700, border: '1px solid #e5e7eb', borderRadius: '12px', cursor: 'pointer', textAlign: 'center', transition: '0.2s', boxShadow: activeNetwork === 'instagram' ? '0 10px 20px rgba(220,39,67,0.2)' : 'none' }}>
                 📸 Instagram
              </button>
-             <button onClick={() => setActiveNetwork('facebook')} style={{ padding: '0.75rem 1rem', background: activeNetwork === 'facebook' ? '#1877F2' : '#f9fafb', color: activeNetwork === 'facebook' ? '#fff' : '#111', fontWeight: 600, border: '1px solid #e5e7eb', borderRadius: '8px', cursor: 'pointer', textAlign: 'left', transition: '0.2s' }}>
+             <button onClick={() => setActiveNetwork('facebook')} style={{ flex: 1, padding: '1rem', fontSize: '1.1rem', background: activeNetwork === 'facebook' ? '#1877F2' : '#f9fafb', color: activeNetwork === 'facebook' ? '#fff' : '#111', fontWeight: 700, border: '1px solid #e5e7eb', borderRadius: '12px', cursor: 'pointer', textAlign: 'center', transition: '0.2s', boxShadow: activeNetwork === 'facebook' ? '0 10px 20px rgba(24,119,242,0.2)' : 'none' }}>
                 📘 Facebook
-             </button>
-             <button onClick={() => setActiveNetwork('x')} style={{ padding: '0.75rem 1rem', background: activeNetwork === 'x' ? '#000' : '#f9fafb', color: activeNetwork === 'x' ? '#fff' : '#111', fontWeight: 600, border: '1px solid #e5e7eb', borderRadius: '8px', cursor: 'pointer', textAlign: 'left', transition: '0.2s' }}>
-                𝕏 Twitter / X
              </button>
           </div>
 
@@ -181,7 +176,7 @@ export default function SocialMediaHub({ tournament }: { tournament: any }) {
           </div>
 
           {/* Column 3: Live Visual Preview */}
-          <div style={{ background: activeNetwork === 'x' ? '#000' : '#fff', borderRadius: '12px', border: activeNetwork === 'x' ? '1px solid #333' : '1px solid #e5e7eb', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #e5e7eb', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', display: 'flex', flexDirection: 'column' }}>
               
               {/* Instagram Mock */}
               {activeNetwork === 'instagram' && (
@@ -219,30 +214,6 @@ export default function SocialMediaHub({ tournament }: { tournament: any }) {
                  </>
               )}
 
-              {/* X Mock */}
-              {activeNetwork === 'x' && (
-                 <>
-                    <div style={{ padding: '1rem', display: 'flex', gap: '0.75rem', color: '#fff' }}>
-                       <div style={{ width: 40, height: 40, borderRadius: '50%', background: mockConnected[activeNetwork] ? 'var(--forest)' : '#333', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', flexShrink: 0 }}>{profileAvatarContent}</div>
-                       <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ display: 'flex', gap: '0.3rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                             <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>{profileName}</div>
-                             <div style={{ color: '#71767b', fontSize: '0.9rem' }}>{profileHandle} · 1m</div>
-                          </div>
-                          <div style={{ marginTop: '0.2rem', fontSize: '0.95rem', whiteSpace: 'pre-wrap', wordWrap: 'break-word', lineHeight: 1.4 }}>
-                             {customCaptions.x}
-                          </div>
-                          <div style={{ marginTop: '0.75rem', borderRadius: '16px', overflow: 'hidden', border: '1px solid #2f3336' }}>
-                             <div style={{ height: '120px', ...heroStyle }}></div>
-                             <div style={{ padding: '0.5rem 0.75rem', background: '#000', borderTop: '1px solid #2f3336' }}>
-                                <div style={{ fontSize: '0.8rem', color: '#71767b' }}>tourneylinks.com</div>
-                                <div style={{ fontSize: '0.9rem', color: '#fff', marginTop: '0.1rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Register for {tournament.name}</div>
-                             </div>
-                          </div>
-                       </div>
-                    </div>
-                 </>
-              )}
           </div>
        </div>
     </div>
