@@ -8,6 +8,7 @@ export default function MobileScorerDemo() {
   const [submitted, setSubmitted] = useState(false);
   const [viewScorecard, setViewScorecard] = useState(false);
   const [viewGps, setViewGps] = useState(false);
+  const [viewLeaderboard, setViewLeaderboard] = useState(false);
 
   return (
     <div style={{ background: '#e0e5e2', minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '2rem 1rem' }}>
@@ -46,22 +47,49 @@ export default function MobileScorerDemo() {
 
            {/* Live Leaderboard / GPS Action Row */}
            <div style={{ display: 'flex', gap: '0.4rem', marginBottom: '2rem' }}>
-               <div style={{ flex: 1, background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.2)', padding: '0.5rem', borderRadius: '8px', textAlign: 'center' }}>
-                   <div style={{ fontSize: '0.6rem', textTransform: 'uppercase', color: 'var(--mist)', fontWeight: 700 }}>Rank</div>
-                   <div style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--gold)' }}>T-1st (-14)</div>
+               <div onClick={() => { setViewLeaderboard(!viewLeaderboard); setViewGps(false); setViewScorecard(false); }} style={{ flex: 1, background: viewLeaderboard ? 'var(--forest)' : 'rgba(212,175,55,0.1)', color: viewLeaderboard ? '#fff' : 'inherit', border: '1px solid rgba(212,175,55,0.2)', padding: '0.5rem', borderRadius: '8px', textAlign: 'center', cursor: 'pointer', transition: '0.2s' }}>
+                   <div style={{ fontSize: '0.6rem', textTransform: 'uppercase', color: viewLeaderboard ? 'rgba(255,255,255,0.7)' : 'var(--mist)', fontWeight: 700 }}>Rank</div>
+                   <div style={{ fontSize: '0.85rem', fontWeight: 800, color: viewLeaderboard ? '#fff' : 'var(--gold)' }}>T-1st (-14)</div>
                </div>
-               <div onClick={() => { setViewGps(!viewGps); setViewScorecard(false); }} style={{ flex: 1, background: viewGps ? 'var(--forest)' : '#f8faf9', color: viewGps ? '#fff' : 'var(--forest)', border: '1px solid rgba(0,0,0,0.1)', padding: '0.5rem', borderRadius: '8px', textAlign: 'center', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', transition: '0.2s' }}>
+               <div onClick={() => { setViewGps(!viewGps); setViewScorecard(false); setViewLeaderboard(false); }} style={{ flex: 1, background: viewGps ? 'var(--forest)' : '#f8faf9', color: viewGps ? '#fff' : 'var(--forest)', border: '1px solid rgba(0,0,0,0.1)', padding: '0.5rem', borderRadius: '8px', textAlign: 'center', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', transition: '0.2s' }}>
                    <div style={{ fontSize: '1rem' }}>📍</div>
                    <div style={{ fontSize: '0.65rem', fontWeight: 700, marginTop: '0.1rem' }}>GPS</div>
                </div>
-               <div onClick={() => { setViewScorecard(!viewScorecard); setViewGps(false); }} style={{ flex: 1, background: viewScorecard ? 'var(--forest)' : '#f8faf9', color: viewScorecard ? '#fff' : 'var(--forest)', border: '1px solid rgba(0,0,0,0.1)', padding: '0.5rem', borderRadius: '8px', textAlign: 'center', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', transition: '0.2s' }}>
+               <div onClick={() => { setViewScorecard(!viewScorecard); setViewGps(false); setViewLeaderboard(false); }} style={{ flex: 1, background: viewScorecard ? 'var(--forest)' : '#f8faf9', color: viewScorecard ? '#fff' : 'var(--forest)', border: '1px solid rgba(0,0,0,0.1)', padding: '0.5rem', borderRadius: '8px', textAlign: 'center', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', transition: '0.2s' }}>
                    <div style={{ fontSize: '1rem' }}>📋</div>
                    <div style={{ fontSize: '0.65rem', fontWeight: 700, marginTop: '0.1rem' }}>Card</div>
                </div>
            </div>
 
            {/* Content Swap */}
-           {viewGps ? (
+           {viewLeaderboard ? (
+               <div style={{ background: '#fff', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '12px', overflow: 'hidden', height: '350px', display: 'flex', flexDirection: 'column', boxShadow: '0 8px 20px rgba(0,0,0,0.08)' }}>
+                  <div style={{ background: 'var(--forest)', color: '#fff', padding: '0.75rem', fontWeight: 800, fontSize: '0.8rem', textAlign: 'center', letterSpacing: '1px', textTransform: 'uppercase' }}>Live Tourney Leaderboard</div>
+                  <div style={{ overflowY: 'auto', flex: 1 }}>
+                      {[
+                        { pos: '1', name: 'Woods / Jordan', score: '-14', thru: 'F', self: true },
+                        { pos: '2', name: 'Mickelson / McIlroy', score: '-12', thru: '17' },
+                        { pos: '3', name: 'Spieth / Fowler', score: '-11', thru: '16' },
+                        { pos: 'T4', name: 'Curry / Thompson', score: '-10', thru: 'F' },
+                        { pos: 'T4', name: 'Romo / Allen', score: '-10', thru: '15' },
+                        { pos: '6', name: 'Scheffler / Burns', score: '-9', thru: '14' },
+                        { pos: 'T7', name: 'Rahm / Garcia', score: '-8', thru: '17' },
+                        { pos: 'T7', name: 'Thomas / Cantlay', score: '-8', thru: '16' },
+                      ].map((t, i) => (
+                         <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.8rem 1rem', borderBottom: '1px solid rgba(0,0,0,0.05)', background: t.self ? 'rgba(212,175,55,0.1)' : 'transparent', fontWeight: t.self ? 800 : 600 }}>
+                            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                                <div style={{ color: t.self ? 'var(--gold)' : 'var(--mist)', width: '25px', fontSize: '0.75rem' }}>{t.pos}</div>
+                                <div style={{ color: 'var(--ink)', fontSize: '0.85rem' }}>{t.name}</div>
+                            </div>
+                            <div style={{ display: 'flex', gap: '1rem', textAlign: 'right', alignItems: 'center' }}>
+                                <div style={{ width: '25px', color: t.self ? 'var(--forest)' : '#ff4d4f', fontSize: '0.9rem' }}>{t.score}</div>
+                                <div style={{ width: '25px', color: 'var(--mist)', fontSize: '0.75rem' }}>{t.thru}</div>
+                            </div>
+                         </div>
+                      ))}
+                  </div>
+               </div>
+           ) : viewGps ? (
                <div style={{ background: '#e0ece0', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '12px', overflow: 'hidden', height: '350px', position: 'relative', display: 'flex', flexDirection: 'column', boxShadow: '0 8px 20px rgba(0,0,0,0.08)' }}>
                   <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundImage: 'url("https://images.unsplash.com/photo-1587174486073-ae5e1c4391a1?fm=jpg&w=800&q=80")', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.8 }}></div>
                   <div style={{ position: 'relative', zIndex: 10, padding: '1rem', display: 'flex', justifyContent: 'space-between' }}>
@@ -129,7 +157,7 @@ export default function MobileScorerDemo() {
                  setTimeout(() => setSubmitted(false), 2000);
               }}
               style={{ width: '100%', padding: '1rem', borderRadius: '12px', fontSize: '1.1rem', fontWeight: 700, color: '#ffffff', boxShadow: '0 4px 15px rgba(26,46,26,0.2)', transition: '0.3s', background: submitted ? '#10b981' : 'var(--forest)', border: 'none' }}>
-              {submitted ? '✓ Scores Recorded' : 'Submit Hole 14'}
+              {submitted ? '✓ Scores Recorded' : 'Save Hole 14'}
            </button>
         </div>
 
