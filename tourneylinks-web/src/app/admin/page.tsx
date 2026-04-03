@@ -14,6 +14,7 @@ import ScorecardVisionScanner from '@/components/admin/ScorecardVisionScanner';
 import CourseGPSMapper from '@/components/admin/CourseGPSMapper';
 import StripeConnectWidget from '@/components/admin/StripeConnectWidget';
 import ScrambleStoreManager from '@/components/admin/ScrambleStoreManager';
+import AdminSidebar from '@/components/admin/AdminSidebar';
 
 export const dynamic = 'force-dynamic';
 
@@ -94,39 +95,8 @@ export default async function AdminDashboard() {
   return (
     <div style={{ minHeight: 'calc(100vh - 80px)' }}>
       <div className="dashboard-wrap" style={{ minHeight: '100%' }}>
-        {/* Sidebar */}
-        <div className="dash-sidebar">
-          <div className="dash-logo">
-            Tourney<span>Links</span> 
-            <span style={{ fontSize: '0.7rem', background: 'rgba(201,168,76,0.2)', color: 'var(--gold)', padding: '0.15rem 0.4rem', borderRadius: '2px', fontFamily: "'DM Sans', sans-serif", marginLeft: '0.5rem' }}>
-              Admin
-            </span>
-          </div>
-
-          <div className="dash-section-label">My Tournaments</div>
-          {mockTournaments.map(mt => (
-             <div key={mt.id} className={`dash-nav-item ${mt.id === tournamentId ? 'active' : ''}`}>
-               <span className="dash-nav-icon">🏆</span> {mt.name}
-             </div>
-          ))}
-          <div className="dash-nav-item"><span className="dash-nav-icon">📋</span> All Tournaments</div>
-          <Link href="/host" className="dash-nav-item" style={{ textDecoration: 'none' }}>
-            <span className="dash-nav-icon">➕</span> Create New
-          </Link>
-
-          <div className="dash-section-label">Management</div>
-          <div className="dash-nav-item"><span className="dash-nav-icon">👥</span> Registrants</div>
-          <div className="dash-nav-item"><span className="dash-nav-icon">💳</span> Payments</div>
-          <div className="dash-nav-item"><span className="dash-nav-icon">🏌️</span> Flight Builder</div>
-          <div className="dash-nav-item"><span className="dash-nav-icon">📢</span> Send Notification</div>
-          <div className="dash-nav-item"><span className="dash-nav-icon">⛳</span> Course Contact</div>
-
-          <div className="dash-section-label">Settings</div>
-          <div className="dash-nav-item"><span className="dash-nav-icon">🖼️</span> Branding & Logo</div>
-          <div className="dash-nav-item"><span className="dash-nav-icon">🔒</span> Private Link</div>
-          <div className="dash-nav-item"><span className="dash-nav-icon">💰</span> Stripe Payouts</div>
-          <div className="dash-nav-item"><span className="dash-nav-icon">⚙️</span> Settings</div>
-        </div>
+        {/* ScrollSpy Sidebar Engine */}
+        <AdminSidebar tournamentId={tournamentId} mockTournaments={mockTournaments} />
 
         {/* Main Content */}
         <div className="dash-main">
@@ -186,7 +156,7 @@ export default async function AdminDashboard() {
               )}
 
               {/* Registrants Table */}
-              <div className="dash-card">
+              <div id="registrants" className="dash-card">
                 <div className="dash-card-header">
                   <div className="dash-card-title">Registrants</div>
                   <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -247,10 +217,12 @@ export default async function AdminDashboard() {
               </div>
 
               {/* Phase 8: Financial Architecture & Organizer Setup */}
-              <StripeConnectWidget account={existingAccount || null} />
+              <div id="payments">
+                 <StripeConnectWidget account={existingAccount || null} />
+              </div>
 
               {/* Phase 10: The Live Campaign Builder Launchpad */}
-              <div style={{ background: '#05120c', padding: '2rem', borderRadius: '16px', color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}>
+              <div id="builder" style={{ background: '#05120c', padding: '2rem', borderRadius: '16px', color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}>
                  <div>
                     <h3 style={{ fontSize: '1.4rem', fontWeight: 900, marginBottom: '0.3rem' }}>Live Campaign Builder</h3>
                     <p style={{ color: 'var(--mist)', fontSize: '0.9rem', maxWidth: '400px', lineHeight: 1.6 }}>Step into the immersive setup studio. Configure entry fees, sponsors, and content side-by-side with a live preview of exactly what players will see.</p>
@@ -261,7 +233,7 @@ export default async function AdminDashboard() {
               </div>
 
               {/* Private Link Panel */}
-              <div className="dash-card">
+              <div id="private-link" className="dash-card">
                 <div className="dash-card-header">
                   <div className="dash-card-title">🔒 Private Pre-Launch Link</div>
                   <span className="status-pill status-pending" style={{ fontSize: '0.75rem' }}>Active</span>
@@ -288,13 +260,19 @@ export default async function AdminDashboard() {
               <RoundManager tournamentId={tournamentId} />
 
               {/* Phase 2: Sponsor & Hole Integration */}
-              <SponsorManager tournamentId={tournamentId} />
+              <div id="sponsor">
+                 <SponsorManager tournamentId={tournamentId} />
+              </div>
 
               {/* Phase 6: Gemini Vision OCR Dropzone */}
-              <ScorecardVisionScanner courseId={tourney ? (tourney as any).courseId || 1 : 1} />
+              <div id="vision-scoring">
+                 <ScorecardVisionScanner courseId={tourney ? (tourney as any).courseId || 1 : 1} />
+              </div>
 
               {/* Phase 7: GPS Coordinate Definition (Haversine Source) */}
-              <CourseGPSMapper courseId={tourney ? (tourney as any).courseId || 1 : 1} />
+              <div id="course-gps">
+                 <CourseGPSMapper courseId={tourney ? (tourney as any).courseId || 1 : 1} />
+              </div>
             </div>
 
             {/* Right Column */}
@@ -319,11 +297,13 @@ export default async function AdminDashboard() {
                  </div>
 
                  {/* Phase 8: E-Commerce Store Config */}
-                 <ScrambleStoreManager tournamentId={tournamentId} />
+                 <div id="store">
+                    <ScrambleStoreManager tournamentId={tournamentId} />
+                 </div>
               </div>
 
               {/* Send Notification */}
-              <div className="dash-card">
+              <div id="notifications" className="dash-card">
                 <div className="dash-card-header">
                   <div className="dash-card-title">📢 Send Notification</div>
                 </div>
@@ -363,7 +343,9 @@ export default async function AdminDashboard() {
               </div>
 
               {/* Flight Builder (AI React Client Component) */}
-              <FlightBuilder tournamentId={tournamentId} teamsMap={finalTeamsMap} />
+              <div id="flights">
+                 <FlightBuilder tournamentId={tournamentId} teamsMap={finalTeamsMap} />
+              </div>
             </div>
           </div>
         </div>

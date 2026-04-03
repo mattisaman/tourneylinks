@@ -1,0 +1,97 @@
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
+
+export default function AdminSidebar({ tournamentId, mockTournaments }: { tournamentId: number, mockTournaments: any[] }) {
+   const [activeSection, setActiveSection] = useState('overview');
+
+   useEffect(() => {
+       const handleScroll = () => {
+           const sections = ['registrants', 'payments', 'flights', 'notifications', 'course-gps', 'vision-scoring', 'store', 'private-link', 'builder', 'sponsor'];
+           let current = 'overview';
+
+           for (const id of sections) {
+               const elem = document.getElementById(id);
+               if (elem) {
+                   const rect = elem.getBoundingClientRect();
+                   if (rect.top <= 250) { // Slightly offset to trigger slightly before top
+                       current = id;
+                   }
+               }
+           }
+           setActiveSection(current);
+       };
+
+       window.addEventListener('scroll', handleScroll);
+       // Initial check
+       handleScroll();
+       
+       return () => window.removeEventListener('scroll', handleScroll);
+   }, []);
+
+   const navClick = (id: string, e: React.MouseEvent) => {
+       e.preventDefault();
+       const elem = document.getElementById(id);
+       if (elem) {
+           const top = elem.getBoundingClientRect().top + window.scrollY - 100;
+           window.scrollTo({ top, behavior: 'smooth' });
+       }
+   };
+
+   // Styling helpers
+   const getNavStyle = (id: string) => ({
+       display: 'flex',
+       alignItems: 'center',
+       gap: '0.8rem',
+       padding: '0.6rem 1rem',
+       borderRadius: '8px',
+       cursor: 'pointer',
+       fontSize: '0.85rem',
+       fontWeight: activeSection === id ? 700 : 500,
+       color: activeSection === id ? '#fff' : 'var(--mist)',
+       background: activeSection === id ? 'var(--forest)' : 'transparent',
+       transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+       textDecoration: 'none',
+       marginBottom: '0.25rem',
+       borderLeft: activeSection === id ? '4px solid var(--gold)' : '4px solid transparent',
+       boxShadow: activeSection === id ? '0 4px 15px rgba(26,46,26,0.5)' : 'none',
+   });
+
+   return (
+        <div className="dash-sidebar" style={{ position: 'sticky', top: 0, height: '100vh', overflowY: 'auto' }}>
+          <div className="dash-logo" style={{ marginBottom: '2rem' }}>
+            Tourney<span>Links</span> 
+            <span style={{ fontSize: '0.7rem', background: 'rgba(201,168,76,0.2)', color: 'var(--gold)', padding: '0.15rem 0.4rem', borderRadius: '2px', fontFamily: "'DM Sans', sans-serif", marginLeft: '0.5rem' }}>
+              Admin
+            </span>
+          </div>
+
+          <div className="dash-section-label" style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.8rem', paddingLeft: '1rem' }}>Active Tournaments</div>
+          {mockTournaments.map(mt => (
+             <div key={mt.id} style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', padding: '0.6rem 1rem', borderRadius: '8px', fontSize: '0.85rem', fontWeight: mt.id === tournamentId ? 700 : 500, color: mt.id === tournamentId ? '#fff' : 'var(--mist)', background: mt.id === tournamentId ? 'rgba(255,255,255,0.05)' : 'transparent', marginBottom: '0.25rem' }}>
+               <span>🏆</span> {mt.name}
+             </div>
+          ))}
+          <Link href="/host" style={{ ...getNavStyle('create'), borderLeft: '4px solid transparent', color: 'var(--gold)' }}>
+            <span>➕</span> New Campaign Builder
+          </Link>
+
+          <div className="dash-section-label" style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '2rem', marginBottom: '0.8rem', paddingLeft: '1rem' }}>Management Hub</div>
+          <a href="#registrants" onClick={(e) => navClick('registrants', e)} style={getNavStyle('registrants')}><span>👥</span> Registrants Tracker</a>
+          <a href="#flights" onClick={(e) => navClick('flights', e)} style={getNavStyle('flights')}><span>🏌️</span> Flight Builder</a>
+          <a href="#course-gps" onClick={(e) => navClick('course-gps', e)} style={getNavStyle('course-gps')}><span>⛳</span> Course & GPS Mapper</a>
+          <a href="#vision-scoring" onClick={(e) => navClick('vision-scoring', e)} style={getNavStyle('vision-scoring')}><span>📸</span> Scorecard Vision AI</a>
+
+          <div className="dash-section-label" style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '2rem', marginBottom: '0.8rem', paddingLeft: '1rem' }}>Sponsors & Revenue</div>
+          <a href="#payments" onClick={(e) => navClick('payments', e)} style={getNavStyle('payments')}><span>💰</span> Payouts & Stripe</a>
+          <a href="#store" onClick={(e) => navClick('store', e)} style={getNavStyle('store')}><span>🛍️</span> E-Commerce Store</a>
+          <a href="#sponsor" onClick={(e) => navClick('sponsor', e)} style={getNavStyle('sponsor')}><span>🤝</span> Sponsorship Grid</a>
+
+          <div className="dash-section-label" style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '2rem', marginBottom: '0.8rem', paddingLeft: '1rem' }}>Engagement Tools</div>
+          <a href="#private-link" onClick={(e) => navClick('private-link', e)} style={getNavStyle('private-link')}><span>🔒</span> Private Pre-Link</a>
+          <a href="#notifications" onClick={(e) => navClick('notifications', e)} style={getNavStyle('notifications')}><span>📢</span> Mass Notifications</a>
+          <a href="#builder" onClick={(e) => navClick('builder', e)} style={getNavStyle('builder')}><span>🖼️</span> Landing Page Builder</a>
+        </div>
+   )
+}
