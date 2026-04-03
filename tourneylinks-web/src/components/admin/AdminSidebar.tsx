@@ -15,7 +15,8 @@ export default function AdminSidebar({ tournamentId, mockTournaments }: { tourna
                const elem = document.getElementById(id);
                if (elem) {
                    const rect = elem.getBoundingClientRect();
-                   if (rect.top <= 250) { // Slightly offset to trigger slightly before top
+                   // Trigger when top of section hits the upper third of screen
+                   if (rect.top <= 400) { 
                        current = id;
                    }
                }
@@ -44,23 +45,23 @@ export default function AdminSidebar({ tournamentId, mockTournaments }: { tourna
        display: 'flex',
        alignItems: 'center',
        gap: '0.8rem',
-       padding: '0.6rem 1rem',
+       padding: '0.8rem 1rem',
        borderRadius: '8px',
        cursor: 'pointer',
        fontSize: '0.85rem',
        fontWeight: activeSection === id ? 700 : 500,
-       color: activeSection === id ? '#fff' : 'var(--mist)',
-       background: activeSection === id ? 'var(--forest)' : 'transparent',
+       color: activeSection === id ? '#fff' : 'rgba(255,255,255,0.6)',
+       background: activeSection === id ? 'rgba(201,168,76,0.15)' : 'transparent',
        transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
        textDecoration: 'none',
-       marginBottom: '0.25rem',
+       marginBottom: '0.35rem',
        borderLeft: activeSection === id ? '4px solid var(--gold)' : '4px solid transparent',
-       boxShadow: activeSection === id ? '0 4px 15px rgba(26,46,26,0.5)' : 'none',
+       boxShadow: activeSection === id ? '0 4px 15px rgba(0,0,0,0.2)' : 'none',
    });
 
    return (
-        <div className="dash-sidebar" style={{ position: 'sticky', top: 0, height: '100vh', overflowY: 'auto' }}>
-          <div className="dash-logo" style={{ marginBottom: '2rem' }}>
+        <div className="dash-sidebar" style={{ position: 'sticky', top: '75px', height: 'calc(100vh - 75px)', overflowY: 'auto' }}>
+          <div className="dash-logo" style={{ marginBottom: '2.5rem' }}>
             Tourney<span>Links</span> 
             <span style={{ fontSize: '0.7rem', background: 'rgba(201,168,76,0.2)', color: 'var(--gold)', padding: '0.15rem 0.4rem', borderRadius: '2px', fontFamily: "'DM Sans', sans-serif", marginLeft: '0.5rem' }}>
               Admin
@@ -69,7 +70,7 @@ export default function AdminSidebar({ tournamentId, mockTournaments }: { tourna
 
           <div className="dash-section-label" style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.8rem', paddingLeft: '1rem' }}>Active Tournaments</div>
           {mockTournaments.map(mt => (
-             <div key={mt.id} style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', padding: '0.6rem 1rem', borderRadius: '8px', fontSize: '0.85rem', fontWeight: mt.id === tournamentId ? 700 : 500, color: mt.id === tournamentId ? '#fff' : 'var(--mist)', background: mt.id === tournamentId ? 'rgba(255,255,255,0.05)' : 'transparent', marginBottom: '0.25rem' }}>
+             <div key={mt.id} style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', padding: '0.8rem 1rem', borderRadius: '8px', fontSize: '0.85rem', fontWeight: mt.id === tournamentId ? 700 : 500, color: mt.id === tournamentId ? '#fff' : 'var(--mist)', background: mt.id === tournamentId ? 'rgba(255,255,255,0.05)' : 'transparent', marginBottom: '0.35rem' }}>
                <span>🏆</span> {mt.name}
              </div>
           ))}

@@ -3,6 +3,8 @@ import { db, tournaments, registrations } from '@/lib/db';
 import { eq, desc } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 
+import PrintButton from '@/components/admin/PrintButton';
+
 export const dynamic = 'force-dynamic';
 
 export default async function PrintStationPage({ params }: { params: Promise<{ id: string }> }) {
@@ -63,7 +65,7 @@ export default async function PrintStationPage({ params }: { params: Promise<{ i
       <div className="no-print" style={{ padding: '2rem', textAlign: 'center', background: '#05120c', color: 'white' }}>
         <h1 style={{ marginBottom: '1rem' }}>🖨️ TourneyLinks Print Station</h1>
         <p style={{ color: 'var(--mist)' }}>Wait for the pages to render below, then click Print. Make sure "Background Graphics" is enabled in your print dialog.</p>
-        <button className="print-btn no-print" onClick={() => window.print()}>Print All Documents (8.5x11)</button>
+        <PrintButton />
       </div>
 
       <div className="print-container" style={{ padding: '2rem' }}>
