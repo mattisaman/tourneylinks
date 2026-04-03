@@ -66,10 +66,12 @@ export default function SocialMediaHub({ tournament }: { tournament: any }) {
     }
   };
 
-  const profileName = mockConnected[activeNetwork] ? tournament.name : (activeNetwork === 'facebook' ? 'Your Page Name' : 'YourProfile');
-  const profileHandle = mockConnected[activeNetwork] ? `@${tournament.name.replace(/[^a-zA-Z0-9]/g,'').toLowerCase()}` : '@yourhandle';
-  const profileAvatarColor = mockConnected[activeNetwork] ? 'var(--forest)' : '#ccc';
-  const profileAvatarContent = mockConnected[activeNetwork] ? tournament.name.charAt(0).toUpperCase() : '';
+  const profileName = mockConnected[activeNetwork] ? (tournament.courseName || tournament.name) : (activeNetwork === 'facebook' ? 'Your Page Name' : 'YourProfile');
+  const profileHandle = mockConnected[activeNetwork] ? `@${(tournament.courseName || tournament.name).split(' ')[0].toLowerCase()}_golf` : '@yourhandle';
+  const profileAvatarColor = mockConnected[activeNetwork] ? 'transparent' : '#ccc';
+  const profileAvatarContent = mockConnected[activeNetwork] ? (
+     <img src={`https://i.pravatar.cc/150?u=tourneylinks${tournament.id}`} alt="Profile" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+  ) : null;
 
   return (
     <div style={{ background: '#fff', color: '#111', padding: '2rem', borderRadius: '16px', marginBottom: '2rem', border: '1px solid #e5e7eb', boxShadow: '0 4px 15px rgba(0,0,0,0.03)' }}>
