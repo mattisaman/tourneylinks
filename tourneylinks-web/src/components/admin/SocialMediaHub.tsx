@@ -224,12 +224,12 @@ export default function SocialMediaHub({ tournament }: { tournament: any }) {
                  <>
                     <div style={{ padding: '1rem', display: 'flex', gap: '0.75rem', color: '#fff' }}>
                        <div style={{ width: 40, height: 40, borderRadius: '50%', background: mockConnected[activeNetwork] ? 'var(--forest)' : '#333', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', flexShrink: 0 }}>{profileAvatarContent}</div>
-                       <div>
-                          <div style={{ display: 'flex', gap: '0.3rem', alignItems: 'center' }}>
+                       <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ display: 'flex', gap: '0.3rem', alignItems: 'center', flexWrap: 'wrap' }}>
                              <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>{profileName}</div>
                              <div style={{ color: '#71767b', fontSize: '0.9rem' }}>{profileHandle} · 1m</div>
                           </div>
-                          <div style={{ marginTop: '0.2rem', fontSize: '0.95rem', whiteSpace: 'pre-wrap', lineHeight: 1.4 }}>
+                          <div style={{ marginTop: '0.2rem', fontSize: '0.95rem', whiteSpace: 'pre-wrap', wordWrap: 'break-word', lineHeight: 1.4 }}>
                              {customCaptions.x}
                           </div>
                           <div style={{ marginTop: '0.75rem', borderRadius: '16px', overflow: 'hidden', border: '1px solid #2f3336' }}>
