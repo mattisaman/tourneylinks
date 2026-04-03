@@ -5,9 +5,6 @@ import Link from 'next/link';
 
 export default function MobileScorerDemo() {
   const [score1, setScore1] = useState(4);
-  const [score2, setScore2] = useState(4);
-  const [score3, setScore3] = useState(4);
-  const [score4, setScore4] = useState(4);
   const [submitted, setSubmitted] = useState(false);
 
   return (
@@ -31,47 +28,56 @@ export default function MobileScorerDemo() {
         </div>
 
         {/* Scorecard Body */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem', paddingBottom: '6rem' }}>
+        <div style={{ flex: 1, overflowY: 'auto', padding: '1.25rem', paddingBottom: '6rem' }}>
            
-           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-              <div>
-                 <div style={{ fontSize: '2.5rem', fontWeight: 900, color: 'var(--forest)', lineHeight: 1 }}>14</div>
-                 <div style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--mist)' }}>421 yds</div>
+           {/* Hole Navigation & Header */}
+           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <button style={{ background: '#f8faf9', border: '1px solid rgba(0,0,0,0.1)', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontWeight: 900, cursor: 'pointer', color: 'var(--forest)' }}>←</button>
+              
+              <div style={{ textAlign: 'center' }}>
+                 <div style={{ fontSize: '1.8rem', fontWeight: 900, color: 'var(--forest)', lineHeight: 1 }}>Hole 14</div>
+                 <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--mist)', marginTop: '0.2rem' }}>Par 4 • 421 yds</div>
               </div>
-              <div style={{ textAlign: 'right' }}>
-                 <div style={{ fontSize: '0.85rem', color: 'var(--mist)', textTransform: 'uppercase', fontWeight: 800 }}>Par</div>
-                 <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--ink)' }}>4</div>
-              </div>
+
+              <button style={{ background: '#f8faf9', border: '1px solid rgba(0,0,0,0.1)', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontWeight: 900, cursor: 'pointer', color: 'var(--forest)' }}>→</button>
            </div>
 
-           {/* Player Inputs */}
-           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {[
-                 { name: 'Michael Jordan', val: score1, set: setScore1, hcp: 2.1 },
-                 { name: 'Tiger Woods', val: score2, set: setScore2, hcp: 0.0 },
-                 { name: 'Stephen Curry', val: score3, set: setScore3, hcp: 1.1 },
-                 { name: 'Tony Romo', val: score4, set: setScore4, hcp: 0.5 }
-              ].map((p, i) => (
-                 <div key={i} style={{ background: '#fff', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '12px', padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 4px 6px rgba(0,0,0,0.02)' }}>
-                    <div>
-                       <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--ink)' }}>{p.name}</div>
-                       <div style={{ fontSize: '0.7rem', color: 'var(--mist)' }}>HCP: {p.hcp}</div>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-                       <button 
-                          onClick={() => p.set(Math.max(1, p.val - 1))}
-                          style={{ width: '36px', height: '36px', borderRadius: '50%', border: '1px solid rgba(0,0,0,0.1)', background: '#f8faf9', color: 'var(--forest)', fontSize: '1.2rem', fontWeight: 600, display: 'flex', justifyContent: 'center', alignItems: 'center', cursor: 'pointer' }}
-                       >-</button>
-                       <div style={{ fontSize: '1.4rem', fontWeight: 800, width: '30px', textAlign: 'center', color: p.val < 4 ? 'var(--gold)' : (p.val > 4 ? '#ff4d4f' : 'var(--ink)') }}>
-                          {p.val}
-                       </div>
-                       <button 
-                          onClick={() => p.set(Math.min(15, p.val + 1))}
-                          style={{ width: '36px', height: '36px', borderRadius: '50%', border: 'none', background: 'var(--forest)', color: '#fff', fontSize: '1.2rem', fontWeight: 600, display: 'flex', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', boxShadow: '0 2px 4px rgba(26,46,26,0.2)' }}
-                       >+</button>
-                    </div>
-                 </div>
-              ))}
+           {/* Live Leaderboard / GPS Action Row */}
+           <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem' }}>
+               <div style={{ flex: 1, background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.2)', padding: '0.6rem', borderRadius: '8px', textAlign: 'center' }}>
+                   <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', color: 'var(--mist)', fontWeight: 700 }}>Current Standing</div>
+                   <div style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--gold)' }}>T-1st (-14)</div>
+               </div>
+               <div style={{ flex: 1, background: '#f8faf9', border: '1px solid rgba(0,0,0,0.1)', padding: '0.6rem', borderRadius: '8px', textAlign: 'center', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', cursor: 'pointer' }}>
+                   <div style={{ fontSize: '1rem' }}>📍</div>
+                   <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--forest)', marginTop: '0.1rem' }}>Course GPS</div>
+               </div>
+           </div>
+
+           {/* Team Scramble Input */}
+           <div style={{ background: '#fff', border: '2px solid var(--forest)', borderRadius: '16px', padding: '1.5rem', textAlign: 'center', boxShadow: '0 8px 20px rgba(26,46,26,0.08)' }}>
+               <div style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 800, color: 'var(--mist)', marginBottom: '1rem' }}>Team Score</div>
+               
+               <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1.5rem' }}>
+                   <button 
+                      onClick={() => setScore1(Math.max(1, score1 - 1))}
+                      style={{ width: '50px', height: '50px', borderRadius: '50%', border: '1px solid rgba(0,0,0,0.1)', background: '#f8faf9', color: 'var(--forest)', fontSize: '1.5rem', fontWeight: 600, display: 'flex', justifyContent: 'center', alignItems: 'center', cursor: 'pointer' }}
+                   >-</button>
+
+                   <div style={{ fontSize: '3.5rem', fontWeight: 900, width: '60px', textAlign: 'center', color: score1 < 4 ? 'var(--gold)' : (score1 > 4 ? '#ff4d4f' : 'var(--ink)'), lineHeight: 1 }}>
+                      {score1}
+                   </div>
+
+                   <button 
+                      onClick={() => setScore1(Math.min(15, score1 + 1))}
+                      style={{ width: '50px', height: '50px', borderRadius: '50%', border: 'none', background: 'var(--forest)', color: '#fff', fontSize: '1.5rem', fontWeight: 600, display: 'flex', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', boxShadow: '0 4px 8px rgba(26,46,26,0.2)' }}
+                   >+</button>
+               </div>
+               
+               {/* Team Roster Reference */}
+               <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid rgba(0,0,0,0.05)', fontSize: '0.75rem', color: 'var(--mist)', fontWeight: 600 }}>
+                   M. Jordan • T. Woods • S. Curry • T. Romo
+               </div>
            </div>
         </div>
 
