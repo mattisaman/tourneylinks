@@ -90,10 +90,25 @@ export default function SocialMediaHub({ tournament }: { tournament: any }) {
 
           {/* Column 2: Editor & Auth */}
           <div style={{ background: '#f9fafb', borderRadius: '12px', padding: '1.5rem', border: '1px solid #e5e7eb', display: 'flex', flexDirection: 'column', position: 'relative' }}>
-             <label style={{ display: 'block', color: 'var(--forest)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem', fontWeight: 700 }}>Edit Caption Live</label>
+             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '0.5rem' }}>
+                <label style={{ color: 'var(--forest)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 700 }}>Edit Caption Live</label>
+                <div style={{ display: 'flex', gap: '0.2rem', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '6px', padding: '0.25rem 0.5rem' }}>
+                   {['⛳', '🏌️‍♂️', '🏆', '🚨', '📅', '📍', '👀', '👇'].map(emoji => (
+                      <button 
+                         key={emoji} 
+                         onClick={() => setCustomCaptions(prev => ({ ...prev, [activeNetwork]: prev[activeNetwork] + emoji }))} 
+                         style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', padding: '0.2rem' }}
+                         title={`Insert ${emoji}`}
+                      >
+                         {emoji}
+                      </button>
+                   ))}
+                </div>
+             </div>
              <textarea 
                 value={customCaptions[activeNetwork]}
                 onChange={(e) => setCustomCaptions({ ...customCaptions, [activeNetwork]: e.target.value })}
+                placeholder="Type your social media caption here... Note: Social networks do not support bold/italics HTML, only plain text and emojis!"
                 style={{ width: '100%', flex: 1, background: '#fff', color: '#111', border: '1px solid #d1d5db', borderRadius: '8px', padding: '1rem', fontFamily: 'inherit', lineHeight: 1.5, resize: 'none', marginBottom: '1.5rem', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)' }}
              />
              
