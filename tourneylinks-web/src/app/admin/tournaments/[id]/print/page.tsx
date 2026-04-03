@@ -4,6 +4,7 @@ import { eq, desc } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 
 import PrintButton from '@/components/admin/PrintButton';
+import SocialMediaHub from '@/components/admin/SocialMediaHub';
 
 export const dynamic = 'force-dynamic';
 
@@ -63,12 +64,120 @@ export default async function PrintStationPage({ params }: { params: Promise<{ i
       `}} />
 
       <div className="no-print" style={{ padding: '2rem', textAlign: 'center', background: '#05120c', color: 'white' }}>
-        <h1 style={{ marginBottom: '1rem' }}>🖨️ TourneyLinks Print Station</h1>
-        <p style={{ color: 'var(--mist)' }}>Wait for the pages to render below, then click Print. Make sure "Background Graphics" is enabled in your print dialog.</p>
+        <h1 style={{ marginBottom: '1rem' }}>🖨️ TourneyLinks Print & Post Hub</h1>
+        <p style={{ color: 'var(--mist)', marginBottom: '2rem' }}>Wait for the pages to render below, then click Print. Make sure "Background Graphics" is enabled in your print dialog.</p>
+        
+        {/* The new Social Media action center blocks out the top area before rendering the PDF previews */}
+        <div style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'left' }}>
+           <SocialMediaHub tournament={tourney} />
+        </div>
+
         <PrintButton />
       </div>
 
-      <div className="print-container" style={{ padding: '2rem' }}>
+      <div className="print-container" style={{ padding: '2rem', background: '#f4f3ef' }}>
+        
+        {/* --- NEW: SPONSORSHIP PROMOTIONAL FLYER --- */}
+        <div className="sheet page-break" style={{ padding: 0, border: '1px solid #ccc' }}>
+           <div style={{ minHeight: '30vh', background: 'linear-gradient(to bottom, var(--forest), #112211)', color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem', textAlign: 'center' }}>
+              <div style={{ textTransform: 'uppercase', letterSpacing: '0.2em', color: 'var(--gold)', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 700 }}>Charity Golf Tournament</div>
+              <h1 style={{ fontSize: '3.5rem', fontFamily: "'Playfair Display', serif", margin: '0.5rem 0', lineHeight: 1.1 }}>{tourney.name}</h1>
+              <div style={{ fontSize: '1.2rem', opacity: 0.9, marginTop: '1rem' }}>Benefiting local charities. Hosted at {tourney.courseName}.</div>
+           </div>
+
+           <div style={{ padding: '3rem' }}>
+              <h2 style={{ textAlign: 'center', color: 'var(--forest)', fontSize: '2rem', marginBottom: '2rem', borderBottom: '2px solid var(--gold)', paddingBottom: '1rem', display: 'inline-block', width: '100%' }}>
+                 Sponsorship Opportunities
+              </h2>
+              <p style={{ textAlign: 'center', fontStyle: 'italic', color: '#555', marginBottom: '3rem' }}>
+                 Become a sponsor and join us in making an impact in our local community.
+              </p>
+
+              {/* Dynamic Tiers based on current standards */}
+              <div style={{ display: 'grid', gap: '1.5rem' }}>
+                 <div style={{ background: '#faf9f6', borderLeft: '8px solid var(--gold)', padding: '1.5rem 2rem' }}>
+                    <h3 style={{ fontSize: '1.5rem', color: 'var(--forest)', margin: 0, display: 'flex', justifyContent: 'space-between' }}>
+                       <span>Hole Sponsor</span>
+                       <span style={{ color: '#000', fontWeight: 800 }}>$150</span>
+                    </h3>
+                    <ul style={{ margin: '1rem 0 0 0', paddingLeft: '1.5rem', color: '#444' }}>
+                       <li>Yard Sign at Specific Hole</li>
+                       <li>Online Recognition on GPS Dashboard</li>
+                    </ul>
+                 </div>
+
+                 <div style={{ background: '#faf9f6', borderLeft: '8px solid var(--gold)', padding: '1.5rem 2rem' }}>
+                    <h3 style={{ fontSize: '1.5rem', color: 'var(--forest)', margin: 0, display: 'flex', justifyContent: 'space-between' }}>
+                       <span>Silver Sponsor</span>
+                       <span style={{ color: '#000', fontWeight: 800 }}>$750</span>
+                    </h3>
+                    <ul style={{ margin: '1rem 0 0 0', paddingLeft: '1.5rem', color: '#444' }}>
+                       <li>Complimentary Foursome Entry</li>
+                       <li>Big Screen Recognition</li>
+                       <li>Yard Sign at Specific Hole</li>
+                    </ul>
+                 </div>
+
+                 <div style={{ background: '#faf9f6', borderLeft: '8px solid var(--forest)', padding: '1.5rem 2rem' }}>
+                    <h3 style={{ fontSize: '1.5rem', color: 'var(--forest)', margin: 0, display: 'flex', justifyContent: 'space-between' }}>
+                       <span>Title Executive Sponsor</span>
+                       <span style={{ color: '#000', fontWeight: 800 }}>$2,500</span>
+                    </h3>
+                    <ul style={{ margin: '1rem 0 0 0', paddingLeft: '1.5rem', color: '#444' }}>
+                       <li>Premium Large Banner Placement at Check-In</li>
+                       <li>Complimentary Two Foursome Entries</li>
+                       <li>Digital App Takeover Logo</li>
+                       <li>Exclusive Dinner Recognition</li>
+                    </ul>
+                 </div>
+              </div>
+
+              <div style={{ marginTop: 'auto', textAlign: 'center', paddingTop: '4rem' }}>
+                 <div style={{ fontWeight: 800, fontSize: '1.2rem' }}>Register securely online at:</div>
+                 <div style={{ color: 'var(--forest)', fontSize: '1.5rem', marginTop: '0.5rem' }}>tourneylinks.com/t/{tourney.id}</div>
+              </div>
+           </div>
+        </div>
+
+        {/* --- NEW: REGISTRANT WALK-UP LEDGER --- */}
+        <div className="sheet page-break" style={{ padding: '0.5in', border: '1px solid #ccc' }}>
+           <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: '2.5rem', color: 'var(--forest)' }}>Registrant Walk-Up Ledger</h1>
+           <p style={{ color: '#666', borderBottom: '2px solid #000', paddingBottom: '1rem', marginBottom: '2rem' }}>
+             {tourney.name} • {players.length} Total Registrants
+           </p>
+
+           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.8rem' }}>
+              <thead>
+                <tr style={{ background: '#eee' }}>
+                   <th style={{ padding: '0.75rem', border: '1px solid #ddd' }}>Player Name</th>
+                   <th style={{ padding: '0.75rem', border: '1px solid #ddd' }}>Flight / Team</th>
+                   <th style={{ padding: '0.75rem', border: '1px solid #ddd' }}>HDCP</th>
+                   <th style={{ padding: '0.75rem', border: '1px solid #ddd' }}>Add-Ons Purchased</th>
+                   <th style={{ padding: '0.75rem', border: '1px solid #ddd' }}>Payment Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {players.map((p, i) => (
+                  <tr key={i} style={{ borderBottom: '1px solid #ddd' }}>
+                     <td style={{ padding: '0.75rem', border: '1px solid #ddd', fontWeight: 600 }}>{p.name}</td>
+                     <td style={{ padding: '0.75rem', border: '1px solid #ddd' }}>{p.assignedTeam ? `Team ${p.assignedTeam}` : 'Unassigned'}</td>
+                     <td style={{ padding: '0.75rem', border: '1px solid #ddd' }}>{p.handicap || 'N/A'}</td>
+                     <td style={{ padding: '0.75rem', border: '1px solid #ddd' }}>
+                        {/* Mocking Add-On purchases which would normally be parsed from db JSON */}
+                        {i % 4 === 0 ? '2x Mulligans' : i % 7 === 0 ? 'Mulligans, Raffle Box' : 'None'}
+                     </td>
+                     <td style={{ padding: '0.75rem', border: '1px solid #ddd' }}>
+                        {/* Status Checkbox System for Door operators */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                           <div style={{ width: '16px', height: '16px', border: '1px solid #000', background: i % 5 !== 0 ? '#4ec9a0' : 'transparent' }} />
+                           {i % 5 !== 0 ? 'Paid Online' : <span style={{ color: 'red', fontWeight: 600 }}>Owes $150 Cash</span>}
+                        </div>
+                     </td>
+                  </tr>
+                ))}
+              </tbody>
+           </table>
+        </div>
         
         {/* SECTION 1: CART SIGNS (2 Teams Per Page) */}
         {teamKeys.reduce((result: number[][], item, index) => {

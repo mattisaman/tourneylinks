@@ -91,6 +91,8 @@ export default function AdminSidebar({ tournamentId, mockTournaments }: { tourna
           <a href="#private-link" onClick={(e) => navClick('private-link', e)} style={getNavStyle('private-link')}><span>🔒</span> Private Pre-Link</a>
           <a href="#notifications" onClick={(e) => navClick('notifications', e)} style={getNavStyle('notifications')}><span>📢</span> Mass Notifications</a>
           <Link href={`/host?tournamentId=${tournamentId}`} style={{ ...getNavStyle('builder'), color: 'rgba(255,255,255,0.5)', borderLeft: '4px solid transparent' }}><span>✏️</span> Edit Campaign</Link>
+          <div className="dash-section-label" style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '2rem', marginBottom: '0.8rem', paddingLeft: '1rem' }}>Game Day Ops</div>
+          <Link href={`/admin/tournaments/${tournamentId}/print`} style={{ ...getNavStyle('print'), color: 'rgba(255,255,255,0.5)', borderLeft: '4px solid transparent' }}><span>🖨️</span> Print & Post Hub</Link>
           
           <div className="dash-section-label" style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '2rem', marginBottom: '0.8rem', paddingLeft: '1rem' }}>Advanced Engine</div>
           <Link href={`/admin/tournaments/${tournamentId}/advanced`} style={{ ...getNavStyle('advanced'), color: 'rgba(255,255,255,0.5)', borderLeft: '4px solid transparent' }}><span>⛳</span> Geospatial Settings</Link>
