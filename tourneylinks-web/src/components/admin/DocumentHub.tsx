@@ -265,6 +265,7 @@ export default function DocumentHub({
                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.8rem' }}>
                   <thead>
                     <tr style={{ background: '#eee' }}>
+                       <th style={{ padding: '0.75rem', border: '1px solid #ddd', width: '60px', textAlign: 'center' }}>Here</th>
                        <th style={{ padding: '0.75rem', border: '1px solid #ddd' }}>Player Name</th>
                        <th style={{ padding: '0.75rem', border: '1px solid #ddd' }}>Flight / Team</th>
                        <th style={{ padding: '0.75rem', border: '1px solid #ddd' }}>HDCP</th>
@@ -275,6 +276,9 @@ export default function DocumentHub({
                   <tbody>
                     {displayPlayers.map((p, i) => (
                       <tr key={p.id || i} style={{ borderBottom: '1px solid #ddd' }}>
+                         <td style={{ padding: '0.75rem', border: '1px solid #ddd', textAlign: 'center' }}>
+                            <div style={{ width: '20px', height: '20px', border: '2px solid #ccc', borderRadius: '4px', margin: '0 auto' }}></div>
+                         </td>
                          <td style={{ padding: '0.75rem', border: '1px solid #ddd', fontWeight: 600 }}>{p.name}</td>
                          <td style={{ padding: '0.75rem', border: '1px solid #ddd' }}>{p.assignedTeam ? `Team ${p.assignedTeam}` : 'Unassigned'}</td>
                          <td style={{ padding: '0.75rem', border: '1px solid #ddd' }}>{p.handicap || 'N/A'}</td>

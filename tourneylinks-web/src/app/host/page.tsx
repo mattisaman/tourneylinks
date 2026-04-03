@@ -82,12 +82,19 @@ export default function HostLiveCampaignBuilder() {
                 setDesc(data.description || '');
                 if (data.format) setSelectedFormat(data.format);
                 if (data.isPrivate !== undefined) setSelectedVis(data.isPrivate ? 'private' : 'public');
+                
                 if (data.heroImages) {
                    try {
-                     const imgs = JSON.parse(data.heroImages);
-                     if (imgs && imgs.length > 0) setHeroImage(imgs[0]);
-                   } catch(e) {}
+                     const imgs = typeof data.heroImages === 'string' && data.heroImages.startsWith('[') ? JSON.parse(data.heroImages) : data.heroImages;
+                     if (Array.isArray(imgs) && imgs.length > 0) setHeroImage(imgs[0]);
+                     else if (typeof imgs === 'string') setHeroImage(imgs);
+                   } catch(e) {
+                     setHeroImage(data.heroImages);
+                   }
+                } else if (data.heroImageUrl) {
+                   setHeroImage(data.heroImageUrl);
                 }
+                
                 if (data.themeColor) setThemeColor(data.themeColor);
                 if (data.secondaryThemeColor) setSecondaryThemeColor(data.secondaryThemeColor);
              }
