@@ -130,9 +130,14 @@ export default function SocialMediaHub({ tournament }: { tournament: any }) {
                     {isConnecting ? 'Authenticating...' : `Connect ${activeNetwork.charAt(0).toUpperCase() + activeNetwork.slice(1)} Account`}
                  </button>
              ) : (
-                 <button style={{ padding: '1rem', background: 'linear-gradient(45deg, var(--gold), #e6c86e)', color: '#000', fontWeight: 800, border: 'none', borderRadius: '8px', cursor: 'pointer' }}>
-                    Post Live to {activeNetwork.charAt(0).toUpperCase() + activeNetwork.slice(1)} Now 🚀
-                 </button>
+                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'center', color: '#059669', fontSize: '0.8rem', fontWeight: 600, background: '#ecfdf5', padding: '0.5rem', borderRadius: '6px', border: '1px solid #d1fae5' }}>
+                       🟢 Successfully connected to {activeNetwork.charAt(0).toUpperCase() + activeNetwork.slice(1)}
+                    </div>
+                    <button onClick={() => alert('This will trigger the Live API flow once production OAuth keys are installed.')} style={{ padding: '1rem', background: 'linear-gradient(45deg, var(--gold), #e6c86e)', color: '#000', fontWeight: 800, border: 'none', borderRadius: '8px', cursor: 'pointer', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}>
+                       Post Live to {activeNetwork.charAt(0).toUpperCase() + activeNetwork.slice(1)} Now 🚀
+                    </button>
+                 </div>
              )}
           </div>
 
