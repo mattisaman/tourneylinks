@@ -66,6 +66,11 @@ export default function SocialMediaHub({ tournament }: { tournament: any }) {
     }
   };
 
+  const profileName = mockConnected[activeNetwork] ? tournament.name : (activeNetwork === 'facebook' ? 'Your Page Name' : 'YourProfile');
+  const profileHandle = mockConnected[activeNetwork] ? `@${tournament.name.replace(/[^a-zA-Z0-9]/g,'').toLowerCase()}` : '@yourhandle';
+  const profileAvatarColor = mockConnected[activeNetwork] ? 'var(--forest)' : '#ccc';
+  const profileAvatarContent = mockConnected[activeNetwork] ? tournament.name.charAt(0).toUpperCase() : '';
+
   return (
     <div style={{ background: '#fff', color: '#111', padding: '2rem', borderRadius: '16px', marginBottom: '2rem', border: '1px solid #e5e7eb', boxShadow: '0 4px 15px rgba(0,0,0,0.03)' }}>
        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
@@ -180,14 +185,14 @@ export default function SocialMediaHub({ tournament }: { tournament: any }) {
               {activeNetwork === 'instagram' && (
                  <>
                     <div style={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', borderBottom: '1px solid #efefef', color: '#000' }}>
-                       <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#ccc' }}></div>
-                       <div style={{ fontWeight: 600, fontSize: '0.85rem' }}>YourProfile</div>
+                       <div style={{ width: 32, height: 32, borderRadius: '50%', background: profileAvatarColor, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>{profileAvatarContent}</div>
+                       <div style={{ fontWeight: 600, fontSize: '0.85rem' }}>{profileName}</div>
                     </div>
                     <div style={{ height: '250px', ...heroStyle, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', textAlign: 'center', padding: '1rem' }}>
                        {!activeImage && <h2 style={{ fontFamily: 'serif', fontSize: '1.5rem', color: 'var(--gold)' }}>{tournament.name}</h2>}
                     </div>
                     <div style={{ padding: '1rem', color: '#000', fontSize: '0.8rem', flex: 1, overflowY: 'auto' }}>
-                       <div style={{ fontWeight: 600, marginBottom: '0.2rem' }}>YourProfile</div>
+                       <div style={{ fontWeight: 600, marginBottom: '0.2rem' }}>{profileName}</div>
                        <div style={{ whiteSpace: 'pre-wrap' }}>{customCaptions.instagram}</div>
                     </div>
                  </>
@@ -197,9 +202,9 @@ export default function SocialMediaHub({ tournament }: { tournament: any }) {
               {activeNetwork === 'facebook' && (
                  <>
                     <div style={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#050505' }}>
-                       <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#ccc' }}></div>
+                       <div style={{ width: 36, height: 36, borderRadius: '50%', background: profileAvatarColor, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>{profileAvatarContent}</div>
                        <div>
-                          <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>Your Page Name</div>
+                          <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>{profileName}</div>
                           <div style={{ fontSize: '0.75rem', color: '#65676B' }}>Just now · 🌎</div>
                        </div>
                     </div>
@@ -216,11 +221,11 @@ export default function SocialMediaHub({ tournament }: { tournament: any }) {
               {activeNetwork === 'x' && (
                  <>
                     <div style={{ padding: '1rem', display: 'flex', gap: '0.75rem', color: '#fff' }}>
-                       <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#333', flexShrink: 0 }}></div>
+                       <div style={{ width: 40, height: 40, borderRadius: '50%', background: mockConnected[activeNetwork] ? 'var(--forest)' : '#333', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', flexShrink: 0 }}>{profileAvatarContent}</div>
                        <div>
                           <div style={{ display: 'flex', gap: '0.3rem', alignItems: 'center' }}>
-                             <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>YourProfile</div>
-                             <div style={{ color: '#71767b', fontSize: '0.9rem' }}>@yourhandle · 1m</div>
+                             <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>{profileName}</div>
+                             <div style={{ color: '#71767b', fontSize: '0.9rem' }}>{profileHandle} · 1m</div>
                           </div>
                           <div style={{ marginTop: '0.2rem', fontSize: '0.95rem', whiteSpace: 'pre-wrap', lineHeight: 1.4 }}>
                              {customCaptions.x}
