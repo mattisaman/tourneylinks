@@ -2,11 +2,12 @@
 import React, { useState } from 'react';
 import { Upload, CheckCircle2, Loader2, Sparkles } from 'lucide-react';
 
-export default function AIScorecardUploader({ courseId }: { courseId: number }) {
+export default function AIScorecardUploader({ courseId, initialScorecards }: { courseId: number, initialScorecards?: any[] }) {
   const [isUploading, setIsUploading] = useState(false);
   const [isScanning, setIsScanning] = useState(false);
   const [scorecardUrl, setScorecardUrl] = useState('');
-  const [resultCount, setResultCount] = useState(0);
+  const [resultCount, setResultCount] = useState(initialScorecards?.length || 0);
+  const [resultPayload, setResultPayload] = useState<any[]>(initialScorecards || []);
 
   const handleSimulatedUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
@@ -34,6 +35,7 @@ export default function AIScorecardUploader({ courseId }: { courseId: number }) 
       const data = await res.json();
       if (data.success) {
         setResultCount(data.count || 1);
+        if (data.payload) setResultPayload(data.payload);
       }
     } catch(e) {
       console.error(e);
@@ -53,7 +55,7 @@ export default function AIScorecardUploader({ courseId }: { courseId: number }) 
 
        {resultCount > 0 ? (
           <div style={{ animation: 'fadeIn 0.5s' }}>
-             <div style={{ background: 'rgba(46,125,50,0.1)', color: '#2e7d32', padding: '1.5rem', borderRadius: '8px', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '1rem', fontWeight: 600 }}>
+             <div style={{ background: 'rgba(46,125,50,0.1)', color: '#2e7d32', padding: '1.5rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', fontWeight: 600 }}>
                <CheckCircle2 size={32} /> 
                <div>
                   <div>Matrix Extraction Complete</div>
@@ -61,7 +63,23 @@ export default function AIScorecardUploader({ courseId }: { courseId: number }) 
                </div>
              </div>
 
-             <button onClick={() => {setResultCount(0); setScorecardUrl('');}} className="btn-hero-outline" style={{ marginTop: '1.5rem', fontSize: '0.8rem', padding: '0.5rem 1rem', borderColor: 'var(--mist)', color: '#333' }}>
+             {resultPayload.map((box, idx) => (
+                <div key={idx} style={{ marginBottom: '1rem' }}>
+                   <div style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.5rem', color: '#333' }}>{box.teeBoxName} Tees</div>
+                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(19, 1fr)', gap: '1px', background: '#e0e0e0', border: '1px solid #ccc', borderRadius: '4px', overflowX: 'auto', fontSize: '9px', textAlign: 'center', fontWeight: 'bold' }}>
+                      <div style={{ background: '#333', color: '#fff', padding: '0.5rem 0' }}>Hole</div>
+                      {box.holes.map((h:any) => <div key={h.hole} style={{ background: '#333', color: '#fff', padding: '0.5rem 0' }}>{h.hole}</div>)}
+                      
+                      <div style={{ background: '#fff', padding: '0.5rem 0' }}>Yard</div>
+                      {box.holes.map((h:any) => <div key={h.hole} style={{ background: '#fff', padding: '0.5rem 0' }}>{h.yardage}</div>)}
+                      
+                      <div style={{ background: '#f5f5f5', padding: '0.5rem 0' }}>Par</div>
+                      {box.holes.map((h:any) => <div key={h.hole} style={{ background: '#f5f5f5', padding: '0.5rem 0' }}>{h.par}</div>)}
+                   </div>
+                </div>
+             ))}
+
+             <button onClick={() => {setResultCount(0); setResultPayload([]); setScorecardUrl('');}} className="btn-hero-outline" style={{ marginTop: '1.5rem', fontSize: '0.8rem', padding: '0.5rem 1rem', borderColor: 'var(--mist)', color: '#333' }}>
                Process Another Asset
              </button>
           </div>

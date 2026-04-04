@@ -2,9 +2,11 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import AIScorecardUploader from './AIScorecardUploader';
+import CourseInbox from './CourseInbox';
+import CourseContracts from './CourseContracts';
 
 export default function CourseDashboardClient({ courseData, isDemo }: { courseData: any[], isDemo: boolean }) {
-  const [activeTab, setActiveTab] = useState<'outings'|'gps'|'analytics'>('outings');
+  const [activeTab, setActiveTab] = useState<'outings'|'gps'|'analytics'|'inbox'|'contracts'>('outings');
 
   // If no courses and Not Demo
   if (!courseData || courseData.length === 0) {
@@ -22,10 +24,9 @@ export default function CourseDashboardClient({ courseData, isDemo }: { courseDa
 
   return (
     <div style={{ minHeight: 'calc(100vh - 80px)', background: '#fafaf5', color: '#1a2e1a', fontFamily: "'DM Sans', sans-serif" }}>
-      <div className="dashboard-wrap" style={{ minHeight: '100%', maxWidth: '1600px', margin: '0 auto', display: 'grid', gridTemplateColumns: '280px 1fr' }}>
+      <div className="dashboard-wrap" style={{ minHeight: '100%', display: 'flex', width: '100%' }}>
         
-        {/* Sidebar */}
-        <div style={{ background: '#05120c', color: '#fff', padding: '2rem 1rem' }}>
+        <div style={{ background: '#05120c', color: '#fff', padding: '2rem 1rem', width: '280px', flexShrink: 0 }}>
           <div style={{ fontWeight: 900, fontSize: '1.25rem', marginBottom: '3rem', letterSpacing: '0.02em', color: '#f5f2ed', padding: '0 0.5rem' }}>
             Tourney<span style={{ color: 'var(--gold)' }}>Links</span> 
             <span style={{ fontSize: '0.7rem', background: 'rgba(212,175,55,0.2)', color: 'var(--gold)', padding: '0.15rem 0.4rem', borderRadius: '2px', marginLeft: '0.5rem' }}>
@@ -53,14 +54,28 @@ export default function CourseDashboardClient({ courseData, isDemo }: { courseDa
             <span>🌐</span> Extended Website
           </div>
           <div 
+             onClick={() => setActiveTab('inbox')}
+             style={{ background: activeTab === 'inbox' ? 'rgba(212,175,55,0.1)' : 'transparent', borderLeft: activeTab === 'inbox' ? '3px solid var(--gold)' : '3px solid transparent', padding: '0.75rem 1.5rem', color: activeTab === 'inbox' ? 'var(--gold)' : 'rgba(255,255,255,0.7)', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', gap: '0.5rem', transition: '0.2s', marginLeft: '-1rem', borderRadius: '0 4px 4px 0' }}>
+            <span>💬</span> Communications
+          </div>
+          <div 
+             onClick={() => setActiveTab('contracts')}
+             style={{ background: activeTab === 'contracts' ? 'rgba(212,175,55,0.1)' : 'transparent', borderLeft: activeTab === 'contracts' ? '3px solid var(--gold)' : '3px solid transparent', padding: '0.75rem 1.5rem', color: activeTab === 'contracts' ? 'var(--gold)' : 'rgba(255,255,255,0.7)', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', gap: '0.5rem', transition: '0.2s', marginLeft: '-1rem', borderRadius: '0 4px 4px 0' }}>
+            <span>📑</span> Agreements
+          </div>
+          <div 
              onClick={() => setActiveTab('analytics')}
              style={{ background: activeTab === 'analytics' ? 'rgba(212,175,55,0.1)' : 'transparent', borderLeft: activeTab === 'analytics' ? '3px solid var(--gold)' : '3px solid transparent', padding: '0.75rem 1.5rem', color: activeTab === 'analytics' ? 'var(--gold)' : 'rgba(255,255,255,0.7)', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', gap: '0.5rem', transition: '0.2s', marginLeft: '-1rem', borderRadius: '0 4px 4px 0' }}>
             <span>📊</span> Revenue Analytics
           </div>
+
+          <Link href={`/courses/${course.id}`} target="_blank" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f2ed', color: '#05120c', padding: '0.75rem', borderRadius: '6px', textDecoration: 'none', fontWeight: 700, fontSize: '0.85rem', margin: '3rem 0.5rem 0 0.5rem', transition: '0.2s' }}>
+             Open Public Profile ↗
+          </Link>
         </div>
 
         {/* Main Content */}
-        <div style={{ padding: '2.5rem 3rem' }}>
+        <div style={{ flex: 1, padding: '2.5rem 3rem', maxWidth: '1400px', margin: '0 auto' }}>
             
             {activeTab === 'outings' && (
               <div style={{ animation: 'fadeIn 0.3s ease-in' }}>
@@ -144,10 +159,59 @@ export default function CourseDashboardClient({ courseData, isDemo }: { courseDa
                             </p>
                         </div>
                         
-                        <AIScorecardUploader courseId={course.id} />
+                        {/* Logo Uploader Block */}
+                        <div style={{ padding: '1.5rem', background: '#fafaf5', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: '2rem' }}>
+                            <div style={{ width: '80px', height: '80px', borderRadius: '12px', backgroundColor: '#fff', border: '2px dashed rgba(201,168,76,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                                {course.logoUrl ? <img src={course.logoUrl} style={{objectFit:'contain', width:'100%', height:'100%', padding:'8px'}}/> : <span style={{margin:'auto', color:'var(--mist)', fontSize:'0.75rem'}}>No Logo</span>}
+                            </div>
+                            <div style={{ flex: 1 }}>
+                                <h4 style={{ fontWeight: 800, fontSize: '1.1rem', marginBottom: '0.2rem', color: '#05120c' }}>Venue Branding Asset</h4>
+                                <p style={{ color: 'var(--mist)', fontSize: '0.85rem', marginBottom: '1rem', lineHeight: 1.5 }}>
+                                  Upload your primary transparent SVG or high-resolution PNG to feature on your official Directory card.
+                                </p>
+                                <button className="btn-hero-outline" style={{ fontSize: '0.8rem', padding: '0.5rem 1rem', borderColor: 'var(--mist)', color: '#333' }}>
+                                  Upload Logo File
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div style={{ padding: '1.5rem', background: '#fafaf5', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.05)' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                               <div>
+                                  <h4 style={{ fontWeight: 800, fontSize: '1.1rem', marginBottom: '0.2rem', color: '#05120c' }}>Embed Active Events Calendar</h4>
+                                  <p style={{ color: 'var(--mist)', fontSize: '0.85rem', lineHeight: 1.5 }}>
+                                    Toggle this on to render an interactive calendar on your public Directory page. You can sync standard ICS booking feeds directly.
+                                  </p>
+                               </div>
+                               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                   <div style={{ fontWeight: 600, fontSize: '0.8rem', color: '#2e7d32' }}>Enabled</div>
+                                   <div style={{ width: '40px', height: '24px', background: 'var(--gold)', borderRadius: '12px', position: 'relative', cursor: 'pointer' }}>
+                                      <div style={{ position: 'absolute', right: '2px', top: '2px', width: '20px', height: '20px', background: '#fff', borderRadius: '50%', boxShadow: '0 1px 3px rgba(0,0,0,0.2)' }} />
+                                   </div>
+                               </div>
+                            </div>
+                        </div>
+
+                        <AIScorecardUploader courseId={course.id} initialScorecards={course.scorecards} />
                         
                     </div>
                 </div>
+              </div>
+            )}
+
+            {activeTab === 'inbox' && (
+              <div style={{ animation: 'fadeIn 0.3s ease-in' }}>
+                <h1 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '0.4rem', color: '#05120c' }}>Organizer Inbox</h1>
+                <p style={{ color: 'var(--mist)', fontSize: '1rem', marginBottom: '2.5rem' }}>Directly communicate with Tournament Directors interested in your venue.</p>
+                <CourseInbox courseId={course.id} />
+              </div>
+            )}
+
+            {activeTab === 'contracts' && (
+              <div style={{ animation: 'fadeIn 0.3s ease-in' }}>
+                <h1 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '0.4rem', color: '#05120c' }}>E-Signature Agreements</h1>
+                <p style={{ color: 'var(--mist)', fontSize: '1rem', marginBottom: '2.5rem' }}>Send and track digital execution of all Tournament Contracts directly in TourneyLinks.</p>
+                <CourseContracts courseId={course.id} />
               </div>
             )}
 
@@ -172,7 +236,48 @@ export default function CourseDashboardClient({ courseData, isDemo }: { courseDa
                        <div style={{ fontSize: '2.5rem', fontWeight: 900, marginTop: '0.5rem', color: '#2e7d32' }}>$142,500</div>
                        <div style={{ fontSize: '0.85rem', color: 'var(--mist)', marginTop: '0.2rem' }}>Gross transactional volume</div>
                     </div>
-                </div>
+                 </div>
+
+                 {/* PRICING VARIABLES CONTROL */}
+                 <div style={{ marginTop: '2.5rem', padding: '1.5rem', background: '#fff', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
+                       <div style={{ fontWeight: 900, fontSize: '1.1rem' }}>Global Pricing Parameters</div>
+                    </div>
+                    
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem' }}>
+                       <div>
+                          <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: 'var(--mist)', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Core Player Fee</label>
+                          <div style={{ position: 'relative' }}>
+                             <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', fontWeight: 700, color: '#111' }}>$</span>
+                             <input type="number" defaultValue={course.basePricePerPlayer || 100} style={{ padding: '0.75rem 1rem 0.75rem 2rem', border: '1px solid #ccc', borderRadius: '4px', width: '100%', fontWeight: 700, fontSize: '1rem' }} />
+                          </div>
+                          <p style={{ fontSize: '0.7rem', color: 'var(--mist)', marginTop: '0.4rem', lineHeight: 1.4 }}>Base 18-hole greens fee per player</p>
+                       </div>
+                       
+                       <div>
+                          <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: 'var(--mist)', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Cart Fee</label>
+                          <div style={{ position: 'relative' }}>
+                             <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', fontWeight: 700, color: '#111' }}>$</span>
+                             <input type="number" defaultValue={course.cartFee || 25} style={{ padding: '0.75rem 1rem 0.75rem 2rem', border: '1px solid #ccc', borderRadius: '4px', width: '100%', fontWeight: 700, fontSize: '1rem' }} />
+                          </div>
+                          <p style={{ fontSize: '0.7rem', color: 'var(--mist)', marginTop: '0.4rem', lineHeight: 1.4 }}>Required rider cart fee</p>
+                       </div>
+
+                       <div>
+                          <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: 'var(--mist)', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Catering Minimum</label>
+                          <div style={{ position: 'relative' }}>
+                             <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', fontWeight: 700, color: '#111' }}>$</span>
+                             <input type="number" defaultValue={course.foodAndBeverageMinimum || 35} style={{ padding: '0.75rem 1rem 0.75rem 2rem', border: '1px solid #ccc', borderRadius: '4px', width: '100%', fontWeight: 700, fontSize: '1rem' }} />
+                          </div>
+                          <p style={{ fontSize: '0.7rem', color: 'var(--mist)', marginTop: '0.4rem', lineHeight: 1.4 }}>Base F&B spend requirement</p>
+                       </div>
+                    </div>
+
+                    <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end', borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '1.5rem' }}>
+                       <button className="btn-primary" style={{ padding: '0.75rem 1.5rem', background: 'var(--gold)', color: '#000', borderRadius: '4px', border: 'none', fontWeight: 800, cursor: 'pointer' }}>Save Parameters</button>   
+                    </div>
+                 </div>
+
               </div>
             )}
 
