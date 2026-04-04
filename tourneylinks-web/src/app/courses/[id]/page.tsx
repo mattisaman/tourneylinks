@@ -120,6 +120,16 @@ export default async function CourseDetailPage(props: { params: Promise<{ id: st
                               <Globe size={14} className="flex-shrink-0" /> Official Website
                            </a>
                          )}
+                         
+                         {!course.claimedByUserId && (
+                           <div className="col-span-1 sm:col-span-2 lg:col-span-1 mt-4 pt-4 border-t border-white/5">
+                              <div className="text-[9px] uppercase tracking-widest text-white/40 mb-2 font-bold">Course Administration</div>
+                              <Link href={`/courses/${course.id}/claim`} className="flex items-center justify-between w-full bg-white/5 hover:bg-[var(--gold)]/10 border border-white/10 hover:border-[var(--gold)]/30 rounded-lg px-4 py-2.5 transition-all text-xs font-bold text-white/80 hover:text-[var(--gold)] group">
+                                <span>Claim Pro Access</span>
+                                <span className="opacity-0 group-hover:opacity-100 transition-opacity">&rarr;</span>
+                              </Link>
+                           </div>
+                         )}
                       </div>
                    </div>
                 </div>

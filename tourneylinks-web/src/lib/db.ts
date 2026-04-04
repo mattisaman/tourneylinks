@@ -34,6 +34,8 @@ export const courses = pgTable('courses', {
   heroImageUrl: text('hero_image_url'),
   rating: real('rating'),
   
+  claimedByUserId: integer('claimed_by_user_id'), // Mapped to users.id once approved
+  
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
   isActive: boolean('is_active').default(true),
@@ -410,4 +412,18 @@ export const live_banter = pgTable('live_banter', {
   authorName: text('author_name').notNull(),
   message: text('message').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+// PHASE 14: PGA Pro Verification & Claiming
+export const course_claims = pgTable('course_claims', {
+  id: serial('id').primaryKey(),
+  courseId: integer('course_id').references(() => courses.id, { onDelete: 'cascade' }).notNull(),
+  userId: integer('user_id').notNull(), // Links to users.id, simplified explicitly to prevent cycle bugs
+  roleTitle: text('role_title').notNull(),
+  directPhone: text('direct_phone'),
+  pgaCardImageUrl: text('pga_card_image_url').notNull(),
+  extractedOcrText: text('extracted_ocr_text'), // AI payload validation mapping
+  status: text('status').default('PENDING').notNull(), // 'PENDING', 'APPROVED', 'REJECTED'
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  reviewedAt: timestamp('reviewed_at'),
 });
