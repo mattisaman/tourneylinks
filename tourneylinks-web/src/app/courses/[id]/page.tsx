@@ -41,7 +41,7 @@ export default async function CourseDetailPage(props: { params: Promise<{ id: st
           {/* NEW CINEMATIC PRESTIGE HERO */}
           <div className="w-full relative border-b border-white/10 overflow-hidden flex flex-col justify-center" style={{ backgroundColor: '#020503', minHeight: '280px' }}>
              {/* Base Image Layer */}
-             <div className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/hero-bg-4.jpg')", opacity: 0.5 }} />
+             <div className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: course.heroImageUrl && course.heroImageUrl !== 'DEFAULT_GRADIENT' ? `url('${course.heroImageUrl}')` : "url('/hero-bg-4.jpg')", opacity: 0.5 }} />
              
              {/* Deep Ambient Mesh */}
              <div className="absolute top-[-10%] right-[-10%] w-[50vw] h-[50vh] rounded-full pointer-events-none z-0" style={{ backgroundColor: 'var(--gold)', opacity: 0.25, filter: 'blur(120px)' }} />
