@@ -50,7 +50,7 @@ export default function DigitalScorecards({ scorecards }: { scorecards: any[] })
           </div>
 
           <div className="w-full overflow-x-auto pb-4">
-             <div className="min-w-[800px] border border-white/10 rounded-xl overflow-hidden bg-[#0A120E] shadow-2xl">
+             <div className="min-w-[800px] border border-white/10 rounded-sm bg-[#0A120E] shadow-2xl">
                  {/* Header Row */}
                  <div className="grid grid-cols-[80px_repeat(9,1fr)_60px_repeat(9,1fr)_60px_80px] bg-black/40 text-[10px] font-bold text-white/50 uppercase tracking-widest text-center border-b border-white/10">
                     <div className="p-3 text-left pl-6">Hole</div>

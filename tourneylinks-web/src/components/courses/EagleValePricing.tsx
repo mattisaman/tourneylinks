@@ -87,7 +87,7 @@ export default function EagleValePricing({ courseName, courseEmail }: { courseNa
                 <div 
                   key={format.id}
                   onClick={() => setSelectedFormat(format.id)}
-                  className="cursor-pointer transition-all duration-300 py-6 mb-2 flex flex-col md:flex-row md:items-center justify-between gap-5 w-full group relative overflow-hidden rounded-lg"
+                  className="cursor-pointer transition-all duration-300 py-6 mb-2 flex flex-col md:flex-row md:items-center justify-between gap-5 w-full group relative overflow-hidden rounded-sm"
                   style={{
                     paddingLeft: '1.5rem',
                     paddingRight: '1.5rem',
@@ -207,7 +207,7 @@ export default function EagleValePricing({ courseName, courseEmail }: { courseNa
 
         {/* RIGHT COLUMN: SHARP ESTIMATOR BAR */}
         <div className="w-full relative min-w-0">
-          <div className="sticky top-[100px] z-20 bg-[#020604] border border-[rgba(255,255,255,0.05)] border-t-[3px] border-t-[var(--gold)] shadow-2xl p-8 lg:p-10 w-full overflow-hidden rounded-xl">
+          <div className="sticky top-[100px] z-20 bg-[#020604] border border-[rgba(255,255,255,0.05)] border-t-[3px] border-t-[var(--gold)] shadow-2xl p-8 lg:p-10 w-full overflow-hidden rounded-sm">
              
              <h3 className="text-xl font-bold text-white mb-8 border-b border-white/10 pb-6 flex items-center gap-3 uppercase tracking-widest pr-2" style={{ fontFamily: 'var(--font-serif)' }}>
                <Calculator size={20} className="text-[var(--gold)] flex-shrink-0" /> Calculator System

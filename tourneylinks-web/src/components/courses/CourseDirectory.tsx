@@ -114,8 +114,14 @@ export default function CourseDirectory() {
                    <div style={{ width: '100%', height: '10px', background: 'var(--gold)', borderTopLeftRadius: '14px', borderTopRightRadius: '14px' }} />
                  )}
 
-                 <div style={{ padding: '1.5rem', flex: 1 }}>
-                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                 <div style={{ padding: '1.5rem', flex: 1, position: 'relative' }}>
+                   {course.logoUrl && (
+                     <div style={{ position: 'absolute', top: course.heroImageUrl ? '-30px' : '-15px', left: '1.5rem', width: '60px', height: '60px', borderRadius: '12px', overflow: 'hidden', border: '4px solid var(--ink)', background: '#fff', boxShadow: '0 4px 12px rgba(0,0,0,0.5)', zIndex: 10 }}>
+                        <img src={course.logoUrl} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '4px' }} alt={`${course.name} Logo`} />
+                     </div>
+                   )}
+                   
+                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem', marginTop: course.logoUrl ? '1rem' : '0' }}>
                      <h3 style={{ fontSize: '1.25rem', fontFamily: "'Clash Display', sans-serif", color: 'var(--white)', margin: 0, lineHeight: 1.2 }}>
                        {course.name}
                      </h3>
@@ -159,7 +165,7 @@ export default function CourseDirectory() {
                }}
                disabled={loading}
                className="btn-hero-outline" 
-               style={{ padding: '0.8rem 3rem', background: loading ? 'rgba(0,0,0,0.05)' : 'transparent', border: '2px solid var(--forest)', color: 'var(--forest)', borderRadius: '25px', fontWeight: 600, cursor: loading ? 'wait' : 'pointer' }}
+               style={{ padding: '0.8rem 3rem', background: loading ? 'rgba(0,0,0,0.05)' : 'transparent', border: '2px solid var(--gold)', color: 'var(--gold)', borderRadius: '25px', fontWeight: 600, cursor: loading ? 'wait' : 'pointer' }}
             >
                {loading ? 'Loading...' : 'Load More Courses'}
             </button>

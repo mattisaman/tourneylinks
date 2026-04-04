@@ -13,7 +13,8 @@ export async function GET(request: Request) {
     const conditions = query ? or(
       ilike(courses.name, `%${query}%`), 
       ilike(courses.city, `%${query}%`),
-      ilike(courses.state, `%${query}%`)
+      ilike(courses.state, `%${query}%`),
+      ilike(courses.zip, `%${query}%`)
     ) : undefined;
 
     const results = await db.select()

@@ -36,6 +36,12 @@ export const courses = pgTable('courses', {
   
   claimedByUserId: text('claimed_by_user_id'), // Mapped to Clerk users.id once approved
   
+  // Phase 2 Pro Hub Config
+  logoUrl: text('logo_url'),
+  basePricePerPlayer: real('base_price_per_player').default(100.00),
+  cartFee: real('cart_fee').default(25.00),
+  foodAndBeverageMinimum: real('food_and_beverage_minimum').default(35.00),
+  
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
   isActive: boolean('is_active').default(true),
@@ -449,4 +455,28 @@ export const course_galleries = pgTable('course_galleries', {
   imageUrl: text('image_url').notNull(),
   caption: text('caption'),
   uploadedAt: timestamp('uploaded_at').defaultNow().notNull(),
+});
+
+// PHASE 16: Pro Hub OS (Messaging & Contracts)
+export const course_messages = pgTable('course_messages', {
+  id: serial('id').primaryKey(),
+  courseId: integer('course_id').references(() => courses.id, { onDelete: 'cascade' }).notNull(),
+  senderUserId: text('sender_user_id').notNull(), // Clerk User ID (could be pro or organizer)
+  senderRole: text('sender_role').notNull(), // 'PRO' or 'ORGANIZER'
+  receiverUserId: text('receiver_user_id').notNull(),
+  message: text('message').notNull(),
+  isRead: boolean('is_read').default(false).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const course_contracts = pgTable('course_contracts', {
+  id: serial('id').primaryKey(),
+  courseId: integer('course_id').references(() => courses.id, { onDelete: 'cascade' }).notNull(),
+  tournamentId: integer('tournament_id').references(() => tournaments.id, { onDelete: 'cascade' }), // Optional if pre-booking
+  documentUrl: text('document_url').notNull(),
+  title: text('title').notNull(),
+  status: text('status').default('DRAFT').notNull(), // 'DRAFT', 'SENT', 'SIGNED'
+  uploadedByUserId: text('uploaded_by_user_id').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });

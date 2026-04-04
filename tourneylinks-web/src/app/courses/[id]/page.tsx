@@ -9,9 +9,7 @@ import { MapPin, Phone, Globe, ChevronLeft, Map, Flag } from 'lucide-react';
 import FavoriteButton from './FavoriteButton';
 import { getIsFavorited } from '@/app/actions/favoriteCourse';
 import { getUserId } from '@/lib/auth-util';
-import EagleValePricing from '@/components/courses/EagleValePricing';
-import DigitalScorecards from '@/components/courses/DigitalScorecards';
-
+import CourseProfileClient from '@/components/courses/CourseProfileClient';
 export const dynamic = 'force-dynamic';
 
 export default async function CourseDetailPage(props: { params: Promise<{ id: string }> }) {
@@ -45,7 +43,7 @@ export default async function CourseDetailPage(props: { params: Promise<{ id: st
       <main className="flex-1 w-full">
           {/* NEW CINEMATIC PRESTIGE HERO */}
           {/* NEW CINEMATIC PRESTIGE HERO */}
-          <div className="w-full relative border-b border-white/10 overflow-hidden flex flex-col justify-end" style={{ backgroundColor: '#020503', minHeight: '450px' }}>
+          <div className="w-full relative border-b border-white/10 overflow-hidden flex flex-col justify-end" style={{ backgroundColor: '#020503', minHeight: '500px' }}>
              {/* Base Image Layer - Vibrant Golf Course! */}
              <div className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: course.heroImageUrl && course.heroImageUrl !== 'DEFAULT_GRADIENT' ? `url('${course.heroImageUrl}')` : "url('/hero-bg-4.jpg')", opacity: 0.95 }} />
              
@@ -142,77 +140,7 @@ export default async function CourseDetailPage(props: { params: Promise<{ id: st
              </div>
           </div>
 
-          <div className="w-full bg-[#050B08]">
-             {/* Guest Policy Band */}
-             {course.guestPolicy && (
-               <div className="w-full border-b border-[rgba(255,255,255,0.03)] bg-[#020604]">
-                 <div className="w-full flex flex-col md:flex-row lg:items-center gap-4 lg:gap-12" style={{ maxWidth: '1300px', margin: '0 auto', paddingLeft: 'clamp(2rem, 5vw, 4rem)', paddingRight: 'clamp(2rem, 5vw, 4rem)', paddingBottom: '2rem', paddingTop: '2rem' }}>
-                   <h3 className="text-[var(--gold)] font-black uppercase tracking-widest text-[10px] flex-shrink-0">Guest Policy</h3>
-                   <p className="text-white/70 text-sm leading-relaxed max-w-4xl">{course.guestPolicy}</p>
-                 </div>
-               </div>
-             )}
-
-             {/* Digital Scorecard Injection */}
-             <DigitalScorecards scorecards={scorecards} />
-
-             {/* Builder Module */}
-             <div className="w-full relative z-30">
-               {course.id === 10619 ? (
-                 <EagleValePricing courseName={course.name} courseEmail={course.email || 'info@eaglevale.com'} />
-               ) : (
-                 <div className="w-full" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '8rem 2rem', background: 'linear-gradient(180deg, rgba(2,6,4,0) 0%, rgba(20,35,20,0.6) 50%, rgba(2,6,4,0) 100%)', position: 'relative', borderTop: '1px solid rgba(255,255,255,0.03)', borderBottom: '1px solid rgba(255,255,255,0.03)', marginTop: '2rem' }}>
-                    <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '800px', height: '800px', background: 'radial-gradient(circle, rgba(201,168,76,0.05) 0%, transparent 70%)', pointerEvents: 'none', zIndex: 0 }} />
-                    
-                    <h2 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', fontFamily: "'Clash Display', sans-serif", fontWeight: 600, color: 'var(--white)', marginBottom: '1.5rem', position: 'relative', zIndex: 10, letterSpacing: '-0.02em' }}>
-                      Host at <span style={{ color: 'var(--gold)' }}>{course.name}</span>
-                    </h2>
-                    
-                    <p style={{ fontSize: '1.25rem', color: 'rgba(255,255,255,0.6)', maxWidth: '750px', lineHeight: 1.7, marginBottom: '3.5rem', position: 'relative', zIndex: 10 }}>
-                      Bring your tournament to life on these pristine fairways. We streamline the registration and management process, delivering a premium, transparent experience for organizers and players alike.
-                    </p>
-                    
-                    <a href={`mailto:${course.email || 'info@tourneylinks.com'}`} className="gold-foil-hover hover:brightness-125" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: '1.4rem 3.5rem', background: 'rgba(201,168,76,0.05)', border: '1px solid rgba(201,168,76,0.3)', color: 'var(--gold)', letterSpacing: '0.2em', textTransform: 'uppercase', fontSize: '0.9rem', fontWeight: 600, transition: 'all 0.3s ease', position: 'relative', zIndex: 10, textDecoration: 'none' }}>
-                      Contact Director &rarr;
-                    </a>
-                 </div>
-               )}
-             </div>
-          </div>
-
-          {/* PHASE 41: THE LOCAL ECOSYSTEM LOOP */}
-          {hostedTournaments.length > 0 && (
-            <div style={{ marginTop: '4rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
-                <h2 style={{ fontSize: '1.8rem', color: 'var(--white)', fontWeight: 600, fontFamily: "'Clash Display', sans-serif" }}>
-                  Active Tournaments
-                </h2>
-                <span style={{ background: 'rgba(212,175,55,0.1)', color: 'var(--gold)', padding: '0.4rem 1rem', borderRadius: '50px', fontSize: '0.8rem', fontWeight: 700 }}>
-                  {hostedTournaments.length} Event{hostedTournaments.length !== 1 ? 's' : ''}
-                </span>
-              </div>
-              
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
-                {hostedTournaments.map((t) => (
-                  <Link href={`/tournaments/${t.id}`} key={t.id} style={{ textDecoration: 'none' }}>
-                    <div className="hover:-translate-y-1 hover:shadow-xl hover:shadow-[rgba(212,175,55,0.1)]" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px', padding: '1.5rem', cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}>
-                      <div style={{ fontSize: '0.8rem', color: 'var(--gold)', fontWeight: 600, marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                        {new Date(t.dateStart).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                      </div>
-                      <h3 style={{ color: 'var(--white)', fontSize: '1.1rem', marginBottom: '1rem', lineHeight: 1.3, fontWeight: 600 }}>
-                        {t.name}
-                      </h3>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '1rem' }}>
-                        <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem' }}>{t.format || 'Standard Format'}</span>
-                        <span style={{ color: 'var(--gold)', fontWeight: 700, fontSize: '0.9rem' }}>View Event &rarr;</span>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
-
+          <CourseProfileClient course={course} scorecards={scorecards} hostedTournaments={hostedTournaments} />
       </main>
     </div>
   );

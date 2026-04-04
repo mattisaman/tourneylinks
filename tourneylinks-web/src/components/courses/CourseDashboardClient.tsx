@@ -169,9 +169,10 @@ export default function CourseDashboardClient({ courseData, isDemo }: { courseDa
                                 <p style={{ color: 'var(--mist)', fontSize: '0.85rem', marginBottom: '1rem', lineHeight: 1.5 }}>
                                   Upload your primary transparent SVG or high-resolution PNG to feature on your official Directory card.
                                 </p>
-                                <button className="btn-hero-outline" style={{ fontSize: '0.8rem', padding: '0.5rem 1rem', borderColor: 'var(--mist)', color: '#333' }}>
+                                <label className="btn-hero-outline" style={{ display: 'inline-block', fontSize: '0.8rem', padding: '0.5rem 1rem', borderColor: 'var(--mist)', color: '#333', cursor: 'pointer' }}>
+                                  <input type="file" style={{ display: 'none' }} accept="image/*" onChange={(e) => alert("In production, this uploads directly to S3 and attaches the logoUrl to your Venue database record!")} />
                                   Upload Logo File
-                                </button>
+                                </label>
                             </div>
                         </div>
                         
