@@ -21,8 +21,8 @@ export default function CourseProfileClient({ course, scorecards, hostedTourname
        <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 flex flex-col md:flex-row gap-8 lg:gap-16">
           
           {/* Sub-Nav Sidebar */}
-          <div className="w-full md:w-64 flex-shrink-0">
-             <div className="sticky top-[100px] flex flex-col gap-2">
+          <div className="w-full md:w-72 flex-shrink-0">
+             <div className="sticky top-[100px] flex flex-col gap-1">
                 {navItems.map(item => {
                    const Icon = item.icon;
                    const isActive = activeTab === item.id;
@@ -30,13 +30,26 @@ export default function CourseProfileClient({ course, scorecards, hostedTourname
                       <button 
                          key={item.id}
                          onClick={() => setActiveTab(item.id as any)}
-                         className={`w-full text-left px-4 py-3 rounded-md flex items-center justify-between transition-all ${isActive ? 'bg-white/10 text-white font-bold border border-white/10' : 'text-white/50 hover:bg-white/5 hover:text-white/80 border border-transparent'}`}
+                         style={{ 
+                            background: isActive ? 'rgba(212,175,55,0.05)' : 'transparent', 
+                            borderLeft: isActive ? '3px solid var(--gold)' : '3px solid transparent', 
+                            padding: '0.85rem 1.5rem', 
+                            color: isActive ? 'var(--gold)' : 'rgba(255,255,255,0.6)', 
+                            fontSize: '0.9rem', 
+                            cursor: 'pointer', 
+                            display: 'flex', 
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            transition: '0.2s', 
+                            marginLeft: '-1rem', 
+                            borderRadius: '0 6px 6px 0'
+                         }}
+                         className="hover:bg-white/5 hover:text-white/90"
                       >
-                         <div className="flex items-center gap-3">
-                            <Icon size={16} className={isActive ? 'text-[var(--gold)]' : ''} />
-                            <span className="text-sm tracking-wide">{item.label}</span>
+                         <div className="flex items-center gap-4">
+                            <Icon size={18} className={isActive ? 'text-[var(--gold)]' : 'opacity-70'} />
+                            <span className="font-medium tracking-wide">{item.label}</span>
                          </div>
-                         {isActive && <ChevronRight size={14} className="text-[var(--gold)] opacity-70" />}
                       </button>
                    );
                 })}

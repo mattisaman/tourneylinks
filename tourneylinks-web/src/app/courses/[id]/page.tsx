@@ -43,7 +43,7 @@ export default async function CourseDetailPage(props: { params: Promise<{ id: st
       <main className="flex-1 w-full">
           {/* NEW CINEMATIC PRESTIGE HERO */}
           {/* NEW CINEMATIC PRESTIGE HERO */}
-          <div className="w-full relative border-b border-white/10 overflow-hidden flex flex-col justify-end" style={{ backgroundColor: '#020503', minHeight: '500px' }}>
+          <div className="w-full relative border-b border-white/10 overflow-hidden flex flex-col justify-end" style={{ backgroundColor: '#020503', minHeight: '450px' }}>
              {/* Base Image Layer - Vibrant Golf Course! */}
              <div className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: course.heroImageUrl && course.heroImageUrl !== 'DEFAULT_GRADIENT' ? `url('${course.heroImageUrl}')` : "url('/hero-bg-4.jpg')", opacity: 0.95 }} />
              
