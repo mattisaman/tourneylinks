@@ -11,6 +11,12 @@ export default function SupportPage() {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  const toggleFaq = (idx: number) => {
+    if (openFaq === idx) setOpenFaq(null);
+    else setOpenFaq(idx);
+  };
 
   // Auto-fill email if logged in
   React.useEffect(() => {
@@ -195,12 +201,88 @@ export default function SupportPage() {
             <p style={{ color: '#e0e6e2', fontSize: '0.95rem', lineHeight: 1.5, flex: 1 }}>
                Have an idea for a new feature? Want to leave a review? We read every single submission and factor your feedback deeply into our engineering roadmap.
             </p>
-            <button onClick={() => setActiveForm('FEATURE_REQUEST')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '0.8rem', textDecoration: 'none', textAlign: 'center', width: '100%', cursor: 'pointer', background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.4)', color: 'var(--gold)', borderRadius: '25px', fontWeight: 600, transition: 'background 0.2s', boxShadow: 'none' }}>
-               Submit Feature Request
-            </button>
+         </div>
+
+         {/* TIER 4: AI Guides */}
+         <div className="support-card" style={{ background: 'linear-gradient(145deg, #0a1f0d, #1a2e1a)', padding: '2.5rem', borderRadius: '12px', border: '1px solid rgba(212,175,55,0.15)', boxShadow: '0 15px 35px rgba(0,0,0,0.15)', display: 'flex', flexDirection: 'column', gap: '1rem', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', background: 'var(--gold)' }}></div>
+            <div style={{ width: '50px', height: '50px', borderRadius: '25px', background: 'rgba(212,175,55,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}>
+               <span style={{ fontSize: '1.5rem' }}>🧠</span>
+            </div>
+            <h3 style={{ fontSize: '1.4rem', color: 'var(--white)' }}>Strategy & Guides</h3>
+            <p style={{ color: '#e0e6e2', fontSize: '0.95rem', lineHeight: 1.5, flex: 1 }}>
+               Access our AI-powered Pricing Engine and review best-in-class playbooks for structuring sponsorships to maximize your charity revenue.
+            </p>
+            <Link href="/admin/guides" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '0.8rem', textDecoration: 'none', textAlign: 'center', width: '100%', cursor: 'pointer', background: 'var(--gold)', color: '#0a1f0d', borderRadius: '25px', fontWeight: 700, transition: '0.2s', boxShadow: 'none' }}>
+               Launch AI Guides
+            </Link>
          </div>
 
       </div>
+
+      {/* FAQ & Strategy Playbook Accordion */}
+      <div style={{ marginTop: '5rem', width: '100%', maxWidth: '800px' }}>
+         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '2.8rem', color: 'var(--forest)', marginBottom: '0.5rem' }}>Organizer Playbook</h2>
+            <p style={{ fontSize: '1.1rem', color: 'var(--mist)' }}>Best practices and frequently asked operational questions to ensure your tournament is highly profitable.</p>
+         </div>
+
+         <div className="faq-wrap" style={{ width: '100%', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            
+            {/* FAQ Item 1 */}
+            <div className={`faq-item ${openFaq === 1 ? 'open' : ''}`} style={{ background: '#fff', borderRadius: '12px', border: '1px solid rgba(26,46,26,0.1)', overflow: 'hidden' }}>
+               <div className="faq-q" onClick={() => toggleFaq(1)} style={{ padding: '1.5rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', fontSize: '1.1rem', fontWeight: 700, color: 'var(--forest)' }}>
+                  How do I determine the right registration price?
+                  <span className="faq-toggle" style={{ transition: '0.3s', transform: openFaq === 1 ? 'rotate(45deg)' : 'none' }}>+</span>
+               </div>
+               <div className="faq-a" style={{ display: openFaq === 1 ? 'block' : 'none', padding: '0 2rem 1.5rem 2rem', color: 'var(--mist)', lineHeight: 1.6, fontSize: '0.95rem' }}>
+                  <span style={{ display: 'block', marginBottom: '1rem' }}>Determining your primary ticket price requires balancing your "hardware costs" (Greens Fees + Cart + Food & Beverage banquet) with a healthy profit margin for your charity or foundation.</span>
+                  <strong>The 30% Rule:</strong> We generally advise constructing your primary Foursome ticket at a price point that yields a net profit margin of roughly 30%. This ensures your baseline financials are bulletproof, allowing your Sponsorship Inventory to act as 100% pure profit! To calculate this exactly for your specific geographic area, click the <strong style={{ color: 'var(--gold)' }}>"Launch AI Guides"</strong> button above to use our Demographic Pricing Engine!
+               </div>
+            </div>
+
+            {/* FAQ Item 2 */}
+            <div className={`faq-item ${openFaq === 2 ? 'open' : ''}`} style={{ background: '#fff', borderRadius: '12px', border: '1px solid rgba(26,46,26,0.1)', overflow: 'hidden' }}>
+               <div className="faq-q" onClick={() => toggleFaq(2)} style={{ padding: '1.5rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', fontSize: '1.1rem', fontWeight: 700, color: 'var(--forest)' }}>
+                  How should I structure my Sponsorship Tiers?
+                  <span className="faq-toggle" style={{ transition: '0.3s', transform: openFaq === 2 ? 'rotate(45deg)' : 'none' }}>+</span>
+               </div>
+               <div className="faq-a" style={{ display: openFaq === 2 ? 'block' : 'none', padding: '0 2rem 1.5rem 2rem', color: 'var(--mist)', lineHeight: 1.6, fontSize: '0.95rem' }}>
+                  <span style={{ display: 'block', marginBottom: '1rem' }}>Your tournament is digitally bound by the number of golfers that can physically fit on the course (e.g. 144 players), but your <strong>Sponsorship Revenue is theoretically infinite.</strong></span>
+                  <ul style={{ paddingLeft: '1.5rem', marginBottom: 0 }}>
+                    <li style={{ marginBottom: '0.5rem' }}><strong>1x Exclusive Title Sponsor:</strong> Your highest tier. Bundle this with a complimentary Golf Foursome and prime real estate on the TV Liveboards.</li>
+                    <li style={{ marginBottom: '0.5rem' }}><strong>2x Beverage Carts:</strong> A massive corporate write-off that businesses love to buy because it ensures everyone sees their logo when ordering drinks.</li>
+                    <li><strong>18x Hole Sponsors:</strong> A pure margin play. At $250 a pop, this is an easy buy-in for local businesses that generates $4,500 in pure high-margin profit with zero impact on headcount.</li>
+                  </ul>
+               </div>
+            </div>
+
+            {/* FAQ Item 3 */}
+            <div className={`faq-item ${openFaq === 3 ? 'open' : ''}`} style={{ background: '#fff', borderRadius: '12px', border: '1px solid rgba(26,46,26,0.1)', overflow: 'hidden' }}>
+               <div className="faq-q" onClick={() => toggleFaq(3)} style={{ padding: '1.5rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', fontSize: '1.1rem', fontWeight: 700, color: 'var(--forest)' }}>
+                  How does the Walk-Up Ledger check-in work?
+                  <span className="faq-toggle" style={{ transition: '0.3s', transform: openFaq === 3 ? 'rotate(45deg)' : 'none' }}>+</span>
+               </div>
+               <div className="faq-a" style={{ display: openFaq === 3 ? 'block' : 'none', padding: '0 2rem 1.5rem 2rem', color: 'var(--mist)', lineHeight: 1.6, fontSize: '0.95rem' }}>
+                  A massive pain point for Game Day Operations is tracking exactly who has arrived at the course vs who is running late. To solve this, log into the Admin Dashboard and navigate to the <strong>Print & Post Hub</strong>. You can instantly export an alphabetized "Walk-Up Ledger" PDF that pre-organizes all of your golfers. Simply print it out, place it on a nice clipboard at the registration desk, and physically check off the <code>" [ ] Here "</code> box with a pen as players walk through the clubhouse doors.
+               </div>
+            </div>
+
+            {/* FAQ Item 4 */}
+            <div className={`faq-item ${openFaq === 4 ? 'open' : ''}`} style={{ background: '#fff', borderRadius: '12px', border: '1px solid rgba(26,46,26,0.1)', overflow: 'hidden' }}>
+               <div className="faq-q" onClick={() => toggleFaq(4)} style={{ padding: '1.5rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', fontSize: '1.1rem', fontWeight: 700, color: 'var(--forest)' }}>
+                  Can players split payments alongside their sponsorships?
+                  <span className="faq-toggle" style={{ transition: '0.3s', transform: openFaq === 4 ? 'rotate(45deg)' : 'none' }}>+</span>
+               </div>
+               <div className="faq-a" style={{ display: openFaq === 4 ? 'block' : 'none', padding: '0 2rem 1.5rem 2rem', color: 'var(--mist)', lineHeight: 1.6, fontSize: '0.95rem' }}>
+                  <strong>Yes!</strong> High-end Golf Tournaments often feature "Cart Abandonment" at checkout because a Team Captain realizes they actually don't want to upfront the $1,000 Foursome ticket on their personal credit card. <br/><br/>
+                  Through our native Stripe integration in the Campaign Builder, you can configure your checkout to automatically support Buy-Now-Pay-Later (BNPL) platforms like Affirm and Klarna, or rely on our built in "Split Payment" mechanism that dynamically tracks which members of a specific Foursome have successfully paid their fair share.
+               </div>
+            </div>
+
+         </div>
+      </div>
+
       </div>
     </>
   );
