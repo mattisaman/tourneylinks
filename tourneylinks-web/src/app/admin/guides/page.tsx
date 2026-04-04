@@ -3,15 +3,36 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 
 export default function PricingGuidePage() {
+  const [courseSearch, setCourseSearch] = useState('');
   const [course, setCourse] = useState('');
+  const [courseResults, setCourseResults] = useState<any[]>([]);
+
   const [players, setPlayers] = useState('144');
   const [type, setType] = useState('charity');
+
+  React.useEffect(() => {
+    const fetchCourses = async () => {
+      if (courseSearch.length > 2 && courseSearch !== course) {
+        try {
+          const res = await fetch(`/api/courses/search?q=${encodeURIComponent(courseSearch)}`);
+          const data = await res.json();
+          if (res.ok) {
+            setCourseResults(data.courses || []);
+          }
+        } catch (err) { }
+      } else {
+        setCourseResults([]);
+      }
+    };
+    const debounce = setTimeout(fetchCourses, 400);
+    return () => clearTimeout(debounce);
+  }, [courseSearch, course]);
   
   const [isSynthesizing, setIsSynthesizing] = useState(false);
   const [report, setReport] = useState<any>(null);
 
   const handleGenerate = () => {
-    if (!course) return alert('Please enter a course name');
+    if (!course) return alert('Please search and select a verified Golf Course first.');
     
     setIsSynthesizing(true);
     setReport(null);
@@ -58,16 +79,33 @@ export default function PricingGuidePage() {
              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '1.5rem' }}>Tournament Parameters</h3>
              
              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                <div>
-                   <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#555', marginBottom: '0.5rem', textTransform: 'uppercase' }}>Golf Course Name</label>
-                   <input 
-                      type="text" 
-                      value={course} 
-                      onChange={(e) => setCourse(e.target.value)} 
-                      placeholder="e.g. Oak Hill Country Club"
-                      style={{ width: '100%', padding: '1rem', borderRadius: '8px', border: '1px solid #ccc', fontSize: '1rem', outline: 'none' }}
-                   />
-                </div>
+                 <div style={{ position: 'relative' }}>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#555', marginBottom: '0.5rem', textTransform: 'uppercase' }}>Golf Course Name</label>
+                    <input 
+                       type="text" 
+                       value={courseSearch} 
+                       onChange={(e) => { 
+                          setCourseSearch(e.target.value); 
+                          if (e.target.value === '') setCourse(''); 
+                       }} 
+                       placeholder="Type to search official databases..."
+                       style={{ width: '100%', padding: '1rem', borderRadius: '8px', border: '1px solid #ccc', fontSize: '1rem', outline: 'none' }}
+                    />
+                    {courseResults.length > 0 && (
+                       <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#fff', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px', zIndex: 50, maxHeight: '250px', overflowY: 'auto', boxShadow: '0 10px 20px rgba(0,0,0,0.05)', marginTop: '0.4rem' }}>
+                          {courseResults.map(c => (
+                             <div key={c.id} onClick={() => {
+                                setCourse(c.name);
+                                setCourseSearch(c.name);
+                                setCourseResults([]);
+                             }} style={{ padding: '0.8rem 1rem', cursor: 'pointer', borderBottom: '1px solid rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column' }}>
+                                <strong style={{ fontSize: '0.9rem', color: 'var(--ink)' }}>{c.name}</strong>
+                                <span style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>{c.city}, {c.state}</span>
+                             </div>
+                          ))}
+                       </div>
+                    )}
+                 </div>
 
                 <div>
                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#555', marginBottom: '0.5rem', textTransform: 'uppercase' }}>Expected Field Size</label>
