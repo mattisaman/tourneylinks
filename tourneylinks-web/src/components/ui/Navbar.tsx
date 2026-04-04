@@ -51,7 +51,7 @@ export default function Navbar() {
           text-shadow: 0 0 8px rgba(212,175,55,0.4);
         }
       `}} />
-      <div className="site-header" style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1000, background: 'linear-gradient(to bottom, rgba(7, 21, 16, 0.95), transparent)', borderBottom: 'none' }}>
+      <div className="site-header" style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1000, background: 'transparent', borderBottom: 'none' }}>
         <nav style={{ background: 'transparent', borderBottom: 'none' }}>
           <Link className="nav-logo" href="/">
             <img src="/logo_horizontal_transparent.png" alt="TourneyLinks Logo" style={{ width: '240px', height: 'auto', objectFit: 'contain', margin: '4px 0 0 0' }} />
