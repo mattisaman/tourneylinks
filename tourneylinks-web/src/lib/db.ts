@@ -34,7 +34,7 @@ export const courses = pgTable('courses', {
   heroImageUrl: text('hero_image_url'),
   rating: real('rating'),
   
-  claimedByUserId: integer('claimed_by_user_id'), // Mapped to users.id once approved
+  claimedByUserId: text('claimed_by_user_id'), // Mapped to Clerk users.id once approved
   
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
@@ -418,7 +418,7 @@ export const live_banter = pgTable('live_banter', {
 export const course_claims = pgTable('course_claims', {
   id: serial('id').primaryKey(),
   courseId: integer('course_id').references(() => courses.id, { onDelete: 'cascade' }).notNull(),
-  userId: integer('user_id').notNull(), // Links to users.id, simplified explicitly to prevent cycle bugs
+  userId: text('user_id').notNull(), // Clerk IDs are text
   roleTitle: text('role_title').notNull(),
   directPhone: text('direct_phone'),
   pgaCardImageUrl: text('pga_card_image_url').notNull(),
@@ -426,4 +426,27 @@ export const course_claims = pgTable('course_claims', {
   status: text('status').default('PENDING').notNull(), // 'PENDING', 'APPROVED', 'REJECTED'
   createdAt: timestamp('created_at').defaultNow().notNull(),
   reviewedAt: timestamp('reviewed_at'),
+});
+// PHASE 15: Extended Course Website Architecture (AI Scorecards & Galleries)
+export const course_scorecards = pgTable('course_scorecards', {
+  id: serial('id').primaryKey(),
+  courseId: integer('course_id').references(() => courses.id, { onDelete: 'cascade' }).notNull(),
+  teeBoxName: text('tee_box_name').notNull(), // e.g. "Blue", "Championship"
+  teeBoxColorHex: text('tee_box_color_hex'), // e.g. "#0000FF"
+  slope: real('slope'),
+  rating: real('rating'),
+  gender: text('gender').default('MALE'), // 'MALE' or 'FEMALE'
+  
+  // JSONB Array storing 18 objects: [{ hole: 1, par: 4, yardage: 410, handicap: 5 }, ...]
+  holesData: text('holes_data'), 
+  
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const course_galleries = pgTable('course_galleries', {
+  id: serial('id').primaryKey(),
+  courseId: integer('course_id').references(() => courses.id, { onDelete: 'cascade' }).notNull(),
+  imageUrl: text('image_url').notNull(),
+  caption: text('caption'),
+  uploadedAt: timestamp('uploaded_at').defaultNow().notNull(),
 });

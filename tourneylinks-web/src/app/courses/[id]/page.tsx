@@ -1,5 +1,5 @@
 import React from 'react';
-import { db, courses, tournaments } from '@/lib/db';
+import { db, courses, tournaments, course_scorecards } from '@/lib/db';
 import { eq, asc } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import Navbar from '@/components/ui/Navbar';
@@ -10,6 +10,7 @@ import FavoriteButton from './FavoriteButton';
 import { getIsFavorited } from '@/app/actions/favoriteCourse';
 import { getUserId } from '@/lib/auth-util';
 import EagleValePricing from '@/components/courses/EagleValePricing';
+import DigitalScorecards from '@/components/courses/DigitalScorecards';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,7 +22,12 @@ export default async function CourseDetailPage(props: { params: Promise<{ id: st
   const courseRows = await db.select().from(courses).where(eq(courses.id, courseId)).limit(1);
   const course = courseRows[0];
 
-  if (!course) notFound();
+  if (!course) {
+    return <div>Course not found.</div>;
+  }
+
+  // Fetch AI Digitize Scorecards if available
+  const scorecards = await db.select().from(course_scorecards).where(eq(course_scorecards.courseId, courseId));
 
   // Fetch upcoming tournaments at this course natively!
   const hostedTournaments = await db.select()
@@ -146,6 +152,9 @@ export default async function CourseDetailPage(props: { params: Promise<{ id: st
                  </div>
                </div>
              )}
+
+             {/* Digital Scorecard Injection */}
+             <DigitalScorecards scorecards={scorecards} />
 
              {/* Builder Module */}
              <div className="w-full relative z-30">

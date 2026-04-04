@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
+import AIScorecardUploader from './AIScorecardUploader';
 
 export default function CourseDashboardClient({ courseData, isDemo }: { courseData: any[], isDemo: boolean }) {
   const [activeTab, setActiveTab] = useState<'outings'|'gps'|'analytics'>('outings');
@@ -49,7 +50,7 @@ export default function CourseDashboardClient({ courseData, isDemo }: { courseDa
           <div 
              onClick={() => setActiveTab('gps')}
              style={{ background: activeTab === 'gps' ? 'rgba(212,175,55,0.1)' : 'transparent', borderLeft: activeTab === 'gps' ? '3px solid var(--gold)' : '3px solid transparent', padding: '0.75rem 1rem', color: activeTab === 'gps' ? 'var(--gold)' : 'rgba(255,255,255,0.7)', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', gap: '0.5rem', transition: '0.2s' }}>
-            <span>🛰️</span> GPS Pin Mapper
+            <span>🌐</span> Extended Website
           </div>
           <div 
              onClick={() => setActiveTab('analytics')}
@@ -128,30 +129,23 @@ export default function CourseDashboardClient({ courseData, isDemo }: { courseDa
 
             {activeTab === 'gps' && (
               <div style={{ animation: 'fadeIn 0.3s ease-in' }}>
-                <h1 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '0.4rem', color: '#05120c' }}>Digital Course Authority</h1>
-                <p style={{ color: 'var(--mist)', fontSize: '1rem', marginBottom: '2.5rem' }}>Update GPS routing vectors, pin placements, and digital scorecard interfaces that thousands of TourneyLinks players rely on.</p>
+                <h1 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '0.4rem', color: '#05120c' }}>Extended Course Website</h1>
+                <p style={{ color: 'var(--mist)', fontSize: '1rem', marginBottom: '2.5rem' }}>Enhance your public profile on TourneyLinks to drive maximum player engagement and tournament booking conversion.</p>
 
                 <div style={{ background: '#fff', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.05)', overflow: 'hidden', marginBottom: '2.5rem' }}>
                     <div style={{ padding: '1.5rem', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
-                        <h3 style={{ fontSize: '1.1rem', fontWeight: 800 }}>Topography Mapper</h3>
+                        <h3 style={{ fontSize: '1.1rem', fontWeight: 800 }}>Digital Component Upgrades</h3>
                     </div>
-                    <div style={{ padding: '1.5rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
-                        <div>
-                            <p style={{ color: 'var(--mist)', fontSize: '0.9rem', marginBottom: '1.5rem', lineHeight: 1.6 }}>
-                                You maintain absolute supremacy over your digital mapping footprint. TourneyLinks relies on your real-time adjustments for accurate yardage.
+                    <div style={{ padding: '1.5rem', display: 'grid', gridTemplateColumns: '1fr', gap: '2rem' }}>
+                        
+                        <div style={{ marginBottom: '1rem' }}>
+                            <p style={{ color: 'var(--mist)', fontSize: '0.9rem', marginBottom: '0.5rem', lineHeight: 1.6 }}>
+                                You maintain absolute supremacy over your digital footprint. TourneyLinks relies on your real-time adjustments for accurate yardage, GPS, and imagery.
                             </p>
-                            <button className="btn-primary" style={{ padding: '0.75rem 1.5rem' }}>Open Topography Studio →</button>
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                            <div style={{ background: '#fafaf5', padding: '1rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.05)' }}>
-                                <div style={{ fontWeight: 800, fontSize: '1.2rem', marginBottom: '0.2rem' }}>18</div>
-                                <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--mist)', fontWeight: 600 }}>Mapped Holes</div>
-                            </div>
-                            <div style={{ background: '#fafaf5', padding: '1rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.05)' }}>
-                                <div style={{ fontWeight: 800, fontSize: '1.2rem', marginBottom: '0.2rem' }}>Active</div>
-                                <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--mist)', fontWeight: 600 }}>OCR Scorecard Sync</div>
-                            </div>
-                        </div>
+                        
+                        <AIScorecardUploader courseId={course.id} />
+                        
                     </div>
                 </div>
               </div>
