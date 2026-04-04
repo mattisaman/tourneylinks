@@ -63,6 +63,7 @@ export default function HostLiveCampaignBuilder() {
 
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [isSuggestingPrice, setIsSuggestingPrice] = useState(false);
+  const [aiSuggestionPanel, setAiSuggestionPanel] = useState<any>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -434,12 +435,15 @@ export default function HostLiveCampaignBuilder() {
                                      const data = await res.json();
                                      if (data.recommendedPrice) {
                                         setNewPackage({ ...newPackage, price: data.recommendedPrice });
-                                        alert(`🧠 AI Insight: ${data.demographicNote}\n\nSuggested Price: $${data.recommendedPrice}`);
+                                        setAiSuggestionPanel({
+                                           price: data.recommendedPrice, 
+                                           note: data.demographicNote
+                                        });
                                      } else {
-                                        alert(data.error || 'Failed to calculate price.');
+                                        setAiSuggestionPanel({ error: data.error || 'Failed to calculate price.' });
                                      }
                                   } catch (err) {
-                                     alert('Network error communicating with AI.');
+                                     setAiSuggestionPanel({ error: 'Network error communicating with AI.' });
                                   }
                                   setIsSuggestingPrice(false);
                                }}
@@ -456,12 +460,37 @@ export default function HostLiveCampaignBuilder() {
                        <input type="checkbox" checked={newPackage.isTeam} onChange={e => setNewPackage({...newPackage, isTeam: e.target.checked})} />
                        <span style={{ fontSize: '0.8rem', color: 'var(--ink)', fontWeight: 600 }}>This is a Foursome/Team Package</span>
                     </label>
+
+                    {/* Highly Polished AI Suggestion Inline Panel */}
+                    {aiSuggestionPanel && !aiSuggestionPanel.error && (
+                       <div style={{ background: '#f4fbf7', border: '1px solid #d1fae5', borderRadius: '8px', padding: '1rem', marginTop: '0.8rem', display: 'flex', gap: '1rem', alignItems: 'flex-start', animation: 'fadeIn 0.3s ease-out' }}>
+                          <style dangerouslySetInnerHTML={{__html: `@keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }`}} />
+                          <div style={{ flexShrink: 0, fontSize: '1.5rem' }}>🧠</div>
+                          <div>
+                             <div style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '0.9rem', marginBottom: '0.2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <span>AI Pricing Insight</span>
+                                <button onClick={() => setAiSuggestionPanel(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--grass)', fontSize: '0.75rem', fontWeight: 700 }}>Dismiss</button>
+                             </div>
+                             <p style={{ color: '#2d5a3c', fontSize: '0.85rem', lineHeight: 1.5, margin: 0 }}>
+                                {aiSuggestionPanel.note} <strong style={{ color: 'var(--forest)', display: 'block', marginTop: '0.4rem' }}>Suggested Target: ${aiSuggestionPanel.price}</strong>
+                             </p>
+                          </div>
+                       </div>
+                    )}
+                    {aiSuggestionPanel?.error && (
+                       <div style={{ background: '#fef2f2', border: '1px solid #fee2e2', borderRadius: '8px', padding: '0.8rem 1rem', marginTop: '0.8rem', color: '#991b1b', fontSize: '0.85rem', display: 'flex', justifyContent: 'space-between' }}>
+                          <span>❌ {aiSuggestionPanel.error}</span>
+                          <button onClick={() => setAiSuggestionPanel(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#991b1b' }}>X</button>
+                       </div>
+                    )}
+
                     <button 
                        onClick={() => {
                           if (newPackage.name && newPackage.price !== '' && Number(newPackage.price) >= 0) {
                              setPackages([...packages, { ...newPackage, price: Number(newPackage.price) }]);
                              setNewPackage({ name: '', price: '', isTeam: false });
                              setShowPackageForm(false);
+                             setAiSuggestionPanel(null);
                           }
                        }}
                        style={{ padding: '0.8rem', background: 'var(--forest)', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 700, cursor: 'pointer' }}>
