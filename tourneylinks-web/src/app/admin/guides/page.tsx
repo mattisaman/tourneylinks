@@ -116,6 +116,7 @@ export default function PricingGuidePage() {
                    >
                       <option value="72">72 Players (Half Course)</option>
                       <option value="100">100 Players</option>
+                      <option value="120">120 Players</option>
                       <option value="144">144 Players (Full Course)</option>
                    </select>
                 </div>
