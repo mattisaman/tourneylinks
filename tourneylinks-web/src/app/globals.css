@@ -79,9 +79,18 @@ body {
   font-family: var(--font-sans), 'DM Sans', sans-serif;
   background: var(--white);
   color: var(--ink);
-  overflow-x: hidden;
+  overflow-x: clip;
   width: 100%;
   max-width: 100%;
+}
+
+/* Base utility for hiding scrollbars */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* ========== FLUID CONTAINER ========== */
