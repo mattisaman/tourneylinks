@@ -22,39 +22,39 @@ export default function CourseDashboardClient({ courseData, isDemo }: { courseDa
 
   return (
     <div style={{ minHeight: 'calc(100vh - 80px)', background: '#fafaf5', color: '#1a2e1a', fontFamily: "'DM Sans', sans-serif" }}>
-      <div className="dashboard-wrap" style={{ minHeight: '100%', maxWidth: '1400px', margin: '0 auto', display: 'grid', gridTemplateColumns: '260px 1fr' }}>
+      <div className="dashboard-wrap" style={{ minHeight: '100%', maxWidth: '1600px', margin: '0 auto', display: 'grid', gridTemplateColumns: '280px 1fr' }}>
         
         {/* Sidebar */}
-        <div style={{ background: '#05120c', color: '#fff', padding: '2rem 1.5rem' }}>
-          <div style={{ fontWeight: 900, fontSize: '1.25rem', marginBottom: '3rem', letterSpacing: '0.02em', color: '#f5f2ed' }}>
+        <div style={{ background: '#05120c', color: '#fff', padding: '2rem 1rem' }}>
+          <div style={{ fontWeight: 900, fontSize: '1.25rem', marginBottom: '3rem', letterSpacing: '0.02em', color: '#f5f2ed', padding: '0 0.5rem' }}>
             Tourney<span style={{ color: 'var(--gold)' }}>Links</span> 
             <span style={{ fontSize: '0.7rem', background: 'rgba(212,175,55,0.2)', color: 'var(--gold)', padding: '0.15rem 0.4rem', borderRadius: '2px', marginLeft: '0.5rem' }}>
               Course Pro
             </span>
           </div>
 
-          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.4)', marginBottom: '1rem' }}>My Claimed Courses</div>
-          <div style={{ background: 'rgba(212,175,55,0.1)', borderLeft: '3px solid var(--gold)', padding: '0.75rem 1rem', borderRadius: '0 4px 4px 0', color: 'var(--gold)', fontWeight: 600, fontSize: '0.9rem', marginBottom: '0.5rem', cursor: 'pointer' }}>
+          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.4)', marginBottom: '1rem', padding: '0 0.5rem' }}>My Claimed Courses</div>
+          <div style={{ background: 'rgba(212,175,55,0.1)', borderLeft: '3px solid var(--gold)', padding: '0.75rem 1rem', borderRadius: '0 4px 4px 0', color: 'var(--gold)', fontWeight: 600, fontSize: '0.9rem', marginBottom: '0.5rem', cursor: 'pointer', marginLeft: '-1rem' }}>
             {course.name}
           </div>
           <div style={{ padding: '0.75rem 1rem', color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem', cursor: 'pointer', transition: '0.2s', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <span style={{color: 'var(--mist)'}}>+</span> Claim Another Course
           </div>
 
-          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.4)', marginTop: '2.5rem', marginBottom: '1rem' }}>Course Tools</div>
+          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.4)', marginTop: '2.5rem', marginBottom: '1rem', padding: '0 0.5rem' }}>Course Tools</div>
           <div 
              onClick={() => setActiveTab('outings')}
-             style={{ background: activeTab === 'outings' ? 'rgba(212,175,55,0.1)' : 'transparent', borderLeft: activeTab === 'outings' ? '3px solid var(--gold)' : '3px solid transparent', padding: '0.75rem 1rem', color: activeTab === 'outings' ? 'var(--gold)' : 'rgba(255,255,255,0.7)', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', gap: '0.5rem', transition: '0.2s' }}>
+             style={{ background: activeTab === 'outings' ? 'rgba(212,175,55,0.1)' : 'transparent', borderLeft: activeTab === 'outings' ? '3px solid var(--gold)' : '3px solid transparent', padding: '0.75rem 1.5rem', color: activeTab === 'outings' ? 'var(--gold)' : 'rgba(255,255,255,0.7)', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', gap: '0.5rem', transition: '0.2s', marginLeft: '-1rem', borderRadius: '0 4px 4px 0' }}>
             <span>📅</span> Upcoming Outings
           </div>
           <div 
              onClick={() => setActiveTab('gps')}
-             style={{ background: activeTab === 'gps' ? 'rgba(212,175,55,0.1)' : 'transparent', borderLeft: activeTab === 'gps' ? '3px solid var(--gold)' : '3px solid transparent', padding: '0.75rem 1rem', color: activeTab === 'gps' ? 'var(--gold)' : 'rgba(255,255,255,0.7)', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', gap: '0.5rem', transition: '0.2s' }}>
+             style={{ background: activeTab === 'gps' ? 'rgba(212,175,55,0.1)' : 'transparent', borderLeft: activeTab === 'gps' ? '3px solid var(--gold)' : '3px solid transparent', padding: '0.75rem 1.5rem', color: activeTab === 'gps' ? 'var(--gold)' : 'rgba(255,255,255,0.7)', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', gap: '0.5rem', transition: '0.2s', marginLeft: '-1rem', borderRadius: '0 4px 4px 0' }}>
             <span>🌐</span> Extended Website
           </div>
           <div 
              onClick={() => setActiveTab('analytics')}
-             style={{ background: activeTab === 'analytics' ? 'rgba(212,175,55,0.1)' : 'transparent', borderLeft: activeTab === 'analytics' ? '3px solid var(--gold)' : '3px solid transparent', padding: '0.75rem 1rem', color: activeTab === 'analytics' ? 'var(--gold)' : 'rgba(255,255,255,0.7)', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', gap: '0.5rem', transition: '0.2s' }}>
+             style={{ background: activeTab === 'analytics' ? 'rgba(212,175,55,0.1)' : 'transparent', borderLeft: activeTab === 'analytics' ? '3px solid var(--gold)' : '3px solid transparent', padding: '0.75rem 1.5rem', color: activeTab === 'analytics' ? 'var(--gold)' : 'rgba(255,255,255,0.7)', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', gap: '0.5rem', transition: '0.2s', marginLeft: '-1rem', borderRadius: '0 4px 4px 0' }}>
             <span>📊</span> Revenue Analytics
           </div>
         </div>

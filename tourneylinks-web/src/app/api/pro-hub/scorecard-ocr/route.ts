@@ -22,34 +22,42 @@ export async function POST(req: Request) {
       I am providing an image of a physical golf course scorecard.
       
       Task:
-      Extract the exact Holes (1-18), Pars, Yardages (for the "\${teeBoxName}" tees), and Handicaps from the grid matrix.
+      Look at the grid and identify ALL provided Tee Boxes (e.g., 'Blue', 'White', 'Gold', 'Red').
+      Then, extract the exact Holes (1-18), Pars, Yardages, and Handicaps for EACH tee box.
       
-      Output ONLY a pure JSON array of 18 objects exactly matching this schema (no markdown formatting, no backticks, just the RAW JSON Array):
+      Output ONLY a pure JSON array containing the different tee boxes, exactly matching this schema (no markdown formatting, no backticks, just the RAW JSON Array):
       [
-         { "hole": 1, "par": 4, "yardage": 412, "handicap": 5 },
-         { "hole": 2, "par": 3, "yardage": 180, "handicap": 17 },
-         ... (all 18 holes)
+         {
+            "teeBoxName": "Blue",
+            "holes": [
+               { "hole": 1, "par": 4, "yardage": 412, "handicap": 5 },
+               { "hole": 2, "par": 3, "yardage": 180, "handicap": 17 }
+               // ... 18 holes
+            ]
+         },
+         {
+            "teeBoxName": "White",
+            "holes": [ ... ]
+         }
       ]
-      
-      Ensure you only pull the yardages for the specific row labeled "\${teeBoxName}". If slope and rating are visible for this tee box, mention them in the array somehow? No, ONLY RETURN the pure JSON array.
     `;
 
-    // Simulated Fetch & Buffer Generation (in production this hits the real S3 URL)
     let extractedHolesData: any[] = [];
     
     // For local mocking/sandbox if S3 isn't live:
     const isMock = scorecardImageUrl.includes('aws-s3-proxy-bucket');
     
     if (isMock) {
-       // Mock exactly what Gemini *would* return
-       for(let i=1; i<=18; i++) {
-          extractedHolesData.push({
-             hole: i,
-             par: [3,4,5][Math.floor(Math.random()*3)],
-             yardage: Math.floor(Math.random() * 300) + 150,
-             handicap: i
-          });
-       }
+       extractedHolesData = [
+          {
+             teeBoxName: "Blue",
+             holes: Array.from({length: 18}).map((_, i) => ({ hole: i+1, par: 4, yardage: 400, handicap: i+1 }))
+          },
+          {
+             teeBoxName: "White",
+             holes: Array.from({length: 18}).map((_, i) => ({ hole: i+1, par: 4, yardage: 380, handicap: i+1 }))
+          }
+       ];
     } else {
        // We would fetch the actual image array buffer here:
        // const imageRaw = await fetch(scorecardImageUrl).then(r => r.arrayBuffer());
@@ -72,18 +80,30 @@ export async function POST(req: Request) {
        */
     }
 
-    // Save to Database
-    await db.insert(course_scorecards).values({
-       courseId,
-       teeBoxName,
-       teeBoxColorHex: teeBoxColorHex || '#FFFFFF',
-       gender: gender || 'MALE',
-       holesData: JSON.stringify(extractedHolesData),
-       slope: 120, // OCR extension could parse this
-       rating: 72.0 // OCR extension could parse this
-    });
+    // Save to Database - clear existing matrix for this course to avoid dups?
+    // Not explicitly requested to delete, but inserting new ones...
+    const colors = ['#0000FF', '#FFFFFF', '#FFFF00', '#FF0000', '#000000'];
+    let idx = 0;
+    
+    // We expect extractedHolesData to be an array of Teebox objects. Let's fallback gracefully if it returned just the holes!
+    const isSingle = extractedHolesData.length > 0 && extractedHolesData[0].par !== undefined;
+    
+    const objectsToInsert = isSingle ? [{ teeBoxName: teeBoxName || 'Default', holes: extractedHolesData }] : extractedHolesData;
 
-    return NextResponse.json({ success: true, holes: extractedHolesData });
+    for (const box of objectsToInsert) {
+        await db.insert(course_scorecards).values({
+           courseId,
+           teeBoxName: box.teeBoxName,
+           teeBoxColorHex: colors[idx % colors.length],
+           gender: 'MALE',
+           holesData: JSON.stringify(box.holes),
+           slope: 120, // OCR extension could parse this
+           rating: 72.0 // OCR extension could parse this
+        });
+        idx++;
+    }
+
+    return NextResponse.json({ success: true, count: objectsToInsert.length });
 
   } catch (error: any) {
     console.error("Scorecard OCR Error:", error);

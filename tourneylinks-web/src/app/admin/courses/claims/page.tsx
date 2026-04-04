@@ -57,7 +57,7 @@ export default async function AdminCourseClaimsPage() {
                   </div>
 
                   <div className="p-6 flex-1 flex flex-col">
-                     <Link href={\`/courses/\${course?.id}\`} className="text-[var(--gold)] font-bold text-lg mb-1 hover:underline truncate">
+                     <Link href={"/courses/" + course?.id} className="text-[var(--gold)] font-bold text-lg mb-1 hover:underline truncate">
                        {course?.name}
                      </Link>
 
