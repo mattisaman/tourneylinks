@@ -39,19 +39,19 @@ export default async function CourseDetailPage(props: { params: Promise<{ id: st
       <main className="flex-1 w-full">
           {/* NEW CINEMATIC PRESTIGE HERO */}
           {/* NEW CINEMATIC PRESTIGE HERO */}
-          <div className="w-full relative border-b border-white/10 overflow-hidden flex flex-col justify-center" style={{ backgroundColor: '#020503', minHeight: '280px' }}>
-             {/* Base Image Layer */}
-             <div className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: course.heroImageUrl && course.heroImageUrl !== 'DEFAULT_GRADIENT' ? `url('${course.heroImageUrl}')` : "url('/hero-bg-4.jpg')", opacity: 0.5 }} />
+          <div className="w-full relative border-b border-white/10 overflow-hidden flex flex-col justify-end" style={{ backgroundColor: '#020503', minHeight: '450px' }}>
+             {/* Base Image Layer - Vibrant Golf Course! */}
+             <div className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: course.heroImageUrl && course.heroImageUrl !== 'DEFAULT_GRADIENT' ? `url('${course.heroImageUrl}')` : "url('/hero-bg-4.jpg')", opacity: 0.95 }} />
              
-             {/* Deep Ambient Mesh */}
-             <div className="absolute top-[-10%] right-[-10%] w-[50vw] h-[50vh] rounded-full pointer-events-none z-0" style={{ backgroundColor: 'var(--gold)', opacity: 0.25, filter: 'blur(120px)' }} />
-             <div className="absolute bottom-[-10%] left-[-10%] w-[40vw] h-[40vh] rounded-full pointer-events-none z-0" style={{ backgroundColor: 'var(--gold)', opacity: 0.15, filter: 'blur(100px)' }} />
+             {/* Deep Ambient Mesh (Less intrusive, highly transparent) */}
+             <div className="absolute top-[-10%] right-[-10%] w-[50vw] h-[50vh] rounded-full pointer-events-none z-0" style={{ backgroundColor: 'var(--gold)', opacity: 0.15, filter: 'blur(120px)' }} />
+             <div className="absolute bottom-[-10%] left-[-10%] w-[40vw] h-[40vh] rounded-full pointer-events-none z-0" style={{ backgroundColor: 'var(--gold)', opacity: 0.10, filter: 'blur(100px)' }} />
              
-             {/* Dark Wash */}
-             <div className="absolute inset-0 z-0 pointer-events-none" style={{ background: 'linear-gradient(to top, #020503 5%, rgba(2,5,3,0.5) 60%, rgba(2,5,3,0.1) 100%)', opacity: 1 }} />
+             {/* Dark Wash mostly at the bottom for text readability, clear at the top to see the sky/course */}
+             <div className="absolute inset-0 z-0 pointer-events-none" style={{ background: 'linear-gradient(to top, #050B08 0%, rgba(5,11,8,0.85) 30%, rgba(5,11,8,0.4) 60%, rgba(5,11,8,0) 100%)', opacity: 1 }} />
 
-             <div className="w-full relative z-10" style={{ maxWidth: '1300px', margin: '0 auto', paddingLeft: 'clamp(2rem, 5vw, 4rem)', paddingRight: 'clamp(2rem, 5vw, 4rem)', paddingTop: '3rem', paddingBottom: '3rem' }}>
-                <Link href="/courses" className="inline-flex items-center gap-2 text-white/50 hover:text-[var(--gold)] text-sm tracking-widest uppercase mb-8 transition-colors">
+             <div className="w-full relative z-10" style={{ maxWidth: '1300px', margin: '0 auto', paddingLeft: 'clamp(2rem, 5vw, 4rem)', paddingRight: 'clamp(2rem, 5vw, 4rem)', paddingTop: '6rem', paddingBottom: '3.5rem' }}>
+                <Link href="/courses" className="inline-flex items-center gap-2 text-white/70 hover:text-[var(--gold)] text-sm tracking-widest uppercase mb-8 transition-colors bg-black/40 px-4 py-2 rounded-full backdrop-blur-md border border-white/10 w-fit">
                   <ChevronLeft size={16} /> Directory
                 </Link>
 
