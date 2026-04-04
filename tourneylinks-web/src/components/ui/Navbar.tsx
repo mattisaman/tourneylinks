@@ -51,11 +51,20 @@ export default function Navbar() {
           text-shadow: 0 0 8px rgba(212,175,55,0.4);
         }
       `}} />
-      <div className="site-header">
-        <nav>
+      <div className="site-header" style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1000, background: 'linear-gradient(to bottom, rgba(7, 21, 16, 0.95), transparent)', borderBottom: 'none' }}>
+        <nav style={{ background: 'transparent', borderBottom: 'none' }}>
           <Link className="nav-logo" href="/">
             <img src="/logo_horizontal_transparent.png" alt="TourneyLinks Logo" style={{ width: '240px', height: 'auto', objectFit: 'contain', margin: '4px 0 0 0' }} />
           </Link>
+          
+          {/* INLINE PAGE NAVIGATION TABS */}
+          <div className="hidden lg:flex" style={{ gap: '0.5rem' }}>
+            <Link href="/" className={`page-tab ${pathname === '/' ? 'active' : ''}`} style={{ background: 'transparent', borderBottom: pathname === '/' ? '2px solid var(--gold)' : '2px solid transparent' }}>🏠 Home</Link>
+            <Link href="/tournaments" className={`page-tab ${pathname?.startsWith('/tournaments') ? 'active' : ''}`} style={{ background: 'transparent', borderBottom: pathname?.startsWith('/tournaments') ? '2px solid var(--gold)' : '2px solid transparent' }}>🏆 Find Tournaments</Link>
+            <Link href="/host" className={`page-tab ${pathname?.startsWith('/host') ? 'active' : ''}`} style={{ background: 'transparent', borderBottom: pathname?.startsWith('/host') ? '2px solid var(--gold)' : '2px solid transparent' }}>🚀 Host an Event</Link>
+            <Link href="/courses" className={`page-tab ${pathname?.startsWith('/courses') ? 'active' : ''}`} style={{ background: 'transparent', borderBottom: pathname?.startsWith('/courses') ? '2px solid var(--gold)' : '2px solid transparent' }}>⛳ Course Database</Link>
+          </div>
+
         <div className="nav-actions">
           {/* Mobile Hamburg Toggle */}
           <button className="flex md:hidden items-center" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} style={{ background: 'none', border: 'none', color: 'var(--gold)', cursor: 'pointer', marginRight: '0.75rem' }}>
@@ -89,18 +98,7 @@ export default function Navbar() {
             </>
           )}
         </div>
-      </nav>
-
-      {/* GLOWING GOLD ACCENT LINE */}
-      <div className="nav-accent-line"></div>
-
-      {/* PAGE NAVIGATION TABS */}
-      <div className="page-nav hidden md:flex">
-        <Link href="/" className={`page-tab ${pathname === '/' ? 'active' : ''}`}>🏠 Home</Link>
-        <Link href="/tournaments" className={`page-tab ${pathname?.startsWith('/tournaments') ? 'active' : ''}`}>🏆 Find Tournaments</Link>
-        <Link href="/host" className={`page-tab ${pathname?.startsWith('/host') ? 'active' : ''}`}>🚀 Host an Event</Link>
-        <Link href="/courses" className={`page-tab ${pathname?.startsWith('/courses') ? 'active' : ''}`}>⛳ Course Database</Link>
-      </div>
+        </nav>
 
       {/* MOBILE NAVIGATION MENU */}
       {isMobileMenuOpen && (

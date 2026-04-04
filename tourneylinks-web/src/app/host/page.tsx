@@ -60,10 +60,23 @@ export default function HostLiveCampaignBuilder() {
   const [editingSponsorIdx, setEditingSponsorIdx] = useState<number | null>(null);
   const [newSponsor, setNewSponsor] = useState<{tier: string, price: number | string, spots: number, incentivesText: string, includesIntent: boolean, includesDinner: boolean, rotatesOnTv: boolean}>({ tier: '', price: '', spots: 1, incentivesText: '', includesIntent: false, includesDinner: false, rotatesOnTv: false });
   const [sponsorPreviewMode, setSponsorPreviewMode] = useState<'directory' | 'checkout'>('directory');
+  const [simulatorDevice, setSimulatorDevice] = useState<'desktop' | 'mobile'>('mobile');
 
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [isSuggestingPrice, setIsSuggestingPrice] = useState(false);
   const [aiSuggestionPanel, setAiSuggestionPanel] = useState<any>(null);
+
+  // 501(c)(3) and Golf Foundation State
+  const [charityType, setCharityType] = useState<'none'|'own'|'golf_sponsored'>('none');
+  const [charityName, setCharityName] = useState('');
+  const [charityTaxId, setCharityTaxId] = useState('');
+  const [golfApplicationCause, setGolfApplicationCause] = useState('');
+  const [golfPayoutMethod, setGolfPayoutMethod] = useState<'bank'|'check'>('bank');
+  const [golfPayoutInfo, setGolfPayoutInfo] = useState('');
+  const [golfAgreementChecked, setGolfAgreementChecked] = useState(false);
+  const [golfApplicationStatus, setGolfApplicationStatus] = useState<'draft'|'pending'|'approved'>('draft');
+  const isCharity = charityType !== 'none';
+
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -277,7 +290,7 @@ export default function HostLiveCampaignBuilder() {
             </div>
             <div className="wfield wform-full">
                <label>Co-Host UserID (Optional)</label>
-               <input type="email" value={coHostEmail} onChange={e => setCoHostEmail(e.target.value)} placeholder="e.g. josh@tourneylinks.com" />
+               <input type="email" value={coHostEmail} onChange={e => setCoHostEmail(e.target.value)} placeholder="e.g. hello@tourneylinks.com" />
                <div style={{ fontSize: '0.7rem', color: 'var(--mist)', marginTop: '0.2rem' }}>Grant another email address full Administration Hub access to this event.</div>
             </div>
           </div>
@@ -390,6 +403,110 @@ export default function HostLiveCampaignBuilder() {
                 </div>
              </div>
           </div>
+        </div>
+
+        {/* Setup Donations & 501(c)(3) Entity Block */}
+        <div className="wizard-card" style={{ marginBottom: '2rem' }}>
+           <div className="wizard-card-title">Setup Donations & 501(c)(3) Entity</div>
+           
+           <div style={{ marginTop: '0.5rem' }}>
+              <div style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--ink)', marginBottom: '0.8rem' }}>501(c)(3) Status & Structure</div>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', marginBottom: '1.5rem' }}>
+                 <div style={{ background: 'rgba(46, 204, 113, 0.06)', border: '1px dashed rgba(46, 204, 113, 0.4)', borderRadius: '6px', padding: '1rem', display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                    <div style={{ fontSize: '1.2rem' }}>💡</div>
+                    <div>
+                       <strong style={{ color: 'var(--forest)', fontSize: '0.85rem', display: 'block', marginBottom: '0.2rem' }}>Why 501(c)(3) Status Matters</strong>
+                       <div style={{ color: 'var(--mist)', fontSize: '0.8rem', lineHeight: 1.5 }}>
+                          Enabling tax-deductible receipts often unlocks <b>significantly larger contributions</b> from corporate sponsors and individual donors. It also unlocks discounted processing fees (2.2%) instead of standard (2.9%)!
+                       </div>
+                    </div>
+                 </div>
+
+                 <label style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', padding: '1rem', background: charityType === 'none' ? 'rgba(212,175,55,0.05)' : '#fff', borderRadius: '6px', border: charityType === 'none' ? '1px solid var(--gold)' : '1px solid rgba(0,0,0,0.1)', cursor: 'pointer', transition: '0.2s' }}>
+                    <input type="radio" name="charityType" checked={charityType === 'none'} onChange={() => { setCharityType('none'); }} style={{ width: '1.2rem', height: '1.2rem', accentColor: 'var(--gold)' }} />
+                    <div>
+                       <div style={{ fontWeight: 600, color: 'var(--ink)' }}>No 501(c)(3) affiliation</div>
+                       <div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>Funds are collected directly as non-tax-deductible gifts.</div>
+                    </div>
+                 </label>
+
+                 <label style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', padding: '1rem', background: charityType === 'own' ? 'rgba(212,175,55,0.05)' : '#fff', borderRadius: '6px', border: charityType === 'own' ? '1px solid var(--gold)' : '1px solid rgba(0,0,0,0.1)', cursor: 'pointer', transition: '0.2s' }}>
+                    <input type="radio" name="charityType" checked={charityType === 'own'} onChange={() => { setCharityType('own'); if(charityName === 'G.O.L.F. Foundation') setCharityName(''); }} style={{ width: '1.2rem', height: '1.2rem', accentColor: 'var(--gold)' }} />
+                    <div>
+                       <div style={{ fontWeight: 600, color: 'var(--ink)' }}>We have our own 501(c)(3)</div>
+                       <div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>Provide your Tax ID instantly for donor receipts.</div>
+                    </div>
+                 </label>
+
+                 <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.8rem', padding: '1rem', background: charityType === 'golf_sponsored' ? 'rgba(212,175,55,0.05)' : '#fff', borderRadius: '6px', border: charityType === 'golf_sponsored' ? '1px solid var(--gold)' : '1px solid rgba(0,0,0,0.1)', cursor: 'pointer', transition: '0.2s' }}>
+                    <input type="radio" name="charityType" checked={charityType === 'golf_sponsored'} onChange={() => { setCharityType('golf_sponsored'); setCharityName('G.O.L.F. Foundation'); }} style={{ width: '1.2rem', height: '1.2rem', accentColor: 'var(--gold)', marginTop: '0.2rem' }} />
+                    <div style={{ flex: 1 }}>
+                       <div style={{ fontWeight: 600, color: 'var(--ink)' }}>Apply for Fiscal Sponsorship (G.O.L.F.)</div>
+                       <div style={{ fontSize: '0.75rem', color: 'var(--mist)', marginBottom: charityType === 'golf_sponsored' ? '1rem' : 0 }}>Process donations tax-free through the Gateway Outreach Links Foundation.</div>
+                       
+                       {charityType === 'golf_sponsored' && (
+                          <div style={{ background: '#fff', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '6px', padding: '1rem', marginTop: '0.5rem', animation: 'fadeIn 0.3s' }} onClick={e => e.preventDefault()}>
+                             <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.5rem', color: 'var(--forest)' }}>Describe your cause (required for board approval):</label>
+                             <textarea value={golfApplicationCause} onChange={e => { e.stopPropagation(); setGolfApplicationCause(e.target.value); }} rows={3} style={{ width: '100%', padding: '0.6rem', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '4px', fontSize: '0.85rem', marginBottom: '0.8rem', resize: 'vertical' }} placeholder="E.g. We are raising funds for medical bills for a local high schooler..."></textarea>
+                             
+                             <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.5rem', color: 'var(--forest)' }}>Preferred Disbursement Method:</label>
+                             <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.8rem' }}>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem', cursor: 'pointer' }}>
+                                   <input type="radio" checked={golfPayoutMethod === 'bank'} onChange={(e) => { e.stopPropagation(); setGolfPayoutMethod('bank'); }} style={{ accentColor: 'var(--forest)' }} /> Bank Transfer
+                                </label>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem', cursor: 'pointer' }}>
+                                   <input type="radio" checked={golfPayoutMethod === 'check'} onChange={(e) => { e.stopPropagation(); setGolfPayoutMethod('check'); }} style={{ accentColor: 'var(--forest)' }} /> Mailed Check
+                                </label>
+                             </div>
+                             
+                             <input type="text" value={golfPayoutInfo} onChange={e => { e.stopPropagation(); setGolfPayoutInfo(e.target.value); }} placeholder={golfPayoutMethod === 'bank' ? "Enter Routing / Account Number or Zelle Email" : "Enter full mailing address"} style={{ width: '100%', padding: '0.6rem', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '4px', fontSize: '0.85rem', marginBottom: '1rem' }} />
+
+                             <div style={{ background: '#f8faf9', padding: '1rem', borderRadius: '4px', border: '1px solid #e2e8f0', marginBottom: '1rem' }}>
+                                <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', cursor: 'pointer' }}>
+                                   <input type="checkbox" checked={golfAgreementChecked} onChange={(e) => { e.stopPropagation(); setGolfAgreementChecked(!golfAgreementChecked); }} style={{ marginTop: '0.2rem', accentColor: 'var(--forest)', width: '1rem', height: '1rem' }} />
+                                   <span style={{ fontSize: '0.75rem', color: 'var(--ink)', lineHeight: 1.5 }}>
+                                      <strong>Terms of Agreement:</strong> I acknowledge that by applying for fiscal sponsorship, all collected funds will be managed by the Gateway Outreach Links Foundation. Upon successful completion of the event, the Foundation will disburse all gross proceeds (minus standard Stripe processing fees of 2.2% + 30¢) directly to the tournament organizer using the method specified above.
+                                   </span>
+                                </label>
+                             </div>
+                             
+                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: golfApplicationStatus === 'pending' ? '#e6a100' : 'var(--mist)' }}>Status: {golfApplicationStatus === 'pending' ? 'Application Pending Review' : 'Draft'}</span>
+                                <button 
+                                   onClick={(e) => { 
+                                      e.stopPropagation(); 
+                                      e.preventDefault(); 
+                                      if(!golfApplicationCause) return alert('Please enter a description of your cause.'); 
+                                      if(!golfPayoutInfo) return alert('Please provide your disbursement information.');
+                                      if(!golfAgreementChecked) return alert('You must agree to the Terms of Agreement to apply.');
+                                      setGolfApplicationStatus('pending'); 
+                                   }}
+                                   style={{ padding: '0.4rem 0.8rem', background: golfApplicationStatus === 'pending' ? '#e0ece0' : 'var(--forest)', color: golfApplicationStatus === 'pending' ? 'var(--forest)' : '#fff', border: 'none', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer', opacity: (!golfApplicationCause || !golfPayoutInfo || !golfAgreementChecked) ? 0.6 : 1, transition: '0.2s' }}
+                                   disabled={golfApplicationStatus === 'pending'}
+                                >
+                                   {golfApplicationStatus === 'pending' ? 'Application Submitted' : 'Submit Application'}
+                                </button>
+                             </div>
+                          </div>
+                       )}
+                    </div>
+                 </label>
+              </div>
+
+              {charityType === 'own' && (
+                 <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', animation: 'fadeIn 0.3s' }}>
+                    <div className="wfield wform-full" style={{ flex: 2 }}>
+                      <label>501(c)(3) Organization Name</label>
+                      <input type="text" value={charityName} onChange={e => setCharityName(e.target.value)} placeholder="e.g. Jimmy Fund" />
+                    </div>
+                    <div className="wfield wform-full" style={{ flex: 1 }}>
+                      <label>Tax ID (EIN)</label>
+                      <input type="text" value={charityTaxId} onChange={e => setCharityTaxId(e.target.value)} placeholder="e.g. 12-3456789" />
+                    </div>
+                 </div>
+              )}
+           </div>
         </div>
      </div>
   );
@@ -848,27 +965,43 @@ export default function HostLiveCampaignBuilder() {
      <div className="builder-section fade-in">
         <div className="wizard-card" style={{ marginBottom: '2rem' }}>
            <div className="wizard-card-title">Payouts & Treasury</div>
-           <div style={{ color: 'var(--mist)', fontSize: '0.85rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>
-              Connect a validated Stripe account to enable automated payouts. Player entry fees and sponsor revenue will bypass TourneyLinks and flow directly into your connected treasury account.
-           </div>
-           
-           <div style={{ background: '#f8faf9', padding: '1.5rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <DollarSign color="var(--forest)" size={24} />
-                <div>
-                   <div style={{ fontWeight: 700, color: 'var(--forest)' }}>Stripe Connect Identity</div>
-                   <div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>Awaiting Boarding...</div>
-                </div>
-             </div>
-             <StripeOnboardButton />
-           </div>
+           {charityType === 'golf_sponsored' ? (
+              <div style={{ background: 'rgba(212,175,55,0.05)', border: '1px solid var(--gold)', borderRadius: '8px', padding: '1.5rem', display: 'flex', gap: '1rem' }}>
+                 <div style={{ fontSize: '1.5rem' }}>⏳</div>
+                 <div>
+                    <strong style={{ color: 'var(--ink)', display: 'block', marginBottom: '0.4rem' }}>Gateway Links Foundation Treasury</strong>
+                    <div style={{ color: 'var(--mist)', fontSize: '0.85rem', lineHeight: 1.5 }}>
+                       Your application for Fiscal Sponsorship is currently <strong>Under Review</strong>. <br/><br/>
+                       You do not need to connect a Stripe account. All transactions will be securely routed directly through the Foundation's audited accounts. You will be cleared for launch within 24 hours.
+                    </div>
+                 </div>
+              </div>
+           ) : (
+              <>
+                 <div style={{ color: 'var(--mist)', fontSize: '0.85rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>
+                    Connect a validated Stripe account to enable automated payouts. Player entry fees and sponsor revenue will bypass TourneyLinks and flow directly into your connected treasury account.
+                 </div>
+                 
+                 <div style={{ background: '#f8faf9', padding: '1.5rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                      <DollarSign color="var(--forest)" size={24} />
+                      <div>
+                         <div style={{ fontWeight: 700, color: 'var(--forest)' }}>Stripe Connect Identity</div>
+                         <div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>Awaiting Boarding...</div>
+                      </div>
+                   </div>
+                   <StripeOnboardButton />
+                 </div>
+              </>
+           )}
         </div>
 
         <div className="wizard-card">
            <div className="wizard-card-title">Launch Protocol</div>
            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1rem' }}>
-             <button onClick={handleSaveCampaign} className="btn-primary" style={{ flex: 1, padding: '1rem', background: 'var(--gold)', color: '#000', fontWeight: 700, border: 'none', borderRadius: '8px', boxShadow: '0 4px 15px rgba(212,175,55,0.4)', cursor: 'pointer' }}>
-               Pay $99 to Publish 🚀
+             <button disabled={charityType === 'golf_sponsored' && golfApplicationStatus === 'pending'} onClick={handleSaveCampaign} className="btn-primary" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, padding: '0.5rem 1rem', background: (charityType === 'golf_sponsored' && golfApplicationStatus === 'pending') ? '#ccc' : 'var(--gold)', color: (charityType === 'golf_sponsored' && golfApplicationStatus === 'pending') ? '#666' : '#000', fontWeight: 700, border: 'none', borderRadius: '8px', boxShadow: (charityType === 'golf_sponsored' && golfApplicationStatus === 'pending') ? 'none' : '0 4px 15px rgba(212,175,55,0.4)', cursor: (charityType === 'golf_sponsored' && golfApplicationStatus === 'pending') ? 'not-allowed' : 'pointer', transition: '0.2s' }}>
+               <div style={{ fontSize: '0.75rem', textDecoration: 'line-through', opacity: 0.7, marginBottom: '-0.2rem' }}>$149 Regular Price</div>
+               <div style={{ fontSize: '1.1rem' }}>Pay $99 Intro Price 🚀</div>
              </button>
              <button className="btn-hero-outline" style={{ flex: 1, padding: '1rem', borderRadius: '8px', cursor: 'pointer' }} onClick={handleSaveCampaign}>
                Save as Draft
@@ -1333,16 +1466,26 @@ export default function HostLiveCampaignBuilder() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f4f7f5', paddingBottom: '4rem' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--stone)', paddingBottom: '5rem', position: 'relative', overflowX: 'hidden' }}>
+       {/* Glassmorphic Background Elements */}
+       <div style={{ position: 'absolute', top: '-10%', left: '-5%', width: '500px', height: '500px', background: 'radial-gradient(circle, rgba(212,175,55,0.15) 0%, rgba(212,175,55,0) 70%)', filter: 'blur(80px)', pointerEvents: 'none', zIndex: 0 }}></div>
+       <div style={{ position: 'absolute', top: '20%', right: '-10%', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(34,74,44,0.1) 0%, rgba(34,74,44,0) 70%)', filter: 'blur(100px)', pointerEvents: 'none', zIndex: 0 }}></div>
+
        {/* Global Title Header */}
-       <div style={{ background: '#fff', borderBottom: '1px solid rgba(0,0,0,0.05)', padding: '1.5rem 0' }}>
+       <div style={{ background: 'rgba(255, 255, 255, 0.7)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(255,255,255,0.5)', padding: '1.5rem 0', position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 4px 30px rgba(0,0,0,0.03)' }}>
           <div style={{ maxWidth: '1600px', margin: '0 auto', padding: '0 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-             <div>
-                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.2rem' }}>Administration Hub</div>
-                <h1 style={{ fontFamily: 'Playfair Display, serif', fontSize: '2rem', color: 'var(--forest)', margin: 0 }}>Live Campaign Builder</h1>
+             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'linear-gradient(135deg, var(--gold) 0%, #b8952a 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 10px rgba(212,175,55,0.3)' }}>
+                   <span style={{ fontSize: '1.2rem' }}>✨</span>
+                </div>
+                <div>
+                   <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--mist)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '0.2rem' }}>Administration Hub</div>
+                   <h1 style={{ fontFamily: 'Playfair Display, serif', fontSize: '2.2rem', color: 'var(--forest)', margin: 0, textShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>Live Campaign Builder</h1>
+                </div>
              </div>
-             <div style={{ fontSize: '0.85rem', color: 'var(--mist)' }}>
-                Draft Auto-Saved at {new Date().toLocaleTimeString()}
+             <div style={{ fontSize: '0.85rem', color: 'var(--mist)', display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(0,0,0,0.03)', padding: '0.5rem 1rem', borderRadius: '20px' }}>
+                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#2ecc71', boxShadow: '0 0 10px rgba(46,204,113,0.5)' }}></div>
+                Draft Auto-saved at {new Date().toLocaleTimeString()}
              </div>
           </div>
        </div>
@@ -1388,12 +1531,25 @@ export default function HostLiveCampaignBuilder() {
           {/* SIMULATOR COLUMN (Right) */}
           <div style={{ flex: '1 1 500px', display: 'flex', flexDirection: 'column' }}>
              
-             {/* Sticky Wrapper */}
-             <div style={{ position: 'sticky', top: '100px', width: '100%', height: 'calc(100vh - 120px)', overflowY: 'auto', paddingRight: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3rem', paddingBottom: '3rem' }}>
+             {/* Sticky Wrapper - using max-content and overflow visible to avoid double scrollbars */}
+             <div style={{ position: 'sticky', top: '100px', width: '100%', paddingRight: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', paddingBottom: '3rem' }}>
                 
+                <div style={{ background: '#fff', padding: '0.3rem', borderRadius: '20px', display: 'flex', border: '1px solid rgba(0,0,0,0.1)', boxShadow: '0 4px 10px rgba(0,0,0,0.05)', width: 'max-content' }}>
+                   <button 
+                     onClick={() => setSimulatorDevice('desktop')}
+                     style={{ padding: '0.4rem 1.2rem', fontSize: '0.75rem', fontWeight: 600, background: simulatorDevice === 'desktop' ? 'var(--forest)' : 'transparent', color: simulatorDevice === 'desktop' ? '#fff' : 'var(--mist)', border: 'none', borderRadius: '15px', cursor: 'pointer', transition: '0.2s' }}>
+                      Desktop
+                   </button>
+                   <button 
+                     onClick={() => setSimulatorDevice('mobile')}
+                     style={{ padding: '0.4rem 1.2rem', fontSize: '0.75rem', fontWeight: 600, background: simulatorDevice === 'mobile' ? 'var(--forest)' : 'transparent', color: simulatorDevice === 'mobile' ? '#fff' : 'var(--mist)', border: 'none', borderRadius: '15px', cursor: 'pointer', transition: '0.2s' }}>
+                      Mobile
+                   </button>
+                </div>
+
                 {/* Sponsorship Mode Toggle */}
                 {activeTab === 'sponsorships' && (
-                   <div style={{ position: 'sticky', top: 0, zIndex: 100, width: '100%', display: 'flex', justifyContent: 'center', marginBottom: '-1rem', padding: '1rem 0', background: 'linear-gradient(to bottom, #f4f7f5 80%, transparent)' }}>
+                   <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginBottom: '-0.5rem' }}>
                       <div style={{ display: 'flex', background: '#fff', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '30px', overflow: 'hidden', padding: '0.2rem', boxShadow: '0 4px 10px rgba(0,0,0,0.05)' }}>
                          <button 
                             onClick={() => setSponsorPreviewMode('directory')}
@@ -1409,48 +1565,43 @@ export default function HostLiveCampaignBuilder() {
                    </div>
                 )}
 
-                {/* DESKTOP BROWSER ENVELOPE */}
-                <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                   <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <Smartphone size={14} /> Desktop Browser Preview
-                   </div>
-                   <div style={{ width: '100%', background: '#fff', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.1)', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.08)' }}>
-                      <div style={{ background: '#f4f7f5', borderBottom: '1px solid rgba(0,0,0,0.05)', padding: '0.6rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                         <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ff5f56' }} />
-                         <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ffbd2e' }} />
-                         <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#27c93f' }} />
-                         <div style={{ marginLeft: '1rem', background: '#fff', padding: '0.2rem 1rem', borderRadius: '4px', fontSize: '0.7rem', color: 'var(--mist)', flex: 1, border: '1px solid rgba(0,0,0,0.05)' }}>demo.tourneylinks.com/tournaments/live</div>
+                {simulatorDevice === 'desktop' && (
+                   <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', animation: 'fadeIn 0.3s' }}>
+                      <div style={{ width: '100%', background: '#fff', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.1)', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.08)' }}>
+                         <div style={{ background: '#f4f7f5', borderBottom: '1px solid rgba(0,0,0,0.05)', padding: '0.6rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ff5f56' }} />
+                            <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ffbd2e' }} />
+                            <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#27c93f' }} />
+                            <div style={{ marginLeft: '1rem', background: '#fff', padding: '0.2rem 1rem', borderRadius: '4px', fontSize: '0.7rem', color: 'var(--mist)', flex: 1, border: '1px solid rgba(0,0,0,0.05)' }}>demo.tourneylinks.com/tournaments/live</div>
+                         </div>
+                         {/* Desktop Canvas */}
+                         {renderDesktopSimulator()}
                       </div>
-                      
-                      {/* Desktop Canvas */}
-                      {renderDesktopSimulator()}
                    </div>
-                </div>
+                )}
 
-                {/* iPhone Frame Envelope */}
-                <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                   <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <Smartphone size={14} /> Mobile Simulator
-                   </div>
-                   <div style={{
-                      width: '375px', // Fixed iPhone width
-                      height: '750px',
-                      background: '#fff',
-                      borderRadius: '40px', // iPhone hardware curves
-                      border: '12px solid #0f1512', // Black device frame
-                      boxShadow: '0 25px 50px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(255,255,255,0.2)',
-                      position: 'relative',
-                      overflow: 'hidden',
-                      display: 'flex',
-                      flexDirection: 'column'
-                   }}>
-                      {/* Dynamic Notch */}
-                      <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '120px', height: '25px', background: '#0f1512', borderBottomLeftRadius: '16px', borderBottomRightRadius: '16px', zIndex: 50 }}></div>
+                {simulatorDevice === 'mobile' && (
+                   <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', animation: 'fadeIn 0.3s', transform: 'scale(0.85)', transformOrigin: 'top center', marginBottom: '-10%' }}>
+                      <div style={{
+                         width: '375px', // Fixed iPhone width
+                         height: '750px',
+                         background: '#fff',
+                         borderRadius: '40px', // iPhone hardware curves
+                         border: '12px solid #0f1512', // Black device frame
+                         boxShadow: '0 25px 50px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(255,255,255,0.2)',
+                         position: 'relative',
+                         overflow: 'hidden',
+                         display: 'flex',
+                         flexDirection: 'column'
+                      }}>
+                         {/* Dynamic Notch */}
+                         <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '120px', height: '25px', background: '#0f1512', borderBottomLeftRadius: '16px', borderBottomRightRadius: '16px', zIndex: 50 }}></div>
 
-                      {/* SIMULATED WEB BROWSER CANVAS */}
-                      {renderMobileSimulator()}
+                         {/* SIMULATED WEB BROWSER CANVAS */}
+                         {renderMobileSimulator()}
+                      </div>
                    </div>
-                </div>
+                )}
 
              </div>
           </div>
