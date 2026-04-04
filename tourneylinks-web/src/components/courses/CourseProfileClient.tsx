@@ -17,59 +17,60 @@ export default function CourseProfileClient({ course, scorecards, hostedTourname
   ];
 
   return (
-     <div className="w-full relative z-20" style={{ display: 'flex', minHeight: '800px', background: '#050B08', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-       
-       {/* Hub-Style Solid Sidebar */}
-       <div style={{ width: '280px', flexShrink: 0, background: '#0a100d', borderRight: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', paddingTop: '3rem', paddingBottom: '3rem' }}>
-          <div className="sticky top-[100px] flex flex-col">
-             
-             <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.4)', marginBottom: '1rem', padding: '0 1.5rem' }}>
-               Venue Modules
+     <div className="w-full relative z-20 bg-[#050B08] border-t border-white/10" style={{ minHeight: '800px' }}>
+       <div className="w-full flex flex-col md:flex-row gap-8 lg:gap-16 pt-12 pb-24" style={{ maxWidth: '1300px', margin: '0 auto', paddingLeft: 'clamp(2rem, 5vw, 4rem)', paddingRight: 'clamp(2rem, 5vw, 4rem)' }}>
+          
+          {/* Sidebar - Floats inside container aligned with Hero text */}
+          <div className="w-full md:w-[260px] flex-shrink-0">
+             <div className="sticky top-[100px] flex flex-col">
+                
+                <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.4)', marginBottom: '1rem', padding: '0 0.5rem' }}>
+                  Venue Modules
+                </div>
+
+                {navItems.map(item => {
+                   const Icon = item.icon;
+                   const isActive = activeTab === item.id;
+                   return (
+                      <button 
+                         key={item.id}
+                         onClick={() => setActiveTab(item.id as any)}
+                         style={{ 
+                            background: isActive ? 'rgba(212,175,55,0.1)' : 'transparent', 
+                            borderLeft: isActive ? '3px solid var(--gold)' : '3px solid transparent', 
+                            padding: '0.85rem 1rem', 
+                            color: isActive ? 'var(--gold)' : 'rgba(255,255,255,0.6)', 
+                            fontSize: '0.9rem', 
+                            cursor: 'pointer', 
+                            display: 'flex', 
+                            alignItems: 'center',
+                            justifyContent: 'flex-start',
+                            transition: '0.2s', 
+                            marginLeft: '-1rem',
+                            borderRadius: '0 6px 6px 0'
+                         }}
+                         className="hover:bg-white/5 hover:text-white/90"
+                      >
+                         <Icon size={18} className={isActive ? 'text-[var(--gold)] mr-3' : 'opacity-70 mr-3'} />
+                         <span className="font-medium tracking-wide">{item.label}</span>
+                      </button>
+                   );
+                })}
+
+                <div className="mt-12 p-6 rounded-xl border border-[var(--gold)]/20 bg-[var(--gold)]/5 relative overflow-hidden group cursor-pointer transition-all hover:bg-[var(--gold)]/10 text-left">
+                   <div className="absolute inset-0 bg-gradient-to-br from-[var(--gold)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                   <h4 className="text-white font-bold mb-2 font-serif text-xl">Inquire Now</h4>
+                   <p className="text-white/50 text-sm mb-6 leading-relaxed">Directly engage venue management for your next corporate outing.</p>
+                   <div className="flex items-center gap-2 text-[var(--gold)] text-xs font-bold uppercase tracking-widest">
+                      Message Pro <ArrowRight size={14} />
+                   </div>
+                </div>
+
              </div>
-
-             {navItems.map(item => {
-                const Icon = item.icon;
-                const isActive = activeTab === item.id;
-                return (
-                   <button 
-                      key={item.id}
-                      onClick={() => setActiveTab(item.id as any)}
-                      style={{ 
-                         background: isActive ? 'rgba(212,175,55,0.1)' : 'transparent', 
-                         borderLeft: isActive ? '3px solid var(--gold)' : '3px solid transparent', 
-                         padding: '0.85rem 1.5rem', 
-                         color: isActive ? 'var(--gold)' : 'rgba(255,255,255,0.6)', 
-                         fontSize: '0.9rem', 
-                         cursor: 'pointer', 
-                         display: 'flex', 
-                         alignItems: 'center',
-                         justifyContent: 'flex-start',
-                         transition: '0.2s', 
-                      }}
-                      className="hover:bg-white/5 hover:text-white/90"
-                   >
-                      <Icon size={18} className={isActive ? 'text-[var(--gold)] mr-3' : 'opacity-70 mr-3'} />
-                      <span className="font-medium tracking-wide">{item.label}</span>
-                   </button>
-                );
-             })}
-
-             <div className="mt-12 px-6">
-               <div className="p-5 rounded-md border border-[var(--gold)]/20 bg-[var(--gold)]/5 relative overflow-hidden group cursor-pointer transition-all hover:bg-[var(--gold)]/10">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[var(--gold)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <h4 className="text-white font-bold mb-1 font-serif text-lg">Inquire Now</h4>
-                  <p className="text-white/50 text-xs mb-4 leading-relaxed">Directly engage venue management for your next corporate outing.</p>
-                  <div className="flex items-center gap-2 text-[var(--gold)] text-xs font-bold uppercase tracking-widest">
-                     Message Pro <ArrowRight size={14} />
-                  </div>
-               </div>
-             </div>
-
           </div>
-       </div>
 
-       {/* Main Content Pane */}
-       <div className="flex-1 min-w-0 py-12 px-8 lg:px-16" style={{ background: '#050B08' }}>
+          {/* Main Content Pane */}
+          <div className="flex-1 min-w-0" style={{ background: 'transparent' }}>
              {/* OVERVIEW */}
              {activeTab === 'overview' && (
                 <div className="animate-fadeIn">
@@ -146,7 +147,8 @@ export default function CourseProfileClient({ course, scorecards, hostedTourname
                    <p className="text-white/50 text-sm">Venue interactive map and aerial topography coming soon.</p>
                 </div>
              )}
-          </div>
+           </div>
+       </div>
      </div>
   );
 }
