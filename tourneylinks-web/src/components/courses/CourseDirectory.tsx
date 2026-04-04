@@ -9,21 +9,28 @@ export default function CourseDirectory() {
   const [results, setResults] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
 
   // Debounced search trigger
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetchCourses(query);
+      setPage(1);
+      fetchCourses(query, 1, true);
     }, query ? 300 : 0); // 300ms debounce on active typing
     return () => clearTimeout(timer);
   }, [query]);
 
-  const fetchCourses = async (searchStr: string) => {
+  const fetchCourses = async (searchStr: string, pageNum: number = 1, isNewSearch: boolean = false) => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/courses/search?q=${encodeURIComponent(searchStr)}`);
+      const res = await fetch(`/api/courses/search?q=${encodeURIComponent(searchStr)}&page=${pageNum}`);
       const data = await res.json();
-      setResults(data.courses || []);
+      
+      if (isNewSearch) {
+         setResults(data.courses || []);
+      } else {
+         setResults(prev => [...prev, ...(data.courses || [])]);
+      }
       setTotal(data.total || 0);
     } catch (error) {
       console.error('Failed to fetch:', error);
@@ -141,6 +148,23 @@ export default function CourseDirectory() {
           </Link>
         ))}
       </div>
+
+      {results.length > 0 && results.length < total && (
+         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '4rem' }}>
+            <button 
+               onClick={() => {
+                  const nextPage = page + 1;
+                  setPage(nextPage);
+                  fetchCourses(query, nextPage, false);
+               }}
+               disabled={loading}
+               className="btn-hero-outline" 
+               style={{ padding: '0.8rem 3rem', background: loading ? 'rgba(0,0,0,0.05)' : 'transparent', border: '2px solid var(--forest)', color: 'var(--forest)', borderRadius: '25px', fontWeight: 600, cursor: loading ? 'wait' : 'pointer' }}
+            >
+               {loading ? 'Loading...' : 'Load More Courses'}
+            </button>
+         </div>
+      )}
 
     </div>
   );
