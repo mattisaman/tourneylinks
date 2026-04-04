@@ -93,12 +93,26 @@ export default function CourseDirectory() {
                }}>
               
               <div style={{ background: 'linear-gradient(180deg, rgba(26,46,26,0.9) 0%, var(--ink) 100%)', borderRadius: '15px', padding: '1px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                 
+                 {course.heroImageUrl && course.heroImageUrl !== "DEFAULT_GRADIENT" ? (
+                   <div style={{ width: '100%', height: '140px', borderTopLeftRadius: '14px', borderTopRightRadius: '14px', overflow: 'hidden', position: 'relative' }}>
+                     <img src={course.heroImageUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt={course.name} />
+                     {course.rating && (
+                       <div style={{ position: 'absolute', bottom: '10px', right: '10px', background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)', color: 'var(--gold)', padding: '0.2rem 0.6rem', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                         ⭐ {course.rating.toFixed(1)}
+                       </div>
+                     )}
+                   </div>
+                 ) : (
+                   <div style={{ width: '100%', height: '10px', background: 'var(--gold)', borderTopLeftRadius: '14px', borderTopRightRadius: '14px' }} />
+                 )}
+
                  <div style={{ padding: '1.5rem', flex: 1 }}>
                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
                      <h3 style={{ fontSize: '1.25rem', fontFamily: "'Clash Display', sans-serif", color: 'var(--white)', margin: 0, lineHeight: 1.2 }}>
                        {course.name}
                      </h3>
-                     {course.isActive && <CheckCircle2 size={20} color="var(--gold)" />}
+                     {course.isActive && <CheckCircle2 size={20} color="var(--gold)" style={{ flexShrink: 0 }} />}
                    </div>
 
                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>

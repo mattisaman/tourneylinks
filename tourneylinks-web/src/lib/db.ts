@@ -31,6 +31,9 @@ export const courses = pgTable('courses', {
   
   rawMetadata: text('raw_metadata'),
   
+  heroImageUrl: text('hero_image_url'),
+  rating: real('rating'),
+  
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
   isActive: boolean('is_active').default(true),
