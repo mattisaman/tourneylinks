@@ -11,7 +11,7 @@ export default function ApproveClaimButton({ claimId, currentStatus }: { claimId
   const handleApprove = async () => {
     setLoading(true);
     try {
-       await fetch(\`/api/admin/courses/claims/\${claimId}/approve\`, { method: 'POST' });
+       await fetch('/api/admin/courses/claims/' + claimId + '/approve', { method: 'POST' });
        router.refresh();
     } catch (e) {
        console.error(e);

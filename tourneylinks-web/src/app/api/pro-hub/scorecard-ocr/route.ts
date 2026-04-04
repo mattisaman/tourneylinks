@@ -5,9 +5,9 @@ import { GoogleGenAI } from '@google/genai';
 
 export async function POST(req: Request) {
   try {
-    const { courseId, teeBoxName, teeBoxColorHex, gender, scorecardImageUrl } = await req.json();
+    const { courseId, scorecardImageUrl } = await req.json();
 
-    if (!courseId || !scorecardImageUrl || !teeBoxName) {
+    if (!courseId || !scorecardImageUrl) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
@@ -88,7 +88,7 @@ export async function POST(req: Request) {
     // We expect extractedHolesData to be an array of Teebox objects. Let's fallback gracefully if it returned just the holes!
     const isSingle = extractedHolesData.length > 0 && extractedHolesData[0].par !== undefined;
     
-    const objectsToInsert = isSingle ? [{ teeBoxName: teeBoxName || 'Default', holes: extractedHolesData }] : extractedHolesData;
+    const objectsToInsert = isSingle ? [{ teeBoxName: extractedHolesData[0]?.teeBoxName || 'Default Championship', holes: extractedHolesData }] : extractedHolesData;
 
     for (const box of objectsToInsert) {
         await db.insert(course_scorecards).values({
@@ -103,7 +103,7 @@ export async function POST(req: Request) {
         idx++;
     }
 
-    return NextResponse.json({ success: true, count: objectsToInsert.length });
+    return NextResponse.json({ success: true, count: objectsToInsert.length, payload: objectsToInsert });
 
   } catch (error: any) {
     console.error("Scorecard OCR Error:", error);
