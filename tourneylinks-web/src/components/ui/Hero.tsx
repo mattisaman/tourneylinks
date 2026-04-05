@@ -78,26 +78,8 @@ export default function Hero() {
                   </select>
                 </div>
                 <div className="search-field">
-                  <label>Format</label>
-                  <select>
-                    <option>Any Format</option>
-                    <option>Stroke Play</option>
-                    <option>Scramble</option>
-                  </select>
-                </div>
-              </div>
-              <div className="search-row" style={{ textAlign: 'left' }}>
-                <div className="search-field">
                   <label>Date Range</label>
                   <input type="date" />
-                </div>
-                <div className="search-field">
-                  <label>Handicap Max</label>
-                  <select>
-                    <option>Any</option>
-                    <option>0–5</option>
-                    <option>6–10</option>
-                  </select>
                 </div>
               </div>
               
