@@ -43,13 +43,13 @@ export default function Hero() {
           <div className="hero-pillar-card">
             <h3 style={{ color: 'var(--gold)', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', margin: '0 0 0.5rem' }}>For Organizers</h3>
             <h2 style={{ color: 'var(--cream)', fontSize: '2rem', fontFamily: 'var(--font-serif), serif', margin: '0 0 1rem', lineHeight: 1.1 }}>Host Your Event</h2>
-            <p style={{ color: 'rgba(245,240,232,0.65)', fontSize: '0.95rem', lineHeight: 1.6, margin: '0 0 1rem' }}>
-              Stop chasing checks. Launch tournaments, auto-generate flights, and collect payments natively through Stripe with zero friction.
+            <p style={{ color: 'rgba(245,240,232,0.65)', fontSize: '0.90rem', lineHeight: 1.6, margin: '0 0 1rem' }}>
+              Launch your event into a growing network of local golfers. Replace chaotic spreadsheets with an all-in-one command center that automates registration, team flighting, and secure payouts.
             </p>
             <ul style={{ color: 'rgba(245,240,232,0.8)', fontSize: '0.85rem', lineHeight: 1.8, margin: '0 0 1.5rem', padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-              <li>✧ Live-scoring leaderboards</li>
-              <li>✧ Automated digital payouts</li>
-              <li>✧ Custom sponsor ad slots</li>
+              <li>✧ Reach local players actively searching</li>
+              <li>✧ One-click automated team flighting</li>
+              <li>✧ Broadcast to Live TV Leaderboards</li>
             </ul>
             <div style={{ marginTop: 'auto' }}>
               <Link href="/admin" className="btn-hero-outline" style={{ display: 'flex', justifyContent: 'center', width: '100%', padding: '1rem', marginBottom: '1rem' }}>
@@ -108,13 +108,13 @@ export default function Hero() {
           <div className="hero-pillar-card">
             <h3 style={{ color: 'var(--gold)', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', margin: '0 0 0.5rem' }}>For Course Pros</h3>
             <h2 style={{ color: 'var(--cream)', fontSize: '2rem', fontFamily: 'var(--font-serif), serif', margin: '0 0 1rem', lineHeight: 1.1 }}>Manage Your Course</h2>
-            <p style={{ color: 'rgba(245,240,232,0.65)', fontSize: '0.95rem', lineHeight: 1.6, margin: '0 0 1rem' }}>
-              Take control of your facility. Claim your course to centralize logistics, download tee sheets, and message hosts directly.
+            <p style={{ color: 'rgba(245,240,232,0.65)', fontSize: '0.90rem', lineHeight: 1.6, margin: '0 0 1rem' }}>
+              Reclaim your facility's operational bandwidth. Centralize every hosted event into a single hub offering deep dashboard insights, player turnouts, and real-time team breakdowns.
             </p>
             <ul style={{ color: 'rgba(245,240,232,0.8)', fontSize: '0.85rem', lineHeight: 1.8, margin: '0 0 1.5rem', padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-              <li>✧ Claim your premium profile</li>
-              <li>✧ Approve & manage host requests</li>
-              <li>✧ Centralize all event logistics</li>
+              <li>✧ Centralized tournament dashboards</li>
+              <li>✧ Standardized digital tee-sheets</li>
+              <li>✧ Direct Organizer messaging portal</li>
             </ul>
             <div style={{ marginTop: 'auto' }}>
               <Link href="/courses" className="btn-hero-outline" style={{ display: 'flex', justifyContent: 'center', width: '100%', padding: '1rem' }}>
