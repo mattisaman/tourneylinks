@@ -232,7 +232,7 @@ export default async function ProfilePage() {
                  <UserPlus size={18} /> Pairing Network
                </h3>
                <div className="py-6 text-center">
-                 <p className="text-sm text-[rgba(255,255,255,0.4)] font-light leading-relaxed mb-6">Invite friends to let the Auto-Flight Engine pair you together efficiently.</p>
+                 <p className="text-sm text-[rgba(255,255,255,0.4)] font-light leading-relaxed mb-6">Invite playing partners using their verified email address to let the Auto-Flight Engine securely pair you together.</p>
                  <div className="inline-block text-xs text-[rgba(255,255,255,0.3)] bg-[rgba(255,255,255,0.03)] px-6 py-3 uppercase tracking-widest font-bold rounded shadow-inner">
                    Sync Unavailable
                  </div>

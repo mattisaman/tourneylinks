@@ -184,34 +184,35 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
     <>
       <div style={{ 
         position: 'relative', 
-        padding: '1.5rem 3rem 1.5rem 3rem', 
+        padding: 'calc(80px + 4rem) 3rem 4rem 3rem', 
         background: 'linear-gradient(135deg, #0a1f0f 0%, #153a1d 50%, #0a1f0f 100%)', 
         overflow: 'hidden',
         textAlign: 'center',
         borderBottom: '2px solid rgba(212,175,55,0.7)',
-        boxShadow: '0 8px 30px rgba(0,0,0,0.4)',
+        boxShadow: '0 8px 40px rgba(0,0,0,0.5)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center'
       }}>
         {/* Subtle background overlay for "foil/lighting" */}
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'radial-gradient(ellipse at top, rgba(212,175,55,0.15) 0%, transparent 60%)', pointerEvents: 'none' }}></div>
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'radial-gradient(ellipse at top, rgba(212,175,55,0.2) 0%, transparent 70%)', pointerEvents: 'none' }}></div>
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(212,175,55,1), transparent)', opacity: 0.9 }}></div>
         
          <div style={{ position: 'relative', zIndex: 1, maxWidth: '1000px', margin: '0 auto' }}>
             <h1 style={{ 
-              fontFamily: 'Playfair Display, serif', 
-              fontSize: '3.5rem', 
-              marginBottom: '0.1rem', 
+              fontFamily: "'Playfair Display', serif", 
+              fontSize: '4.5rem', 
+              marginBottom: '1rem', 
               background: 'linear-gradient(to right, #d4af37, #fff9e6, #d4af37)', 
               WebkitBackgroundClip: 'text', 
               WebkitTextFillColor: 'transparent',
-              textShadow: '0 4px 20px rgba(212,175,55,0.3)'
+              textShadow: '0 4px 20px rgba(212,175,55,0.4)',
+              lineHeight: 1.1
             }}>
               Tournament Directory
             </h1>
-            <p className="hidden md:block" style={{ fontSize: '0.95rem', color: 'rgba(255,255,255,0.9)', marginBottom: 0, fontWeight: 300 }}>
+            <p className="hidden md:block" style={{ fontSize: '1.25rem', color: 'rgba(255,255,255,0.9)', marginBottom: 0, fontWeight: 300, maxWidth: '800px', margin: '0 auto' }}>
               Browse the complete schedule of upcoming amateur championships, competitive leagues, and high-end charity scrambles.
             </p>
         </div>
