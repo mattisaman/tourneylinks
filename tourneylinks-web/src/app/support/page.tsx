@@ -171,9 +171,9 @@ export default function SupportPage() {
             <p style={{ color: '#e0e6e2', fontSize: '0.95rem', lineHeight: 1.5, flex: 1 }}>
                Need a refund, have a question about a specific event's details, or need to transfer your registration to another player? Reach out directly to the Event Host.
             </p>
-            <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '8px', fontSize: '0.85rem', color: '#e0e6e2' }}>
-               👉 To contact a host or transfer a ticket, navigate directly to the <Link href="/tournaments" style={{ color: 'var(--gold)', fontWeight: 600 }}>Tournament Page</Link> and click <span className="btn-ghost" style={{ padding: '0.3rem 0.8rem', fontWeight: 'bold', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'inline-flex', alignItems: 'center', margin: '0 0.2rem', verticalAlign: 'middle', whiteSpace: 'nowrap' }}>Contact Host</span>
-            </div>
+            <Link href="/tournaments" className="btn-primary" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '0.8rem', textDecoration: 'none', width: '100%', border: 'none', cursor: 'pointer', marginTop: 'auto' }}>
+               <MessageSquare size={16} /> Contact Host
+            </Link>
          </div>
 
          {/* TIER 2: Platform Support */}

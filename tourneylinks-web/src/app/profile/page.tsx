@@ -110,56 +110,56 @@ export default async function ProfilePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start w-full">
             
             {/* Widget 1: Communications Command Center */}
-            <div className="w-full relative bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] p-6 hover:border-[rgba(212,175,55,0.3)] transition-colors flex flex-col shadow-xl">
-               <h3 className="text-[10px] uppercase tracking-widest font-black mb-6 flex items-center justify-between text-white border-b border-[rgba(255,255,255,0.05)] pb-4">
-                 <div className="flex items-center gap-3"><Bell size={14} className="text-[var(--gold)]" /> Command Center</div>
-                 <span className="bg-[var(--gold)] text-black px-2 py-0.5 rounded font-black text-[9px] animate-pulse">ALERTS</span>
+            <div className="w-full relative bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] p-8 hover:border-[var(--gold)] transition-colors flex flex-col shadow-2xl rounded-2xl">
+               <h3 className="text-sm uppercase tracking-[0.15em] font-black mb-8 flex items-center justify-between text-white border-b border-[rgba(255,255,255,0.1)] pb-4">
+                 <div className="flex items-center gap-4"><Bell size={18} className="text-[var(--gold)]" /> Command Center</div>
+                 <span className="bg-[var(--gold)] text-black px-3 py-1 rounded font-black text-xs animate-pulse shadow-[0_0_15px_rgba(212,175,55,0.4)]">ALERTS</span>
                </h3>
-               <div className="flex-1 flex flex-col gap-4">
-                  <p className="text-sm text-[rgba(255,255,255,0.4)] leading-relaxed font-light">Internal routing system for secure transmissions directly from Hosts and Platform Support.</p>
-                  <div className="mt-auto flex flex-col gap-2 pt-4">
-                     <a href="/profile/inbox" className="w-full text-center bg-white text-black font-bold uppercase tracking-widest text-[9px] py-3 hover:bg-[var(--gold)] transition-colors">Access Inbox</a>
-                     <a href="/profile/settings" className="w-full text-center border border-[rgba(255,255,255,0.1)] text-white hover:border-[var(--gold)] hover:text-[var(--gold)] font-bold uppercase tracking-widest text-[9px] py-3 transition-colors">Notification Rules</a>
+               <div className="flex-1 flex flex-col gap-6">
+                  <p className="text-base text-[rgba(255,255,255,0.6)] leading-relaxed font-light">Internal routing system for secure transmissions directly from Hosts and Platform Support.</p>
+                  <div className="mt-auto flex flex-col gap-3 pt-6">
+                     <a href="/profile/inbox" className="w-full text-center bg-white text-black font-bold uppercase tracking-widest text-xs py-4 rounded hover:bg-[var(--gold)] hover:shadow-[0_0_20px_rgba(212,175,55,0.3)] transition-all">Access Inbox</a>
+                     <a href="/profile/settings" className="w-full text-center border border-[rgba(255,255,255,0.2)] text-white hover:border-[var(--gold)] hover:text-[var(--gold)] font-bold uppercase tracking-widest text-xs py-4 rounded transition-all">Notification Rules</a>
                   </div>
                </div>
             </div>
 
             {/* Widget 2: Registrations & Game Day Mobile Scorer */}
-            <div className="md:col-span-2 w-full relative bg-[#020604] border-t-2 border-[var(--gold)] p-6 hover:border-[rgba(212,175,55,0.6)] transition-colors shadow-2xl flex flex-col h-full min-h-[300px]">
-               <div className="flex items-center justify-between border-b border-[rgba(255,255,255,0.05)] pb-4 mb-4">
-                 <h3 className="text-[10px] uppercase tracking-widest font-black flex items-center gap-3 text-white">
-                   <Trophy size={14} className="text-[var(--gold)]" /> Active Registrations
+            <div className="md:col-span-2 w-full relative bg-[#020604] border-t-[3px] border-[var(--gold)] p-8 hover:border-[rgba(212,175,55,1)] transition-colors shadow-2xl flex flex-col h-full min-h-[400px] rounded-b-2xl">
+               <div className="flex items-center justify-between border-b border-[rgba(255,255,255,0.1)] pb-6 mb-6">
+                 <h3 className="text-sm uppercase tracking-[0.15em] font-black flex items-center gap-3 text-white">
+                   <Trophy size={18} className="text-[var(--gold)]" /> Active Registrations
                  </h3>
-                 <a href="/tournaments" className="text-[9px] text-[var(--gold)] hover:text-white border border-transparent hover:border-[var(--gold)] px-3 py-1 uppercase tracking-widest font-bold transition-all rounded-sm">Directory</a>
+                 <a href="/tournaments" className="text-xs text-[var(--gold)] hover:text-black hover:bg-[var(--gold)] border border-[var(--gold)] px-4 py-2 uppercase tracking-widest font-bold transition-all rounded">Directory</a>
                </div>
                
-               <div className="flex-1 flex flex-col px-2 overflow-y-auto max-h-[350px]">
+               <div className="flex-1 flex flex-col px-2 overflow-y-auto max-h-[500px] custom-scrollbar">
                  {userRegistrations.length === 0 ? (
-                   <div className="w-full h-full flex flex-col items-center justify-center py-10 opacity-50">
-                     <p className="text-sm font-light mb-4 text-center">No active tournament flights booked.</p>
+                   <div className="w-full h-full flex flex-col items-center justify-center py-16 opacity-50">
+                     <p className="text-lg font-light mb-4 text-center">No active tournament flights booked.</p>
                    </div>
                  ) : (
-                   <div className="flex flex-col">
-                     {userRegistrations.map((row, idx) => (
-                       <div key={row.registration.id} className={`py-4 ${idx !== 0 ? 'border-t border-[rgba(255,255,255,0.05)]' : ''} flex flex-col xl:flex-row xl:items-center justify-between gap-4 group hover:bg-[rgba(255,255,255,0.02)] -mx-2 px-2 transition-colors`}>
+                   <div className="flex flex-col gap-2">
+                     {userRegistrations.map((row) => (
+                       <div key={row.registration.id} className="py-6 border-b border-[rgba(255,255,255,0.05)] flex flex-col xl:flex-row xl:items-center justify-between gap-6 group hover:bg-[rgba(255,255,255,0.03)] px-4 rounded-xl transition-colors">
                          <div className="min-w-0 pr-4">
-                           <div className="text-lg font-bold text-white group-hover:text-[var(--gold)] transition-colors" style={{ fontFamily: 'var(--font-serif)' }}>{row.tournament.name}</div>
-                           <div className="flex items-center gap-3 text-[10px] font-mono text-[rgba(255,255,255,0.5)] mt-1">
-                             <span className="flex items-center gap-1"><span className="text-[var(--gold)] opacity-70">DATE</span> {new Date(row.tournament.dateStart || '').toLocaleDateString()}</span>
-                             <span className="w-px h-2 bg-[rgba(255,255,255,0.2)]" />
+                           <div className="text-2xl font-bold text-white group-hover:text-[var(--gold)] transition-colors" style={{ fontFamily: 'var(--font-serif)' }}>{row.tournament.name}</div>
+                           <div className="flex items-center gap-4 text-xs font-mono text-[rgba(255,255,255,0.6)] mt-2">
+                             <span className="flex items-center gap-2"><span className="text-[var(--gold)] opacity-80">DATE</span> {new Date(row.tournament.dateStart || '').toLocaleDateString()}</span>
+                             <span className="w-px h-3 bg-[rgba(255,255,255,0.3)]" />
                              <span className={`uppercase font-bold tracking-widest ${row.registration.status === 'TRANSFERRED' ? 'text-red-400' : 'text-[#4ade80]'}`}>{row.registration.status}</span>
                            </div>
                          </div>
                          
                          {row.registration.status === 'CONFIRMED' && (
-                           <div className="flex items-center gap-3 mt-2 xl:mt-0 opacity-80 group-hover:opacity-100 transition-opacity">
+                           <div className="flex items-center gap-4 mt-2 xl:mt-0 transition-opacity">
                              {/* Mocking Game Day logic */}
                              {new Date().toISOString().split('T')[0] === row.tournament.dateStart || true ? (
-                               <a href={`/tournaments/${row.tournament.id}/scorer`} className="bg-[var(--gold)] text-[#050B08] uppercase font-black tracking-widest text-[9px] px-4 py-2 rounded-sm shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:bg-white transition-colors flex items-center gap-2 animate-pulse whitespace-nowrap">
+                               <a href={`/tournaments/${row.tournament.id}/scorer`} className="bg-[var(--gold)] text-[#050B08] uppercase font-black tracking-widest text-xs px-6 py-3 rounded shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:bg-white transition-colors flex items-center gap-2 animate-pulse whitespace-nowrap">
                                   Launch Scorer
                                </a>
                              ) : null}
-                             <div className="scale-[0.8] origin-right">
+                             <div className="origin-right">
                                 <TransferTicketModal registrationId={row.registration.id} tournamentName={row.tournament.name} />
                              </div>
                            </div>
@@ -172,25 +172,25 @@ export default async function ProfilePage() {
             </div>
 
             {/* Widget 3: Target Radars */}
-            <div className="w-full relative bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] p-6 hover:border-[rgba(212,175,55,0.3)] transition-colors shadow-xl">
-               <h3 className="text-[10px] uppercase tracking-widest font-black flex items-center gap-3 text-white pb-4 border-b border-[rgba(255,255,255,0.05)] mb-4">
-                 <MapPin size={14} className="text-[var(--gold)]" /> Course Radars
+            <div className="w-full relative bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] p-8 hover:border-[var(--gold)] transition-colors shadow-2xl rounded-2xl">
+               <h3 className="text-sm uppercase tracking-[0.15em] font-black flex items-center gap-3 text-white pb-6 border-b border-[rgba(255,255,255,0.1)] mb-6">
+                 <MapPin size={18} className="text-[var(--gold)]" /> Course Radars
                </h3>
                {userRadars.length === 0 ? (
-                 <div className="text-center py-6 opacity-40">
-                   <p className="text-[10px] font-light mb-3">No radar uplinks established.</p>
+                 <div className="text-center py-10 opacity-40">
+                   <p className="text-sm font-light mb-3">No radar uplinks established.</p>
                  </div>
                ) : (
-                 <div className="flex flex-col max-h-[200px] overflow-y-auto">
-                   {userRadars.map((row, idx) => (
-                     <a href={`/courses/${row.course.id}`} key={row.radar.id} className={`group block py-3 ${idx !== 0 ? 'border-t border-[rgba(255,255,255,0.05)]' : ''} hover:bg-[rgba(255,255,255,0.03)] px-2 -mx-2 transition-colors`}>
+                 <div className="flex flex-col max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                   {userRadars.map((row) => (
+                     <a href={`/courses/${row.course.id}`} key={row.radar.id} className="group block py-5 border-b border-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.03)] px-4 rounded-xl transition-colors">
                        <div className="flex items-center justify-between">
                          <div className="min-w-0 pr-4">
-                           <div className="text-sm font-bold text-white truncate group-hover:text-[var(--gold)] transition-colors">{row.course.name}</div>
-                           <div className="text-[9px] text-[rgba(255,255,255,0.4)] mt-1 uppercase tracking-widest">{row.course.city}, {row.course.state}</div>
+                           <div className="text-lg font-bold text-white truncate group-hover:text-[var(--gold)] transition-colors" style={{ fontFamily: 'var(--font-serif)' }}>{row.course.name}</div>
+                           <div className="text-xs text-[rgba(255,255,255,0.5)] mt-1 uppercase tracking-widest">{row.course.city}, {row.course.state}</div>
                          </div>
                          {row.radar.notifyOnNewTournament && (
-                           <div className="w-1.5 h-1.5 bg-[#4ade80] rounded-full shadow-[0_0_8px_rgba(74,222,128,0.5)]"></div>
+                           <div className="w-2 h-2 bg-[#4ade80] rounded-full shadow-[0_0_10px_rgba(74,222,128,0.6)]"></div>
                          )}
                        </div>
                      </a>
@@ -200,37 +200,37 @@ export default async function ProfilePage() {
             </div>
 
             {/* Widget 4: Affiliate Architecture */}
-            <div className="w-full relative bg-[#050B08] border border-[rgba(255,255,255,0.05)] p-6 shadow-xl">
+            <div className="w-full relative bg-[#050B08] border border-[rgba(255,255,255,0.1)] p-8 shadow-2xl rounded-2xl overflow-hidden hover:border-[var(--gold)] transition-colors">
                <div className="absolute inset-0 bg-[url('/hero-bg-4.jpg')] opacity-[0.05] pointer-events-none mix-blend-overlay" />
-               <h3 className="text-[10px] uppercase tracking-widest font-black mb-4 text-white pb-4 border-b border-[rgba(255,255,255,0.05)] relative z-10 flex items-center justify-between">
-                  Credit Bank <span className="text-[var(--gold)]">$0.00</span>
+               <h3 className="text-sm uppercase tracking-[0.15em] font-black mb-6 text-white pb-6 border-b border-[rgba(255,255,255,0.1)] relative z-10 flex items-center justify-between">
+                  Credit Bank <span className="text-[var(--gold)] text-lg">$0.00</span>
                </h3>
-               <p className="text-[10px] text-[rgba(255,255,255,0.5)] mb-4 font-light leading-relaxed relative z-10">
-                 Earn <strong className="text-white font-bold">$25</strong> when a Director registers via your link.
+               <p className="text-sm text-[rgba(255,255,255,0.6)] mb-6 font-light leading-relaxed relative z-10">
+                 Earn <strong className="text-white font-bold">$25</strong> automatically when a Director registers their first tournament via your link.
                </p>
-               <div className="bg-black border border-[rgba(255,255,255,0.1)] p-2 mb-4 flex items-center justify-between group cursor-pointer hover:border-[var(--gold)] transition-colors relative z-10 rounded">
-                  <span className="text-[9px] font-mono text-[var(--gold)] truncate select-all opacity-80 pl-1">tourneylinks.com/r/{dbUser.id}T{userId.substring(userId.length-4)}</span>
+               <div className="bg-black border border-[rgba(255,255,255,0.2)] p-4 mb-6 flex items-center justify-between group cursor-pointer hover:border-[var(--gold)] hover:shadow-[0_0_15px_rgba(212,175,55,0.15)] transition-all relative z-10 rounded">
+                  <span className="text-xs font-mono text-[var(--gold)] truncate select-all opacity-90 group-hover:opacity-100 pl-1">tourneylinks.com/r/{dbUser.id}T{userId.substring(userId.length-4)}</span>
                </div>
-               <div className="grid grid-cols-2 gap-3 relative z-10">
-                  <div className="text-center border border-[rgba(255,255,255,0.05)] bg-[rgba(255,255,255,0.02)] py-2 rounded">
-                     <div className="text-[8px] text-[rgba(255,255,255,0.3)] uppercase tracking-widest mb-1 font-bold">Clicks</div>
-                     <div className="text-sm font-black text-white font-mono">0</div>
+               <div className="grid grid-cols-2 gap-4 relative z-10">
+                  <div className="text-center border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.02)] py-5 rounded-xl">
+                     <div className="text-[10px] text-[rgba(255,255,255,0.4)] uppercase tracking-[0.2em] mb-2 font-bold">Clicks</div>
+                     <div className="text-2xl font-black text-white font-mono">0</div>
                   </div>
-                  <div className="text-center border border-[rgba(74,222,128,0.2)] bg-[rgba(74,222,128,0.05)] py-2 rounded">
-                     <div className="text-[8px] text-[#4ade80] opacity-80 uppercase tracking-widest mb-1 font-bold">Convs</div>
-                     <div className="text-sm font-black text-[#4ade80] font-mono">0</div>
+                  <div className="text-center border border-[rgba(74,222,128,0.3)] bg-[rgba(74,222,128,0.05)] py-5 rounded-xl">
+                     <div className="text-[10px] text-[#4ade80] opacity-90 uppercase tracking-[0.2em] mb-2 font-bold">Convs</div>
+                     <div className="text-2xl font-black text-[#4ade80] font-mono">0</div>
                   </div>
                </div>
             </div>
 
             {/* Widget 5: Pairing Network */}
-            <div className="w-full bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] p-6 hover:border-[rgba(212,175,55,0.3)] transition-colors flex flex-col justify-between shadow-xl cursor-not-allowed group">
-               <h3 className="text-[10px] uppercase tracking-widest font-black mb-3 text-[rgba(255,255,255,0.4)] pb-4 border-b border-[rgba(255,255,255,0.02)] flex items-center gap-3">
-                 <UserPlus size={14} /> Pairing Network
+            <div className="w-full bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] p-8 hover:border-[var(--gold)] transition-colors flex flex-col justify-between shadow-2xl cursor-not-allowed group rounded-2xl">
+               <h3 className="text-sm uppercase tracking-[0.15em] font-black mb-6 text-[rgba(255,255,255,0.5)] pb-6 border-b border-[rgba(255,255,255,0.05)] flex items-center gap-3">
+                 <UserPlus size={18} /> Pairing Network
                </h3>
-               <div className="py-4 text-center">
-                 <p className="text-[10px] text-[rgba(255,255,255,0.3)] font-light leading-relaxed mb-4">Invite friends to let the Auto-Flight Engine pair you together efficiently.</p>
-                 <div className="inline-block text-[9px] text-[rgba(255,255,255,0.2)] bg-[rgba(255,255,255,0.02)] px-4 py-2 uppercase tracking-widest font-bold rounded border border-[rgba(255,255,255,0.02)]">
+               <div className="py-6 text-center">
+                 <p className="text-sm text-[rgba(255,255,255,0.4)] font-light leading-relaxed mb-6">Invite friends to let the Auto-Flight Engine pair you together efficiently.</p>
+                 <div className="inline-block text-xs text-[rgba(255,255,255,0.3)] bg-[rgba(255,255,255,0.03)] px-6 py-3 uppercase tracking-widest font-bold rounded shadow-inner">
                    Sync Unavailable
                  </div>
                </div>
