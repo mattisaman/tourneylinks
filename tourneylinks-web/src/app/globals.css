@@ -317,7 +317,7 @@ nav {
   background: rgba(12, 31, 23, 0.45);
   border: 1px solid rgba(201, 168, 76, 0.15);
   border-radius: var(--radius-xl);
-  padding: 2.5rem;
+  padding: 3rem;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   display: flex;
@@ -423,7 +423,7 @@ nav {
 /* Hero Search Panel */
 .hero-search-panel {
   background: rgba(10, 26, 20, 0.55); border: 1px solid rgba(201, 168, 76, 0.25);
-  border-radius: var(--radius-xl); padding: 2.5rem; backdrop-filter: blur(24px);
+  border-radius: var(--radius-xl); padding: 2rem; backdrop-filter: blur(24px);
   box-shadow: 0 24px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(201, 168, 76, 0.2), 0 0 30px rgba(201, 168, 76, 0.05);
   transition: all var(--transition);
   width: 100%;
