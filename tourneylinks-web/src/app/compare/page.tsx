@@ -3,15 +3,15 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Compare TourneyLinks vs GolfGenius, EventCaddy & GolfPad',
-  description: 'See why modern tournament organizers prefer the TourneyLinks $99 flat-fee model over expensive legacy software.',
+  description: 'See why modern tournament organizers prefer the TourneyLinks $149 flat-fee model over expensive legacy software.',
 };
 
 export default function ComparePage() {
   const features = [
     {
       name: 'Organizer Pricing',
-      tl: '$99 Flat Fee per Event',
-      tlSub: '(First event just $49!)',
+      tl: '$149 Flat Fee per Event',
+      tlSub: '(First event just $99!)',
       gg: '$3,000+ Annual Contracts',
       ec: '$299 – $999 per Event',
       gp: 'Annual Subscription',
@@ -232,7 +232,7 @@ export default function ComparePage() {
           </div>
           <div style={{ padding: '2rem', textAlign: 'center', background: 'rgba(0,0,0,0.3)', borderTop: '1px solid rgba(255,255,255,0.03)' }}>
             <Link href="/host/onboarding" style={{ display: 'inline-flex', background: '#4ec9a0', color: '#000', padding: '1rem 2rem', borderRadius: '8px', fontWeight: 600, textDecoration: 'none', transition: 'background 0.2s ease', }}>
-              Start Hosting for $49 →
+              Start Hosting for $99 →
             </Link>
           </div>
         </div>

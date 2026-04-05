@@ -27,13 +27,25 @@ export default function Hero() {
           <h1 className="hero-headline" style={{ maxWidth: 'none', textAlign: 'center' }}>
             The Engine Behind Every <em>Great</em> Local Tournament
           </h1>
-          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: '1rem', fontSize: '0.95rem', color: 'rgba(245,240,232,0.8)', marginTop: '0.5rem', fontFamily: 'var(--font-sans), sans-serif' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}><span style={{ color: 'var(--gold)' }}>✓</span> 100% Free for Players</span>
-            <span style={{ opacity: 0.3 }} className="hidden md:inline">|</span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}><span style={{ color: 'var(--gold)' }}>✓</span> Free for Course Pros</span>
-            <span style={{ opacity: 0.3 }} className="hidden md:inline">|</span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}><span style={{ color: 'var(--teal)' }}>✓</span> <b>$99/Event</b> for Organizers (Introductory Offer $49)</span>
+          <div style={{ maxWidth: '1200px', margin: '0 auto 2rem auto', width: '100%' }}>
+          <div style={{
+            display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem',
+            padding: '0.75rem 0', background: 'rgba(255,255,255,0.02)',
+            border: '1px solid rgba(212, 175, 55, 0.15)', borderRadius: '100px', backdropFilter: 'blur(10px)',
+            color: 'rgba(245,240,232,0.8)', fontSize: '0.85rem', textAlign: 'center',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.2)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
+              <span style={{ color: 'var(--gold)' }}>✓</span> <b>$149/Event</b> <span style={{ opacity: 0.6 }}>(Intro $99)</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', borderLeft: '1px solid rgba(212, 175, 55, 0.1)', borderRight: '1px solid rgba(212, 175, 55, 0.1)' }}>
+              <span style={{ color: 'var(--gold)' }}>✓</span> 100% Free for Players
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
+              <span style={{ color: 'var(--gold)' }}>✓</span> Free for Course Pros
+            </div>
           </div>
+        </div>
         </div>
 
         {/* 3 Pillar Dashboard */}
