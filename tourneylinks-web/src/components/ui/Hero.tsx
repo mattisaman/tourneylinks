@@ -49,7 +49,7 @@ export default function Hero() {
             <ul style={{ color: 'rgba(245,240,232,0.8)', fontSize: '0.85rem', lineHeight: 1.8, margin: '0 0 1.5rem', padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
               <li>✧ Reach local players actively searching</li>
               <li>✧ One-click automated team flighting</li>
-              <li>✧ Broadcast to Live TV Leaderboards</li>
+              <li>✧ Sell sponsorships & split foursome payments</li>
             </ul>
             <div style={{ marginTop: 'auto' }}>
               <Link href="/admin" className="btn-hero-outline" style={{ display: 'flex', justifyContent: 'center', width: '100%', padding: '1rem', marginBottom: '1rem' }}>
