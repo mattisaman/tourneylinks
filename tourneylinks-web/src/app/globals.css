@@ -335,9 +335,6 @@ nav {
   font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase;
   color: var(--gold); margin-bottom: 1.5rem;
 }
-.hero-eyebrow::before {
-  content: ''; width: 24px; height: 1px; background: var(--gold);
-}
 .hero-headline {
   font-family: var(--font-serif), 'Playfair Display', serif;
   font-size: clamp(3rem, 5vw, 5.5rem);

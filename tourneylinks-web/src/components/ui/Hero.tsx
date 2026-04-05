@@ -9,8 +9,20 @@ export default function Hero() {
       <div className="hero-dots"></div>
       <div className="hero-content">
         {/* Centered Top Block */}
-        <div style={{ maxWidth: '1200px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <div className="hero-eyebrow" style={{ justifyContent: 'center' }}>The Complete Golf Ecosystem</div>
+        <div style={{ maxWidth: '1200px', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '6rem' }}>
+          <div className="hero-eyebrow" style={{ 
+              justifyContent: 'center', 
+              background: 'rgba(201, 168, 76, 0.15)', 
+              border: '1px solid rgba(201, 168, 76, 0.3)', 
+              padding: '0.6rem 1.5rem', 
+              borderRadius: '100px', 
+              color: '#F4E3A6', 
+              fontWeight: 700, 
+              fontSize: '0.8rem',
+              letterSpacing: '0.25em',
+              boxShadow: '0 4px 24px rgba(201,168,76,0.2)',
+              backdropFilter: 'blur(10px)'
+          }}>The Complete Golf Ecosystem</div>
           <h1 className="hero-headline" style={{ maxWidth: 'none', textAlign: 'center' }}>
             The Engine Behind Every <em>Great</em> Local Tournament
           </h1>
