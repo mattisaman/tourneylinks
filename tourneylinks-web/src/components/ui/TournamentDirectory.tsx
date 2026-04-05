@@ -217,9 +217,18 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
               }}>
                 Tournament Directory
               </h1>
-              <p className="hidden md:block" style={{ fontSize: '1.25rem', color: 'rgba(255,255,255,0.9)', marginBottom: 0, fontWeight: 300, maxWidth: '800px', margin: '0 auto', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>
-                Browse the complete schedule of upcoming amateur championships, competitive leagues, and high-end charity scrambles.
-              </p>
+              <p className="hidden md:block" style={{
+            fontSize: '1.25rem',
+            color: 'rgba(255,255,255,0.9)',
+            maxWidth: '700px',
+            margin: '0 auto',
+            fontWeight: '400',
+            letterSpacing: '0.5px',
+            lineHeight: '1.6',
+            textShadow: '0 2px 10px rgba(0,0,0,0.5)'
+          }}>
+            Discover local charity scrambles, amateur championships, and competitive golf leagues near you.
+          </p>
           </div>
         </div>
 
@@ -315,16 +324,18 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
                 <input type="checkbox" checked={requireSpots} onChange={e => setRequireSpots(e.target.checked)} style={{ width: '16px', height: '16px', accentColor: 'var(--gold)' }} /> Has Spots
              </label>
 
-             <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-               <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#fff', padding: '0.4rem 1rem', background: 'rgba(255,255,255,0.1)', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.2)' }}>
-                  {filteredTournaments.length} Matches Found
-               </span>
-               <button type="submit" className="btn-primary" style={{ padding: '0.4rem 1.2rem', fontSize: '0.8rem', borderRadius: '6px' }}>Apply Filters</button>
-               <button onClick={handleClearFilters} type="button" style={{ background: 'none', border: 'none', color: '#ff4d4d', fontSize: '0.8rem', cursor: 'pointer', padding: '0.4rem 0.5rem', fontWeight: 600 }}>Clear</button>
-             </div>
          </div>
+         
+         {/* Action Row: Centered for Intentional Balance */}
+         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', paddingTop: '1rem', marginTop: '0.5rem' }}>
+             <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#fff', padding: '0.4rem 1rem', background: 'rgba(255,255,255,0.08)', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.15)' }}>
+                {filteredTournaments.length} Matches Found
+             </span>
+             <button type="submit" className="btn-primary" style={{ padding: '0.5rem 2.5rem', fontSize: '0.9rem', borderRadius: '6px', fontWeight: 700, letterSpacing: '0.5px', boxShadow: '0 4px 15px rgba(212,175,55,0.2)' }}>Apply Filters</button>
+             <button onClick={handleClearFilters} type="button" style={{ background: 'none', border: 'none', color: 'rgba(255,77,77,0.9)', fontSize: '0.8rem', cursor: 'pointer', padding: '0.4rem 1rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>Clear All</button>
+         </div> {/* Action Row Close */}
         </form>
-      </div>
+      </div> {/* Sticky Matrix Close */}
       </div> {/* <-- CLOSE MASSIVE BACKGROUND WRAPPER */}
 
       {/* Main Results Grid (1400px Width) */}
