@@ -56,7 +56,7 @@ export default function SupportPage() {
       <div style={{ 
         width: '100vw', marginLeft: 'calc(-50vw + 50%)', minHeight: 'calc(100vh - 80px)',
         padding: '3rem 3rem 6rem 3rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        background: 'linear-gradient(rgba(248, 250, 249, 0.70), rgba(248, 250, 249, 0.75)), url(/hero-bg-4.jpg) center/cover no-repeat fixed'
+        background: 'linear-gradient(rgba(10, 31, 21, 0.85), rgba(5, 18, 12, 0.95)), url(/hero-bg-4.jpg) center/cover no-repeat fixed'
       }}>
         <div style={{ textAlign: 'center', maxWidth: '600px', background: 'white', padding: '4rem', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.05)', border: '1px solid rgba(26,46,26,0.1)' }}>
           <CheckCircle size={80} color="var(--grass)" style={{ margin: '0 auto 1.5rem auto' }} />
@@ -77,7 +77,7 @@ export default function SupportPage() {
       <div style={{ 
         width: '100vw', marginLeft: 'calc(-50vw + 50%)', minHeight: 'calc(100vh - 80px)',
         padding: '3rem 3rem 6rem 3rem', display: 'flex', flexDirection: 'column', alignItems: 'center',
-        background: 'linear-gradient(rgba(248, 250, 249, 0.70), rgba(248, 250, 249, 0.75)), url(/hero-bg-4.jpg) center/cover no-repeat fixed'
+        background: 'linear-gradient(rgba(10, 31, 21, 0.85), rgba(5, 18, 12, 0.95)), url(/hero-bg-4.jpg) center/cover no-repeat fixed'
       }}>
         <div style={{ width: '100%', maxWidth: '700px' }}>
           
@@ -151,12 +151,12 @@ export default function SupportPage() {
       <div style={{ 
         width: '100vw', marginLeft: 'calc(-50vw + 50%)', minHeight: 'calc(100vh - 80px)',
         padding: '3rem 3rem 6rem 3rem', display: 'flex', flexDirection: 'column', alignItems: 'center',
-        background: 'linear-gradient(rgba(248, 250, 249, 0.70), rgba(248, 250, 249, 0.75)), url(/hero-bg-4.jpg) center/cover no-repeat fixed'
+        background: 'linear-gradient(rgba(10, 31, 21, 0.85), rgba(5, 18, 12, 0.95)), url(/hero-bg-4.jpg) center/cover no-repeat fixed'
       }}>
         
         <div style={{ textAlign: 'center', maxWidth: '700px', marginBottom: '3rem' }}>
-           <h1 style={{ fontFamily: 'Playfair Display, serif', fontSize: '3.5rem', color: 'var(--forest)', marginBottom: '1rem' }}>How can we help?</h1>
-           <p style={{ fontSize: '1.2rem', color: 'var(--mist)' }}>Whether you need to contact a tournament host, report a bug to our engineers, or suggest a brilliant new feature, you're in the right place.</p>
+           <h1 style={{ fontFamily: 'Playfair Display, serif', fontSize: '3.5rem', color: 'var(--cream)', marginBottom: '1rem', textShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>How can we help?</h1>
+           <p style={{ fontSize: '1.2rem', color: 'rgba(245,240,232,0.8)' }}>Whether you need to contact a tournament host, report a bug to our engineers, or suggest a brilliant new feature, you're in the right place.</p>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', width: '100%', maxWidth: '1000px' }}>
@@ -223,31 +223,31 @@ export default function SupportPage() {
       {/* FAQ & Strategy Playbook Accordion */}
       <div style={{ marginTop: '5rem', width: '100%', maxWidth: '800px' }}>
          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '2.8rem', color: 'var(--forest)', marginBottom: '0.5rem' }}>Organizer Playbook</h2>
-            <p style={{ fontSize: '1.1rem', color: 'var(--mist)' }}>Best practices and frequently asked operational questions to ensure your tournament is highly profitable.</p>
+            <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '2.8rem', color: 'var(--cream)', marginBottom: '0.5rem', textShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>Organizer Playbook</h2>
+            <p style={{ fontSize: '1.1rem', color: 'rgba(245,240,232,0.8)' }}>Best practices and frequently asked operational questions to ensure your tournament is highly profitable.</p>
          </div>
 
          <div className="faq-wrap" style={{ width: '100%', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             
             {/* FAQ Item 1 */}
-            <div className={`faq-item ${openFaq === 1 ? 'open' : ''}`} style={{ background: '#fff', borderRadius: '12px', border: '1px solid rgba(26,46,26,0.1)', overflow: 'hidden' }}>
-               <div className="faq-q" onClick={() => toggleFaq(1)} style={{ padding: '1.5rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', fontSize: '1.1rem', fontWeight: 700, color: 'var(--forest)' }}>
+            <div className={`faq-item ${openFaq === 1 ? 'open' : ''}`} style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid rgba(212,175,55,0.2)', backdropFilter: 'blur(10px)', overflow: 'hidden' }}>
+               <div className="faq-q" onClick={() => toggleFaq(1)} style={{ padding: '1.5rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', fontSize: '1.1rem', fontWeight: 700, color: 'var(--cream)' }}>
                   How do I determine the right registration price?
                   <span className="faq-toggle" style={{ transition: '0.3s', transform: openFaq === 1 ? 'rotate(45deg)' : 'none' }}>+</span>
                </div>
-               <div className="faq-a" style={{ display: openFaq === 1 ? 'block' : 'none', padding: '0 2rem 1.5rem 2rem', color: 'var(--mist)', lineHeight: 1.6, fontSize: '0.95rem' }}>
+               <div className="faq-a" style={{ display: openFaq === 1 ? 'block' : 'none', padding: '0 2rem 1.5rem 2rem', color: 'rgba(245,240,232,0.7)', lineHeight: 1.6, fontSize: '0.95rem' }}>
                   <span style={{ display: 'block', marginBottom: '1rem' }}>Determining your primary ticket price requires balancing your "hardware costs" (Greens Fees + Cart + Food & Beverage banquet) with a healthy profit margin for your charity or foundation.</span>
                   <strong>The 30% Rule:</strong> We generally advise constructing your primary Foursome ticket at a price point that yields a net profit margin of roughly 30%. This ensures your baseline financials are bulletproof, allowing your Sponsorship Inventory to act as 100% pure profit! To calculate this exactly for your specific geographic area, click the <strong style={{ color: 'var(--gold)' }}>"Launch AI Guides"</strong> button above to use our Demographic Pricing Engine!
                </div>
             </div>
 
             {/* FAQ Item 2 */}
-            <div className={`faq-item ${openFaq === 2 ? 'open' : ''}`} style={{ background: '#fff', borderRadius: '12px', border: '1px solid rgba(26,46,26,0.1)', overflow: 'hidden' }}>
-               <div className="faq-q" onClick={() => toggleFaq(2)} style={{ padding: '1.5rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', fontSize: '1.1rem', fontWeight: 700, color: 'var(--forest)' }}>
+            <div className={`faq-item ${openFaq === 2 ? 'open' : ''}`} style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid rgba(212,175,55,0.2)', backdropFilter: 'blur(10px)', overflow: 'hidden' }}>
+               <div className="faq-q" onClick={() => toggleFaq(2)} style={{ padding: '1.5rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', fontSize: '1.1rem', fontWeight: 700, color: 'var(--cream)' }}>
                   How should I structure my Sponsorship Tiers?
                   <span className="faq-toggle" style={{ transition: '0.3s', transform: openFaq === 2 ? 'rotate(45deg)' : 'none' }}>+</span>
                </div>
-               <div className="faq-a" style={{ display: openFaq === 2 ? 'block' : 'none', padding: '0 2rem 1.5rem 2rem', color: 'var(--mist)', lineHeight: 1.6, fontSize: '0.95rem' }}>
+               <div className="faq-a" style={{ display: openFaq === 2 ? 'block' : 'none', padding: '0 2rem 1.5rem 2rem', color: 'rgba(245,240,232,0.7)', lineHeight: 1.6, fontSize: '0.95rem' }}>
                   <span style={{ display: 'block', marginBottom: '1rem' }}>Your tournament is digitally bound by the number of golfers that can physically fit on the course (e.g. 144 players), but your <strong>Sponsorship Revenue is theoretically infinite.</strong></span>
                   <ul style={{ paddingLeft: '1.5rem', marginBottom: 0 }}>
                     <li style={{ marginBottom: '0.5rem' }}><strong>1x Exclusive Title Sponsor:</strong> Your highest tier. Bundle this with a complimentary Golf Foursome and prime real estate on the TV Liveboards.</li>
@@ -258,23 +258,23 @@ export default function SupportPage() {
             </div>
 
             {/* FAQ Item 3 */}
-            <div className={`faq-item ${openFaq === 3 ? 'open' : ''}`} style={{ background: '#fff', borderRadius: '12px', border: '1px solid rgba(26,46,26,0.1)', overflow: 'hidden' }}>
-               <div className="faq-q" onClick={() => toggleFaq(3)} style={{ padding: '1.5rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', fontSize: '1.1rem', fontWeight: 700, color: 'var(--forest)' }}>
+            <div className={`faq-item ${openFaq === 3 ? 'open' : ''}`} style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid rgba(212,175,55,0.2)', backdropFilter: 'blur(10px)', overflow: 'hidden' }}>
+               <div className="faq-q" onClick={() => toggleFaq(3)} style={{ padding: '1.5rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', fontSize: '1.1rem', fontWeight: 700, color: 'var(--cream)' }}>
                   How does the Walk-Up Ledger check-in work?
                   <span className="faq-toggle" style={{ transition: '0.3s', transform: openFaq === 3 ? 'rotate(45deg)' : 'none' }}>+</span>
                </div>
-               <div className="faq-a" style={{ display: openFaq === 3 ? 'block' : 'none', padding: '0 2rem 1.5rem 2rem', color: 'var(--mist)', lineHeight: 1.6, fontSize: '0.95rem' }}>
+               <div className="faq-a" style={{ display: openFaq === 3 ? 'block' : 'none', padding: '0 2rem 1.5rem 2rem', color: 'rgba(245,240,232,0.7)', lineHeight: 1.6, fontSize: '0.95rem' }}>
                   A massive pain point for Game Day Operations is tracking exactly who has arrived at the course vs who is running late. To solve this, log into the Admin Dashboard and navigate to the <strong>Print & Post Hub</strong>. You can instantly export an alphabetized "Walk-Up Ledger" PDF that pre-organizes all of your golfers. Simply print it out, place it on a nice clipboard at the registration desk, and physically check off the <code>" [ ] Here "</code> box with a pen as players walk through the clubhouse doors.
                </div>
             </div>
 
             {/* FAQ Item 4 */}
-            <div className={`faq-item ${openFaq === 4 ? 'open' : ''}`} style={{ background: '#fff', borderRadius: '12px', border: '1px solid rgba(26,46,26,0.1)', overflow: 'hidden' }}>
-               <div className="faq-q" onClick={() => toggleFaq(4)} style={{ padding: '1.5rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', fontSize: '1.1rem', fontWeight: 700, color: 'var(--forest)' }}>
+            <div className={`faq-item ${openFaq === 4 ? 'open' : ''}`} style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid rgba(212,175,55,0.2)', backdropFilter: 'blur(10px)', overflow: 'hidden' }}>
+               <div className="faq-q" onClick={() => toggleFaq(4)} style={{ padding: '1.5rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', fontSize: '1.1rem', fontWeight: 700, color: 'var(--cream)' }}>
                   Can players split payments alongside their sponsorships?
                   <span className="faq-toggle" style={{ transition: '0.3s', transform: openFaq === 4 ? 'rotate(45deg)' : 'none' }}>+</span>
                </div>
-               <div className="faq-a" style={{ display: openFaq === 4 ? 'block' : 'none', padding: '0 2rem 1.5rem 2rem', color: 'var(--mist)', lineHeight: 1.6, fontSize: '0.95rem' }}>
+               <div className="faq-a" style={{ display: openFaq === 4 ? 'block' : 'none', padding: '0 2rem 1.5rem 2rem', color: 'rgba(245,240,232,0.7)', lineHeight: 1.6, fontSize: '0.95rem' }}>
                   <strong>Yes!</strong> High-end Golf Tournaments often feature "Cart Abandonment" at checkout because a Team Captain realizes they actually don't want to upfront the $1,000 Foursome ticket on their personal credit card. <br/><br/>
                   Through our native Stripe integration in the Campaign Builder, you can configure your checkout to automatically support Buy-Now-Pay-Later (BNPL) platforms like Affirm and Klarna, or rely on our built in "Split Payment" mechanism that dynamically tracks which members of a specific Foursome have successfully paid their fair share.
                </div>
