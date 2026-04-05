@@ -114,7 +114,7 @@ export default async function ProfilePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start w-full">
             
             {/* Widget 1: Communications Command Center */}
-            <div className="w-full relative bg-[rgba(255,255,255,0.02)] backdrop-blur-2xl border border-[rgba(255,255,255,0.05)] p-8 hover:border-[var(--gold)] transition-colors flex flex-col shadow-2xl rounded-2xl z-10">
+            <div className="w-full relative bg-[rgba(255,255,255,0.02)] backdrop-blur-2xl border border-[rgba(255,255,255,0.05)] p-10 lg:p-12 hover:border-[var(--gold)] transition-colors flex flex-col shadow-2xl rounded-2xl z-10">
                <h3 className="text-sm uppercase tracking-[0.15em] font-black mb-8 flex items-center justify-between text-white border-b border-[rgba(255,255,255,0.1)] pb-4">
                  <div className="flex items-center gap-4"><Bell size={18} className="text-[var(--gold)]" /> Command Center</div>
                  <span className="bg-[var(--gold)] text-black px-3 py-1 rounded font-black text-xs animate-pulse shadow-[0_0_15px_rgba(212,175,55,0.4)]">ALERTS</span>
@@ -129,7 +129,7 @@ export default async function ProfilePage() {
             </div>
 
             {/* Widget 2: Registrations & Game Day Mobile Scorer */}
-            <div className="md:col-span-2 w-full relative bg-[rgba(2,6,4,0.6)] backdrop-blur-2xl border-t-[3px] border-[var(--gold)] p-8 hover:border-[rgba(212,175,55,1)] transition-colors shadow-2xl flex flex-col h-full min-h-[400px] rounded-b-2xl z-10">
+            <div className="md:col-span-2 w-full relative bg-[rgba(2,6,4,0.6)] backdrop-blur-2xl border-t-[3px] border-[var(--gold)] p-10 lg:p-12 hover:border-[rgba(212,175,55,1)] transition-colors shadow-2xl flex flex-col h-full min-h-[400px] rounded-b-2xl z-10">
                <div className="flex items-center justify-between border-b border-[rgba(255,255,255,0.1)] pb-6 mb-6">
                  <h3 className="text-sm uppercase tracking-[0.15em] font-black flex items-center gap-3 text-white">
                    <Trophy size={18} className="text-[var(--gold)]" /> Active Registrations
@@ -176,7 +176,7 @@ export default async function ProfilePage() {
             </div>
 
             {/* Widget 3: Target Radars */}
-            <div className="w-full relative bg-[rgba(255,255,255,0.02)] backdrop-blur-2xl border border-[rgba(255,255,255,0.05)] p-8 hover:border-[var(--gold)] transition-colors shadow-2xl rounded-2xl z-10">
+            <div className="w-full relative bg-[rgba(255,255,255,0.02)] backdrop-blur-2xl border border-[rgba(255,255,255,0.05)] p-10 lg:p-12 hover:border-[var(--gold)] transition-colors shadow-2xl rounded-2xl z-10">
                <h3 className="text-sm uppercase tracking-[0.15em] font-black flex items-center gap-3 text-white pb-6 border-b border-[rgba(255,255,255,0.1)] mb-6">
                  <MapPin size={18} className="text-[var(--gold)]" /> Course Radars
                </h3>
@@ -204,7 +204,7 @@ export default async function ProfilePage() {
             </div>
 
             {/* Widget 4: Affiliate Architecture */}
-            <div className="w-full relative bg-[rgba(5,11,8,0.7)] backdrop-blur-2xl border border-[rgba(255,255,255,0.1)] p-8 shadow-2xl rounded-2xl overflow-hidden hover:border-[var(--gold)] transition-colors z-10">
+            <div className="w-full relative bg-[rgba(5,11,8,0.7)] backdrop-blur-2xl border border-[rgba(255,255,255,0.1)] p-10 lg:p-12 shadow-2xl rounded-2xl overflow-hidden hover:border-[var(--gold)] transition-colors z-10">
                <div className="absolute inset-0 bg-[url('/hero-bg-4.jpg')] opacity-[0.02] pointer-events-none mix-blend-overlay" />
                <h3 className="text-sm uppercase tracking-[0.15em] font-black mb-6 text-white pb-6 border-b border-[rgba(255,255,255,0.1)] relative z-10 flex items-center justify-between">
                   Credit Bank <span className="text-[var(--gold)] text-lg">$0.00</span>
@@ -228,7 +228,7 @@ export default async function ProfilePage() {
             </div>
 
             {/* Widget 5: Pairing Network */}
-            <div className="w-full bg-[rgba(255,255,255,0.01)] backdrop-blur-2xl border border-[rgba(255,255,255,0.05)] p-8 hover:border-[var(--gold)] transition-colors flex flex-col justify-between shadow-2xl cursor-not-allowed group rounded-2xl z-10">
+            <div className="w-full bg-[rgba(255,255,255,0.01)] backdrop-blur-2xl border border-[rgba(255,255,255,0.05)] p-10 lg:p-12 hover:border-[var(--gold)] transition-colors flex flex-col justify-between shadow-2xl cursor-not-allowed group rounded-2xl z-10">
                <h3 className="text-sm uppercase tracking-[0.15em] font-black mb-6 text-[rgba(255,255,255,0.5)] pb-6 border-b border-[rgba(255,255,255,0.05)] flex items-center gap-3">
                  <UserPlus size={18} /> Pairing Network
                </h3>

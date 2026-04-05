@@ -184,10 +184,9 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
     <>
       <div style={{
           position: 'relative',
-          background: `linear-gradient(to bottom, rgba(5,11,8,0.7) 0%, rgba(5,11,8,0.92) 100%), url('https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&q=80&w=2600')`,
+          background: `linear-gradient(to bottom, rgba(5,11,8,0.4) 0%, rgba(5,11,8,0.75) 100%), url('https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&q=80&w=2600')`,
           backgroundSize: 'cover',
-          backgroundPosition: '100% 30%',
-          backgroundAttachment: 'fixed',
+          backgroundPosition: 'center 40%',
           paddingTop: '80px', // Accommodate absolute navbar
           borderBottom: '2px solid rgba(212,175,55,0.6)',
           boxShadow: '0 8px 40px rgba(0,0,0,0.4)',
@@ -252,7 +251,7 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
                </div>
                <div style={{ flex: '1.5 1 200px', display: 'flex', gap: '0.5rem' }}>
                  <input type="text" placeholder="Zip or City" value={zipCode} onChange={e => setZipCode(e.target.value)} style={{ padding: '0.75rem 1rem', background: '#f4f7f5', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', flex: 1, minWidth: '80px' }}/>
-                 <select value={radius} onChange={e => setRadius(Number(e.target.value))} style={{ padding: '0.75rem 1rem', background: '#f4f7f5', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', width: '90px' }}>
+                 <select value={radius} onChange={e => setRadius(Number(e.target.value))} style={{ padding: '0.75rem 1rem', background: '#f4f7f5', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', width: '120px' }}>
                    <option value={5}>5 mi</option>
                    <option value={20}>20 mi</option>
                    <option value={50}>50 mi</option>
