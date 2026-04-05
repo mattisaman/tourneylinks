@@ -327,7 +327,11 @@ nav {
   position: relative;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.hero-pillar-card:hover { transform: translateY(-4px); border-color: rgba(201,168,76,0.3); box-shadow: 0 24px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(201, 168, 76, 0.25), 0 0 20px rgba(201,168,76,0.05); }
+.hero-pillar-card:hover { 
+  transform: translateY(-8px); 
+  border-color: rgba(212, 175, 55, 0.4); 
+  box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(212, 175, 55, 0.35), 0 0 30px rgba(212,175,55,0.1); 
+}
 .hero-search-wrapper { order: 0; padding: 0; z-index: 10; transition: transform 0.3s ease; }
 .hero-eyebrow {
   display: inline-flex; align-items: center; gap: 0.5rem;
@@ -422,14 +426,19 @@ nav {
 
 /* Hero Search Panel */
 .hero-search-panel {
-  background: rgba(10, 26, 20, 0.55); border: 1px solid rgba(201, 168, 76, 0.25);
-  border-radius: var(--radius-xl); padding: 2.5rem; backdrop-filter: blur(24px);
-  box-shadow: 0 24px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(201, 168, 76, 0.2), 0 0 30px rgba(201, 168, 76, 0.05);
-  transition: all var(--transition);
+  background: linear-gradient(145deg, rgba(16, 36, 26, 0.6) 0%, rgba(8, 20, 15, 0.8) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: var(--radius-xl); padding: 2.5rem; backdrop-filter: blur(28px);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(212, 175, 55, 0.35), inset 0 0 20px rgba(212, 175, 55, 0.05);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   width: 100%;
   max-width: 100%;
 }
-.hero-search-panel:hover { border-color: rgba(201, 168, 76, 0.4); box-shadow: 0 30px 70px rgba(0,0,0,0.5), inset 0 1px 0 rgba(201, 168, 76, 0.3), 0 0 40px rgba(201, 168, 76, 0.1); }
+.hero-search-panel:hover { 
+  transform: translateY(-8px);
+  border-color: rgba(212, 175, 55, 0.6); 
+  box-shadow: 0 40px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(212, 175, 55, 0.5), 0 0 50px rgba(212, 175, 55, 0.15); 
+}
 .search-panel-title {
   font-family: var(--font-serif), 'Playfair Display', serif;
   font-size: 1.4rem; font-weight: 600; color: var(--cream); margin-bottom: 0.3rem;
