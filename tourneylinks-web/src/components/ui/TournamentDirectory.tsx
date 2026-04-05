@@ -182,58 +182,62 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
 
   return (
     <>
-      <div style={{ 
-        position: 'relative', 
-        padding: 'calc(80px + 4rem) 3rem 4rem 3rem', 
-        background: 'linear-gradient(135deg, #0a1f0f 0%, #153a1d 50%, #0a1f0f 100%)', 
-        overflow: 'hidden',
-        textAlign: 'center',
-        borderBottom: '2px solid rgba(212,175,55,0.7)',
-        boxShadow: '0 8px 40px rgba(0,0,0,0.5)',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center'
+      <div style={{
+          position: 'relative',
+          background: `linear-gradient(to bottom, rgba(5,11,8,0.7) 0%, rgba(5,11,8,0.92) 100%), url('https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&q=80&w=2600')`,
+          backgroundSize: 'cover',
+          backgroundPosition: '100% 30%',
+          backgroundAttachment: 'fixed',
+          paddingTop: '80px', // Accommodate absolute navbar
+          borderBottom: '2px solid rgba(212,175,55,0.6)',
+          boxShadow: '0 8px 40px rgba(0,0,0,0.4)',
       }}>
         {/* Subtle background overlay for "foil/lighting" */}
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'radial-gradient(ellipse at top, rgba(212,175,55,0.2) 0%, transparent 70%)', pointerEvents: 'none' }}></div>
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(212,175,55,1), transparent)', opacity: 0.9 }}></div>
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'radial-gradient(ellipse at top, rgba(212,175,55,0.2) 0%, transparent 60%)', pointerEvents: 'none' }}></div>
         
-         <div style={{ position: 'relative', zIndex: 1, maxWidth: '1000px', margin: '0 auto' }}>
-            <h1 style={{ 
-              fontFamily: "'Playfair Display', serif", 
-              fontSize: '4.5rem', 
-              marginBottom: '1rem', 
-              background: 'linear-gradient(to right, #d4af37, #fff9e6, #d4af37)', 
-              WebkitBackgroundClip: 'text', 
-              WebkitTextFillColor: 'transparent',
-              textShadow: '0 4px 20px rgba(212,175,55,0.4)',
-              lineHeight: 1.1
-            }}>
-              Tournament Directory
-            </h1>
-            <p className="hidden md:block" style={{ fontSize: '1.25rem', color: 'rgba(255,255,255,0.9)', marginBottom: 0, fontWeight: 300, maxWidth: '800px', margin: '0 auto' }}>
-              Browse the complete schedule of upcoming amateur championships, competitive leagues, and high-end charity scrambles.
-            </p>
+        <div style={{ 
+            position: 'relative', 
+            padding: '4rem 3rem 4rem 3rem', 
+            textAlign: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 10
+        }}>
+           <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+              <h1 style={{ 
+                fontFamily: "'Playfair Display', serif", 
+                fontSize: '4.5rem', 
+                marginBottom: '1rem', 
+                background: 'linear-gradient(to right, #d4af37, #fff9e6, #d4af37)', 
+                WebkitBackgroundClip: 'text', 
+                WebkitTextFillColor: 'transparent',
+                textShadow: '0 4px 30px rgba(212,175,55,0.3)',
+                lineHeight: 1.1
+              }}>
+                Tournament Directory
+              </h1>
+              <p className="hidden md:block" style={{ fontSize: '1.25rem', color: 'rgba(255,255,255,0.9)', marginBottom: 0, fontWeight: 300, maxWidth: '800px', margin: '0 auto', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>
+                Browse the complete schedule of upcoming amateur championships, competitive leagues, and high-end charity scrambles.
+              </p>
+          </div>
         </div>
-      </div>
 
-      {/* Sticky Secondary Header (The Filter Matrix) */}
-      <div className="sticky-filter-matrix" style={{ 
-        position: 'sticky', top: '0', zIndex: 40,
-        background: 'rgba(255, 255, 255, 0.98)', backdropFilter: 'blur(10px)',
-        borderBottom: '1px solid rgba(212,175,55,0.4)',
-        borderTop: '2px solid rgba(212,175,55,0.8)',
-        padding: '1.25rem 0',
-        boxShadow: '0 4px 30px rgba(0,0,0,0.06)'
-      }}>
-        <form onSubmit={e => { e.preventDefault(); handleApplyFilters(); }} style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 2rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-         {/* Top Row: Primary Search & Actions */}
-         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 1 500px', flexWrap: 'wrap' }}>
-               <div style={{ flex: '2 1 300px' }}>
-                  <input type="text" placeholder="Search by event name, details, or swag..." value={keyword} onChange={e => setKeyword(e.target.value)} style={{ padding: '0.75rem 1rem', background: '#f4f7f5', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', width: '100%' }}/>
-               </div>
+        {/* Sticky Secondary Header (The Filter Matrix) INSIDE the wrapper */}
+        <div className="sticky-filter-matrix" style={{ 
+          position: 'sticky', top: '0', zIndex: 40,
+          background: 'rgba(5, 11, 8, 0.4)', backdropFilter: 'blur(24px)',
+          borderTop: '1px solid rgba(212,175,55,0.3)',
+          padding: '1.5rem 0 1.25rem 0',
+        }}>
+          <form onSubmit={e => { e.preventDefault(); handleApplyFilters(); }} style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 2rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+           {/* Top Row: Primary Search & Actions */}
+           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 1 500px', flexWrap: 'wrap' }}>
+                 <div style={{ flex: '2 1 300px' }}>
+                    <input type="text" placeholder="Search by event name, details, or swag..." value={keyword} onChange={e => setKeyword(e.target.value)} style={{ padding: '0.8rem 1rem', background: 'rgba(255,255,255,0.95)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '8px', width: '100%', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}/>
+                 </div>
                <div style={{ flex: '1.5 1 200px' }}>
                  <input 
                    list="course-list" 
@@ -322,6 +326,7 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
          </div>
         </form>
       </div>
+      </div> {/* <-- CLOSE MASSIVE BACKGROUND WRAPPER */}
 
       {/* Main Results Grid (1400px Width) */}
       <div style={{ padding: '4rem 2rem', background: '#f8faf9', minHeight: '60vh' }}>

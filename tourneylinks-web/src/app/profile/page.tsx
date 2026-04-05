@@ -57,11 +57,12 @@ export default async function ProfilePage() {
     .orderBy(desc(saved_courses.createdAt));
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#050B08] pt-[80px] relative">
-      
-      {/* Global Immersive Background */}
-      <div className="fixed inset-0 z-0 pointer-events-none opacity-25 bg-[url('/hero-bg-4.jpg')] bg-cover bg-center mix-blend-overlay" />
-      <div className="fixed inset-0 z-0 pointer-events-none bg-gradient-to-b from-[#050B08]/20 via-[#050B08]/80 to-[#050B08]" />
+    <div className="min-h-screen flex flex-col pt-[80px] relative" style={{
+        background: `linear-gradient(to bottom, rgba(5,11,8,0.7), rgba(2,6,4,0.95)), url('/hero-bg-4.jpg')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+    }}>
 
       {/* Cinematic Prestige Profile Header */}
       <div className="w-full relative z-10 border-b border-[rgba(255,255,255,0.05)] bg-[var(--ink)]/30 backdrop-blur-md">
