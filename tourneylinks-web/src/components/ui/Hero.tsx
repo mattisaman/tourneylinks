@@ -113,7 +113,7 @@ export default function Hero() {
             </p>
             <ul style={{ color: 'rgba(245,240,232,0.8)', fontSize: '0.85rem', lineHeight: 1.8, margin: '0 0 1.5rem', padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
               <li>✧ Centralized tournament dashboards</li>
-              <li>✧ Standardized digital tee-sheets</li>
+              <li>✧ Verify exact player & cart headcounts</li>
               <li>✧ Direct Organizer messaging portal</li>
             </ul>
             <div style={{ marginTop: 'auto' }}>
