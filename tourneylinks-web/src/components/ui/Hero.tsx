@@ -117,9 +117,14 @@ export default function Hero() {
               <li>✧ Direct Organizer messaging portal</li>
             </ul>
             <div style={{ marginTop: 'auto' }}>
-              <Link href="/courses" className="btn-hero-outline" style={{ display: 'flex', justifyContent: 'center', width: '100%', padding: '1rem' }}>
+              <Link href="/courses" className="btn-hero-outline" style={{ display: 'flex', justifyContent: 'center', width: '100%', padding: '1rem', marginBottom: '1rem' }}>
                 Claim Your Course →
               </Link>
+              <div style={{ textAlign: 'center' }}>
+                <Link href="/courses/features" style={{ color: 'var(--gold)', fontSize: '0.85rem', textDecoration: 'none', fontWeight: 600 }}>
+                  Explore Pro features →
+                </Link>
+              </div>
             </div>
           </div>
 
