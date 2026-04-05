@@ -159,10 +159,10 @@ export default function SupportPage() {
            <p style={{ fontSize: '1.2rem', color: 'rgba(245,240,232,0.8)' }}>Whether you need to contact a tournament host, report a bug to our engineers, or suggest a brilliant new feature, you're in the right place.</p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', width: '100%', maxWidth: '1000px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', width: '100%', maxWidth: '1300px' }}>
            
            {/* TIER 1: Tournament Specific */}
-           <div className="support-card" style={{ background: 'linear-gradient(145deg, #0a1f0d, #1a2e1a)', padding: '2.5rem', borderRadius: '12px', border: '1px solid rgba(212,175,55,0.15)', boxShadow: '0 15px 35px rgba(0,0,0,0.15)', display: 'flex', flexDirection: 'column', gap: '1rem', position: 'relative', overflow: 'hidden' }}>
+           <div className="support-card" style={{ background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(12px)', padding: '2rem', borderRadius: '12px', border: '1px solid rgba(212,175,55,0.2)', boxShadow: '0 15px 35px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', gap: '1rem', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', background: 'var(--gold)' }}></div>
             <div style={{ width: '50px', height: '50px', borderRadius: '25px', background: 'rgba(212,175,55,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}>
                <MessageSquare size={24} />
@@ -177,7 +177,7 @@ export default function SupportPage() {
          </div>
 
          {/* TIER 2: Platform Support */}
-         <div className="support-card" style={{ background: 'linear-gradient(145deg, #0a1f0d, #1a2e1a)', padding: '2.5rem', borderRadius: '12px', border: '1px solid rgba(212,175,55,0.15)', boxShadow: '0 15px 35px rgba(0,0,0,0.15)', display: 'flex', flexDirection: 'column', gap: '1rem', position: 'relative', overflow: 'hidden' }}>
+         <div className="support-card" style={{ background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(12px)', padding: '2rem', borderRadius: '12px', border: '1px solid rgba(212,175,55,0.2)', boxShadow: '0 15px 35px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', gap: '1rem', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', background: 'var(--gold)' }}></div>
             <div style={{ width: '50px', height: '50px', borderRadius: '25px', background: 'rgba(212,175,55,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}>
                <LifeBuoy size={24} />
@@ -192,7 +192,7 @@ export default function SupportPage() {
          </div>
 
          {/* Feedback & Feature Requests */}
-         <div className="support-card" style={{ background: 'linear-gradient(145deg, #0a1f0d, #1a2e1a)', padding: '2.5rem', borderRadius: '12px', border: '1px solid rgba(212,175,55,0.15)', boxShadow: '0 15px 35px rgba(0,0,0,0.15)', display: 'flex', flexDirection: 'column', gap: '1rem', position: 'relative', overflow: 'hidden' }}>
+         <div className="support-card" style={{ background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(12px)', padding: '2rem', borderRadius: '12px', border: '1px solid rgba(212,175,55,0.2)', boxShadow: '0 15px 35px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', gap: '1rem', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', background: 'var(--gold)' }}></div>
             <div style={{ width: '50px', height: '50px', borderRadius: '25px', background: 'rgba(212,175,55,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}>
                <Lightbulb size={24} />
@@ -204,7 +204,7 @@ export default function SupportPage() {
          </div>
 
          {/* TIER 4: AI Guides */}
-         <div className="support-card" style={{ background: 'linear-gradient(145deg, #0a1f0d, #1a2e1a)', padding: '2.5rem', borderRadius: '12px', border: '1px solid rgba(212,175,55,0.15)', boxShadow: '0 15px 35px rgba(0,0,0,0.15)', display: 'flex', flexDirection: 'column', gap: '1rem', position: 'relative', overflow: 'hidden' }}>
+         <div className="support-card" style={{ background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(12px)', padding: '2rem', borderRadius: '12px', border: '1px solid rgba(212,175,55,0.2)', boxShadow: '0 15px 35px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', gap: '1rem', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', background: 'var(--gold)' }}></div>
             <div style={{ width: '50px', height: '50px', borderRadius: '25px', background: 'rgba(212,175,55,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}>
                <span style={{ fontSize: '1.5rem' }}>🧠</span>
