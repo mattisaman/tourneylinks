@@ -7,7 +7,6 @@ import { Upload, CheckCircle2, ShieldCheck, Loader2 } from 'lucide-react';
 export default function ClaimCourseClient({ courseId, courseName }: { courseId: number, courseName: string }) {
   const router = useRouter();
   const [roleTitle, setRoleTitle] = useState('');
-  const [directPhone, setDirectPhone] = useState('');
   const [pgaCardImageUrl, setPgaCardImageUrl] = useState('');
   const [locked, setLocked] = useState(false);
   
@@ -43,7 +42,7 @@ export default function ClaimCourseClient({ courseId, courseName }: { courseId: 
       const res = await fetch(`/api/courses/${courseId}/claim`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ roleTitle, directPhone, pgaCardImageUrl })
+        body: JSON.stringify({ roleTitle, directPhone: '', pgaCardImageUrl })
       });
 
       if (!res.ok) {
@@ -103,16 +102,13 @@ export default function ClaimCourseClient({ courseId, courseName }: { courseId: 
               className="w-full bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.1)] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[var(--gold)] transition-colors"
             />
           </div>
-          <div>
-            <label className="block text-[11px] uppercase tracking-widest text-white/50 font-bold mb-2">Direct Phone Line (Internal Use Only)</label>
-            <input 
-              type="tel" 
-              required
-              placeholder="(555) 123-4567"
-              value={directPhone}
-              onChange={(e) => setDirectPhone(e.target.value)}
-              className="w-full bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.1)] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[var(--gold)] transition-colors"
-            />
+          <div className="bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.1)] rounded-xl px-4 py-4 mt-4">
+             <label className="block text-[11px] uppercase tracking-widest text-white/50 font-bold mb-1 flex items-center justify-between">
+                Authenticated Communication <ShieldCheck size={14} className="text-[var(--gold)]" />
+             </label>
+             <p className="text-white/60 text-sm mt-3 font-mono leading-relaxed">
+                Your secure authenticated email address will be safely attached to this claim request and serve as the primary route for administrative status updates.
+             </p>
           </div>
        </div>
 
