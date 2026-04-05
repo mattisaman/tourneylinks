@@ -17,28 +17,33 @@ export default function Navbar() {
   const showHubs = process.env.NEXT_PUBLIC_IS_DEMO === 'true' || isSuperAdmin;
 
   const goldFoilStyle = {
-    background: 'linear-gradient(135deg, #BF953F 0%, #FCF6BA 25%, #B38728 50%, #FBF5B7 75%, #AA771C 100%)',
-    color: '#05120c',
-    border: '1px solid rgba(255, 235, 160, 0.8)',
-    boxShadow: '0 2px 8px rgba(212,175,55,0.4), inset 0 1px 2px rgba(255,255,255,0.8)',
-    textShadow: '0 1px 0 rgba(255,255,255,0.4)',
-    padding: '0.4rem 1rem',
-    borderRadius: '4px',
+    background: 'rgba(212, 175, 55, 0.05)',
+    color: '#D4AF37',
+    border: '1px solid rgba(212,175,55,0.6)',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+    padding: '0.3rem 0.75rem',
+    borderRadius: '100px',
     textDecoration: 'none',
     fontSize: '0.8rem',
-    fontWeight: 800,
-    letterSpacing: '0.02em',
-    transition: '0.2s',
+    fontWeight: 600,
+    letterSpacing: '0.04em',
+    transition: 'all 0.3s ease',
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    cursor: 'pointer'
+    cursor: 'pointer',
+    backdropFilter: 'blur(8px)'
   };
 
   // Instantly detach the Global Marketing Chrome if we are inside a Live Utility Route
   if (pathname?.includes('/tv') || pathname?.includes('/play')) {
     return null;
   }
+
+  const isHubPage = pathname?.includes('/admin') || pathname?.includes('/courses/dashboard') || pathname?.includes('/sponsor/dashboard');
+  const navbarBackground = isHubPage 
+    ? 'linear-gradient(135deg, #050B08 0%, #073b22 50%, #050B08 100%)' 
+    : 'transparent';
 
   return (
     <>
@@ -51,10 +56,10 @@ export default function Navbar() {
           text-shadow: 0 0 8px rgba(212,175,55,0.4);
         }
       `}} />
-      <div className="site-header" style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1000, background: 'transparent', borderBottom: 'none' }}>
-        <nav style={{ background: 'transparent', borderBottom: 'none' }}>
-          <Link className="nav-logo" href="/">
-            <img src="/logo_horizontal_transparent.png" alt="TourneyLinks Logo" style={{ width: '240px', height: 'auto', objectFit: 'contain', margin: '4px 0 0 0' }} />
+      <div className="site-header" style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1000, background: navbarBackground, borderBottom: isHubPage ? '1px solid rgba(212,175,55,0.1)' : 'none', boxShadow: isHubPage ? '0 4px 24px rgba(0,0,0,0.4)' : 'none' }}>
+        <nav style={{ background: 'transparent', backgroundImage: 'none', backgroundColor: 'transparent', borderBottom: 'none', paddingBottom: '1rem', flexWrap: 'nowrap' }}>
+          <Link className="nav-logo" href="/" style={{ flexShrink: 0 }}>
+             <img src="/logo_horizontal_transparent.png" alt="TourneyLinks Logo" style={{ width: '220px', height: 'auto', objectFit: 'contain', margin: '4px 0 0 0' }} />
           </Link>
           
           {/* INLINE PAGE NAVIGATION TABS */}
@@ -81,13 +86,13 @@ export default function Navbar() {
           ) : (
             <>
               {showHubs && (
-                <div className="hidden md:flex" style={{ gap: '0.75rem', marginRight: '1.2rem', alignItems: 'center' }}>
+                <div className="hidden md:flex" style={{ gap: '0.4rem', marginRight: '1rem', alignItems: 'center', flexShrink: 0 }}>
                   <Link href="/admin" style={goldFoilStyle} onMouseOver={e => e.currentTarget.style.filter = 'brightness(1.1) drop-shadow(0 4px 12px rgba(212,175,55,0.6))'} onMouseOut={e => e.currentTarget.style.filter = 'none'}>Host Hub</Link>
                   <Link href="/courses/dashboard" style={goldFoilStyle} onMouseOver={e => e.currentTarget.style.filter = 'brightness(1.1) drop-shadow(0 4px 12px rgba(212,175,55,0.6))'} onMouseOut={e => e.currentTarget.style.filter = 'none'}>Pro Hub</Link>
                   <Link href="/sponsor/dashboard" style={goldFoilStyle} onMouseOver={e => e.currentTarget.style.filter = 'brightness(1.1) drop-shadow(0 4px 12px rgba(212,175,55,0.6))'} onMouseOut={e => e.currentTarget.style.filter = 'none'}>Sponsor Hub</Link>
                 </div>
               )}
-              <Link href="/profile" className="profile-link" style={{ marginRight: '0.8rem', color: '#f5f2ed', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600 }}>My Profile</Link>
+              <Link href="/profile" className="profile-link" style={{ marginRight: '0.8rem', color: '#f5f2ed', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600, flexShrink: 0 }}>My Profile</Link>
               <UserButton 
                 appearance={{
                   elements: {

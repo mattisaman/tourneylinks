@@ -17,16 +17,17 @@ export default function CourseProfileClient({ course, scorecards, hostedTourname
   ];
 
   return (
-     <div className="w-full relative z-20 bg-[#050B08] border-t border-white/10" style={{ minHeight: '800px' }}>
-       <div className="w-full flex flex-col md:flex-row gap-8 lg:gap-16 pt-12 pb-24" style={{ maxWidth: '1300px', margin: '0 auto', paddingLeft: 'clamp(2rem, 5vw, 4rem)', paddingRight: 'clamp(2rem, 5vw, 4rem)' }}>
+     <div className="w-full relative z-20 bg-[#050B08]" style={{ minHeight: '800px' }}>
+       <div className="w-full flex flex-col md:flex-row gap-8 lg:gap-16 pb-32" style={{ maxWidth: '1800px', margin: '0 auto', paddingLeft: 'clamp(2rem, 5vw, 4rem)', paddingRight: 'clamp(2rem, 5vw, 4rem)', paddingTop: '6rem' }}>
           
           {/* Sidebar - Floats inside container aligned with Hero text */}
-          <div className="w-full md:w-[260px] flex-shrink-0">
-             <div className="sticky top-[100px] flex flex-col">
+          <div className="w-full md:w-[320px] flex-shrink-0">
+             <div className="sticky top-[100px] flex flex-col gap-6">
                 
-                <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.4)', marginBottom: '1rem', padding: '0 0.5rem' }}>
-                  Venue Modules
-                </div>
+                <div className="hero-pillar-card" style={{ padding: '1.5rem' }}>
+                   <div style={{ color: 'var(--gold)', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '1.5rem', paddingLeft: '0.5rem' }}>
+                     Venue Modules
+                   </div>
 
                 {navItems.map(item => {
                    const Icon = item.icon;
@@ -46,8 +47,11 @@ export default function CourseProfileClient({ course, scorecards, hostedTourname
                             alignItems: 'center',
                             justifyContent: 'flex-start',
                             transition: '0.2s', 
-                            marginLeft: '-1rem',
-                            borderRadius: '0 6px 6px 0'
+                            marginLeft: '-1.5rem',
+                            paddingLeft: '1.5rem',
+                            borderTopRightRadius: '6px',
+                            borderBottomRightRadius: '6px',
+                            width: 'calc(100% + 1.5rem)'
                          }}
                          className="hover:bg-white/5 hover:text-white/90"
                       >
@@ -56,14 +60,17 @@ export default function CourseProfileClient({ course, scorecards, hostedTourname
                       </button>
                    );
                 })}
+                </div>
 
-                <div className="mt-12 p-6 rounded-xl border border-[var(--gold)]/20 bg-[var(--gold)]/5 relative overflow-hidden group cursor-pointer transition-all hover:bg-[var(--gold)]/10 text-left">
-                   <div className="absolute inset-0 bg-gradient-to-br from-[var(--gold)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                   <h4 className="text-white font-bold mb-2 font-serif text-xl">Inquire Now</h4>
-                   <p className="text-white/50 text-sm mb-6 leading-relaxed">Directly engage venue management for your next corporate outing.</p>
-                   <div className="flex items-center gap-2 text-[var(--gold)] text-xs font-bold uppercase tracking-widest">
-                      Message Pro <ArrowRight size={14} />
-                   </div>
+                <div className="hero-pillar-card" style={{ padding: '2rem 1.5rem', display: 'flex', flexDirection: 'column' }}>
+                   <h3 style={{ color: 'var(--gold)', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', margin: '0 0 0.5rem' }}>Host Here</h3>
+                   <h2 style={{ color: 'var(--cream)', fontSize: '1.75rem', fontFamily: 'var(--font-serif), serif', margin: '0 0 1rem', lineHeight: 1.1 }}>Inquire <br/>Now</h2>
+                   <p style={{ color: 'rgba(245,240,232,0.65)', fontSize: '0.9rem', lineHeight: 1.6, margin: '0 0 1.5rem', flexGrow: 1 }}>
+                     Directly engage venue management to schedule your next corporate outing or fundraiser.
+                   </p>
+                   <button className="btn-hero" style={{ width: '100%', justifyContent: 'center', padding: '1rem', border: 'none', cursor: 'pointer' }}>
+                      Message Pro →
+                   </button>
                 </div>
 
              </div>
@@ -94,9 +101,9 @@ export default function CourseProfileClient({ course, scorecards, hostedTourname
                          { active: true, label: 'Restaurant / Grill' },
                          { active: true, label: 'Event Banquet Hall' },
                       ].map((amt, idx) => amt.active && (
-                         <div key={idx} className="bg-[#0A120E] border border-white/5 rounded-md p-4 flex items-center gap-3">
-                            <Star size={14} className="text-[var(--gold)]" />
-                            <span className="text-white/80 text-sm">{amt.label}</span>
+                         <div key={idx} className="feature-card min-h-[0px]" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                            <div className="feature-icon" style={{ marginBottom: 0, fontSize: '1.25rem' }}>✨</div>
+                            <div className="feature-title" style={{ fontSize: '0.95rem', marginBottom: 0 }}>{amt.label}</div>
                          </div>
                       ))}
                    </div>
@@ -105,20 +112,20 @@ export default function CourseProfileClient({ course, scorecards, hostedTourname
                       <>
                          <h3 className="text-xl font-bold text-white mb-6 tracking-wide">Upcoming Tournaments</h3>
                          <div className="grid gap-3">
-                            {hostedTournaments.map((t) => (
-                               <Link href={`/t/${t.slug}`} key={t.id} className="block w-full border border-white/10 bg-white/5 rounded-md p-4 hover:bg-white/10 transition-colors">
-                                 <div className="flex items-center justify-between">
-                                    <div>
-                                       <div className="text-white font-bold text-lg mb-1">{t.name}</div>
-                                       <div className="text-[var(--gold)] text-xs tracking-widest uppercase">{t.format || 'Scramble'}</div>
-                                    </div>
-                                    <div className="text-right">
-                                       <div className="text-white/80 text-sm mb-1">{new Date(t.dateStart).toLocaleDateString()}</div>
-                                       <div className="text-white/40 text-xs">{(t.playerCapacity || 144) - (t.ticketsSold || 0)} Spots Left</div>
-                                    </div>
-                                 </div>
-                               </Link>
-                            ))}
+                             {hostedTournaments.map((t) => (
+                                <Link href={`/t/${t.slug}`} key={t.id} className="feature-card group min-h-[0px]" style={{ padding: '1.25rem' }}>
+                                  <div className="flex items-center justify-between">
+                                     <div>
+                                        <div className="text-white font-bold text-lg mb-1 group-hover:text-[var(--gold)] transition-colors">{t.name}</div>
+                                        <div className="text-[var(--gold)] text-xs tracking-widest uppercase font-bold">{t.format || 'Scramble'}</div>
+                                     </div>
+                                     <div className="text-right">
+                                        <div className="text-white/80 text-sm mb-1">{new Date(t.dateStart).toLocaleDateString()}</div>
+                                        <div className="text-[var(--gold)] opacity-70 text-xs font-bold">{(t.playerCapacity || 144) - (t.ticketsSold || 0)} Spots Left</div>
+                                     </div>
+                                  </div>
+                                </Link>
+                             ))}
                          </div>
                       </>
                    )}

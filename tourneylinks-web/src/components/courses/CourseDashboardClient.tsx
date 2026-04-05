@@ -35,10 +35,11 @@ export default function CourseDashboardClient({ courseData, isDemo }: { courseDa
           </div>
 
           <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.4)', marginBottom: '1rem', padding: '0 0.5rem' }}>My Claimed Courses</div>
-          <div style={{ background: 'rgba(212,175,55,0.1)', borderLeft: '3px solid var(--gold)', padding: '0.75rem 1rem', borderRadius: '0 4px 4px 0', color: 'var(--gold)', fontWeight: 600, fontSize: '0.9rem', marginBottom: '0.5rem', cursor: 'pointer', marginLeft: '-1rem' }}>
-            {course.name}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(212,175,55,0.1)', borderLeft: '3px solid var(--gold)', padding: '0.6rem 1rem', borderRadius: '0 4px 4px 0', color: 'var(--gold)', fontWeight: 600, fontSize: '0.85rem', marginBottom: '0.5rem', marginLeft: '-1rem' }}>
+            <span style={{ cursor: 'pointer' }}>{course.name}</span>
+            <Link href={`/courses/${course.id}`} target="_blank" style={{ fontSize: '0.65rem', padding: '0.3rem 0.6rem', background: 'var(--gold)', color: '#000', borderRadius: '4px', textDecoration: 'none', fontWeight: 800, whiteSpace: 'nowrap' }}>View Site ↗</Link>
           </div>
-          <div style={{ padding: '0.75rem 1rem', color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem', cursor: 'pointer', transition: '0.2s', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div style={{ padding: '0.5rem 1rem', color: 'rgba(255,255,255,0.7)', fontSize: '0.85rem', cursor: 'pointer', transition: '0.2s', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <span style={{color: 'var(--mist)'}}>+</span> Claim Another Course
           </div>
 

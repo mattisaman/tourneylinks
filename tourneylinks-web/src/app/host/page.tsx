@@ -217,7 +217,7 @@ export default function HostLiveCampaignBuilder() {
   const formatName = formatNames[selectedFormat] || selectedFormat;
 
   const fee = packages.length > 0 ? packages[0].price : 0;
-  const stripeFee = fee > 0 ? (fee * 0.029 + 0.30) : 0;
+  const stripeFee = fee > 0 ? (fee * (isCharity ? 0.022 : 0.029) + 0.30) : 0;
   let totalFee = fee;
   let organizerRevenue = fee - stripeFee;
 
@@ -241,6 +241,109 @@ export default function HostLiveCampaignBuilder() {
            </div>
         </div>
 
+        {/* Setup Donations & 501(c)(3) Entity Block */}
+        <div className="wizard-card" style={{ marginBottom: '2rem' }}>
+           <div className="wizard-card-title">Setup Donations & 501(c)(3) Entity</div>
+           
+           <div style={{ marginTop: '0.5rem' }}>
+              <div style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--ink)', marginBottom: '0.8rem' }}>501(c)(3) Status & Structure</div>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', marginBottom: '1.5rem' }}>
+                 <div style={{ background: 'rgba(46, 204, 113, 0.06)', border: '1px dashed rgba(46, 204, 113, 0.4)', borderRadius: '6px', padding: '1rem', display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                    <div style={{ fontSize: '1.2rem' }}>💡</div>
+                    <div>
+                       <strong style={{ color: 'var(--forest)', fontSize: '0.85rem', display: 'block', marginBottom: '0.2rem' }}>Why 501(c)(3) Status Matters</strong>
+                       <div style={{ color: 'var(--mist)', fontSize: '0.8rem', lineHeight: 1.5 }}>
+                          Enabling tax-deductible receipts often unlocks <b>significantly larger contributions</b> from corporate sponsors and individual donors. It also unlocks discounted processing fees (2.2%) instead of standard (2.9%)!
+                       </div>
+                    </div>
+                 </div>
+
+                 <label style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', padding: '1rem', background: charityType === 'none' ? 'rgba(212,175,55,0.05)' : '#fff', borderRadius: '6px', border: charityType === 'none' ? '1px solid var(--gold)' : '1px solid rgba(0,0,0,0.1)', cursor: 'pointer', transition: '0.2s' }}>
+                    <input type="radio" name="charityType" checked={charityType === 'none'} onChange={() => { setCharityType('none'); }} style={{ width: '1.2rem', height: '1.2rem', accentColor: 'var(--gold)' }} />
+                    <div>
+                       <div style={{ fontWeight: 600, color: 'var(--ink)' }}>No 501(c)(3) affiliation</div>
+                       <div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>Funds are collected directly as non-tax-deductible gifts.</div>
+                    </div>
+                 </label>
+
+                 <label style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', padding: '1rem', background: charityType === 'own' ? 'rgba(212,175,55,0.05)' : '#fff', borderRadius: '6px', border: charityType === 'own' ? '1px solid var(--gold)' : '1px solid rgba(0,0,0,0.1)', cursor: 'pointer', transition: '0.2s' }}>
+                    <input type="radio" name="charityType" checked={charityType === 'own'} onChange={() => { setCharityType('own'); if(charityName === 'G.O.L.F. Foundation') setCharityName(''); }} style={{ width: '1.2rem', height: '1.2rem', accentColor: 'var(--gold)' }} />
+                    <div>
+                       <div style={{ fontWeight: 600, color: 'var(--ink)' }}>We have our own 501(c)(3)</div>
+                       <div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>Provide your Tax ID instantly for donor receipts.</div>
+                    </div>
+                 </label>
+
+                 <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.8rem', padding: '1rem', background: charityType === 'golf_sponsored' ? 'rgba(212,175,55,0.05)' : '#fff', borderRadius: '6px', border: charityType === 'golf_sponsored' ? '1px solid var(--gold)' : '1px solid rgba(0,0,0,0.1)', cursor: 'pointer', transition: '0.2s' }}>
+                    <input type="radio" name="charityType" checked={charityType === 'golf_sponsored'} onChange={() => { setCharityType('golf_sponsored'); setCharityName('G.O.L.F. Foundation'); }} style={{ width: '1.2rem', height: '1.2rem', accentColor: 'var(--gold)', marginTop: '0.2rem' }} />
+                    <div style={{ flex: 1 }}>
+                       <div style={{ fontWeight: 600, color: 'var(--ink)' }}>Apply for Fiscal Sponsorship (G.O.L.F.)</div>
+                       <div style={{ fontSize: '0.75rem', color: 'var(--mist)', marginBottom: charityType === 'golf_sponsored' ? '1rem' : 0 }}>Process donations tax-free through the Gateway Outreach Links Foundation.</div>
+                       
+                       {charityType === 'golf_sponsored' && (
+                          <div style={{ background: '#fff', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '6px', padding: '1rem', marginTop: '0.5rem', animation: 'fadeIn 0.3s' }} onClick={e => e.preventDefault()}>
+                             <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.5rem', color: 'var(--forest)' }}>Describe your cause (required for board approval):</label>
+                             <textarea value={golfApplicationCause} onChange={e => { e.stopPropagation(); setGolfApplicationCause(e.target.value); }} rows={3} style={{ width: '100%', padding: '0.6rem', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '4px', fontSize: '0.85rem', marginBottom: '0.8rem', resize: 'vertical' }} placeholder="E.g. We are raising funds for medical bills for a local high schooler..."></textarea>
+                             
+                             <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.5rem', color: 'var(--forest)' }}>Preferred Disbursement Method:</label>
+                             <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.8rem' }}>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem', cursor: 'pointer' }}>
+                                   <input type="radio" checked={golfPayoutMethod === 'bank'} onChange={(e) => { e.stopPropagation(); setGolfPayoutMethod('bank'); }} style={{ accentColor: 'var(--forest)' }} /> Bank Transfer
+                                </label>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem', cursor: 'pointer' }}>
+                                   <input type="radio" checked={golfPayoutMethod === 'check'} onChange={(e) => { e.stopPropagation(); setGolfPayoutMethod('check'); }} style={{ accentColor: 'var(--forest)' }} /> Mailed Check
+                                </label>
+                             </div>
+                             
+                             <input type="text" value={golfPayoutInfo} onChange={e => { e.stopPropagation(); setGolfPayoutInfo(e.target.value); }} placeholder={golfPayoutMethod === 'bank' ? "Enter Routing / Account Number or Zelle Email" : "Enter full mailing address"} style={{ width: '100%', padding: '0.6rem', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '4px', fontSize: '0.85rem', marginBottom: '1rem' }} />
+
+                             <div style={{ background: '#f8faf9', padding: '1rem', borderRadius: '4px', border: '1px solid #e2e8f0', marginBottom: '1rem' }}>
+                                <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', cursor: 'pointer' }}>
+                                   <input type="checkbox" checked={golfAgreementChecked} onChange={(e) => { e.stopPropagation(); setGolfAgreementChecked(!golfAgreementChecked); }} style={{ marginTop: '0.2rem', accentColor: 'var(--forest)', width: '1rem', height: '1rem' }} />
+                                   <span style={{ fontSize: '0.75rem', color: 'var(--ink)', lineHeight: 1.5 }}>
+                                      <strong>Terms of Agreement:</strong> I acknowledge that by applying for fiscal sponsorship, all collected funds will be managed by the Gateway Outreach Links Foundation. Upon successful completion of the event, the Foundation will disburse all gross proceeds (minus standard Stripe processing fees of 2.2% + 30¢) directly to the tournament organizer using the method specified above.
+                                   </span>
+                                </label>
+                             </div>
+                             
+                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: golfApplicationStatus === 'pending' ? '#e6a100' : 'var(--mist)' }}>Status: {golfApplicationStatus === 'pending' ? 'Application Pending Review' : 'Draft'}</span>
+                                <button 
+                                   onClick={(e) => { 
+                                      e.stopPropagation(); 
+                                      e.preventDefault(); 
+                                      if(!golfApplicationCause) return alert('Please enter a description of your cause.'); 
+                                      if(!golfPayoutInfo) return alert('Please provide your disbursement information.');
+                                      if(!golfAgreementChecked) return alert('You must agree to the Terms of Agreement to apply.');
+                                      setGolfApplicationStatus('pending'); 
+                                   }}
+                                   style={{ padding: '0.4rem 0.8rem', background: golfApplicationStatus === 'pending' ? '#e0ece0' : 'var(--forest)', color: golfApplicationStatus === 'pending' ? 'var(--forest)' : '#fff', border: 'none', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer', opacity: (!golfApplicationCause || !golfPayoutInfo || !golfAgreementChecked) ? 0.6 : 1, transition: '0.2s' }}
+                                   disabled={golfApplicationStatus === 'pending'}
+                                >
+                                   {golfApplicationStatus === 'pending' ? 'Application Submitted' : 'Submit Application'}
+                                </button>
+                             </div>
+                          </div>
+                       )}
+                    </div>
+                 </label>
+              </div>
+
+              {charityType === 'own' && (
+                 <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', animation: 'fadeIn 0.3s' }}>
+                    <div className="wfield wform-full" style={{ flex: 2 }}>
+                      <label>501(c)(3) Organization Name</label>
+                      <input type="text" value={charityName} onChange={e => setCharityName(e.target.value)} placeholder="e.g. Jimmy Fund" />
+                    </div>
+                    <div className="wfield wform-full" style={{ flex: 1 }}>
+                      <label>Tax ID (EIN)</label>
+                      <input type="text" value={charityTaxId} onChange={e => setCharityTaxId(e.target.value)} placeholder="e.g. 12-3456789" />
+                    </div>
+                 </div>
+              )}
+           </div>
+        </div>
         <div className="wizard-card" style={{ marginBottom: '2rem' }}>
           <div className="wizard-card-title">Tournament Logistics</div>
           <div className="wform-grid">
@@ -405,109 +508,6 @@ export default function HostLiveCampaignBuilder() {
           </div>
         </div>
 
-        {/* Setup Donations & 501(c)(3) Entity Block */}
-        <div className="wizard-card" style={{ marginBottom: '2rem' }}>
-           <div className="wizard-card-title">Setup Donations & 501(c)(3) Entity</div>
-           
-           <div style={{ marginTop: '0.5rem' }}>
-              <div style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--ink)', marginBottom: '0.8rem' }}>501(c)(3) Status & Structure</div>
-              
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', marginBottom: '1.5rem' }}>
-                 <div style={{ background: 'rgba(46, 204, 113, 0.06)', border: '1px dashed rgba(46, 204, 113, 0.4)', borderRadius: '6px', padding: '1rem', display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                    <div style={{ fontSize: '1.2rem' }}>💡</div>
-                    <div>
-                       <strong style={{ color: 'var(--forest)', fontSize: '0.85rem', display: 'block', marginBottom: '0.2rem' }}>Why 501(c)(3) Status Matters</strong>
-                       <div style={{ color: 'var(--mist)', fontSize: '0.8rem', lineHeight: 1.5 }}>
-                          Enabling tax-deductible receipts often unlocks <b>significantly larger contributions</b> from corporate sponsors and individual donors. It also unlocks discounted processing fees (2.2%) instead of standard (2.9%)!
-                       </div>
-                    </div>
-                 </div>
-
-                 <label style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', padding: '1rem', background: charityType === 'none' ? 'rgba(212,175,55,0.05)' : '#fff', borderRadius: '6px', border: charityType === 'none' ? '1px solid var(--gold)' : '1px solid rgba(0,0,0,0.1)', cursor: 'pointer', transition: '0.2s' }}>
-                    <input type="radio" name="charityType" checked={charityType === 'none'} onChange={() => { setCharityType('none'); }} style={{ width: '1.2rem', height: '1.2rem', accentColor: 'var(--gold)' }} />
-                    <div>
-                       <div style={{ fontWeight: 600, color: 'var(--ink)' }}>No 501(c)(3) affiliation</div>
-                       <div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>Funds are collected directly as non-tax-deductible gifts.</div>
-                    </div>
-                 </label>
-
-                 <label style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', padding: '1rem', background: charityType === 'own' ? 'rgba(212,175,55,0.05)' : '#fff', borderRadius: '6px', border: charityType === 'own' ? '1px solid var(--gold)' : '1px solid rgba(0,0,0,0.1)', cursor: 'pointer', transition: '0.2s' }}>
-                    <input type="radio" name="charityType" checked={charityType === 'own'} onChange={() => { setCharityType('own'); if(charityName === 'G.O.L.F. Foundation') setCharityName(''); }} style={{ width: '1.2rem', height: '1.2rem', accentColor: 'var(--gold)' }} />
-                    <div>
-                       <div style={{ fontWeight: 600, color: 'var(--ink)' }}>We have our own 501(c)(3)</div>
-                       <div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>Provide your Tax ID instantly for donor receipts.</div>
-                    </div>
-                 </label>
-
-                 <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.8rem', padding: '1rem', background: charityType === 'golf_sponsored' ? 'rgba(212,175,55,0.05)' : '#fff', borderRadius: '6px', border: charityType === 'golf_sponsored' ? '1px solid var(--gold)' : '1px solid rgba(0,0,0,0.1)', cursor: 'pointer', transition: '0.2s' }}>
-                    <input type="radio" name="charityType" checked={charityType === 'golf_sponsored'} onChange={() => { setCharityType('golf_sponsored'); setCharityName('G.O.L.F. Foundation'); }} style={{ width: '1.2rem', height: '1.2rem', accentColor: 'var(--gold)', marginTop: '0.2rem' }} />
-                    <div style={{ flex: 1 }}>
-                       <div style={{ fontWeight: 600, color: 'var(--ink)' }}>Apply for Fiscal Sponsorship (G.O.L.F.)</div>
-                       <div style={{ fontSize: '0.75rem', color: 'var(--mist)', marginBottom: charityType === 'golf_sponsored' ? '1rem' : 0 }}>Process donations tax-free through the Gateway Outreach Links Foundation.</div>
-                       
-                       {charityType === 'golf_sponsored' && (
-                          <div style={{ background: '#fff', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '6px', padding: '1rem', marginTop: '0.5rem', animation: 'fadeIn 0.3s' }} onClick={e => e.preventDefault()}>
-                             <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.5rem', color: 'var(--forest)' }}>Describe your cause (required for board approval):</label>
-                             <textarea value={golfApplicationCause} onChange={e => { e.stopPropagation(); setGolfApplicationCause(e.target.value); }} rows={3} style={{ width: '100%', padding: '0.6rem', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '4px', fontSize: '0.85rem', marginBottom: '0.8rem', resize: 'vertical' }} placeholder="E.g. We are raising funds for medical bills for a local high schooler..."></textarea>
-                             
-                             <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.5rem', color: 'var(--forest)' }}>Preferred Disbursement Method:</label>
-                             <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.8rem' }}>
-                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem', cursor: 'pointer' }}>
-                                   <input type="radio" checked={golfPayoutMethod === 'bank'} onChange={(e) => { e.stopPropagation(); setGolfPayoutMethod('bank'); }} style={{ accentColor: 'var(--forest)' }} /> Bank Transfer
-                                </label>
-                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem', cursor: 'pointer' }}>
-                                   <input type="radio" checked={golfPayoutMethod === 'check'} onChange={(e) => { e.stopPropagation(); setGolfPayoutMethod('check'); }} style={{ accentColor: 'var(--forest)' }} /> Mailed Check
-                                </label>
-                             </div>
-                             
-                             <input type="text" value={golfPayoutInfo} onChange={e => { e.stopPropagation(); setGolfPayoutInfo(e.target.value); }} placeholder={golfPayoutMethod === 'bank' ? "Enter Routing / Account Number or Zelle Email" : "Enter full mailing address"} style={{ width: '100%', padding: '0.6rem', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '4px', fontSize: '0.85rem', marginBottom: '1rem' }} />
-
-                             <div style={{ background: '#f8faf9', padding: '1rem', borderRadius: '4px', border: '1px solid #e2e8f0', marginBottom: '1rem' }}>
-                                <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', cursor: 'pointer' }}>
-                                   <input type="checkbox" checked={golfAgreementChecked} onChange={(e) => { e.stopPropagation(); setGolfAgreementChecked(!golfAgreementChecked); }} style={{ marginTop: '0.2rem', accentColor: 'var(--forest)', width: '1rem', height: '1rem' }} />
-                                   <span style={{ fontSize: '0.75rem', color: 'var(--ink)', lineHeight: 1.5 }}>
-                                      <strong>Terms of Agreement:</strong> I acknowledge that by applying for fiscal sponsorship, all collected funds will be managed by the Gateway Outreach Links Foundation. Upon successful completion of the event, the Foundation will disburse all gross proceeds (minus standard Stripe processing fees of 2.2% + 30¢) directly to the tournament organizer using the method specified above.
-                                   </span>
-                                </label>
-                             </div>
-                             
-                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: golfApplicationStatus === 'pending' ? '#e6a100' : 'var(--mist)' }}>Status: {golfApplicationStatus === 'pending' ? 'Application Pending Review' : 'Draft'}</span>
-                                <button 
-                                   onClick={(e) => { 
-                                      e.stopPropagation(); 
-                                      e.preventDefault(); 
-                                      if(!golfApplicationCause) return alert('Please enter a description of your cause.'); 
-                                      if(!golfPayoutInfo) return alert('Please provide your disbursement information.');
-                                      if(!golfAgreementChecked) return alert('You must agree to the Terms of Agreement to apply.');
-                                      setGolfApplicationStatus('pending'); 
-                                   }}
-                                   style={{ padding: '0.4rem 0.8rem', background: golfApplicationStatus === 'pending' ? '#e0ece0' : 'var(--forest)', color: golfApplicationStatus === 'pending' ? 'var(--forest)' : '#fff', border: 'none', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer', opacity: (!golfApplicationCause || !golfPayoutInfo || !golfAgreementChecked) ? 0.6 : 1, transition: '0.2s' }}
-                                   disabled={golfApplicationStatus === 'pending'}
-                                >
-                                   {golfApplicationStatus === 'pending' ? 'Application Submitted' : 'Submit Application'}
-                                </button>
-                             </div>
-                          </div>
-                       )}
-                    </div>
-                 </label>
-              </div>
-
-              {charityType === 'own' && (
-                 <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', animation: 'fadeIn 0.3s' }}>
-                    <div className="wfield wform-full" style={{ flex: 2 }}>
-                      <label>501(c)(3) Organization Name</label>
-                      <input type="text" value={charityName} onChange={e => setCharityName(e.target.value)} placeholder="e.g. Jimmy Fund" />
-                    </div>
-                    <div className="wfield wform-full" style={{ flex: 1 }}>
-                      <label>Tax ID (EIN)</label>
-                      <input type="text" value={charityTaxId} onChange={e => setCharityTaxId(e.target.value)} placeholder="e.g. 12-3456789" />
-                    </div>
-                 </div>
-              )}
-           </div>
-        </div>
      </div>
   );
 
@@ -1028,6 +1028,11 @@ export default function HostLiveCampaignBuilder() {
                        <span>{date ? new Date(date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }) : 'Date TBD'}</span>
                     </div>
                  </div>
+                 {isCharity && (
+                    <div style={{ position: 'absolute', bottom: '1.5rem', left: '1.5rem', color: '#fff', textShadow: '0 2px 6px rgba(0,0,0,0.9), 0 1px 2px rgba(0,0,0,1)', fontSize: '0.8rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.4rem', zIndex: 20 }}>
+                       <span>🎗️</span> Official 501(c)(3) Sponsored Event
+                    </div>
+                 )}
               </div>
               
               <div style={{ padding: '1.5rem', display: 'flex', gap: '1.5rem', flex: 1 }}>
@@ -1241,6 +1246,7 @@ export default function HostLiveCampaignBuilder() {
                  <div style={{ position: 'relative', zIndex: 10 }}>
                     <div style={{ display: 'flex', gap: '0.4rem', marginBottom: '0.5rem' }}>
                        <span style={{ fontSize: '0.65rem', padding: '0.2rem 0.5rem', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(4px)', color: '#fff', borderRadius: '4px', fontWeight: 700 }}>{formatName}</span>
+                       {isCharity && <span style={{ fontSize: '0.65rem', padding: '0.2rem 0.5rem', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', color: '#fff', borderRadius: '4px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.3rem' }}><span>🎗️</span> 501(c)(3)</span>}
                     </div>
                     <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.8rem', color: '#fff', margin: 0, lineHeight: 1.1, textShadow: '0 2px 8px rgba(0,0,0,0.4), 0 4px 20px rgba(0,0,0,0.2)' }}>
                        {name || 'Tournament Title'}

@@ -60,20 +60,24 @@ export default function AdminSidebar({ tournamentId, mockTournaments }: { tourna
    });
 
    return (
-        <div className="dash-sidebar" style={{ position: 'sticky', top: '75px', height: 'calc(100vh - 75px)', overflowY: 'auto' }}>
-          <div className="dash-logo" style={{ marginBottom: '2.5rem' }}>
-            Tourney<span>Links</span> 
-            <span style={{ fontSize: '0.7rem', background: 'rgba(201,168,76,0.2)', color: 'var(--gold)', padding: '0.15rem 0.4rem', borderRadius: '2px', fontFamily: "'DM Sans', sans-serif", marginLeft: '0.5rem' }}>
-              Admin
-            </span>
-          </div>
+        <div style={{ background: '#05120c', borderRight: '1px solid rgba(255,255,255,0.05)', flexShrink: 0 }}>
+          <div className="dash-sidebar" style={{ position: 'sticky', top: 0, height: '100vh', overflowY: 'auto', padding: '2rem 1rem', background: 'transparent' }}>
+            <div className="dash-logo" style={{ marginBottom: '2.5rem', color: '#fff', fontSize: '1.25rem', fontWeight: 900, letterSpacing: '0.02em', padding: '0 0.5rem' }}>
+              Tourney<span style={{ color: 'var(--gold)' }}>Links</span> 
+              <span style={{ fontSize: '0.7rem', background: 'rgba(201,168,76,0.2)', color: 'var(--gold)', padding: '0.15rem 0.4rem', borderRadius: '2px', fontFamily: "'DM Sans', sans-serif", marginLeft: '0.5rem' }}>
+                Admin
+              </span>
+            </div>
 
-          <div className="dash-section-label" style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.8rem', paddingLeft: '1rem' }}>Active Tournaments</div>
-          {mockTournaments.map(mt => (
-             <div key={mt.id} style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', padding: '0.8rem 1rem', borderRadius: '8px', fontSize: '0.85rem', fontWeight: mt.id === tournamentId ? 700 : 500, color: mt.id === tournamentId ? '#fff' : 'var(--mist)', background: mt.id === tournamentId ? 'rgba(255,255,255,0.05)' : 'transparent', marginBottom: '0.35rem' }}>
-               <span>🏆</span> {mt.name}
-             </div>
-          ))}
+            <div className="dash-section-label" style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.8rem', paddingLeft: '1rem' }}>Active Tournaments</div>
+            {mockTournaments.map(mt => (
+               <div key={mt.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', padding: '0.6rem 1rem', borderRadius: '8px', fontSize: '0.85rem', fontWeight: mt.id === tournamentId ? 700 : 500, color: mt.id === tournamentId ? '#fff' : 'var(--mist)', background: mt.id === tournamentId ? 'rgba(255,255,255,0.05)' : 'transparent', marginBottom: '0.35rem' }}>
+                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span>🏆</span> {mt.name}
+                 </div>
+                 <Link href={`/tournaments/${mt.id}`} target="_blank" style={{ fontSize: '0.65rem', padding: '0.3rem 0.6rem', background: 'var(--gold)', color: '#000', borderRadius: '4px', textDecoration: 'none', fontWeight: 800, whiteSpace: 'nowrap', transition: 'transform 0.2s' }} className="hover:-translate-y-0.5">View Site ↗</Link>
+               </div>
+            ))}
           <Link href="/host" style={{ ...getNavStyle('create'), borderLeft: '4px solid transparent', color: 'var(--gold)' }}>
             <span>➕</span> New Campaign Builder
           </Link>
@@ -98,5 +102,6 @@ export default function AdminSidebar({ tournamentId, mockTournaments }: { tourna
           <Link href={`/admin/tournaments/${tournamentId}/advanced`} style={{ ...getNavStyle('advanced'), color: 'rgba(255,255,255,0.5)', borderLeft: '4px solid transparent' }}><span>⛳</span> Geospatial Settings</Link>
           <Link href="/admin/guides" style={{ ...getNavStyle('guides'), color: 'rgba(255,255,255,0.5)', borderLeft: '4px solid transparent' }}><span>🧠</span> AI Pricing Intel</Link>
         </div>
+      </div>
    )
 }
