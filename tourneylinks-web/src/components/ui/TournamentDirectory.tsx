@@ -184,9 +184,9 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
     <>
       <div style={{
           position: 'relative',
-          background: `linear-gradient(to bottom, rgba(5,11,8,0.2) 0%, rgba(5,11,8,0.85) 100%), url('https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&q=80&w=2600')`,
+          background: `linear-gradient(to bottom, rgba(5,11,8,0.6) 0%, rgba(5,11,8,0.9) 100%), url('/hero-bg-4.jpg')`,
           backgroundSize: 'cover',
-          backgroundPosition: 'center 60%',
+          backgroundPosition: 'center 40%',
           paddingTop: '80px', // Accommodate absolute navbar
           borderBottom: '2px solid rgba(212,175,55,0.6)',
           boxShadow: '0 8px 40px rgba(0,0,0,0.4)',
@@ -226,7 +226,7 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
         {/* Sticky Secondary Header (The Filter Matrix) INSIDE the wrapper */}
         <div className="sticky-filter-matrix" style={{ 
           position: 'sticky', top: '0', zIndex: 40,
-          background: 'rgba(5, 11, 8, 0.15)', backdropFilter: 'blur(8px)',
+          background: 'rgba(5, 11, 8, 0.05)', backdropFilter: 'blur(4px)',
           borderTop: '1px solid rgba(255,255,255,0.05)',
           padding: '1.5rem 0 1.25rem 0',
         }}>
