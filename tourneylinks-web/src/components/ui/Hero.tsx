@@ -12,16 +12,17 @@ export default function Hero() {
         <div style={{ maxWidth: '1200px', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '6rem' }}>
           <div className="hero-eyebrow" style={{ 
               justifyContent: 'center', 
-              background: 'rgba(201, 168, 76, 0.15)', 
-              border: '1px solid rgba(201, 168, 76, 0.3)', 
-              padding: '0.6rem 1.5rem', 
+              background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(212, 175, 55, 0.05) 100%)', 
+              border: '1px solid rgba(212, 175, 55, 0.6)', 
+              padding: '0.7rem 2rem', 
               borderRadius: '100px', 
-              color: '#F4E3A6', 
-              fontWeight: 700, 
-              fontSize: '0.8rem',
-              letterSpacing: '0.25em',
-              boxShadow: '0 4px 24px rgba(201,168,76,0.2)',
-              backdropFilter: 'blur(10px)'
+              color: '#FBF0C0', 
+              fontWeight: 800, 
+              fontSize: '0.85rem',
+              letterSpacing: '0.3em',
+              boxShadow: '0 8px 30px rgba(212,175,55,0.3)',
+              backdropFilter: 'blur(16px)',
+              textShadow: '0 0 20px rgba(251, 240, 192, 0.5)'
           }}>The Complete Golf Ecosystem</div>
           <h1 className="hero-headline" style={{ maxWidth: 'none', textAlign: 'center' }}>
             The Engine Behind Every <em>Great</em> Local Tournament
