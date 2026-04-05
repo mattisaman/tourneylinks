@@ -82,6 +82,7 @@ export const tournaments = pgTable('tournaments', {
   handicapMax: integer('handicap_max'),
   isCharity: boolean('is_charity').default(false),
   acceptsDonations: boolean('accepts_donations').default(false),
+  donationsConfig: text('donations_config'), // JSON storing the 3 donation options
   charityName: text('charity_name'),
   isPrivate: boolean('is_private').default(false),
 
@@ -303,6 +304,7 @@ export const tournament_sponsors = pgTable('tournament_sponsors', {
   websiteUrl: text('website_url'),
   holeAssignment: integer('hole_assignment'), // The hole number (1-18) this sponsor is natively attached to
   popupAdCopy: text('popup_ad_copy'), // e.g. "Hole 8 Sponsored by Ford! Win a F150!"
+  showOnTvBoard: boolean('show_on_tv_board').default(false), // Determines if logo cycles on liveboard
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
@@ -479,4 +481,53 @@ export const course_contracts = pgTable('course_contracts', {
   uploadedByUserId: text('uploaded_by_user_id').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+// ==========================================
+// PHASE 17: UNIFIED COMMUNICATION MATRIX & NOTIFICATIONS
+// ==========================================
+
+export const user_notification_settings = pgTable('user_notification_settings', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  
+  // Topics
+  topic: text('topic').notNull(), // 'TICKET_UPDATES', 'TOURNAMENT_BROADCASTS', 'REGISTRATION_ALERTS', 'SPONSOR_INQUIRIES'
+  
+  // Channels
+  emailEnabled: boolean('email_enabled').default(true).notNull(),
+  smsEnabled: boolean('sms_enabled').default(false).notNull(),
+  pushEnabled: boolean('push_enabled').default(false).notNull(),
+  
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+export const communication_threads = pgTable('communication_threads', {
+  id: serial('id').primaryKey(),
+  contextType: text('context_type').notNull(), // 'SUPPORT', 'GOLFER_TO_HOST', 'HOST_TO_PRO', 'HOST_TO_SPONSOR'
+  
+  // Polymorphic associations depending on context
+  tournamentId: integer('tournament_id').references(() => tournaments.id, { onDelete: 'cascade' }),
+  courseId: integer('course_id').references(() => courses.id, { onDelete: 'cascade' }),
+  
+  // For routing the specific chat
+  initiatorUserId: text('initiator_user_id').notNull(), // Clerk User ID (Sender)
+  recipientUserId: text('recipient_user_id'), // Optional: might be a generic inbox (e.g. all admins of a course)
+
+  subject: text('subject').notNull(), // 'Issue with Registration', 'Question about Tee Boxes'
+  status: text('status').default('OPEN').notNull(), // 'OPEN', 'RESOLVED', 'CLOSED'
+  
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+export const messages = pgTable('messages', {
+  id: serial('id').primaryKey(),
+  threadId: integer('thread_id').references(() => communication_threads.id, { onDelete: 'cascade' }).notNull(),
+  senderUserId: text('sender_user_id').notNull(), // Clerk User ID of whoever wrote this message
+  
+  payload: text('payload').notNull(), // The actual message body
+  isRead: boolean('is_read').default(false).notNull(),
+  
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });

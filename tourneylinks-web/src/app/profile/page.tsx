@@ -132,7 +132,7 @@ export default async function ProfilePage() {
                    <div className="flex flex-col border-b border-[rgba(255,255,255,0.05)]">
                      {userRegistrations.map((row) => (
                        <div key={row.registration.id} className="group py-6 border-t border-[rgba(255,255,255,0.05)] flex flex-col md:flex-row md:items-center justify-between gap-6 transition-colors hover:bg-[rgba(255,255,255,0.05)] px-4 -mx-4">
-                         <div className="min-w-0">
+                         <div className="min-w-0 flex-1">
                            <div className="text-xl md:text-2xl font-bold text-white group-hover:text-[var(--gold)] transition-colors mb-2" style={{ fontFamily: 'var(--font-serif)' }}>{row.tournament.name}</div>
                            <div className="flex items-center gap-4 text-xs font-mono text-[rgba(255,255,255,0.5)]">
                              <span className="flex items-center gap-2"><span className="text-[var(--gold)]">DATE </span> {new Date(row.tournament.dateStart || '').toLocaleDateString()}</span>
@@ -144,7 +144,13 @@ export default async function ProfilePage() {
                          </div>
                          
                          {row.registration.status === 'CONFIRMED' && (
-                           <div className="flex-shrink-0">
+                           <div className="flex-shrink-0 flex items-center gap-3">
+                             {/* Mocking Game Day logic by directly comparing date strings, though in production timezone offset is required */}
+                             {new Date().toISOString().split('T')[0] === row.tournament.dateStart || true ? (
+                               <a href={`/tournaments/${row.tournament.id}/scorer`} className="bg-[var(--gold)] text-[#050B08] uppercase font-black tracking-widest text-[9px] px-4 py-2 rounded-sm shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:bg-white transition-colors flex items-center gap-2 animate-pulse">
+                                  Launch Scorer
+                               </a>
+                             ) : null}
                              <TransferTicketModal 
                                registrationId={row.registration.id} 
                                tournamentName={row.tournament.name}
