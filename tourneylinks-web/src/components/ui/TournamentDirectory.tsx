@@ -184,9 +184,9 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
     <>
       <div style={{
           position: 'relative',
-          background: `linear-gradient(to bottom, rgba(5,11,8,0.4) 0%, rgba(5,11,8,0.75) 100%), url('https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&q=80&w=2600')`,
+          background: `linear-gradient(to bottom, rgba(5,11,8,0.2) 0%, rgba(5,11,8,0.85) 100%), url('https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&q=80&w=2600')`,
           backgroundSize: 'cover',
-          backgroundPosition: 'center 40%',
+          backgroundPosition: 'center 60%',
           paddingTop: '80px', // Accommodate absolute navbar
           borderBottom: '2px solid rgba(212,175,55,0.6)',
           boxShadow: '0 8px 40px rgba(0,0,0,0.4)',
@@ -226,8 +226,8 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
         {/* Sticky Secondary Header (The Filter Matrix) INSIDE the wrapper */}
         <div className="sticky-filter-matrix" style={{ 
           position: 'sticky', top: '0', zIndex: 40,
-          background: 'rgba(5, 11, 8, 0.4)', backdropFilter: 'blur(24px)',
-          borderTop: '1px solid rgba(212,175,55,0.3)',
+          background: 'rgba(5, 11, 8, 0.15)', backdropFilter: 'blur(8px)',
+          borderTop: '1px solid rgba(255,255,255,0.05)',
           padding: '1.5rem 0 1.25rem 0',
         }}>
           <form onSubmit={e => { e.preventDefault(); handleApplyFilters(); }} style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 2rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -278,14 +278,14 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
          </div>
          
          {/* Bottom Row: Secondary Nuanced Filters */}
-         <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap', paddingTop: '0.75rem', borderTop: '1px solid rgba(26,46,26,0.05)' }}>
-             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', color: 'var(--mist)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>
-                <Search size={14} /> Refine:
+         <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap', paddingTop: '0.75rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', color: '#fff', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>
+                <Search size={14} className="text-[var(--gold)]" /> Refine:
              </div>
              
              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} style={{ padding: '0.4rem 0.8rem', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.1)', fontSize: '0.8rem', background: '#fff' }} />
-               <span style={{ color: 'var(--mist)', fontSize: '0.8rem' }}>to</span>
+               <span style={{ color: '#fff', fontSize: '0.8rem', fontWeight: 600 }}>to</span>
                <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} style={{ padding: '0.4rem 0.8rem', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.1)', fontSize: '0.8rem', background: '#fff' }} />
              </div>
 
@@ -304,23 +304,23 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
              </select>
 
              <div style={{ position: 'relative' }}>
-                <span style={{ position: 'absolute', left: '8px', top: '50%', transform: 'translateY(-50%)', color: 'var(--mist)', fontSize: '0.85rem' }}>$</span>
+                <span style={{ position: 'absolute', left: '8px', top: '50%', transform: 'translateY(-50%)', color: '#666', fontSize: '0.85rem' }}>$</span>
                 <input type="number" placeholder="Max Fee" value={maxFee} onChange={e => setMaxFee(e.target.value ? Number(e.target.value) : '')} style={{ padding: '0.4rem 0.8rem 0.4rem 1.5rem', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.1)', fontSize: '0.8rem', width: '100px', background: '#fff' }} />
              </div>
 
-             <label style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.85rem', color: 'var(--forest)', cursor: 'pointer', fontWeight: 500 }}>
-                <input type="checkbox" checked={requireOpenReg} onChange={e => setRequireOpenReg(e.target.checked)} style={{ width: '16px', height: '16px', accentColor: 'var(--grass)' }} /> Reg Open
+             <label style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.85rem', color: '#fff', cursor: 'pointer', fontWeight: 600 }}>
+                <input type="checkbox" checked={requireOpenReg} onChange={e => setRequireOpenReg(e.target.checked)} style={{ width: '16px', height: '16px', accentColor: 'var(--gold)' }} /> Reg Open
              </label>
-             <label style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.85rem', color: 'var(--forest)', cursor: 'pointer', fontWeight: 500 }}>
-                <input type="checkbox" checked={requireSpots} onChange={e => setRequireSpots(e.target.checked)} style={{ width: '16px', height: '16px', accentColor: 'var(--grass)' }} /> Has Spots
+             <label style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.85rem', color: '#fff', cursor: 'pointer', fontWeight: 600 }}>
+                <input type="checkbox" checked={requireSpots} onChange={e => setRequireSpots(e.target.checked)} style={{ width: '16px', height: '16px', accentColor: 'var(--gold)' }} /> Has Spots
              </label>
 
              <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-               <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--forest)', padding: '0.4rem 1rem', background: 'rgba(26,46,26,0.06)', borderRadius: '6px' }}>
+               <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#fff', padding: '0.4rem 1rem', background: 'rgba(255,255,255,0.1)', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.2)' }}>
                   {filteredTournaments.length} Matches Found
                </span>
                <button type="submit" className="btn-primary" style={{ padding: '0.4rem 1.2rem', fontSize: '0.8rem', borderRadius: '6px' }}>Apply Filters</button>
-               <button onClick={handleClearFilters} type="button" style={{ background: 'none', border: 'none', color: '#f44336', fontSize: '0.8rem', cursor: 'pointer', padding: '0.4rem 0.5rem', fontWeight: 600 }}>Clear</button>
+               <button onClick={handleClearFilters} type="button" style={{ background: 'none', border: 'none', color: '#ff4d4d', fontSize: '0.8rem', cursor: 'pointer', padding: '0.4rem 0.5rem', fontWeight: 600 }}>Clear</button>
              </div>
          </div>
         </form>
