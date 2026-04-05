@@ -217,7 +217,7 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
               }}>
                 Tournament Directory
               </h1>
-              <p className="hidden md:block" style={{
+          <p className="hidden md:block" style={{
             fontSize: '1.25rem',
             color: 'rgba(255,255,255,0.9)',
             maxWidth: '700px',
@@ -227,7 +227,7 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
             lineHeight: '1.6',
             textShadow: '0 2px 10px rgba(0,0,0,0.5)'
           }}>
-            Discover local charity scrambles, amateur championships, and competitive golf leagues near you.
+            Discover local charity scrambles, amateur championships, and competitive golf tournaments near you.
           </p>
           </div>
         </div>
