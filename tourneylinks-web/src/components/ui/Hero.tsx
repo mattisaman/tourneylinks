@@ -27,19 +27,13 @@ export default function Hero() {
           <h1 className="hero-headline" style={{ maxWidth: 'none', textAlign: 'center' }}>
             The Engine Behind Every <em>Great</em> Local Tournament
           </h1>
-          <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div style={{
-            display: 'inline-flex', padding: '0.6rem 2rem', background: 'rgba(255,255,255,0.02)',
-            border: '1px solid rgba(212, 175, 55, 0.2)', borderRadius: '100px', backdropFilter: 'blur(10px)',
-            color: 'rgba(245,240,232,0.8)', fontSize: '0.9rem', boxShadow: '0 8px 32px rgba(0,0,0,0.2)'
-          }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}><span style={{ color: 'var(--gold)' }}>✓</span> <b>$149/Event</b> <span style={{ opacity: 0.6 }}>(Intro $99)</span></span>
-            <span style={{ margin: '0 1.25rem', color: 'rgba(212, 175, 55, 0.3)' }}>|</span>
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: '1rem', fontSize: '0.95rem', color: 'rgba(245,240,232,0.8)', marginTop: '0.5rem', marginBottom: '2rem', fontFamily: 'var(--font-sans), sans-serif', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}><span style={{ color: 'var(--gold)' }}>✓</span> <b>$149/Event</b> for Organizers (Introductory Offer $99)</span>
+            <span style={{ opacity: 0.4 }} className="hidden md:inline">|</span>
             <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}><span style={{ color: 'var(--gold)' }}>✓</span> 100% Free for Players</span>
-            <span style={{ margin: '0 1.25rem', color: 'rgba(212, 175, 55, 0.3)' }}>|</span>
+            <span style={{ opacity: 0.4 }} className="hidden md:inline">|</span>
             <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}><span style={{ color: 'var(--gold)' }}>✓</span> Free for Course Pros</span>
           </div>
-        </div>
         </div>
 
         {/* 3 Pillar Dashboard */}
