@@ -43,31 +43,38 @@ export default function Hero() {
           <div className="hero-pillar-card">
             <h3 style={{ color: 'var(--gold)', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', margin: '0 0 0.5rem' }}>For Organizers</h3>
             <h2 style={{ color: 'var(--cream)', fontSize: '2rem', fontFamily: 'var(--font-serif), serif', margin: '0 0 1rem', lineHeight: 1.1 }}>Host Your <br/>Event</h2>
-            <p style={{ color: 'rgba(245,240,232,0.65)', fontSize: '0.95rem', lineHeight: 1.6, margin: '0 0 1.5rem', flexGrow: 1 }}>
+            <p style={{ color: 'rgba(245,240,232,0.65)', fontSize: '0.95rem', lineHeight: 1.6, margin: '0 0 1rem' }}>
               Stop chasing checks. Launch tournaments, auto-generate flights, and collect payments natively through Stripe with zero friction.
             </p>
-            <Link href="/admin" className="btn-hero-outline" style={{ display: 'flex', justifyContent: 'center', width: '100%', padding: '1rem', marginBottom: '1rem' }}>
-              Host an Event →
-            </Link>
-            <div style={{ textAlign: 'center' }}>
-              <Link href="/compare" style={{ color: 'var(--gold)', fontSize: '0.85rem', textDecoration: 'none', fontWeight: 600 }}>
-                See how we compare →
+            <ul style={{ color: 'rgba(245,240,232,0.8)', fontSize: '0.85rem', lineHeight: 1.8, margin: '0 0 1.5rem', padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+              <li>✧ Live-scoring leaderboards</li>
+              <li>✧ Automated digital payouts</li>
+              <li>✧ Custom sponsor ad slots</li>
+            </ul>
+            <div style={{ marginTop: 'auto' }}>
+              <Link href="/admin" className="btn-hero-outline" style={{ display: 'flex', justifyContent: 'center', width: '100%', padding: '1rem', marginBottom: '1rem' }}>
+                Host an Event →
               </Link>
+              <div style={{ textAlign: 'center' }}>
+                <Link href="/compare" style={{ color: 'var(--gold)', fontSize: '0.85rem', textDecoration: 'none', fontWeight: 600 }}>
+                  See how we compare →
+                </Link>
+              </div>
             </div>
           </div>
 
           {/* MIDDLE PILLAR: Players (The Form) */}
           <div className="hero-search-wrapper" style={{ height: '100%' }}>
             <div className="hero-search-panel" style={{ height: '100%', margin: 0, width: '100%', display: 'flex', flexDirection: 'column' }}>
-              <div style={{ color: 'var(--gold)', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem', textAlign: 'left' }}>For Golfers</div>
-              <div className="search-panel-title" style={{ textAlign: 'left' }}>Find a Tournament</div>
-              <div className="search-panel-sub" style={{ textAlign: 'left', marginBottom: '2rem' }}>Search near your location or by course</div>
+              <div style={{ color: 'var(--gold)', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>For Golfers</div>
+              <div className="search-panel-title">Find a Tournament</div>
+              <div className="search-panel-sub">Search near your location or by course</div>
               
-              <div className="search-field" style={{ textAlign: 'left' }}>
+              <div className="search-field">
                 <label>📍 Your Location</label>
                 <input type="text" placeholder="City, State or ZIP code" />
               </div>
-              <div className="search-row" style={{ textAlign: 'left' }}>
+              <div className="search-row">
                 <div className="search-field">
                   <label>Radius</label>
                   <select defaultValue="100 miles">
@@ -88,7 +95,7 @@ export default function Hero() {
                 <Link href="/tournaments" className="btn-hero" style={{ width: "100%", justifyContent: "center" }}>
                   Search Tournaments →
                 </Link>
-                <div style={{ textAlign: "center", marginTop: "1rem" }}>
+                <div style={{ textAlign: "center", margin: "1rem 0 0 0" }}>
                   <Link href="/profile" style={{ color: "rgba(245,240,232,0.4)", fontSize: "0.78rem", textDecoration: "none" }}>
                     🔔 Get alerts for new tournaments
                   </Link>
@@ -101,12 +108,19 @@ export default function Hero() {
           <div className="hero-pillar-card">
             <h3 style={{ color: 'var(--gold)', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', margin: '0 0 0.5rem' }}>For Course Pros</h3>
             <h2 style={{ color: 'var(--cream)', fontSize: '2rem', fontFamily: 'var(--font-serif), serif', margin: '0 0 1rem', lineHeight: 1.1 }}>Manage <br/>Your Course</h2>
-            <p style={{ color: 'rgba(245,240,232,0.65)', fontSize: '0.95rem', lineHeight: 1.6, margin: '0 0 2rem', flexGrow: 1 }}>
+            <p style={{ color: 'rgba(245,240,232,0.65)', fontSize: '0.95rem', lineHeight: 1.6, margin: '0 0 1rem' }}>
               Take control of your facility. Claim your course to centralize logistics, download tee sheets, and message hosts directly.
             </p>
-            <Link href="/courses" className="btn-hero-outline" style={{ display: 'flex', justifyContent: 'center', width: '100%', padding: '1rem', marginBottom: '1rem' }}>
-              Claim Your Course →
-            </Link>
+            <ul style={{ color: 'rgba(245,240,232,0.8)', fontSize: '0.85rem', lineHeight: 1.8, margin: '0 0 1.5rem', padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+              <li>✧ Direct messaging portal</li>
+              <li>✧ Real-time tee sheet sync</li>
+              <li>✧ Unified facility calendar</li>
+            </ul>
+            <div style={{ marginTop: 'auto' }}>
+              <Link href="/courses" className="btn-hero-outline" style={{ display: 'flex', justifyContent: 'center', width: '100%', padding: '1rem' }}>
+                Claim Your Course →
+              </Link>
+            </div>
           </div>
 
         </div>
