@@ -27,23 +27,17 @@ export default function Hero() {
           <h1 className="hero-headline" style={{ maxWidth: 'none', textAlign: 'center' }}>
             The Engine Behind Every <em>Great</em> Local Tournament
           </h1>
-          <div style={{ maxWidth: '1200px', margin: '0 auto 2rem auto', width: '100%' }}>
+          <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <div style={{
-            display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem',
-            padding: '0.75rem 0', background: 'rgba(255,255,255,0.02)',
-            border: '1px solid rgba(212, 175, 55, 0.15)', borderRadius: '100px', backdropFilter: 'blur(10px)',
-            color: 'rgba(245,240,232,0.8)', fontSize: '0.85rem', textAlign: 'center',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.2)'
+            display: 'inline-flex', padding: '0.6rem 2rem', background: 'rgba(255,255,255,0.02)',
+            border: '1px solid rgba(212, 175, 55, 0.2)', borderRadius: '100px', backdropFilter: 'blur(10px)',
+            color: 'rgba(245,240,232,0.8)', fontSize: '0.9rem', boxShadow: '0 8px 32px rgba(0,0,0,0.2)'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
-              <span style={{ color: 'var(--gold)' }}>✓</span> <b>$149/Event</b> <span style={{ opacity: 0.6 }}>(Intro $99)</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', borderLeft: '1px solid rgba(212, 175, 55, 0.1)', borderRight: '1px solid rgba(212, 175, 55, 0.1)' }}>
-              <span style={{ color: 'var(--gold)' }}>✓</span> 100% Free for Players
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
-              <span style={{ color: 'var(--gold)' }}>✓</span> Free for Course Pros
-            </div>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}><span style={{ color: 'var(--gold)' }}>✓</span> <b>$149/Event</b> <span style={{ opacity: 0.6 }}>(Intro $99)</span></span>
+            <span style={{ margin: '0 1.25rem', color: 'rgba(212, 175, 55, 0.3)' }}>|</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}><span style={{ color: 'var(--gold)' }}>✓</span> 100% Free for Players</span>
+            <span style={{ margin: '0 1.25rem', color: 'rgba(212, 175, 55, 0.3)' }}>|</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}><span style={{ color: 'var(--gold)' }}>✓</span> Free for Course Pros</span>
           </div>
         </div>
         </div>

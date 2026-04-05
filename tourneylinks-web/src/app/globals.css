@@ -314,7 +314,7 @@ nav {
   align-items: stretch;
 }
 .hero-pillar-card {
-  background: rgba(12, 31, 23, 0.45);
+  background: rgba(12, 31, 23, 0.7);
   border: 1px solid rgba(212, 175, 55, 0.25);
   border-radius: var(--radius-xl);
   padding: 2rem;
@@ -426,7 +426,7 @@ nav {
 
 /* Hero Search Panel */
 .hero-search-panel {
-  background: linear-gradient(145deg, rgba(16, 36, 26, 0.6) 0%, rgba(8, 20, 15, 0.8) 100%);
+  background: linear-gradient(145deg, rgba(16, 36, 26, 0.8) 0%, rgba(8, 20, 15, 0.95) 100%);
   border: 1px solid rgba(212, 175, 55, 0.5);
   border-radius: var(--radius-xl); padding: 2rem; backdrop-filter: blur(28px);
   text-align: center;
