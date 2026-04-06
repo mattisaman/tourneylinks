@@ -49,6 +49,7 @@ export default function HostLiveCampaignBuilder() {
   const activeSecondaryColor = secondaryThemeColor || themeColor;
 
   const [heroImage, setHeroImage] = useState<string | null>(null);
+  const [heroPositionX, setHeroPositionX] = useState(50);
   const [heroPosition, setHeroPosition] = useState(50);
   const [heroZoom, setHeroZoom] = useState(100);
   const [tileImage, setTileImage] = useState<string | null>(null);
@@ -58,7 +59,7 @@ export default function HostLiveCampaignBuilder() {
   const [enableGallery, setEnableGallery] = useState(false);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   
-  const [coHostEmail, setCoHostEmail] = useState('');
+  const [coHostEmails, setCoHostEmails] = useState<{email: string}[]>([{email: ''}]);
   
   const [courseSearch, setCourseSearch] = useState('');
   const [courseResults, setCourseResults] = useState<any[]>([]);
@@ -449,9 +450,20 @@ export default function HostLiveCampaignBuilder() {
                </div>
             </div>
             <div className="wfield wform-full">
-               <label>Co-Host UserID (Optional)</label>
-               <input type="email" value={coHostEmail} onChange={e => setCoHostEmail(e.target.value)} placeholder="e.g. hello@tourneylinks.com" />
-               <div style={{ fontSize: '0.7rem', color: 'var(--mist)', marginTop: '0.2rem' }}>Grant another email address full Administration Hub access to this event.</div>
+               <label>Co-Host Emails (Optional)</label>
+               <div style={{ fontSize: '0.7rem', color: 'var(--mist)', marginBottom: '0.8rem', lineHeight: 1.4 }}>Grant additional people full Administration Hub access to this event. If they don't have an account yet, they will receive an email invite to collaborate on this saved draft!</div>
+               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                 {coHostEmails.map((ch, idx) => (
+                    <div key={idx} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                       <input type="email" value={ch.email} onChange={e => { const newArr = [...coHostEmails]; newArr[idx].email = e.target.value; setCoHostEmails(newArr); }} placeholder="e.g. hello@tourneylinks.com" style={{ flex: 1 }} />
+                       {idx === coHostEmails.length - 1 ? (
+                          <button type="button" onClick={() => setCoHostEmails([...coHostEmails, {email: ''}])} className="btn-hero-outline" style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', whiteSpace: 'nowrap' }}>Add Co-Host</button>
+                       ) : (
+                          <button type="button" onClick={() => setCoHostEmails(coHostEmails.filter((_, i) => i !== idx))} style={{ background: 'var(--flag-red)', color: '#fff', border: 'none', borderRadius: '4px', padding: '0.5rem 0.8rem', cursor: 'pointer', fontSize: '0.8rem' }}>Remove</button>
+                       )}
+                    </div>
+                 ))}
+               </div>
             </div>
           </div>
         </div>
@@ -510,19 +522,23 @@ export default function HostLiveCampaignBuilder() {
                 <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                    <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--mist)' }}>Hero Branding Image</span>
                    {heroImage && (
-                     <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                            <span style={{ fontSize: '0.65rem', color: 'var(--mist)' }}>Zoom</span>
-                            <input type="range" min="50" max="250" value={heroZoom} onChange={e => setHeroZoom(Number(e.target.value))} style={{ width: '50px' }} />
-                         </div>
-                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                     <div style={{ display: 'flex', gap: '0.75rem' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                             <span style={{ fontSize: '0.65rem', color: 'var(--mist)' }}>Zoom</span>
+                             <input type="range" min="50" max="250" value={heroZoom} onChange={e => setHeroZoom(Number(e.target.value))} style={{ width: '50px' }} />
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                             <span style={{ fontSize: '0.65rem', color: 'var(--mist)' }}>Position X</span>
+                             <input type="range" min="0" max="100" value={heroPositionX} onChange={e => setHeroPositionX(Number(e.target.value))} style={{ width: '50px' }} />
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                              <span style={{ fontSize: '0.65rem', color: 'var(--mist)' }}>Position Y</span>
                              <input type="range" min="0" max="100" value={heroPosition} onChange={e => setHeroPosition(Number(e.target.value))} style={{ width: '50px' }} />
                           </div>
                      </div>
                    )}
                 </label>
-                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(0,0,0,0.1)', borderRadius: '8px', padding: '2rem', background: heroImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${heroImage}) center ${heroPosition}%/${heroZoom}%` : '#fafaf5', backgroundRepeat: 'no-repeat', cursor: 'pointer', minHeight: '160px', position: 'relative' }}>
+                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(0,0,0,0.1)', borderRadius: '8px', padding: '2rem', background: heroImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${heroImage}) ${heroPositionX}% ${heroPosition}%/${heroZoom}%` : '#fafaf5', backgroundRepeat: 'no-repeat', cursor: 'pointer', minHeight: '160px', position: 'relative' }}>
                    <input type="file" style={{ display: 'none' }} accept="image/*" onChange={e => handleImageUpload(e, setHeroImage)} />
                    {!heroImage && (
                      <>
@@ -1342,7 +1358,7 @@ export default function HostLiveCampaignBuilder() {
      if (activeTab === 'content' || activeTab === 'launch') {
         return (
            <div style={{ height: '450px', overflowY: 'auto', background: '#f8faf9', display: 'flex', flexDirection: 'column' }}>
-              <div style={{ padding: '2rem', minHeight: '450px', background: heroImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${heroImage}) center ${heroPosition}%/${heroZoom}% no-repeat` : `linear-gradient(135deg, ${activeSecondaryColor}, ${themeColor})`, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', textAlign: 'center' }}>
+              <div style={{ padding: '2rem', minHeight: '300px', background: heroImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${heroImage}) ${heroPositionX}% ${heroPosition}%/${heroZoom}% no-repeat` : `linear-gradient(135deg, ${activeSecondaryColor}, ${themeColor})`, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', textAlign: 'center' }}>
                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `radial-gradient(circle at top right, ${themeColor} 0%, transparent 60%)`, opacity: 0.3, pointerEvents: 'none' }}></div>
                  <div style={{ position: 'relative', zIndex: 10 }}>
                     <span style={{ fontSize: '0.7rem', padding: '0.2rem 0.6rem', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(4px)', color: '#fff', borderRadius: '4px', fontWeight: 700, marginBottom: '0.75rem', display: 'inline-block' }}>{formatName}</span>
@@ -1717,7 +1733,7 @@ export default function HostLiveCampaignBuilder() {
      if (activeTab === 'content' || activeTab === 'launch') {
         return (
            <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative' }}>
-              <div style={{ height: '350px', background: heroImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${heroImage}) center ${heroPosition}%/${heroZoom}% no-repeat` : `linear-gradient(135deg, ${activeSecondaryColor}, ${themeColor})`, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '1.5rem', position: 'relative' }}>
+              <div style={{ height: '240px', background: heroImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${heroImage}) ${heroPositionX}% ${heroPosition}%/${heroZoom}% no-repeat` : `linear-gradient(135deg, ${activeSecondaryColor}, ${themeColor})`, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '1.5rem', position: 'relative', flexShrink: 0 }}>
                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `radial-gradient(circle at top right, ${themeColor} 0%, transparent 60%)`, opacity: 0.3, pointerEvents: 'none' }}></div>
                  
                  <div style={{ position: 'relative', zIndex: 10 }}>
@@ -2172,12 +2188,12 @@ export default function HostLiveCampaignBuilder() {
           </div>
 
           {/* SIMULATOR COLUMN (Right) */}
-          <div style={{ flex: '1 1 500px', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ flex: '1 1 500px', display: 'flex', flexDirection: 'column', alignSelf: 'flex-start' }}>
              
              {/* Sticky Wrapper - using height and overflow-y to allow internal scroll without disrupting layout */}
              <div className="no-scrollbar" style={{ position: 'sticky', top: '100px', height: 'calc(100vh - 120px)', overflowY: 'auto', width: '100%', paddingRight: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', paddingBottom: '3rem' }}>
                 
-                <div className="animated-gold-border" style={{ background: '#0a1a12', padding: '0.4rem', borderRadius: '30px', display: 'flex', border: '1px solid rgba(212,175,55,0.8)', boxShadow: '0 0 15px rgba(212,175,55,0.3)', width: 'max-content', gap: '0.3rem' }}>
+                <div className="animated-gold-border" style={{ background: '#0a1a12', padding: '0.4rem', borderRadius: '30px', display: 'flex', border: '1px solid rgba(212,175,55,0.8)', boxShadow: '0 0 15px rgba(212,175,55,0.3)', width: 'max-content', gap: '0.3rem', flexShrink: 0 }}>
                    <button 
                      onClick={() => setSimulatorDevice('desktop')}
                      style={{ padding: '0.5rem 1.5rem', fontSize: '0.8rem', fontWeight: 600, background: simulatorDevice === 'desktop' ? 'linear-gradient(135deg, var(--gold), #f3e5ab)' : 'transparent', color: simulatorDevice === 'desktop' ? '#000' : '#fff', border: 'none', borderRadius: '25px', cursor: 'pointer', transition: '0.2s', display: 'flex', alignItems: 'center', gap: '0.4rem', boxShadow: simulatorDevice === 'desktop' ? '0 0 10px rgba(212,175,55,0.5)' : 'none' }}>
