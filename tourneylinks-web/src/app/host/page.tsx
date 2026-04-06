@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Smartphone, Image as ImageIcon, DollarSign, Settings, ShoppingBag, Plus, UploadCloud } from 'lucide-react';
+import { Smartphone, Monitor, Image as ImageIcon, DollarSign, Settings, ShoppingBag, Plus, UploadCloud } from 'lucide-react';
 import StripeOnboardButton from './onboarding/StripeOnboardButton';
 
 export default function HostLiveCampaignBuilder() {
-  const [activeTab, setActiveTab] = useState<'content' | 'finance' | 'sponsorships' | 'launch'>('content');
+  const [activeTab, setActiveTab] = useState<'content' | 'finance' | 'donations' | 'sponsorships' | 'launch'>('content');
 
   // Form State
   const [name, setName] = useState('');
@@ -60,6 +60,21 @@ export default function HostLiveCampaignBuilder() {
   const [editingSponsorIdx, setEditingSponsorIdx] = useState<number | null>(null);
   const [newSponsor, setNewSponsor] = useState<{tier: string, price: number | string, spots: number, incentivesText: string, includesIntent: boolean, includesDinner: boolean, rotatesOnTv: boolean}>({ tier: '', price: '', spots: 1, incentivesText: '', includesIntent: false, includesDinner: false, rotatesOnTv: false });
   const [sponsorPreviewMode, setSponsorPreviewMode] = useState<'directory' | 'checkout'>('directory');
+  
+  // Donations State
+  const [donorTiers, setDonorTiers] = useState<{tier: string, price: number, incentives: string[]}[]>([
+     { tier: 'Bronze Supporter', price: 100, incentives: ['Recognition on tournament page', 'Thank you email from organization'] },
+     { tier: 'Silver Supporter', price: 250, incentives: ['Recognition on tournament page', 'Social media shoutout'] }
+  ]);
+  const [showDonorForm, setShowDonorForm] = useState(false);
+  const [editingDonorIdx, setEditingDonorIdx] = useState<number | null>(null);
+  const [newDonor, setNewDonor] = useState<{tier: string, price: number | string, incentivesText: string}>({ tier: '', price: '', incentivesText: '' });
+  const [donorPreviewMode, setDonorPreviewMode] = useState<'directory' | 'checkout'>('directory');
+  const [allowCustomDonation, setAllowCustomDonation] = useState(true);
+  const [minCustomDonation, setMinCustomDonation] = useState<number>(5);
+  const [donationThankYouEmail, setDonationThankYouEmail] = useState('Thank you for supporting our cause!');
+  const [charityTaxIdDonationInfo, setCharityTaxIdDonationInfo] = useState('');
+
   const [simulatorDevice, setSimulatorDevice] = useState<'desktop' | 'mobile'>('mobile');
 
   const [isLoadingForm, setIsLoadingForm] = useState(false);
@@ -786,6 +801,191 @@ export default function HostLiveCampaignBuilder() {
      </div>
   );
 
+  const renderDonationTab = () => (
+     <div className="builder-section fade-in">
+        <div className="pro-tip-alert" style={{ background: 'rgba(46, 204, 113, 0.08)', border: '1px solid rgba(46, 204, 113, 0.4)', borderRadius: '8px', padding: '1rem', marginBottom: '2rem', display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+           <div style={{ fontSize: '1.2rem' }}>💖</div>
+           <div>
+              <strong style={{ color: 'var(--forest)', fontSize: '0.85rem', display: 'block', marginBottom: '0.2rem' }}>PRO TIP: Non-Golfer Contributions</strong>
+              <div style={{ color: 'var(--mist)', fontSize: '0.8rem', lineHeight: 1.5 }}>
+                 Open your tournament up to non-golfers by offering donation tiers. Many local supporters who cannot attend the event or dinner will still eagerly contribute to a great cause!
+              </div>
+           </div>
+        </div>
+
+        <div className="wizard-card" style={{ marginBottom: '2rem' }}>
+           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <div className="wizard-card-title" style={{ marginBottom: 0 }}>Custom Donation Goal</div>
+           </div>
+           
+           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f8faf9', padding: '1.2rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.05)' }}>
+                 <div>
+                    <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--forest)' }}>Accept Open / Custom Donations?</div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>Allow users to enter any custom dollar amount instead of fixed tiers.</div>
+                 </div>
+                 <label className="toggle-switch">
+                    <input 
+                       type="checkbox" 
+                       checked={allowCustomDonation} 
+                       onChange={(e) => setAllowCustomDonation(e.target.checked)} 
+                    />
+                    <span className="toggle-slider"></span>
+                 </label>
+              </div>
+
+              {allowCustomDonation && (
+                 <div>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>Minimum Custom Amount ($)</label>
+                    <input type="number" min="1" value={minCustomDonation} onChange={e => setMinCustomDonation(Number(e.target.value))} style={{ width: '150px', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }} />
+                 </div>
+              )}
+           </div>
+        </div>
+
+        <div className="wizard-card" style={{ marginBottom: '2rem' }}>
+           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <div className="wizard-card-title" style={{ marginBottom: 0 }}>Donation Tiers</div>
+              <button 
+                 onClick={() => {
+                    setShowDonorForm(!showDonorForm);
+                    setEditingDonorIdx(null);
+                    setNewDonor({ tier: '', price: '', incentivesText: '' });
+                 }} 
+                 className="btn-hero-outline" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                 {showDonorForm && editingDonorIdx === null ? 'Cancel' : <><Plus size={14} /> Mint Donor Tier</>}
+              </button>
+           </div>
+           
+           {showDonorForm && (
+              <div style={{ padding: '1.5rem', background: '#f4f7f5', borderRadius: '8px', border: '1px dashed rgba(0,0,0,0.1)', marginBottom: '1.5rem' }}>
+                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                    <div style={{ fontWeight: 700, color: 'var(--forest)', fontSize: '0.9rem' }}>
+                       {editingDonorIdx !== null ? 'Edit Donor Tier' : 'Create Custom Donor Tier'}
+                    </div>
+                    {editingDonorIdx !== null && (
+                       <button onClick={() => { setShowDonorForm(false); setEditingDonorIdx(null); }} style={{ background: 'none', border: 'none', color: 'var(--mist)', cursor: 'pointer', fontSize: '0.8rem' }}>Cancel</button>
+                    )}
+                 </div>
+                 
+                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <div style={{ display: 'flex', gap: '1rem' }}>
+                       <div style={{ flex: 2 }}>
+                          <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>Tier Name</label>
+                          <input type="text" value={newDonor.tier} onChange={e => setNewDonor({...newDonor, tier: e.target.value})} placeholder="e.g. Bronze Supporter" style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }} />
+                       </div>
+                       <div style={{ flex: 1 }}>
+                          <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>Price ($)</label>
+                          <input type="number" value={newDonor.price} onChange={e => setNewDonor({...newDonor, price: e.target.value === '' ? '' : Number(e.target.value)})} style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }} />
+                       </div>
+                    </div>
+                    
+                    <div>
+                       <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>Benefits (One per line)</label>
+                       <textarea 
+                          value={newDonor.incentivesText}
+                          onChange={e => setNewDonor({...newDonor, incentivesText: e.target.value})}
+                          placeholder="e.g. Honorable Mention at Dinner"
+                          rows={3}
+                          style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)', resize: 'vertical' }}
+                       />
+                    </div>
+                    <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+                       <button 
+                          onClick={() => {
+                             if (!newDonor.tier || newDonor.price === '' || Number(newDonor.price) <= 0) return;
+                             const incArray = newDonor.incentivesText.split('\n').map(i => i.trim()).filter(i => i !== '');
+                             const donorObj = { tier: newDonor.tier, price: Number(newDonor.price), incentives: incArray };
+                             
+                             if (editingDonorIdx !== null) {
+                                const clone = [...donorTiers];
+                                clone[editingDonorIdx] = donorObj;
+                                setDonorTiers(clone);
+                             } else {
+                                setDonorTiers([...donorTiers, donorObj]);
+                             }
+                             setNewDonor({ tier: '', price: '', incentivesText: '' });
+                             setShowDonorForm(false);
+                             setEditingDonorIdx(null);
+                          }}
+                          style={{ flex: 1, padding: '0.8rem', background: 'var(--forest)', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 700, cursor: 'pointer' }}>
+                          {editingDonorIdx !== null ? 'Save Changes' : 'Mint Tier'}
+                       </button>
+                    </div>
+                 </div>
+              </div>
+           )}
+
+           {!showDonorForm && donorTiers.length === 0 && (
+              <div style={{ color: 'var(--mist)', fontSize: '0.8rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>
+                 Create fixed donation tiers for users who want to explicitly support your event at a specific generosity level.
+              </div>
+           )}
+           
+           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {donorTiers.map((d, i) => (
+                 <div key={i} style={{ display: 'flex', flexDirection: 'column', padding: '1rem', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', background: '#f8faf9', transition: '0.2s', ...(editingDonorIdx === i ? { opacity: 0.5, pointerEvents: 'none' } : {}) }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: d.incentives && d.incentives.length > 0 ? '1px solid rgba(0,0,0,0.05)' : 'none', paddingBottom: d.incentives && d.incentives.length > 0 ? '0.75rem' : 0, marginBottom: d.incentives && d.incentives.length > 0 ? '0.75rem' : 0 }}>
+                       <div>
+                          <div style={{ fontWeight: 700, color: 'var(--forest)', fontSize: '0.95rem' }}>{d.tier}</div>
+                       </div>
+                       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                          <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--grass)' }}>${d.price}</div>
+                          <div style={{ display: 'flex', gap: '0.5rem' }}>
+                             <button onClick={() => {
+                                setEditingDonorIdx(i);
+                                setNewDonor({ tier: d.tier, price: d.price, incentivesText: (d.incentives || []).join('\n') });
+                                setShowDonorForm(true);
+                             }} style={{ background: 'none', border: 'none', color: '#3399FF', fontSize: '0.75rem', cursor: 'pointer', fontWeight: 600 }}>Edit</button>
+                             <button onClick={() => setDonorTiers(donorTiers.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: '#ff5f56', fontSize: '0.75rem', cursor: 'pointer', fontWeight: 600 }}>Remove</button>
+                          </div>
+                       </div>
+                    </div>
+                    {d.incentives && d.incentives.length > 0 && (
+                       <div style={{ paddingLeft: '0.5rem' }}>
+                          {d.incentives.map((inc, incIdx) => (
+                             <div key={incIdx} style={{ fontSize: '0.75rem', color: 'var(--mist)', display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.4rem' }}>
+                                <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'var(--gold)' }}></div>
+                                {inc}
+                             </div>
+                          ))}
+                       </div>
+                    )}
+                 </div>
+              ))}
+           </div>
+        </div>
+
+        <div className="wizard-card">
+           <div className="wizard-card-title">Tax & Digital Receipting</div>
+           <p style={{ fontSize: '0.8rem', color: 'var(--mist)', marginBottom: '1.5rem', lineHeight: 1.5 }}>Configure the automated email receipt your donors will receive securely right after contributing.</p>
+           
+           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div>
+                 <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>Thank You Email Message</label>
+                 <textarea 
+                    value={donationThankYouEmail}
+                    onChange={e => setDonationThankYouEmail(e.target.value)}
+                    rows={4}
+                    style={{ width: '100%', padding: '0.8rem', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.1)', resize: 'vertical' }}
+                 />
+              </div>
+              <div>
+                 <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>501(c)(3) Organization Tax ID (Appears on Receipt)</label>
+                 <input 
+                    type="text" 
+                    value={charityTaxIdDonationInfo}
+                    onChange={e => setCharityTaxIdDonationInfo(e.target.value)}
+                    placeholder="e.g. 12-3456789"
+                    style={{ width: '100%', padding: '0.8rem', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.1)' }} 
+                 />
+              </div>
+           </div>
+        </div>
+
+     </div>
+  );
+
   const renderSponsorTab = () => (
      <div className="builder-section fade-in">
         <div className="pro-tip-alert" style={{ background: 'rgba(46, 204, 113, 0.08)', border: '1px solid rgba(46, 204, 113, 0.4)', borderRadius: '8px', padding: '1rem', marginBottom: '2rem', display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
@@ -1132,6 +1332,103 @@ export default function HostLiveCampaignBuilder() {
           </div>
         );
      }
+     if (activeTab === 'donations') {
+        if (donorPreviewMode === 'directory') {
+           return (
+              <div style={{ padding: '3rem 2rem', background: '#f8faf9', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                 <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Support the Cause</div>
+                    <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '2rem', color: 'var(--forest)', margin: 0 }}>Every Contribution Helps</h2>
+                 </div>
+                 
+                 <div style={{ width: '100%', maxWidth: '600px', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                    {allowCustomDonation && (
+                       <div style={{ padding: '2rem', background: 'var(--forest)', color: '#fff', borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '1rem', boxShadow: '0 8px 30px rgba(0,0,0,0.1)' }}>
+                          <h3 style={{ margin: 0, fontFamily: 'Playfair Display, serif', fontSize: '1.4rem' }}>Custom Donation</h3>
+                          <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.8)' }}>Enter any amount you wish to contribute to the event's success. Your support is greatly appreciated.</div>
+                          <div style={{ display: 'flex', gap: '1rem' }}>
+                             <div style={{ flex: 1, position: 'relative' }}>
+                                <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', fontWeight: 700, color: '#000' }}>$</span>
+                                <input type="number" placeholder={minCustomDonation.toString()} style={{ width: '100%', padding: '0.8rem 1rem 0.8rem 2rem', borderRadius: '8px', border: 'none', fontWeight: 700, fontSize: '1.1rem' }} />
+                             </div>
+                             <button style={{ padding: '0 2rem', background: 'var(--gold)', color: '#000', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer' }}>Contribute</button>
+                          </div>
+                          {minCustomDonation > 0 && <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)' }}>* Minimum contribution is ${minCustomDonation}</div>}
+                       </div>
+                    )}
+                    
+                    {!allowCustomDonation && donorTiers.length === 0 ? (
+                       <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--mist)' }}>No donation options available right now.</div>
+                    ) : (
+                       donorTiers.map((donor, idx) => (
+                          <div key={idx} style={{ display: 'flex', background: 'linear-gradient(180deg, #ffffff 0%, #fcfefc 100%)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.6)', boxShadow: '0 8px 30px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)', overflow: 'hidden' }}>
+                             <div style={{ padding: '2rem', flex: 1 }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                                   <div>
+                                      <h3 style={{ margin: '0 0 0.5rem 0', fontFamily: 'Playfair Display, serif', fontSize: '1.4rem', color: 'var(--forest)' }}>{donor.tier}</h3>
+                                   </div>
+                                   <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--grass)' }}>${donor.price}</div>
+                                </div>
+                                {donor.incentives && donor.incentives.length > 0 && (
+                                   <div style={{ marginBottom: '1.5rem' }}>
+                                      {donor.incentives.map((inc, i) => (
+                                         <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.4rem', fontSize: '0.85rem', color: 'var(--ink)' }}>
+                                            <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: 'rgba(46, 204, 113, 0.1)', color: 'var(--forest)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '0.1rem', flexShrink: 0 }}>✓</div>
+                                            <span>{inc}</span>
+                                         </div>
+                                      ))}
+                                   </div>
+                                )}
+                                <button style={{ padding: '0.75rem 1.5rem', background: 'linear-gradient(135deg, var(--forest), #1a3a28)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', boxShadow: '0 4px 10px rgba(26, 58, 40, 0.3)', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', transition: '0.2s', width: 'auto' }}>
+                                   Select Amount
+                                </button>
+                             </div>
+                          </div>
+                       ))
+                    )}
+                 </div>
+              </div>
+           );
+        }
+
+        const topDonor = donorTiers.length > 0 ? donorTiers[0] : { tier: 'Custom Amount', price: minCustomDonation || 5, incentives: [] };
+
+        return (
+           <div style={{ height: '450px', overflowY: 'auto', background: '#f8faf9', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: '3rem 2rem' }}>
+             <div style={{ width: '100%', maxWidth: '450px', background: 'linear-gradient(180deg, #ffffff 0%, #fcfefc 100%)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.6)', boxShadow: '0 15px 50px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)', padding: '2rem' }}>
+                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Secure Donation</div>
+                <h3 style={{ margin: '0 0 0.5rem 0', fontFamily: 'Playfair Display, serif', fontSize: '1.5rem', color: 'var(--forest)' }}>{topDonor.tier}</h3>
+                
+                {charityTaxIdDonationInfo && (
+                   <div style={{ fontSize: '0.75rem', color: 'var(--mist)', background: 'rgba(0,0,0,0.03)', padding: '0.5rem', borderRadius: '4px', marginBottom: '1.5rem' }}>
+                      <strong>501(c)(3) Receipt:</strong> Your donation may be tax-deductible. Tax ID: {charityTaxIdDonationInfo}
+                   </div>
+                )}
+
+                <div style={{ borderTop: '1px solid rgba(0,0,0,0.05)', borderBottom: '1px solid rgba(0,0,0,0.05)', padding: '1.5rem 0', marginBottom: '1.5rem' }}>
+                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.9rem' }}>
+                      <span style={{ fontWeight: 600, color: 'var(--ink)' }}>Contribution</span>
+                      <span style={{ fontWeight: 700, color: 'var(--ink)' }}>${topDonor.price.toFixed(2)}</span>
+                   </div>
+                   
+                   <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
+                      <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.1rem' }}>Total Due</span>
+                      <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.1rem' }}>${topDonor.price.toFixed(2)}</span>
+                   </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                   <button style={{ width: '100%', padding: '0.9rem', background: '#000', color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Pay With Credit Card</button>
+                   <button style={{ width: '100%', padding: '0.9rem', background: '#e0ece0', color: 'var(--forest)', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Connect Bank (ACH)</button>
+                </div>
+                
+                <div style={{ textAlign: 'center', fontSize: '0.65rem', color: 'var(--mist)', marginTop: '1rem' }}>
+                   Credit card incurs standard processing fees. ACH processing is recommended for larger donations.
+                </div>
+             </div>
+          </div>
+        );
+     }
      if (activeTab === 'sponsorships') {
         if (sponsorPreviewMode === 'directory') {
            return (
@@ -1367,6 +1664,95 @@ export default function HostLiveCampaignBuilder() {
           </div>
         );
      }
+
+     if (activeTab === 'donations') {
+        if (donorPreviewMode === 'directory') {
+           return (
+              <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative', background: '#f8faf9', padding: '1.5rem' }}>
+                 <div style={{ textAlign: 'left', marginBottom: '2rem' }}>
+                    <div style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.3rem' }}>Support the Cause</div>
+                    <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.6rem', color: 'var(--forest)', margin: 0, lineHeight: 1.1 }}>Every Contribution Helps</h2>
+                 </div>
+                 
+                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    {allowCustomDonation && (
+                       <div style={{ background: 'var(--forest)', color: '#fff', borderRadius: '10px', padding: '1.25rem', boxShadow: '0 4px 15px rgba(0,0,0,0.1)' }}>
+                          <h3 style={{ margin: '0 0 0.5rem 0', fontFamily: 'Playfair Display, serif', fontSize: '1.2rem' }}>Custom Donation</h3>
+                          <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.8)', marginBottom: '1rem' }}>Enter any amount you wish to contribute to the event's success.</div>
+                          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                             <div style={{ flex: 1, position: 'relative' }}>
+                                <span style={{ position: 'absolute', left: '0.8rem', top: '50%', transform: 'translateY(-50%)', fontWeight: 700, color: '#000', fontSize: '0.9rem' }}>$</span>
+                                <input type="number" placeholder={minCustomDonation.toString()} style={{ width: '100%', padding: '0.6rem 0.6rem 0.6rem 1.6rem', borderRadius: '6px', border: 'none', fontWeight: 700, fontSize: '1rem' }} />
+                             </div>
+                             <button style={{ padding: '0 1rem', background: 'var(--gold)', color: '#000', border: 'none', borderRadius: '6px', fontWeight: 700, cursor: 'pointer', fontSize: '0.8rem' }}>Contribute</button>
+                          </div>
+                       </div>
+                    )}
+
+                    {!allowCustomDonation && donorTiers.length === 0 ? (
+                       <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--mist)', fontSize: '0.85rem' }}>No tiers available.</div>
+                    ) : (
+                       donorTiers.map((donor, idx) => (
+                          <div key={idx} style={{ background: 'linear-gradient(180deg, #ffffff 0%, #fcfefc 100%)', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.6)', boxShadow: '0 4px 15px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)', padding: '1.25rem' }}>
+                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
+                                <h3 style={{ margin: 0, fontFamily: 'Playfair Display, serif', fontSize: '1.1rem', color: 'var(--forest)' }}>{donor.tier}</h3>
+                                <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--grass)' }}>${donor.price}</div>
+                             </div>
+                             
+                             {donor.incentives && donor.incentives.length > 0 && (
+                                <div style={{ marginBottom: '1rem', marginTop: '0.8rem' }}>
+                                   {donor.incentives.slice(0, 3).map((inc, i) => (
+                                      <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.4rem', marginBottom: '0.3rem', fontSize: '0.75rem', color: 'var(--ink)' }}>
+                                         <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'rgba(46, 204, 113, 0.1)', color: 'var(--forest)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '0.1rem', flexShrink: 0, fontSize: '8px' }}>✓</div>
+                                         <span style={{ lineHeight: 1.3 }}>{inc}</span>
+                                      </div>
+                                   ))}
+                                </div>
+                             )}
+                             <button style={{ width: '100%', padding: '0.6rem', background: 'linear-gradient(135deg, var(--forest), #1a3a28)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '6px', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer', boxShadow: '0 4px 10px rgba(26, 58, 40, 0.3)', marginTop: donor.incentives && donor.incentives.length > 0 ? 0 : '1rem' }}>
+                                Select Amount
+                             </button>
+                          </div>
+                       ))
+                    )}
+                 </div>
+              </div>
+           );
+        }
+
+        const topDonor = donorTiers.length > 0 ? donorTiers[0] : { tier: 'Custom Amount', price: minCustomDonation || 5, incentives: [] };
+
+        return (
+           <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative', background: '#f8faf9', padding: '1.5rem' }}>
+             <div style={{ background: 'linear-gradient(180deg, #ffffff 0%, #fcfefc 100%)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.6)', boxShadow: '0 10px 40px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)', padding: '1.5rem' }}>
+                <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Secure Donation</div>
+                <h3 style={{ margin: '0 0 0.5rem 0', fontFamily: 'Playfair Display, serif', fontSize: '1.3rem', color: 'var(--forest)' }}>{topDonor.tier}</h3>
+                
+                {charityTaxIdDonationInfo && (
+                   <div style={{ fontSize: '0.65rem', color: 'var(--mist)', background: 'rgba(0,0,0,0.03)', padding: '0.5rem', borderRadius: '4px', marginBottom: '1.2rem', lineHeight: 1.4 }}>
+                      <strong>501(c)(3) Receipt:</strong> Your donation may be tax-deductible. Tax ID: {charityTaxIdDonationInfo}
+                   </div>
+                )}
+
+                <div style={{ borderTop: '1px solid rgba(0,0,0,0.05)', borderBottom: '1px solid rgba(0,0,0,0.05)', padding: '1.5rem 0', marginBottom: '1.5rem' }}>
+                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.85rem' }}>
+                      <span style={{ fontWeight: 600, color: 'var(--ink)' }}>Contribution</span>
+                      <span style={{ fontWeight: 700, color: 'var(--ink)' }}>${topDonor.price.toFixed(2)}</span>
+                   </div>
+                   <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
+                      <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.05rem' }}>Total Due</span>
+                      <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.05rem' }}>${topDonor.price.toFixed(2)}</span>
+                   </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                   <button style={{ width: '100%', padding: '0.9rem', background: '#000', color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}> Pay (Credit)</button>
+                   <button style={{ width: '100%', padding: '0.9rem', background: '#e0ece0', color: 'var(--forest)', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Connect Bank</button>
+                </div>
+             </div>
+          </div>
+        );
+     }
      
      if (activeTab === 'sponsorships') {
         if (sponsorPreviewMode === 'directory') {
@@ -1512,7 +1898,7 @@ export default function HostLiveCampaignBuilder() {
           {/* EDITOR COLUMN (Left) */}
           <div style={{ flex: '1 1 600px', display: 'flex', flexDirection: 'column' }}>
              
-             {/* 4-State Tab Nav */}
+             {/* 5-State Tab Nav */}
              <div style={{ display: 'flex', gap: '0.2rem', background: '#fff', padding: '0.3rem', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.05)', marginBottom: '2rem', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
                 <button 
                   onClick={() => setActiveTab('content')}
@@ -1525,20 +1911,26 @@ export default function HostLiveCampaignBuilder() {
                    2. Financials
                 </button>
                 <button 
+                  onClick={() => setActiveTab('donations')}
+                  style={{ flex: 1, padding: '0.6rem 0.2rem', background: activeTab === 'donations' ? 'var(--forest)' : 'transparent', color: activeTab === 'donations' ? '#fff' : 'var(--mist)', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s' }}>
+                   3. Donations
+                </button>
+                <button 
                   onClick={() => setActiveTab('sponsorships')}
                   style={{ flex: 1, padding: '0.6rem 0.2rem', background: activeTab === 'sponsorships' ? 'var(--forest)' : 'transparent', color: activeTab === 'sponsorships' ? '#fff' : 'var(--mist)', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s' }}>
-                   3. Sponsorships
+                   4. Sponsorships
                 </button>
                 <button 
                   onClick={() => setActiveTab('launch')}
                   style={{ flex: 1, padding: '0.6rem 0.2rem', background: activeTab === 'launch' ? 'var(--gold)' : 'transparent', color: activeTab === 'launch' ? '#000' : 'var(--mist)', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 700, fontSize: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s' }}>
-                   4. Launch & Stripe
+                   5. Launch & Stripe
                 </button>
              </div>
 
              {/* Tab Render */}
              {activeTab === 'content' && renderContentTab()}
              {activeTab === 'finance' && renderFinanceTab()}
+             {activeTab === 'donations' && renderDonationTab()}
              {activeTab === 'sponsorships' && renderSponsorTab()}
              {activeTab === 'launch' && renderLaunchTab()}
 
@@ -1550,16 +1942,16 @@ export default function HostLiveCampaignBuilder() {
              {/* Sticky Wrapper - using max-content and overflow visible to avoid double scrollbars */}
              <div style={{ position: 'sticky', top: '100px', width: '100%', paddingRight: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', paddingBottom: '3rem' }}>
                 
-                <div style={{ background: '#fff', padding: '0.3rem', borderRadius: '20px', display: 'flex', border: '1px solid rgba(0,0,0,0.1)', boxShadow: '0 4px 10px rgba(0,0,0,0.05)', width: 'max-content' }}>
+                <div className="animated-gold-border" style={{ background: '#0a1a12', padding: '0.4rem', borderRadius: '30px', display: 'flex', border: '1px solid rgba(212,175,55,0.4)', boxShadow: '0 8px 20px rgba(0,0,0,0.15)', width: 'max-content', gap: '0.3rem' }}>
                    <button 
                      onClick={() => setSimulatorDevice('desktop')}
-                     style={{ padding: '0.4rem 1.2rem', fontSize: '0.75rem', fontWeight: 600, background: simulatorDevice === 'desktop' ? 'var(--forest)' : 'transparent', color: simulatorDevice === 'desktop' ? '#fff' : 'var(--mist)', border: 'none', borderRadius: '15px', cursor: 'pointer', transition: '0.2s' }}>
-                      Desktop
+                     style={{ padding: '0.5rem 1.5rem', fontSize: '0.8rem', fontWeight: 600, background: simulatorDevice === 'desktop' ? 'var(--gold)' : 'transparent', color: simulatorDevice === 'desktop' ? '#000' : 'var(--mist)', border: 'none', borderRadius: '25px', cursor: 'pointer', transition: '0.2s', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <Monitor size={16} /> Desktop
                    </button>
                    <button 
                      onClick={() => setSimulatorDevice('mobile')}
-                     style={{ padding: '0.4rem 1.2rem', fontSize: '0.75rem', fontWeight: 600, background: simulatorDevice === 'mobile' ? 'var(--forest)' : 'transparent', color: simulatorDevice === 'mobile' ? '#fff' : 'var(--mist)', border: 'none', borderRadius: '15px', cursor: 'pointer', transition: '0.2s' }}>
-                      Mobile
+                     style={{ padding: '0.5rem 1.5rem', fontSize: '0.8rem', fontWeight: 600, background: simulatorDevice === 'mobile' ? 'var(--gold)' : 'transparent', color: simulatorDevice === 'mobile' ? '#000' : 'var(--mist)', border: 'none', borderRadius: '25px', cursor: 'pointer', transition: '0.2s', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <Smartphone size={16} /> Mobile
                    </button>
                 </div>
 
@@ -1576,6 +1968,24 @@ export default function HostLiveCampaignBuilder() {
                             onClick={() => setSponsorPreviewMode('checkout')}
                             style={{ padding: '0.5rem 1.5rem', fontSize: '0.75rem', fontWeight: 700, borderRadius: '25px', cursor: 'pointer', border: 'none', background: sponsorPreviewMode === 'checkout' ? 'var(--gold)' : 'transparent', color: sponsorPreviewMode === 'checkout' ? '#000' : 'var(--mist)', transition: '0.2s' }}>
                             Checkout Experience
+                         </button>
+                      </div>
+                   </div>
+                )}
+
+                {/* Donation Mode Toggle */}
+                {activeTab === 'donations' && (
+                   <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginBottom: '-0.5rem' }}>
+                      <div style={{ display: 'flex', background: '#fff', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '30px', overflow: 'hidden', padding: '0.2rem', boxShadow: '0 4px 10px rgba(0,0,0,0.05)' }}>
+                         <button 
+                            onClick={() => setDonorPreviewMode('directory')}
+                            style={{ padding: '0.5rem 1.5rem', fontSize: '0.75rem', fontWeight: 700, borderRadius: '25px', cursor: 'pointer', border: 'none', background: donorPreviewMode === 'directory' ? 'var(--forest)' : 'transparent', color: donorPreviewMode === 'directory' ? '#fff' : 'var(--mist)', transition: '0.2s' }}>
+                            Donor Option Page
+                         </button>
+                         <button 
+                            onClick={() => setDonorPreviewMode('checkout')}
+                            style={{ padding: '0.5rem 1.5rem', fontSize: '0.75rem', fontWeight: 700, borderRadius: '25px', cursor: 'pointer', border: 'none', background: donorPreviewMode === 'checkout' ? 'var(--gold)' : 'transparent', color: donorPreviewMode === 'checkout' ? '#000' : 'var(--mist)', transition: '0.2s' }}>
+                            Donor Payment Page
                          </button>
                       </div>
                    </div>
