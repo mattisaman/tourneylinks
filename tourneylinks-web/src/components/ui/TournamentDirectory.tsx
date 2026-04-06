@@ -206,27 +206,27 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
         }}>
            <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
               <h1 className="metallic-text" style={{ 
-                fontSize: 'clamp(2.5rem, 5vw, 4rem)', 
+                fontSize: 'clamp(3rem, 7vw, 5.5rem)', 
                 fontFamily: 'var(--font-serif), serif', 
                 margin: '0 0 1rem 0',
                 padding: 0,
                 fontWeight: 400,
-                lineHeight: 1.1,
-                textShadow: '0 4px 15px rgba(212,175,55,0.4), 0 2px 4px rgba(0,0,0,0.8)'
+                lineHeight: 1.1
               }}>
                 Tournament Directory
               </h1>
           <p className="hidden md:block" style={{
-            fontSize: '1.25rem',
-            color: 'rgba(255,255,255,0.9)',
-            maxWidth: '700px',
+            fontSize: '1.35rem',
+            color: 'rgba(255,255,255,0.95)',
+            maxWidth: '900px',
             margin: '0 auto',
-            fontWeight: '400',
+            fontWeight: '300',
             letterSpacing: '0.5px',
             lineHeight: '1.6',
-            textShadow: '0 2px 10px rgba(0,0,0,0.5)'
+            fontFamily: 'var(--font-sans), sans-serif',
+            textShadow: '0 2px 4px rgba(0,0,0,0.8)'
           }}>
-            Discover local charity scrambles, amateur championships, and competitive golf tournaments near you.
+            Browse the complete schedule of upcoming amateur championships, competitive leagues, and high-end charity scrambles.
           </p>
           </div>
         </div>
