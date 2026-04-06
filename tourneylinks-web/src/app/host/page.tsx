@@ -403,6 +403,7 @@ export default function HostLiveCampaignBuilder() {
                     <div style={{ width: '1px', height: '16px', background: 'rgba(0,0,0,0.1)', margin: '0 0.3rem' }}></div>
                     <button type="button" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.3rem 0.6rem', borderRadius: '4px', fontSize: '0.85rem', color: 'var(--ink)' }}>🔗 Link</button>
                     <button type="button" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.3rem 0.6rem', borderRadius: '4px', fontSize: '0.85rem', color: 'var(--ink)', fontWeight: 600 }}>• Bullet List</button>
+                    <button type="button" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.3rem 0.6rem', borderRadius: '4px', fontSize: '0.9rem', color: 'var(--ink)' }}>😀</button>
                  </div>
                  <textarea style={{ border: 'none', width: '100%', padding: '1rem', outline: 'none', resize: 'vertical', minHeight: '120px', fontFamily: 'inherit', fontSize: '0.9rem' }} rows={4} value={desc} onChange={e => setDesc(e.target.value)} placeholder="Tell players what makes this tournament special. For example, copy-paste a bulleted list of events or schedule information here..."></textarea>
                </div>
@@ -990,6 +991,7 @@ export default function HostLiveCampaignBuilder() {
                               <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', textDecoration: 'underline', padding: '0.2rem 0.6rem', borderRadius: '4px' }}>U</button>
                               <span style={{ width: '1px', background: 'rgba(0,0,0,0.1)', margin: '0 0.2rem' }}></span>
                               <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '0.8rem', padding: '0.2rem 0.6rem', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>🔗 Link</button>
+                              <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '0.9rem', padding: '0.2rem 0.6rem', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>😀</button>
                            </div>
                            <textarea 
                               value={donationThankYouEmail}
@@ -2124,13 +2126,13 @@ export default function HostLiveCampaignBuilder() {
                 )}
 
                 {simulatorDevice === 'mobile' && (
-                   <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', animation: 'fadeIn 0.3s', transform: 'scale(0.85)', transformOrigin: 'top center', marginBottom: '-10%' }}>
+                   <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', animation: 'fadeIn 0.3s', marginBottom: '-10%' }}>
                       <div style={{
-                         width: '375px', // Fixed iPhone width
-                         height: '750px',
+                         width: '330px', // Crisp mobile width
+                         height: '660px',
                          background: '#fff',
-                         borderRadius: '40px', // iPhone hardware curves
-                         border: '12px solid #0f1512', // Black device frame
+                         borderRadius: '36px', // iPhone hardware curves
+                         border: '10px solid #0f1512', // Black device frame
                          boxShadow: '0 25px 50px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(255,255,255,0.2)',
                          position: 'relative',
                          overflow: 'hidden',
@@ -2138,7 +2140,7 @@ export default function HostLiveCampaignBuilder() {
                          flexDirection: 'column'
                       }}>
                          {/* Dynamic Notch */}
-                         <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '120px', height: '25px', background: '#0f1512', borderBottomLeftRadius: '16px', borderBottomRightRadius: '16px', zIndex: 50 }}></div>
+                         <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '105px', height: '22px', background: '#0f1512', borderBottomLeftRadius: '14px', borderBottomRightRadius: '14px', zIndex: 50 }}></div>
 
                          {/* SIMULATED WEB BROWSER CANVAS */}
                          {renderMobileSimulator()}
