@@ -112,6 +112,7 @@ export default function HostLiveCampaignBuilder() {
       
       const tid = p.get('tournamentId');
       if (tid) {
+         setDraftId(tid);
          setIsLoadingForm(true);
          fetch(`/api/admin/tournaments/${tid}`)
            .then(r => r.ok ? r.json() : null)
@@ -184,38 +185,68 @@ export default function HostLiveCampaignBuilder() {
   const [saveStatus, setSaveStatus] = useState<'idle'|'saving'|'saved'>('idle');
   const [draftId, setDraftId] = useState<string | null>(null);
 
-  // Lazy Initialization & Auto Save Effect
+  const hasMinimalSubstance = name.length > 2 || course.length > 2 || !!heroImage || galleryImages.length > 0;
+  const [showExitModal, setShowExitModal] = useState<{show: boolean, targetUrl: string | null}>({show: false, targetUrl: null});
+
+  // Exit/Navigation Interceptor for Unsaved Fresh Drafts
   useEffect(() => {
-    // If not loaded from URL yet, skip
-    if (typeof window !== 'undefined' && !new URLSearchParams(window.location.search).get('tournamentId') && !draftId) {
-        // We only create a draft if there is meaningful user interaction
-        const hasMinimalSubstance = name.length > 2 || course.length > 2 || !!heroImage || galleryImages.length > 0;
-        if (!hasMinimalSubstance) return;
+    if (draftId || !hasMinimalSubstance) return;
 
-        // Create initial draft
-        const initDraft = async () => {
-           setSaveStatus('saving');
-           try {
-              const res = await fetch('/api/admin/tournaments', { 
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ name, courseName: course, dateStart: date, format: selectedFormat })
-              });
-              const data = await res.json();
-              if (res.ok && data.id) {
-                 setDraftId(data.id.toString());
-                 window.history.replaceState(null, '', `/host?tournamentId=${data.id}`);
-                 setSaveStatus('saved');
-                 setTimeout(() => setSaveStatus('idle'), 3000);
-              }
-           } catch (e) {
-              setSaveStatus('idle');
-           }
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+       e.preventDefault();
+       e.returnValue = '';
+    };
+
+    const handleLinkClick = (e: MouseEvent) => {
+       const target = (e.target as Element).closest('a');
+       if (target && target.href && !target.href.startsWith('javascript:') && !target.href.includes('/host')) {
+          e.preventDefault();
+          setShowExitModal({ show: true, targetUrl: target.href });
+       }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    document.addEventListener('click', handleLinkClick, { capture: true });
+
+    return () => {
+       window.removeEventListener('beforeunload', handleBeforeUnload);
+       document.removeEventListener('click', handleLinkClick, { capture: true });
+    };
+  }, [draftId, hasMinimalSubstance]);
+
+  const handleManualSaveAsDraft = async () => {
+     if (draftId) return;
+     setSaveStatus('saving');
+     try {
+        const payload = {
+           name: name || 'Untitled Campaign', courseName: course || 'Unknown', dateStart: date || new Date().toISOString().split('T')[0], format: selectedFormat,
+           description: desc, city, themeColor, secondaryThemeColor, 
+           heroImages: heroImage ? JSON.stringify([heroImage]) : null,
+           galleryImages: galleryImages.length > 0 ? JSON.stringify(galleryImages) : null,
+           heroPositionData: JSON.stringify({ x: heroPositionX, y: heroPosition, zoom: heroZoom }),
+           coHostEmails: JSON.stringify(coHostEmails),
+           sponsors: JSON.stringify(sponsors)
         };
-        const to = setTimeout(() => initDraft(), 1000);
-        return () => clearTimeout(to);
-    }
+        const res = await fetch('/api/admin/tournaments', { 
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (res.ok && data.id) {
+           setDraftId(data.id.toString());
+           window.history.replaceState(null, '', `/host?tournamentId=${data.id}`);
+           setSaveStatus('saved');
+           setTimeout(() => setSaveStatus('idle'), 3000);
+           return true; 
+        }
+     } catch (e) {
+        setSaveStatus('idle');
+     }
+     return false;
+  };
 
+  useEffect(() => {
     if (draftId && !isLoadingForm) {
         // Auto Save Logic
         const payload = {
@@ -1374,7 +1405,7 @@ export default function HostLiveCampaignBuilder() {
                <div style={{ fontSize: '0.75rem', textDecoration: 'line-through', opacity: 0.7, marginBottom: '-0.2rem' }}>$149 Regular Price</div>
                <div style={{ fontSize: '1.1rem' }}>Pay $99 Intro Price 🚀</div>
              </button>
-             <button className="btn-hero-outline" style={{ flex: 1, padding: '1rem', borderRadius: '8px', cursor: 'pointer', opacity: saveStatus === 'saving' ? 0.5 : 1 }} onClick={() => { alert('Your draft is automatically and securely saved. You can safely return to your profile or close the page!'); }}>
+             <button className="btn-hero-outline" style={{ flex: 1, padding: '1rem', borderRadius: '8px', cursor: 'pointer', opacity: saveStatus === 'saving' ? 0.5 : 1 }} onClick={() => { if (!draftId) { handleManualSaveAsDraft(); } else { alert('Your draft is automatically and securely saved. You can safely return to your profile or close the page!'); } }}>
                {saveStatus === 'saving' ? 'Auto-Saving...' : (saveStatus === 'saved' ? 'Saved & Synced ✅' : 'Save as Draft')}
              </button>
            </div>
@@ -2318,6 +2349,32 @@ export default function HostLiveCampaignBuilder() {
           </div>
 
        </div>
+       
+       {/* Exit Intent Modal */}
+       {showExitModal.show && (
+         <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(5,11,8,0.85)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+           <div style={{ background: '#0a1a12', padding: '2.5rem', borderRadius: '24px', border: '1px solid var(--gold)', boxShadow: '0 20px 60px rgba(0,0,0,0.8), 0 0 30px rgba(212,175,55,0.1)', maxWidth: '450px', textAlign: 'center', width: '90%' }}>
+             <h3 style={{ color: '#fff', fontSize: '1.6rem', marginBottom: '1rem', fontFamily: 'var(--font-serif)', lineHeight: 1.2 }}>Unsaved Campaign Architecture</h3>
+             <p style={{ color: 'var(--mist)', fontSize: '0.95rem', marginBottom: '2.5rem', lineHeight: 1.6 }}>You've begun shaping a pristine event. Would you like to archive this draft to your Command Center before departing?</p>
+             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+               <button onClick={async () => {
+                  const saved = await handleManualSaveAsDraft();
+                  if (saved || draftId) window.location.href = showExitModal.targetUrl || '/profile';
+               }} style={{ background: 'var(--gold)', color: '#000', fontWeight: 800, padding: '1.1rem', borderRadius: '12px', border: 'none', cursor: 'pointer', fontSize: '0.9rem', letterSpacing: '0.05em', textTransform: 'uppercase', transition: '0.2s', boxShadow: '0 4px 15px rgba(212,175,55,0.3)' }}>
+                  Save to Profile & Leave
+               </button>
+               <button onClick={() => {
+                  window.location.href = showExitModal.targetUrl || '/profile';
+               }} style={{ background: 'transparent', color: '#fff', border: '1px solid rgba(255,255,255,0.15)', padding: '1rem', borderRadius: '12px', cursor: 'pointer', fontWeight: 600, transition: '0.2s' }}>
+                  Leave Without Saving
+               </button>
+               <button onClick={() => setShowExitModal({show: false, targetUrl: null})} style={{ background: 'transparent', color: 'var(--mist)', border: 'none', marginTop: '1rem', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, transition: '0.2s' }}>
+                  Cancel Departure
+               </button>
+             </div>
+           </div>
+         </div>
+       )}
     </div>
   );
 }
