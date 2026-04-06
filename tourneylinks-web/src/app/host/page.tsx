@@ -2188,7 +2188,7 @@ export default function HostLiveCampaignBuilder() {
           </div>
 
           {/* SIMULATOR COLUMN (Right) */}
-          <div style={{ flex: '1 1 500px', display: 'flex', flexDirection: 'column', alignSelf: 'flex-start' }}>
+          <div style={{ flex: '1 1 500px', display: 'flex', flexDirection: 'column' }}>
              
              {/* Sticky Wrapper - using height and overflow-y to allow internal scroll without disrupting layout */}
              <div className="no-scrollbar" style={{ position: 'sticky', top: '100px', height: 'calc(100vh - 120px)', overflowY: 'auto', width: '100%', paddingRight: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', paddingBottom: '3rem' }}>
