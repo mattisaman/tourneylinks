@@ -1,10 +1,10 @@
 with open("src/app/host/page.tsx", "r") as f:
     text = f.read()
 
-bad = r"<label style={{ display: \'flex\', alignItems: \'flex-start\', gap: \'0.6rem\', cursor: \'pointer\' }}>"
-good = r"<label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', cursor: 'pointer' }}>"
+target = "color: charityType !== 'none' ? 'var(--forest)', fontWeight: 600"
+replacement = "color: charityType !== 'none' ? 'var(--forest)' : 'var(--mist)', fontWeight: 600"
 
-text = text.replace(bad, good)
+text = text.replace(target, replacement)
 
 with open("src/app/host/page.tsx", "w") as f:
     f.write(text)
