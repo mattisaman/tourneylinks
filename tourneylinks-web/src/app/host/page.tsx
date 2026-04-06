@@ -72,7 +72,8 @@ export default function HostLiveCampaignBuilder() {
   const [donorPreviewMode, setDonorPreviewMode] = useState<'directory' | 'checkout'>('directory');
   const [allowCustomDonation, setAllowCustomDonation] = useState(true);
   const [minCustomDonation, setMinCustomDonation] = useState<number>(5);
-  const [donationThankYouEmail, setDonationThankYouEmail] = useState('Thank you for supporting our cause!');
+  const [donationThankYouEmail, setDonationThankYouEmail] = useState('Dear [Donor Name],\n\nThank you for supporting our cause! Your generous contribution allows us to continue our mission. Please keep this receipt for your records.\n\nWarm regards,\n[Tournament Organizer]');
+  const [donationsEnabled, setDonationsEnabled] = useState(true);
   const [charityTaxIdDonationInfo, setCharityTaxIdDonationInfo] = useState('');
 
   const [simulatorDevice, setSimulatorDevice] = useState<'desktop' | 'mobile'>('desktop');
@@ -1323,11 +1324,11 @@ export default function HostLiveCampaignBuilder() {
                    </div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                   <button style={{ width: '100%', padding: '0.9rem', background: '#000', color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', transition: '0.2s', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}>Pay With Credit Card</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: '#000', color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}> Pay (Apple Pay)</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: '#fff', color: '#333', fontWeight: 700, border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>G Pay (Google Pay)</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: '#0074FF', color: '#fff', fontWeight: 800, border: 'none', borderRadius: '8px', cursor: 'pointer', fontStyle: 'italic' }}>venmo</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: '#e0ece0', color: 'var(--forest)', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Connect Bank (ACH)</button>
-                   <button style={{ width: '100%', padding: '0.9rem', background: 'transparent', color: 'var(--mist)', fontWeight: 600, border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', transition: '0.2s' }}>Pay With Credit Card</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: 'transparent', color: 'var(--forest)', fontWeight: 600, border: '1px dashed rgba(0,0,0,0.2)', borderRadius: '8px', cursor: 'pointer', marginTop: '0.5rem', fontSize: '0.8rem' }}>Commit & Pay at Course (Cash/Check)</button>
                 </div>
              </div>
@@ -1335,6 +1336,16 @@ export default function HostLiveCampaignBuilder() {
         );
      }
      if (activeTab === 'donations') {
+        if (!donationsEnabled) {
+           return (
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '2rem', textAlign: 'center', background: '#f8faf9' }}>
+                 <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>⛳</div>
+                 <div style={{ fontWeight: 700, color: 'var(--mist)' }}>Donations Disabled</div>
+                 <div style={{ fontSize: '0.8rem', color: 'var(--mist)', marginTop: '0.5rem' }}>The donations module is currently disabled for this tournament.</div>
+              </div>
+           );
+        }
+
         if (donorPreviewMode === 'directory') {
            return (
               <div style={{ padding: '3rem 2rem', background: '#f8faf9', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -1420,11 +1431,11 @@ export default function HostLiveCampaignBuilder() {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                   <button style={{ width: '100%', padding: '0.9rem', background: '#000', color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', transition: '0.2s', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}>Pay With Credit Card</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: '#000', color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}> Pay (Apple Pay)</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: '#fff', color: '#333', fontWeight: 700, border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>G Pay (Google Pay)</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: '#0074FF', color: '#fff', fontWeight: 800, border: 'none', borderRadius: '8px', cursor: 'pointer', fontStyle: 'italic' }}>venmo</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: '#e0ece0', color: 'var(--forest)', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Connect Bank (ACH)</button>
-                   <button style={{ width: '100%', padding: '0.9rem', background: 'transparent', color: 'var(--mist)', fontWeight: 600, border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', transition: '0.2s' }}>Pay With Credit Card</button>
                 </div>
                 
                 <div style={{ textAlign: 'center', fontSize: '0.65rem', color: 'var(--mist)', marginTop: '1rem' }}>
@@ -1522,11 +1533,11 @@ export default function HostLiveCampaignBuilder() {
                 )}
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                   <button style={{ width: '100%', padding: '0.9rem', background: '#000', color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', transition: '0.2s', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}>Pay With Credit Card</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: '#000', color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}> Pay (Apple Pay)</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: '#fff', color: '#333', fontWeight: 700, border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>G Pay (Google Pay)</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: '#0074FF', color: '#fff', fontWeight: 800, border: 'none', borderRadius: '8px', cursor: 'pointer', fontStyle: 'italic' }}>venmo</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: '#e0ece0', color: 'var(--forest)', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Connect Bank (ACH)</button>
-                   <button style={{ width: '100%', padding: '0.9rem', background: 'transparent', color: 'var(--mist)', fontWeight: 600, border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', transition: '0.2s' }}>Pay With Credit Card</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: 'transparent', color: 'var(--forest)', fontWeight: 600, border: '1px dashed rgba(0,0,0,0.2)', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', transition: '0.2s' }}>Commit manually via Check or Wire transfer</button>
                 </div>
                 
@@ -1663,11 +1674,11 @@ export default function HostLiveCampaignBuilder() {
                    </div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                   <button style={{ width: '100%', padding: '0.9rem', background: '#000', color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', transition: '0.2s', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}>Pay With Credit Card</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: '#000', color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}> Pay (Apple Pay)</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: '#fff', color: '#333', fontWeight: 700, border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>G Pay (Google Pay)</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: '#0074FF', color: '#fff', fontWeight: 800, border: 'none', borderRadius: '8px', cursor: 'pointer', fontStyle: 'italic' }}>venmo</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: '#e0ece0', color: 'var(--forest)', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Connect Bank (ACH)</button>
-                   <button style={{ width: '100%', padding: '0.9rem', background: 'transparent', color: 'var(--mist)', fontWeight: 600, border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', transition: '0.2s' }}>Pay With Credit Card</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: 'transparent', color: 'var(--forest)', fontWeight: 600, border: '1px dashed rgba(0,0,0,0.2)', borderRadius: '8px', cursor: 'pointer', marginTop: '0.5rem', fontSize: '0.8rem' }}>Commit & Pay at Course (Cash/Check)</button>
                 </div>
              </div>
@@ -1676,6 +1687,16 @@ export default function HostLiveCampaignBuilder() {
      }
 
      if (activeTab === 'donations') {
+        if (!donationsEnabled) {
+           return (
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '2rem', textAlign: 'center', background: '#f8faf9' }}>
+                 <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>⛳</div>
+                 <div style={{ fontWeight: 700, color: 'var(--mist)' }}>Donations Disabled</div>
+                 <div style={{ fontSize: '0.8rem', color: 'var(--mist)', marginTop: '0.5rem' }}>The donations module is currently disabled for this tournament.</div>
+              </div>
+           );
+        }
+
         if (donorPreviewMode === 'directory') {
            return (
               <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative', background: '#f8faf9', padding: '1.5rem' }}>
@@ -1756,11 +1777,11 @@ export default function HostLiveCampaignBuilder() {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                   <button style={{ width: '100%', padding: '0.9rem', background: '#000', color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', transition: '0.2s', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}>Pay With Credit Card</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: '#000', color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}> Pay (Apple Pay)</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: '#fff', color: '#333', fontWeight: 700, border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>G Pay (Google Pay)</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: '#0074FF', color: '#fff', fontWeight: 800, border: 'none', borderRadius: '8px', cursor: 'pointer', fontStyle: 'italic' }}>venmo</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: '#e0ece0', color: 'var(--forest)', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Connect Bank (ACH)</button>
-                   <button style={{ width: '100%', padding: '0.9rem', background: 'transparent', color: 'var(--mist)', fontWeight: 600, border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', transition: '0.2s' }}>Pay With Credit Card</button>
                 </div>
              </div>
           </div>
@@ -1854,11 +1875,11 @@ export default function HostLiveCampaignBuilder() {
                 )}
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                   <button style={{ width: '100%', padding: '0.8rem', background: '#000', color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', transition: '0.2s', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}>Pay With Credit Card</button>
                    <button style={{ width: '100%', padding: '0.8rem', background: '#000', color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}> Pay (Apple Pay)</button>
                    <button style={{ width: '100%', padding: '0.8rem', background: '#fff', color: '#333', fontWeight: 700, border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>G Pay (Google Pay)</button>
                    <button style={{ width: '100%', padding: '0.8rem', background: '#0074FF', color: '#fff', fontWeight: 800, border: 'none', borderRadius: '8px', cursor: 'pointer', fontStyle: 'italic' }}>venmo</button>
                    <button style={{ width: '100%', padding: '0.8rem', background: '#e0ece0', color: 'var(--forest)', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Connect Bank (ACH)</button>
-                   <button style={{ width: '100%', padding: '0.8rem', background: 'transparent', color: 'var(--mist)', fontWeight: 600, border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', transition: '0.2s' }}>Pay With Credit Card</button>
                    <button style={{ width: '100%', padding: '0.8rem', background: 'transparent', color: 'var(--forest)', fontWeight: 600, border: '1px dashed rgba(0,0,0,0.2)', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.8rem' }}>Commit manually via Check or Wire transfer</button>
                 </div>
                 
