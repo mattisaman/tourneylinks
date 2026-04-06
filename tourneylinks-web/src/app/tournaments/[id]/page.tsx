@@ -136,6 +136,13 @@ export default async function TournamentGatewayPage({ params }: { params: Promis
                 <span style={{ fontSize: '1.1rem', lineHeight: 1 }}>←</span> Back to Tournaments
               </Link>
               
+              {tournament.isCharity && (
+                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(212,175,55,0.15)', border: '1px solid var(--gold)', padding: '0.6rem 1rem', borderRadius: '8px', marginBottom: '0.5rem' }}>
+                    <span style={{ color: 'var(--gold)' }}>★</span>
+                    <span style={{ color: 'var(--gold)', fontWeight: 800, letterSpacing: '0.05em', fontSize: '0.75rem', textTransform: 'uppercase' }}>501(c)(3) Tax-Deductible Event</span>
+                 </div>
+              )}
+              
               {/* CTA 1: REGISTER NOW */}
               <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: 'linear-gradient(145deg, rgba(16,36,20,0.98), #051007)', backdropFilter: 'blur(10px)', border: '1px solid var(--gold)', borderRadius: '12px', padding: '1.5rem 1.5rem', boxShadow: '0 0 16px rgba(223, 177, 75, 0.35)', position: 'relative', overflow: 'hidden' }}>
                 <div style={{ position: 'absolute', top: 0, left: 0, width: '4px', height: '100%', background: 'linear-gradient(to bottom, #d4af37, #aa8529)' }}></div>

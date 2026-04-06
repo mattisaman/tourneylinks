@@ -25,9 +25,15 @@ export default async function DonatePage({ params }: { params: Promise<{ id: str
           <h1 className="hero-headline" style={{ fontSize: 'clamp(2rem, 3vw, 3.5rem)', marginBottom: '1rem' }}>
             Support {tournament.charityName || 'This Cause'}
           </h1>
-          <p style={{ color: 'var(--mist)', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto' }}>
+          <p style={{ color: 'var(--mist)', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto', marginBottom: tournament.isCharity ? '1.5rem' : '0' }}>
             Every contribution directly supports the charitable efforts of the <strong>{tournament.name}</strong>. Thank you for your generosity!
           </p>
+          {tournament.isCharity && (
+             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(212,175,55,0.15)', border: '1px solid var(--gold)', padding: '0.4rem 1rem', borderRadius: '4px' }}>
+                <span style={{ color: 'var(--gold)' }}>★</span>
+                <span style={{ color: 'var(--gold)', fontWeight: 800, letterSpacing: '0.05em', fontSize: '0.8rem', textTransform: 'uppercase' }}>501(c)(3) Tax-Deductible Donation</span>
+             </div>
+          )}
         </div>
       </div>
 

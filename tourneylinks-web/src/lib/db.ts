@@ -84,6 +84,8 @@ export const tournaments = pgTable('tournaments', {
   acceptsDonations: boolean('accepts_donations').default(false),
   donationsConfig: text('donations_config'), // JSON storing the 3 donation options
   charityName: text('charity_name'),
+  golfApplicationStatus: text('golf_application_status').default('none'), // 'none' | 'pending' | 'approved' | 'rejected'
+  golfApplicationData: text('golf_application_data'), // JSON object capturing their cause/payout descriptions
   isPrivate: boolean('is_private').default(false),
 
   organizerName: text('organizer_name'),

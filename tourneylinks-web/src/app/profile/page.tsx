@@ -7,6 +7,7 @@ import { eq, desc } from 'drizzle-orm';
 import { UserPlus, Trophy, Link as LinkIcon, Edit3, MapPin, Bell } from 'lucide-react';
 import TransferTicketModal from '@/components/profile/TransferTicketModal';
 import DeleteDraftButton from '@/components/profile/DeleteDraftButton';
+import GolfSponsorshipWidget from '@/components/profile/GolfSponsorshipWidget';
 
 export default async function ProfilePage() {
   const { userId } = await getUserId();
@@ -293,6 +294,9 @@ export default async function ProfilePage() {
                  </div>
                </div>
             </div>
+
+            {/* Widget 6: G.O.L.F. Sponsorship Coverage */}
+            <GolfSponsorshipWidget tournaments={hostedEvents} />
 
           </div>
 

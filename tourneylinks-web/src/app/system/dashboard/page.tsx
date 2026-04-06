@@ -35,6 +35,36 @@ async function acceptMissingLink(formData: FormData) {
   revalidatePath('/system/dashboard');
 }
 
+async function approveGolfApplication(formData: FormData) {
+  'use server';
+  const idStr = formData.get('tournamentId') as string;
+  if (!idStr) return;
+  const tId = parseInt(idStr, 10);
+
+  // Core Compliance Step: Nullify any localized connected stripe account to force platform routing
+  const [tournament] = await db.select().from(tournaments).where(eq(tournaments.id, tId));
+  if (!tournament) return;
+
+  if (tournament.hostUserId) {
+     // Wipe local Stripe Account records for this user (they lose direct routing access)
+     // Or we can just sever the connection or flag it. Since the platform routs checkout through root if charityType == golf_sponsored
+     // The core checkout logic already uses the Root Acct if it's G.O.L.F. Sponsored.
+     // However, let's strictly nullify their Stripe Connect linking if exists to be 100% compliant.
+     const { stripe_accounts } = await import('@/lib/db');
+     await db.delete(stripe_accounts).where(eq(stripe_accounts.userId, tournament.hostUserId));
+  }
+
+  await db.update(tournaments)
+    .set({ 
+       golfApplicationStatus: 'approved',
+       isCharity: true,
+       charityName: 'G.O.L.F. Foundation'
+    })
+    .where(eq(tournaments.id, tId));
+  
+  revalidatePath('/system/dashboard');
+}
+
 export default async function SuperAdminDashboard() {
   
   // Security Layer: Validate Edge Session Cookie
@@ -51,6 +81,7 @@ export default async function SuperAdminDashboard() {
   const [playerCount] = await db.select({ count: sql<number>`count(*)` }).from(registrations);
   const recentLogs = await db.select().from(crawlLogs).orderBy(desc(crawlLogs.crawledAt)).limit(4);
   const pendingLinks = await db.select().from(missing_links).where(sql`${missing_links.status} = 'PENDING'`).orderBy(desc(missing_links.createdAt));
+  const pendingApplications = await db.select().from(tournaments).where(eq(tournaments.golfApplicationStatus, 'pending')).orderBy(desc(tournaments.createdAt));
 
   // Financial Forensics (Mocked data structures for the upcoming Stripe implementation)
   const syntheticRevenue = (playerCount?.count || 0) * 150; // Mock $150 entry fee average
@@ -136,6 +167,60 @@ export default async function SuperAdminDashboard() {
                 {pendingLinks.length === 0 && (
                   <tr>
                     <td colSpan={4} style={{ padding: '2rem', textAlign: 'center', color: '#666' }}>Inbox zero. No pending URLs to review!</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Pending 501(c)(3) Applications */}
+        <div style={{ marginBottom: '3rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+             <h2 style={{ fontSize: '1.5rem', fontWeight: 600 }}>Action Required: 501(c)(3) Fiscal Sponsorship Apps</h2>
+             <span style={{ background: pendingApplications.length > 0 ? 'rgba(212,175,55,0.1)' : 'rgba(255,255,255,0.05)', color: pendingApplications.length > 0 ? 'var(--gold)' : '#666', padding: '0.4rem 0.8rem', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 600 }}>
+               {pendingApplications.length} Pending
+             </span>
+          </div>
+          <div style={{ background: '#111', border: '1px solid #222', borderRadius: '12px', overflow: 'hidden' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
+              <thead>
+                <tr style={{ background: '#1a1a1a', borderBottom: '1px solid #333' }}>
+                  <th style={{ padding: '1rem', color: '#888', fontWeight: 500 }}>DATE</th>
+                  <th style={{ padding: '1rem', color: '#888', fontWeight: 500 }}>CAMPAIGN / ID</th>
+                  <th style={{ padding: '1rem', color: '#888', fontWeight: 500 }}>DATA</th>
+                  <th style={{ padding: '1rem', color: '#888', fontWeight: 500, textAlign: 'right' }}>ACTION</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pendingApplications.map(app => {
+                  let parsedData = null;
+                  try {
+                     if(app.golfApplicationData) parsedData = JSON.parse(app.golfApplicationData);
+                  } catch(e) {}
+                  return (
+                  <tr key={app.id} style={{ borderBottom: '1px solid #222' }}>
+                    <td style={{ padding: '1rem', color: '#ccc' }}>{new Date(app.createdAt || '').toLocaleDateString()}</td>
+                    <td style={{ padding: '1rem', color: '#ccc' }}>
+                      <div style={{ fontWeight: 600, color: 'var(--gold)' }}>{app.name}</div>
+                      <div style={{ fontSize: '0.8rem', color: '#666' }}>ID: {app.id}</div>
+                    </td>
+                    <td style={{ padding: '1rem', color: '#ccc', fontSize: '0.8rem', maxWidth: '400px' }}>
+                      <div style={{ marginBottom: '0.5rem' }}><strong>Cause:</strong> {parsedData?.cause || 'N/A'}</div>
+                      <div><strong>Disbursement:</strong> {parsedData?.payoutInfo || 'N/A'}</div>
+                    </td>
+                    <td style={{ padding: '1rem', textAlign: 'right' }}>
+                      <form action={approveGolfApplication}>
+                        <input type="hidden" name="tournamentId" value={app.id} />
+                        <button type="submit" style={{ background: 'var(--gold)', color: 'black', border: 'none', padding: '0.6rem 1.2rem', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 800 }}>Approve & Route</button>
+                      </form>
+                    </td>
+                  </tr>
+                  );
+                })}
+                {pendingApplications.length === 0 && (
+                  <tr>
+                    <td colSpan={4} style={{ padding: '2rem', textAlign: 'center', color: '#666' }}>Queue empty. All hosts are compliant and approved!</td>
                   </tr>
                 )}
               </tbody>
