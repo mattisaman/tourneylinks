@@ -892,6 +892,14 @@ export default function HostLiveCampaignBuilder() {
                           </div>
                        </div>
                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                          <label className="toggle-switch" style={{ transform: 'scale(0.8)', margin: '0 0.5rem' }}>
+                             <input type="checkbox" checked={p.passFees} onChange={(e) => {
+                                const clone = [...packages];
+                                clone[i].passFees = e.target.checked;
+                                setPackages(clone);
+                             }} />
+                             <span className="toggle-slider"></span>
+                          </label>
                           <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--grass)' }}>${typeof p.price === 'number' ? p.price.toFixed(2) : Number(p.price).toFixed(2)}</span>
                           <button onClick={() => {
                              setNewPackage(p);
@@ -1004,6 +1012,14 @@ export default function HostLiveCampaignBuilder() {
                           </div>
                        </div>
                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                          <label className="toggle-switch" style={{ transform: 'scale(0.8)', margin: '0 0.5rem' }}>
+                             <input type="checkbox" checked={a.passFees} onChange={(e) => {
+                                const clone = [...addons];
+                                clone[i].passFees = e.target.checked;
+                                setAddons(clone);
+                             }} />
+                             <span className="toggle-slider"></span>
+                          </label>
                           <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--ink)' }}>${a.price.toFixed(2)}</div>
                           <button onClick={() => {
                              setNewAddon(a);
@@ -2308,10 +2324,7 @@ export default function HostLiveCampaignBuilder() {
                   <span style={{ fontSize: '1.4rem', position: 'relative', zIndex: 1, filter: 'drop-shadow(0 2px 5px rgba(0,0,0,0.5))' }}>⛳</span>
                 </div>
                  <div>
-                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.3rem' }}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--gold)', filter: 'drop-shadow(0 0 4px rgba(212,175,55,0.8))' }}><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                      <div style={{ fontSize: '0.8rem', fontWeight: 800, color: '#f3e5ab', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.9 }}>Administration Hub</div>
-                   </div>
+                   
                    <h1 style={{ fontFamily: 'Playfair Display, serif', fontSize: '2.5rem', color: '#fff', margin: 0, textShadow: '0 2px 10px rgba(0,0,0,0.5)', lineHeight: 1.1 }}>Live Campaign Builder</h1>
                  </div>
              </div>
