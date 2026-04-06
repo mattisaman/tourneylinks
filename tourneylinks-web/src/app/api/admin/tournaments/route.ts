@@ -43,6 +43,8 @@ export async function POST(req: NextRequest) {
        tileImage: payload.tileImage || null,
        tilePositionData: payload.tilePositionData || null,
        coHostEmails: payload.coHostEmails || null,
+       acceptsDonations: payload.acceptsDonations || false,
+       donationsConfig: payload.donationsConfig || null,
        themeColor: payload.themeColor || '#1A2E1A',
        secondaryThemeColor: payload.secondaryThemeColor || '#C9A84C'
     }).returning();

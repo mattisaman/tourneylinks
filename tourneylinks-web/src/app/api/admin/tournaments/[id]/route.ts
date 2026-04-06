@@ -63,6 +63,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (payload.tilePositionData !== undefined) updateData.tilePositionData = payload.tilePositionData;
     if (payload.coHostEmails !== undefined) updateData.coHostEmails = payload.coHostEmails;
     if (payload.sponsors !== undefined) updateData.sponsors = payload.sponsors;
+    if (payload.acceptsDonations !== undefined) updateData.acceptsDonations = payload.acceptsDonations;
+    if (payload.donationsConfig !== undefined) updateData.donationsConfig = payload.donationsConfig;
     if (payload.themeColor !== undefined) updateData.themeColor = payload.themeColor;
     if (payload.secondaryThemeColor !== undefined) updateData.secondaryThemeColor = payload.secondaryThemeColor;
 

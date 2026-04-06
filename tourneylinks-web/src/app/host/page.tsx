@@ -185,6 +185,17 @@ export default function HostLiveCampaignBuilder() {
                      if (Array.isArray(parsed) && parsed.length > 0) setSponsors(parsed);
                    } catch(e) {}
                 }
+                if (data.acceptsDonations !== undefined) setDonationsEnabled(data.acceptsDonations);
+                if (data.donationsConfig) {
+                   try {
+                     const parsed = typeof data.donationsConfig === 'string' ? JSON.parse(data.donationsConfig) : data.donationsConfig;
+                     if (parsed.allowCustomDonation !== undefined) setAllowCustomDonation(parsed.allowCustomDonation);
+                     if (parsed.minCustomDonation !== undefined) setMinCustomDonation(parsed.minCustomDonation);
+                     if (parsed.donationThankYouEmail !== undefined) setDonationThankYouEmail(parsed.donationThankYouEmail);
+                     if (parsed.charityTaxIdDonationInfo !== undefined) setCharityTaxIdDonationInfo(parsed.charityTaxIdDonationInfo);
+                     if (parsed.donorTiers) setDonorTiers(parsed.donorTiers);
+                   } catch(e) {}
+                }
 
                 if (data.themeColor) setThemeColor(data.themeColor);
                 if (data.secondaryThemeColor) setSecondaryThemeColor(data.secondaryThemeColor);
@@ -275,7 +286,9 @@ export default function HostLiveCampaignBuilder() {
            tileImage: tileImage || null,
            tilePositionData: JSON.stringify({ x: tilePositionX, y: tilePosition, zoom: tileZoom }),
            coHostEmails: JSON.stringify(coHostEmails),
-           sponsors: JSON.stringify(sponsors)
+           sponsors: JSON.stringify(sponsors),
+           acceptsDonations: donationsEnabled,
+           donationsConfig: JSON.stringify({ allowCustomDonation, minCustomDonation, donationThankYouEmail, charityTaxIdDonationInfo, donorTiers })
         };
         const res = await fetch('/api/admin/tournaments', { 
             method: 'POST',
@@ -308,7 +321,9 @@ export default function HostLiveCampaignBuilder() {
            tileImage: tileImage || null,
            tilePositionData: JSON.stringify({ x: tilePositionX, y: tilePosition, zoom: tileZoom }),
            coHostEmails: JSON.stringify(coHostEmails),
-           sponsors: JSON.stringify(sponsors)
+           sponsors: JSON.stringify(sponsors),
+           acceptsDonations: donationsEnabled,
+           donationsConfig: JSON.stringify({ allowCustomDonation, minCustomDonation, donationThankYouEmail, charityTaxIdDonationInfo, donorTiers })
         };
 
         const autoSave = async () => {
@@ -1168,7 +1183,7 @@ export default function HostLiveCampaignBuilder() {
                                  <div style={{ fontWeight: 700, color: 'var(--forest)', fontSize: '0.95rem' }}>{d.tier}</div>
                               </div>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                 <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--grass)' }}>${d.price}</div>
+                                 <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--grass)' }}>${d.price.toLocaleString()}</div>
                                  <div style={{ display: 'flex', gap: '0.5rem' }}>
                                     <button onClick={() => {
                                        setEditingDonorIdx(i);
@@ -1390,7 +1405,7 @@ export default function HostLiveCampaignBuilder() {
                           <div style={{ fontWeight: 700, color: 'var(--forest)', fontSize: '0.95rem' }}>{s.tier} <span style={{ fontSize: '0.7rem', color: 'var(--mist)', fontWeight: 400, marginLeft: '0.5rem' }}>({s.spots} {s.spots === 1 ? 'spot' : 'spots'})</span></div>
                        </div>
                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                          <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--grass)' }}>${s.price}</div>
+                          <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--grass)' }}>${s.price.toLocaleString()}</div>
                           <div style={{ display: 'flex', gap: '0.5rem' }}>
                              <button onClick={() => {
                                 setEditingSponsorIdx(i);

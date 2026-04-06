@@ -205,12 +205,14 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
             zIndex: 10
         }}>
            <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-              <h1 className="metallic-text-radial" style={{ 
-                fontSize: 'clamp(3rem, 7vw, 5.5rem)', 
-                fontFamily: 'var(--font-serif), serif', 
-                margin: '0 0 1rem 0',
-                padding: 0,
-                fontWeight: 400,
+              <h1 style={{ 
+                fontFamily: "'Playfair Display', serif", 
+                fontSize: '4.5rem', 
+                marginBottom: '1rem', 
+                background: 'linear-gradient(to right, #d4af37, #fff9e6, #d4af37)', 
+                WebkitBackgroundClip: 'text', 
+                WebkitTextFillColor: 'transparent',
+                textShadow: '0 4px 30px rgba(212,175,55,0.3)',
                 lineHeight: 1.1
               }}>
                 Tournament Directory
