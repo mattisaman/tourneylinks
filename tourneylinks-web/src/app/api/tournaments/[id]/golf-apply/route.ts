@@ -99,11 +99,10 @@ Please provide a 1-to-2 sentence verdict analyzing if this looks like a legitima
                   
                   <div style="text-align: center; background: #f0f0f0; padding: 2rem; border-radius: 8px;">
                      <h3 style="margin-top: 0;">1-Click Administrative Action</h3>
-                     <p style="font-size: 0.85rem; color: #666; margin-bottom: 1.5rem;">Clicking these buttons will instantly mutate the database and send the Host down the corresponding flow.</p>
+                     <p style="font-size: 0.85rem; color: #666; margin-bottom: 1.5rem;">Clicking this link will securely open the administrative dashboard port to finalize your decision. and send the Host down the corresponding flow.</p>
                      
                      <div style="display: flex; justify-content: center; gap: 1rem;">
-                        <a href="${approveUrl}" style="background-color: #10b981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">✅ APPROVE (Connect Treasury)</a>
-                        <a href="${denyUrl}" style="background-color: #ef4444; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">❌ DENY (Revert to Standard)</a>
+                        <a href="${baseUrl}/admin/portal/${tournament.id}?token=${adminToken}" style="background-color: #1a1a1a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">🔒 Access Secure Admin Portal</a>
                      </div>
                   </div>
                </div>
