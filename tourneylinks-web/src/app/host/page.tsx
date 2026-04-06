@@ -27,25 +27,24 @@ export default function HostLiveCampaignBuilder() {
   const [holes, setHoles] = useState('18 Holes');
   const [org, setOrg] = useState('');
   const [email, setEmail] = useState('');
-  const [passFees, setPassFees] = useState(false);
 
   const [showEmojiDesc, setShowEmojiDesc] = useState(false);
   const [showEmojiDonation, setShowEmojiDonation] = useState(false);
   const [showEmojiGolfCause, setShowEmojiGolfCause] = useState(false);
 
-  const [packages, setPackages] = useState<{name: string, price: number, isTeam: boolean}[]>([
-     { name: 'Foursome', price: 500, isTeam: true },
-     { name: 'Individual Golfer', price: 125, isTeam: false },
-     { name: 'Dinner Ticket Only', price: 50, isTeam: false }
+  const [packages, setPackages] = useState<{name: string, price: number, isTeam: boolean, passFees: boolean}[]>([
+     { name: 'Foursome', price: 500, isTeam: true, passFees: false },
+     { name: 'Individual Golfer', price: 125, isTeam: false, passFees: false },
+     { name: 'Dinner Ticket Only', price: 50, isTeam: false, passFees: false }
   ]);
   const [showPackageForm, setShowPackageForm] = useState(false);
-  const [newPackage, setNewPackage] = useState<{name: string, price: number | string, isTeam: boolean}>({ name: '', price: '', isTeam: false });
+  const [newPackage, setNewPackage] = useState<{name: string, price: number | string, isTeam: boolean, passFees: boolean}>({ name: '', price: '', isTeam: false, passFees: false });
 
-  const [addons, setAddons] = useState<{name: string, price: number, type: 'per_player'|'per_team'|'flat', maxQuantity?: number}[]>([
-     { name: 'Mulligan', price: 20, type: 'per_player', maxQuantity: 2 }
+  const [addons, setAddons] = useState<{name: string, price: number, type: 'per_player'|'per_team'|'flat', maxQuantity?: number, passFees: boolean}[]>([
+     { name: 'Mulligan', price: 20, type: 'per_player', maxQuantity: 2, passFees: false }
   ]);
   const [showAddonForm, setShowAddonForm] = useState(false);
-  const [newAddon, setNewAddon] = useState<{name: string, price: number | string, type: 'per_player'|'per_team'|'flat', maxQuantity?: number}>({ name: '', price: '', type: 'per_player' });
+  const [newAddon, setNewAddon] = useState<{name: string, price: number | string, type: 'per_player'|'per_team'|'flat', maxQuantity?: number, passFees: boolean}>({ name: '', price: '', type: 'per_player', passFees: false });
 
   const [themeColor, setThemeColor] = useState('#c9a84c');
   const [secondaryThemeColor, setSecondaryThemeColor] = useState('#1a2e1a');
@@ -68,13 +67,13 @@ export default function HostLiveCampaignBuilder() {
   const [courseSearch, setCourseSearch] = useState('');
   const [courseResults, setCourseResults] = useState<any[]>([]);
   
-  const [sponsors, setSponsors] = useState<{tier: string, price: number, spots: number, incentives: string[], includesIntent: boolean, includesDinner: boolean, rotatesOnTv?: boolean}[]>([
-     { tier: 'Title Sponsor', price: 5000, spots: 1, incentives: ['Primary Logo on all Hero branding', 'Foursome included', 'Speaking opportunity at dinner'], includesIntent: true, includesDinner: true, rotatesOnTv: true },
-     { tier: 'Beverage Cart', price: 1500, spots: 2, incentives: ['Logo on beverage cart', 'Custom branded napkins'], includesIntent: false, includesDinner: false, rotatesOnTv: true }
+  const [sponsors, setSponsors] = useState<{tier: string, price: number, spots: number, incentives: string[], includesIntent: boolean, includesDinner: boolean, rotatesOnTv?: boolean, passFees: boolean}[]>([
+     { tier: 'Title Sponsor', price: 5000, spots: 1, incentives: ['Primary Logo on all Hero branding', 'Foursome included', 'Speaking opportunity at dinner'], includesIntent: true, includesDinner: true, rotatesOnTv: true, passFees: false },
+     { tier: 'Beverage Cart', price: 1500, spots: 2, incentives: ['Logo on beverage cart', 'Custom branded napkins'], includesIntent: false, includesDinner: false, rotatesOnTv: true, passFees: false }
   ]);
   const [showSponsorForm, setShowSponsorForm] = useState(false);
   const [editingSponsorIdx, setEditingSponsorIdx] = useState<number | null>(null);
-  const [newSponsor, setNewSponsor] = useState<{tier: string, price: number | string, spots: number, incentivesText: string, includesIntent: boolean, includesDinner: boolean, rotatesOnTv: boolean}>({ tier: '', price: '', spots: 1, incentivesText: '', includesIntent: false, includesDinner: false, rotatesOnTv: false });
+  const [newSponsor, setNewSponsor] = useState<{tier: string, price: number | string, spots: number, incentivesText: string, includesIntent: boolean, includesDinner: boolean, rotatesOnTv: boolean, passFees: boolean}>({ tier: '', price: '', spots: 1, incentivesText: '', includesIntent: false, includesDinner: false, rotatesOnTv: false, passFees: false });
   const [sponsorPreviewMode, setSponsorPreviewMode] = useState<'directory' | 'checkout'>('directory');
   
   // Donations State
@@ -384,12 +383,7 @@ export default function HostLiveCampaignBuilder() {
   let totalFee = fee;
   let organizerRevenue = fee - stripeFee;
 
-  if (passFees) {
-    totalFee = fee + stripeFee;
-    organizerRevenue = fee;
-    organizerRevenue = fee;
-  }
-
+  
   // --- EDITOR UI CHUNKS --- //
 
   const renderContentTab = () => (
@@ -882,65 +876,44 @@ export default function HostLiveCampaignBuilder() {
            )}
            
            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {packages.map((p, i) => (
-                 <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', background: '#f8faf9' }}>
-                    <div>
-                       <div style={{ fontWeight: 600, color: 'var(--forest)', fontSize: '0.95rem' }}>{p.name}</div>
-                       <div style={{ fontSize: '0.75rem', color: 'var(--mist)', marginTop: '0.2rem' }}>
-                          {p.isTeam ? 'Foursome / Team Registration' : 'Individual Registration'}
+              {packages.map((p, i) => {
+                 const standardFee = p.price > 0 ? p.price * 0.029 + 0.30 : 0;
+                 const charityFee = p.price > 0 ? p.price * 0.022 + 0.30 : 0;
+                 const payoutStandard = p.passFees ? p.price : p.price - standardFee;
+                 const payoutCharity = p.passFees ? p.price : p.price - charityFee;
+                 return (
+                 <div key={i} style={{ display: 'flex', flexDirection: 'column', padding: '1rem', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', background: '#f8faf9' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                       <div>
+                          <div style={{ fontWeight: 600, color: 'var(--forest)', fontSize: '0.95rem' }}>{p.name}</div>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--mist)', marginTop: '0.2rem' }}>
+                             {p.isTeam ? 'Foursome' : 'Individual'}
+                             {p.passFees ? ' • Reg. Pays Fees' : ' • You Absorb Fees'}
+                          </div>
+                       </div>
+                       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                          <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--grass)' }}>${typeof p.price === 'number' ? p.price.toFixed(2) : Number(p.price).toFixed(2)}</span>
+                          <button onClick={() => {
+                             setNewPackage(p);
+                             setPackages(packages.filter((_, idx) => idx !== i));
+                             setShowPackageForm(true);
+                          }} style={{ background: 'none', border: 'none', color: 'var(--forest)', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600 }}>Edit</button>
+                          <button onClick={() => setPackages(packages.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: '#e74c3c', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600 }}>Remove</button>
                        </div>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                       <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--grass)' }}>${p.price.toFixed(2)}</span>
-                       <button onClick={() => {
-                          setNewPackage(p);
-                          setPackages(packages.filter((_, idx) => idx !== i));
-                          setShowPackageForm(true);
-                       }} style={{ background: 'none', border: 'none', color: 'var(--forest)', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600 }}>Edit</button>
-                       <button onClick={() => setPackages(packages.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: '#e74c3c', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600 }}>Remove</button>
+                    <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', paddingTop: '0.8rem', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
+                       <div style={{ flex: 1 }}>
+                          <div style={{ fontSize: '0.65rem', color: 'var(--mist)', fontWeight: 600, marginBottom: '0.2rem' }}>STANDARD PAYOUT</div>
+                          <div style={{ fontSize: '0.85rem', color: 'var(--ink)', fontWeight: 700 }}>${payoutStandard.toFixed(2)}</div>
+                       </div>
+                       <div style={{ flex: 1, background: 'rgba(212,175,55,0.05)', padding: '0.4rem 0.6rem', borderRadius: '4px', border: '1px solid rgba(212,175,55,0.2)' }}>
+                          <div style={{ fontSize: '0.65rem', color: 'var(--forest)', fontWeight: 600, marginBottom: '0.2rem' }}>★ 501(C)(3) PAYOUT</div>
+                          <div style={{ fontSize: '0.85rem', color: 'var(--grass)', fontWeight: 700 }}>${payoutCharity.toFixed(2)}</div>
+                       </div>
                     </div>
                  </div>
-              ))}
+              )})}
            </div>
-           
-           {/* Revenue Tracker tied to the primary top-level package */}
-           {packages.length > 0 && (
-             <div className="pricing-box" style={{ background: '#f8faf9', padding: '1.25rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.05)', marginTop: '1.5rem' }}>
-                <div className="pricing-row" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-                   <span style={{ color: 'var(--mist)' }}>Primary Package fee ({packages[0].name})</span>
-                   <strong>${fee.toFixed(2)}</strong>
-                </div>
-                <div className="pricing-row" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.9rem' }}>
-                  <span style={{ color: 'var(--mist)' }}>
-                     Credit Card Processing Fee <br/>
-                     <span style={{ fontSize: '0.75rem' }}>{passFees ? '(Paid by Registrant)' : '(Deducted from Payout)'}</span>
-                  </span>
-                  <strong style={{ color: passFees ? 'var(--mist)' : '#e74c3c' }}>{passFees ? '' : '-'}${stripeFee.toFixed(2)}</strong>
-                </div>
-                
-                <div className="notif-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '1rem 0', padding: '1rem', background: '#fff', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.1)' }}>
-                  <div>
-                    <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--ink)' }}>Pass Fees to Registrant</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>Automatically append standard CC processor costs to checkout.</div>
-                  </div>
-                  <label className="toggle-switch">
-                    <input type="checkbox" checked={passFees} onChange={e => setPassFees(e.target.checked)} />
-                    <span className="toggle-slider"></span>
-                  </label>
-                </div>
-    
-                <div style={{ height: '1px', background: 'rgba(0,0,0,0.1)', margin: '1rem 0' }}></div>
-    
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontWeight: 700, color: 'var(--ink)' }}>Registrant Pays</span>
-                  <span style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--ink)' }}>${totalFee.toFixed(2)}</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem' }}>
-                   <span style={{ fontWeight: 700, color: 'var(--grass)' }}>You Receive</span>
-                   <span style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--grass)' }}>${organizerRevenue.toFixed(2)}</span>
-                </div>
-             </div>
-           )}
         </div>
         
         
@@ -980,15 +953,25 @@ export default function HostLiveCampaignBuilder() {
                           <input type="number" value={newAddon.maxQuantity || ''} onChange={e => setNewAddon({...newAddon, maxQuantity: e.target.value ? Number(e.target.value) : undefined})} placeholder="e.g. 2" style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }} />
                        </div>
                     </div>
-                    <button 
+                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fff', padding: '0.8rem 1rem', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.05)', marginTop: '0.5rem' }}>
+                        <div>
+                           <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--forest)' }}>Pass Fees to Registrant?</div>
+                           <div style={{ fontSize: '0.65rem', color: 'var(--mist)' }}>Automatically append processing costs to checkout.</div>
+                        </div>
+                        <label className="toggle-switch">
+                           <input type="checkbox" checked={newAddon.passFees} onChange={e => setNewAddon({...newAddon, passFees: e.target.checked})} />
+                           <span className="toggle-slider"></span>
+                        </label>
+                     </div>
+                     <button 
                        onClick={() => {
                           if (newAddon.name && newAddon.price !== '' && Number(newAddon.price) >= 0) {
                              setAddons([...addons, { ...newAddon, price: Number(newAddon.price) }]);
-                             setNewAddon({ name: '', price: '', type: 'per_player', maxQuantity: undefined });
+                             setNewAddon({ name: '', price: '', type: 'per_player', maxQuantity: undefined, passFees: false });
                              setShowAddonForm(false);
                           }
                        }}
-                       style={{ padding: '0.8rem', background: 'var(--forest)', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 700, cursor: 'pointer' }}>
+                       style={{ padding: '0.8rem', background: 'var(--forest)', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 700, cursor: 'pointer', marginTop: '0.5rem' }}>
                        Save Add-on to Cart
                     </button>
                  </div>
@@ -1002,28 +985,46 @@ export default function HostLiveCampaignBuilder() {
            )}
            
            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {addons.map((a, i) => (
-                 <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', background: '#f8faf9' }}>
-                    <div>
-                       <div style={{ fontWeight: 600, color: 'var(--forest)', fontSize: '0.95rem' }}>
-                          {a.name}
-                          {a.maxQuantity ? <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--mist)', marginLeft: '0.5rem' }}>(Max {a.maxQuantity})</span> : null}
+              {addons.map((a, i) => {
+                 const standardFee = a.price > 0 ? a.price * 0.029 + 0.30 : 0;
+                 const charityFee = a.price > 0 ? a.price * 0.022 + 0.30 : 0;
+                 const payoutStandard = a.passFees ? a.price : a.price - standardFee;
+                 const payoutCharity = a.passFees ? a.price : a.price - charityFee;
+                 return (
+                 <div key={i} style={{ display: 'flex', flexDirection: 'column', padding: '1rem', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', background: '#f8faf9' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                       <div>
+                          <div style={{ fontWeight: 600, color: 'var(--forest)', fontSize: '0.95rem' }}>
+                             {a.name}
+                             {a.maxQuantity ? <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--mist)', marginLeft: '0.5rem' }}>(Max {a.maxQuantity})</span> : null}
+                          </div>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--mist)', marginTop: '0.2rem' }}>
+                             {a.type === 'per_player' ? 'Per Player' : a.type === 'per_team' ? 'Per Team' : 'Flat Purchase'}
+                             {a.passFees ? ' • Reg. Pays Fees' : ' • You Absorb Fees'}
+                          </div>
                        </div>
-                       <div style={{ fontSize: '0.75rem', color: 'var(--mist)', marginTop: '0.2rem' }}>
-                          {a.type === 'per_player' ? 'Applied Per Player' : a.type === 'per_team' ? 'Applied Per Team' : 'Flat Purchase Item'}
+                       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                          <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--ink)' }}>${a.price.toFixed(2)}</div>
+                          <button onClick={() => {
+                             setNewAddon(a);
+                             setAddons(addons.filter((_, idx) => idx !== i));
+                             setShowAddonForm(true);
+                          }} style={{ background: 'none', border: 'none', color: 'var(--forest)', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600 }}>Edit</button>
+                          <button onClick={() => setAddons(addons.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: '#ff5f56', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600 }}>Remove</button>
                        </div>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                       <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--ink)' }}>${a.price.toFixed(2)}</div>
-                       <button onClick={() => {
-                          setNewAddon(a);
-                          setAddons(addons.filter((_, idx) => idx !== i));
-                          setShowAddonForm(true);
-                       }} style={{ background: 'none', border: 'none', color: 'var(--forest)', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600 }}>Edit</button>
-                       <button onClick={() => setAddons(addons.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: '#ff5f56', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600 }}>Remove</button>
+                    <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', paddingTop: '0.8rem', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
+                       <div style={{ flex: 1 }}>
+                          <div style={{ fontSize: '0.65rem', color: 'var(--mist)', fontWeight: 600, marginBottom: '0.2rem' }}>STANDARD PAYOUT</div>
+                          <div style={{ fontSize: '0.85rem', color: 'var(--ink)', fontWeight: 700 }}>${payoutStandard.toFixed(2)}</div>
+                       </div>
+                       <div style={{ flex: 1, background: 'rgba(212,175,55,0.05)', padding: '0.4rem 0.6rem', borderRadius: '4px', border: '1px solid rgba(212,175,55,0.2)' }}>
+                          <div style={{ fontSize: '0.65rem', color: 'var(--forest)', fontWeight: 600, marginBottom: '0.2rem' }}>★ 501(C)(3) PAYOUT</div>
+                          <div style={{ fontSize: '0.85rem', color: 'var(--grass)', fontWeight: 700 }}>${payoutCharity.toFixed(2)}</div>
+                       </div>
                     </div>
                  </div>
-              ))}
+              )})}
            </div>
         </div>
         
@@ -1572,10 +1573,19 @@ export default function HostLiveCampaignBuilder() {
         );
      }
      if (activeTab === 'finance') {
-        const entryFeeSubtotal = fee;
-        const totalAddon = addons.reduce((acc, a) => acc + a.price, 0);
-        const totalProcessing = passFees ? (stripeFee * 4) : 0;
-        const totalDue = entryFeeSubtotal + totalAddon + totalProcessing;
+        const entryFeeSubtotal = packages.length > 0 ? Number(packages[0].price) : 0;
+         const entryFeePassed = packages.length > 0 && packages[0].passFees;
+         
+         const totalAddon = addons.reduce((acc, a) => acc + Number(a.price), 0);
+         const passedAddons = addons.filter(a => a.passFees).reduce((acc, a) => acc + Number(a.price), 0);
+         
+         const baseFeeRate = charityType === 'golf_sponsored' ? 0.022 : 0.029;
+         
+         const entryProcessing = entryFeePassed ? (entryFeeSubtotal * baseFeeRate + 0.30) : 0;
+         const addonProcessing = passedAddons > 0 ? (passedAddons * baseFeeRate + 0.30) : 0;
+         const totalProcessing = entryProcessing + addonProcessing;
+         
+         const totalDue = entryFeeSubtotal + totalAddon + totalProcessing;
 
         return (
            <div style={{ height: '450px', overflowY: 'auto', background: '#f8faf9', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: '3rem 2rem' }}>
@@ -1585,7 +1595,7 @@ export default function HostLiveCampaignBuilder() {
 
                 <div style={{ borderTop: '1px solid rgba(0,0,0,0.05)', borderBottom: '1px solid rgba(0,0,0,0.05)', padding: '1.5rem 0', marginBottom: '1.5rem' }}>
                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.9rem' }}>
-                      <span style={{ fontWeight: 600, color: 'var(--ink)' }}>Primary Package</span>
+                      <span style={{ fontWeight: 600, color: 'var(--ink)' }}>{packages.length > 0 ? packages[0].name : 'Primary Package'}</span>
                       <span style={{ fontWeight: 700, color: 'var(--ink)' }}>${entryFeeSubtotal.toFixed(2)}</span>
                    </div>
                    {addons.map((a, i) => (
@@ -1594,12 +1604,15 @@ export default function HostLiveCampaignBuilder() {
                           <span style={{ fontWeight: 600, color: 'var(--mist)' }}>${a.price.toFixed(2)}</span>
                        </div>
                    ))}
-                   {passFees && (
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.85rem' }}>
-                         <span style={{ color: 'var(--mist)' }}>+ Platform & Tax</span>
-                         <span style={{ fontWeight: 600, color: 'var(--mist)' }}>${(stripeFee * 4).toFixed(2)}</span>
-                      </div>
-                   )}
+                   {totalProcessing > 0 && (
+                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.85rem' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column' }}>
+                             <span style={{ color: 'var(--mist)', fontWeight: 600 }}>Standard Credit Card Processing Entity Fee</span>
+                             <span style={{ color: '#aaa', fontSize: '0.65rem' }}>TourneyLinks charges exactly $0 platform & convenience fees.</span>
+                          </div>
+                          <span style={{ fontWeight: 600, color: 'var(--mist)' }}>${totalProcessing.toFixed(2)}</span>
+                       </div>
+                    )}
                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
                       <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.1rem' }}>Total Due</span>
                       <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.1rem' }}>${totalDue.toFixed(2)}</span>
@@ -1957,10 +1970,19 @@ export default function HostLiveCampaignBuilder() {
         );
      }
      if (activeTab === 'finance') {
-        const entryFeeSubtotal = fee;
-        const totalAddon = addons.reduce((acc, a) => acc + a.price, 0);
-        const totalProcessing = passFees ? (stripeFee * 4) : 0;
-        const totalDue = entryFeeSubtotal + totalAddon + totalProcessing;
+        const entryFeeSubtotal = packages.length > 0 ? Number(packages[0].price) : 0;
+         const entryFeePassed = packages.length > 0 && packages[0].passFees;
+         
+         const totalAddon = addons.reduce((acc, a) => acc + Number(a.price), 0);
+         const passedAddons = addons.filter(a => a.passFees).reduce((acc, a) => acc + Number(a.price), 0);
+         
+         const baseFeeRate = charityType === 'golf_sponsored' ? 0.022 : 0.029;
+         
+         const entryProcessing = entryFeePassed ? (entryFeeSubtotal * baseFeeRate + 0.30) : 0;
+         const addonProcessing = passedAddons > 0 ? (passedAddons * baseFeeRate + 0.30) : 0;
+         const totalProcessing = entryProcessing + addonProcessing;
+         
+         const totalDue = entryFeeSubtotal + totalAddon + totalProcessing;
         
         return (
            <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative', background: '#f8faf9', padding: '1.5rem' }}>
@@ -1979,12 +2001,15 @@ export default function HostLiveCampaignBuilder() {
                           <span style={{ fontWeight: 600, color: 'var(--mist)' }}>${a.price.toFixed(2)}</span>
                        </div>
                    ))}
-                   {passFees && (
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.8rem' }}>
-                         <span style={{ color: 'var(--mist)' }}>+ Platform & Tax</span>
-                         <span style={{ fontWeight: 600, color: 'var(--mist)' }}>${(stripeFee * 4).toFixed(2)}</span>
-                      </div>
-                   )}
+                   {totalProcessing > 0 && (
+                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.8rem' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column' }}>
+                             <span style={{ color: 'var(--mist)', fontWeight: 600 }}>Standard Credit Card Processing Entity Fee</span>
+                             <span style={{ color: '#aaa', fontSize: '0.65rem' }}>TourneyLinks charges exactly $0 platform & convenience fees.</span>
+                          </div>
+                          <span style={{ fontWeight: 600, color: 'var(--mist)' }}>${totalProcessing.toFixed(2)}</span>
+                       </div>
+                    )}
                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
                       <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.1rem' }}>Total Due</span>
                       <span style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1.1rem' }}>${totalDue.toFixed(2)}</span>

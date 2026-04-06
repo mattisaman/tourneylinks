@@ -1,0 +1,69 @@
+with open('src/app/host/page.tsx', 'r') as f:
+    text = f.read()
+
+import re
+
+# find the exact string that looks like the empty array div
+match = re.search(r'           <div style=\{\{ display: \'flex\', flexDirection: \'column\', gap: \'1rem\' \}\}>\n\s*</div>\n        </div>\n     </div>', text)
+if match:
+    print("Found! Replacing...")
+    
+    new_code = """           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+               {sponsors.map((s, i) => {
+                  const standardFee = s.price > 0 ? s.price * 0.029 + 0.30 : 0;
+                  const charityFee = s.price > 0 ? s.price * 0.022 + 0.30 : 0;
+                  const payoutStandard = s.passFees ? s.price : s.price - standardFee;
+                  const payoutCharity = s.passFees ? s.price : s.price - charityFee;
+                  return (
+                  <div key={i} style={{ display: 'flex', flexDirection: 'column', padding: '1rem', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', background: '#f8faf9', transition: '0.2s', ...(editingSponsorIdx === i ? { opacity: 0.5, pointerEvents: 'none' } : {}) }}>
+                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: s.incentives && s.incentives.length > 0 ? '1px solid rgba(0,0,0,0.05)' : 'none', paddingBottom: s.incentives && s.incentives.length > 0 ? '0.75rem' : 0, marginBottom: s.incentives && s.incentives.length > 0 ? '0.75rem' : 0 }}>
+                        <div>
+                           <div style={{ fontWeight: 700, color: 'var(--forest)', fontSize: '0.95rem' }}>{s.tier} <span style={{ fontSize: '0.7rem', color: 'var(--mist)', fontWeight: 400, marginLeft: '0.5rem' }}>({s.spots} {s.spots === 1 ? 'spot' : 'spots'})</span></div>
+                           <div style={{ fontSize: '0.75rem', color: 'var(--mist)', marginTop: '0.2rem' }}>
+                              {s.passFees ? 'Reg. Pays Fees' : 'You Absorb Fees'}
+                           </div>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                           <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--grass)' }}>${s.price.toLocaleString()}</div>
+                           <div style={{ display: 'flex', gap: '0.5rem' }}>
+                              <button onClick={() => {
+                                 setEditingSponsorIdx(i);
+                                 setNewSponsor({ tier: s.tier, price: s.price, spots: s.spots, incentivesText: (s.incentives || []).join('\\n'), includesIntent: s.includesIntent || false, includesDinner: s.includesDinner || false, rotatesOnTv: s.rotatesOnTv || false, passFees: s.passFees || false });
+                                 setShowSponsorForm(true);
+                              }} style={{ background: 'none', border: 'none', color: '#3399FF', fontSize: '0.75rem', cursor: 'pointer', fontWeight: 600 }}>Edit</button>
+                              <button onClick={() => setSponsors(sponsors.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: '#ff5f56', fontSize: '0.75rem', cursor: 'pointer', fontWeight: '600' }}>Remove</button>
+                           </div>
+                        </div>
+                     </div>
+                     <div style={{ display: 'flex', gap: '1rem', marginTop: s.incentives && s.incentives.length > 0 ? '0' : '1rem', paddingTop: s.incentives && s.incentives.length > 0 ? '0' : '0.8rem', borderTop: s.incentives && s.incentives.length > 0 ? 'none' : '1px solid rgba(0,0,0,0.05)' }}>
+                        <div style={{ flex: 1 }}>
+                           <div style={{ fontSize: '0.65rem', color: 'var(--mist)', fontWeight: 600, marginBottom: '0.2rem' }}>STANDARD PAYOUT</div>
+                           <div style={{ fontSize: '0.85rem', color: 'var(--ink)', fontWeight: 700 }}>${payoutStandard.toFixed(2)}</div>
+                        </div>
+                        <div style={{ flex: 1, background: 'rgba(212,175,55,0.05)', padding: '0.4rem 0.6rem', borderRadius: '4px', border: '1px solid rgba(212,175,55,0.2)' }}>
+                           <div style={{ fontSize: '0.65rem', color: 'var(--forest)', fontWeight: 600, marginBottom: '0.2rem' }}>★ 501(C)(3) PAYOUT</div>
+                           <div style={{ fontSize: '0.85rem', color: 'var(--grass)', fontWeight: 700 }}>${payoutCharity.toFixed(2)}</div>
+                        </div>
+                     </div>
+                     {s.incentives && s.incentives.length > 0 && (
+                        <div style={{ paddingLeft: '0.5rem', marginTop: '0.8rem', paddingTop: '0.8rem', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
+                           {s.incentives.map((inc, incIdx) => (
+                              <div key={incIdx} style={{ fontSize: '0.75rem', color: 'var(--mist)', display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.4rem' }}>
+                                 <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'var(--gold)' }}></div>
+                                 {inc}
+                              </div>
+                           ))}
+                        </div>
+                     )}
+                  </div>
+               )})}
+            </div>
+         </div>
+      </div>"""
+    
+    text = text[:match.start()] + new_code + text[match.end():]
+    with open('src/app/host/page.tsx', 'w') as f:
+        f.write(text)
+else:
+    print("Not found! Let's preview index")
+    print(repr(text[text.find("1.5 }")-100:text.find("1.5 }")+200]))
