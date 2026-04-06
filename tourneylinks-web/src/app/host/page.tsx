@@ -3,12 +3,15 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Smartphone, Monitor, Image as ImageIcon, DollarSign, Settings, ShoppingBag, Plus, UploadCloud } from 'lucide-react';
+import { useAuth, SignInButton } from '@clerk/nextjs';
 import StripeOnboardButton from './onboarding/StripeOnboardButton';
 import dynamic from 'next/dynamic';
 
 const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });
 
 export default function HostLiveCampaignBuilder() {
+  const { userId } = useAuth();
+  const [showSaveModal, setShowSaveModal] = useState(false);
   const [activeTab, setActiveTab] = useState<'content' | 'finance' | 'donations' | 'sponsorships' | 'launch'>('content');
 
   // Form State
@@ -272,6 +275,12 @@ export default function HostLiveCampaignBuilder() {
        document.removeEventListener('click', handleLinkClick, { capture: true });
     };
   }, [draftId, hasMinimalSubstance]);
+
+  useEffect(() => {
+     if (userId && !draftId && hasMinimalSubstance) {
+        handleManualSaveAsDraft();
+     }
+  }, [userId, draftId, hasMinimalSubstance]);
 
   const handleManualSaveAsDraft = async () => {
      if (draftId) return;
@@ -1475,7 +1484,10 @@ export default function HostLiveCampaignBuilder() {
                <div style={{ fontSize: '0.75rem', textDecoration: 'line-through', opacity: 0.7, marginBottom: '-0.2rem' }}>$149 Regular Price</div>
                <div style={{ fontSize: '1.1rem' }}>Pay $99 Intro Price 🚀</div>
              </button>
-             <button className="btn-hero-outline" style={{ flex: 1, padding: '1rem', borderRadius: '8px', cursor: 'pointer', opacity: saveStatus === 'saving' ? 0.5 : 1 }} onClick={() => { if (!draftId) { handleManualSaveAsDraft(); } else { alert('Your draft is automatically and securely saved. You can safely return to your profile or close the page!'); } }}>
+             <button className="btn-hero-outline" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1, padding: '1rem', borderRadius: '8px', cursor: 'pointer', opacity: saveStatus === 'saving' ? 0.5 : 1 }} onClick={() => { 
+                if (!draftId) handleManualSaveAsDraft(); 
+                setShowSaveModal(true); 
+             }}>
                {saveStatus === 'saving' ? 'Auto-Saving...' : (saveStatus === 'saved' ? 'Saved & Synced ✅' : 'Save as Draft')}
              </button>
            </div>
@@ -2459,6 +2471,47 @@ export default function HostLiveCampaignBuilder() {
            </div>
          </div>
        )}
-    </div>
+
+       {/* Custom Status Modal for Save Draft */}
+       {showSaveModal && (
+         <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(5,11,8,0.85)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+           <div style={{ background: '#0a1a12', padding: '2.5rem', borderRadius: '24px', border: '1px solid var(--gold)', boxShadow: '0 20px 60px rgba(0,0,0,0.8), 0 0 30px rgba(212,175,55,0.1)', maxWidth: '450px', textAlign: 'center', width: '90%', animation: 'fadeIn 0.2s' }}>
+             <h3 style={{ color: '#fff', fontSize: '1.6rem', marginBottom: '1rem', fontFamily: 'var(--font-serif)', lineHeight: 1.2 }}>
+               {userId ? 'Campaign Draft Secured' : 'Claim Your Campaign'}
+             </h3>
+             <p style={{ color: 'var(--mist)', fontSize: '0.95rem', marginBottom: '2.5rem', lineHeight: 1.6 }}>
+               {userId ? 'Your draft is automatically and securely saved. You can safely return to your profile or continue editing here.' : 'Secure this campaign draft! Create a quick profile or log in to automatically save your progress to your database.'}
+             </p>
+             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+               {userId ? (
+                 <>
+                   <button onClick={() => {
+                      (window as any).__skipBeforeUnload = true;
+                      window.location.href = '/profile';
+                   }} style={{ background: 'var(--gold)', color: '#000', fontWeight: 800, padding: '1.1rem', borderRadius: '12px', border: 'none', cursor: 'pointer', fontSize: '0.9rem', letterSpacing: '0.05em', textTransform: 'uppercase', transition: '0.2s', boxShadow: '0 4px 15px rgba(212,175,55,0.3)' }}>
+                      Return to Profile
+                   </button>
+                   <button onClick={() => setShowSaveModal(false)} style={{ background: 'transparent', color: '#fff', border: '1px solid rgba(255,255,255,0.15)', padding: '1rem', borderRadius: '12px', cursor: 'pointer', fontWeight: 600, transition: '0.2s' }}>
+                      Continue Editing
+                   </button>
+                 </>
+               ) : (
+                 <>
+                   <SignInButton mode="modal" fallbackRedirectUrl="/host">
+                     <button onClick={() => {}} style={{ background: 'var(--gold)', color: '#000', fontWeight: 800, padding: '1.1rem', borderRadius: '12px', border: 'none', cursor: 'pointer', fontSize: '0.9rem', width: '100%', letterSpacing: '0.05em', textTransform: 'uppercase', transition: '0.2s', boxShadow: '0 4px 15px rgba(212,175,55,0.3)' }}>
+                        Sign Up to Save Progress
+                     </button>
+                   </SignInButton>
+                   <button onClick={() => setShowSaveModal(false)} style={{ background: 'transparent', color: '#fff', border: '1px solid rgba(255,255,255,0.15)', padding: '1rem', borderRadius: '12px', cursor: 'pointer', fontWeight: 600, transition: '0.2s' }}>
+                      Continue Editing Anonymously
+                   </button>
+                 </>
+               )}
+             </div>
+           </div>
+         </div>
+       )}
+
+     </div>
   );
 }
