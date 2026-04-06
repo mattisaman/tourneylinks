@@ -597,7 +597,7 @@ export default function HostLiveCampaignBuilder() {
                      </div>
                    )}
                 </label>
-                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(0,0,0,0.1)', borderRadius: '8px', padding: '2rem', background: heroImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${heroImage}) ${heroPositionX}% ${heroPosition}%/${heroZoom}%` : '#fafaf5', backgroundRepeat: 'no-repeat', cursor: 'pointer', minHeight: '160px', position: 'relative' }}>
+                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(0,0,0,0.1)', borderRadius: '8px', padding: '2rem', background: heroImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${heroImage}) ${heroPositionX}% ${heroPosition}%/${heroZoom}% no-repeat` : '#fafaf5', cursor: 'pointer', minHeight: '160px', position: 'relative' }}>
                    <input type="file" style={{ display: 'none' }} accept="image/*" onChange={e => handleImageUpload(e, setHeroImage)} />
                    {!heroImage && (
                      <>
@@ -626,7 +626,7 @@ export default function HostLiveCampaignBuilder() {
                      </div>
                    )}
                 </label>
-                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(0,0,0,0.1)', borderRadius: '8px', padding: '2rem', background: tileImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${tileImage}) ${tilePosition}/${tileZoom}%` : '#fafaf5', backgroundRepeat: 'no-repeat', cursor: 'pointer', minHeight: '160px', position: 'relative' }}>
+                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(0,0,0,0.1)', borderRadius: '8px', padding: '2rem', background: tileImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${tileImage}) ${tilePosition}/${tileZoom}% no-repeat` : '#fafaf5', cursor: 'pointer', minHeight: '160px', position: 'relative' }}>
                    <input type="file" style={{ display: 'none' }} accept="image/*" onChange={e => handleImageUpload(e, setTileImage)} />
                    {!tileImage && (
                      <>
@@ -2176,7 +2176,8 @@ export default function HostLiveCampaignBuilder() {
        {/* Global Title Header - Dark Immersive Hub */}
        <div style={{ 
           position: 'relative',
-          background: 'linear-gradient(to bottom, rgba(7, 18, 11, 0.75), rgba(5, 11, 8, 0.95)), url(/hero-bg-4.jpg)',
+          backgroundImage: 'linear-gradient(to bottom, rgba(7, 18, 11, 0.75), rgba(5, 11, 8, 0.95)), url(/hero-bg-4.jpg)',
+          backgroundColor: '#050b08',
           backgroundSize: 'cover',
           backgroundPosition: 'center 40%', 
           paddingTop: '6rem', // Clears absolute global nav
@@ -2187,8 +2188,17 @@ export default function HostLiveCampaignBuilder() {
        }}>
           <div style={{ maxWidth: '1600px', margin: '0 auto', padding: '0 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
              <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-                <div style={{ width: '50px', height: '50px', borderRadius: '12px', background: 'linear-gradient(135deg, var(--gold) 0%, #b8952a 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 15px rgba(212,175,55,0.4)' }}>
-                   <span style={{ fontSize: '1.4rem' }}>⛳</span>
+                <div style={{ 
+                  width: '50px', height: '50px', borderRadius: '12px',
+                  background: 'radial-gradient(ellipse at top left, #f9e28e 0%, #d4af37 40%, #8a6d1c 100%)',
+                  borderTop: '1px solid rgba(255,255,255,0.7)',
+                  borderBottom: '1px solid rgba(0,0,0,0.5)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: '0 8px 25px rgba(212,175,55,0.4), inset 0 2px 10px rgba(255,255,255,0.4)',
+                  position: 'relative', overflow: 'hidden'
+                }}>
+                  <div style={{ position: 'absolute', top: '-10px', left: '-10px', right: '10px', height: '25px', background: 'linear-gradient(to bottom, rgba(255,255,255,0.8), transparent)', transform: 'rotate(-20deg)', borderRadius: '50%' }}></div>
+                  <span style={{ fontSize: '1.4rem', position: 'relative', zIndex: 1, filter: 'drop-shadow(0 2px 5px rgba(0,0,0,0.5))' }}>⛳</span>
                 </div>
                  <div>
                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.3rem' }}>
