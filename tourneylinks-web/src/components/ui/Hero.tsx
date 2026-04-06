@@ -24,17 +24,8 @@ export default function Hero() {
               backdropFilter: 'blur(16px)',
               textShadow: '0 0 20px rgba(251, 240, 192, 0.5)'
           }}>The Complete Golf Ecosystem</div>
-          <h1 className="metallic-text" style={{ 
-            fontSize: 'clamp(2.5rem, 5vw, 4.5rem)', 
-            fontFamily: 'var(--font-serif), serif', 
-            margin: '0 0 1rem 0',
-            textAlign: 'center',
-            padding: 0,
-            fontWeight: 400,
-            lineHeight: 1.1,
-            textShadow: '0 4px 15px rgba(212,175,55,0.4), 0 2px 4px rgba(0,0,0,0.8)'
-          }}>
-            The Engine Behind Every <em style={{ fontStyle: 'italic', padding: '0 0.1em' }}>Great</em> Local Tournament
+          <h1 className="hero-headline" style={{ maxWidth: 'none', textAlign: 'center' }}>
+            The Engine Behind Every <em>Great</em> Local Tournament
           </h1>
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: '1rem', fontSize: '0.95rem', color: 'rgba(245,240,232,0.8)', marginTop: '0.5rem', marginBottom: '2rem', fontFamily: 'var(--font-sans), sans-serif', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}><span style={{ color: 'var(--gold)' }}>✓</span> <b>$149/Event</b> for Organizers (Introductory Offer $99)</span>
