@@ -774,13 +774,14 @@ export default function HostLiveCampaignBuilder() {
               </button>
            </div>
            
+           <div style={{ background: 'rgba(212,175,55,0.1)', border: '1px dashed var(--gold)', padding: '0.6rem 0.8rem', borderRadius: '6px', fontSize: '0.75rem', color: 'var(--ink)', marginBottom: '1.5rem', display: 'flex', alignItems: 'flex-start', gap: '0.6rem', lineHeight: 1.4 }}>
+              <span style={{ fontSize: '1rem', filter: 'drop-shadow(0 2px 2px rgba(212,175,55,0.4))' }}>��</span>
+              <div><strong style={{ color: 'var(--forest)' }}>PRO TIP:</strong> If you plan to "Absorb Fees" so registrants don't see Stripe processing fees at checkout, look at the active payout ledger below and raise your package price slightly to offset the fee! It's a great way to offer clean, round numbers.</div>
+           </div>
+           
            {showPackageForm && (
               <div style={{ padding: '1.5rem', background: '#f4f7f5', borderRadius: '8px', border: '1px dashed rgba(0,0,0,0.1)', marginBottom: '1.5rem' }}>
                  <div style={{ fontWeight: 700, color: 'var(--forest)', marginBottom: '1rem', fontSize: '0.9rem' }}>Create Custom Package</div>
-                 <div style={{ background: 'rgba(212,175,55,0.1)', border: '1px dashed var(--gold)', padding: '0.6rem 0.8rem', borderRadius: '6px', fontSize: '0.75rem', color: 'var(--ink)', marginBottom: '1rem', display: 'flex', alignItems: 'flex-start', gap: '0.6rem', lineHeight: 1.4 }}>
-                    <span style={{ fontSize: '1rem', filter: 'drop-shadow(0 2px 2px rgba(212,175,55,0.4))' }}>💡</span>
-                    <div><strong style={{ color: 'var(--forest)' }}>PRO TIP:</strong> If you plan to "Absorb Fees" so registrants don't see Stripe processing fees at checkout, look at the active payout ledger below and raise your package price slightly to offset the fee! It's a great way to offer clean, round numbers.</div>
-                 </div>
                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <div style={{ display: 'flex', gap: '1rem' }}>
                        <div style={{ flex: 2 }}>
