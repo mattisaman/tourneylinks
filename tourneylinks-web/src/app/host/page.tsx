@@ -829,6 +829,7 @@ export default function HostLiveCampaignBuilder() {
                                {isSuggestingPrice ? 'Calculating...' : '✨ AI Suggest'}
                              </button>
                           </div>
+                          <div style={{ fontSize: '0.65rem', color: 'var(--mist)', lineHeight: 1.3, marginTop: '0.4rem' }}>Analyzes venue reputation & regional wealth data</div>
                        </div>
                     </div>
                     <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', cursor: 'pointer' }}>
@@ -838,6 +839,19 @@ export default function HostLiveCampaignBuilder() {
                           <div style={{ fontSize: '0.7rem', color: 'var(--mist)', marginTop: '0.1rem', lineHeight: 1.4 }}>When checked, the system will prompt the buyer to enter names & contact info for 4 registered players during checkout.</div>
                        </div>
                     </label>
+
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#fff', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.1)', marginTop: '0.8rem' }}>
+                       <div>
+                          <div style={{ fontSize: '0.8rem', color: 'var(--ink)', fontWeight: 600 }}>Pass Fees to Registrant</div>
+                          <div style={{ fontSize: '0.7rem', color: 'var(--mist)', marginTop: '0.1rem', lineHeight: 1.4 }}>When toggled on, the buyer pays the processing fee. When off, the tournament absorbs it.</div>
+                       </div>
+                       <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', position: 'relative', marginLeft: '1rem', flexShrink: 0 }}>
+                          <input type="checkbox" checked={newPackage.passFees} onChange={e => setNewPackage({...newPackage, passFees: e.target.checked})} style={{ opacity: 0, position: 'absolute', width: '100%', height: '100%', cursor: 'pointer' }} />
+                          <div style={{ width: '40px', height: '20px', background: newPackage.passFees ? 'var(--gold)' : '#e2e8f0', borderRadius: '10px', position: 'relative', transition: '0.3s', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.1)' }}>
+                             <div style={{ position: 'absolute', left: newPackage.passFees ? '22px' : '2px', top: '2px', width: '16px', height: '16px', background: '#fff', borderRadius: '50%', transition: '0.3s', boxShadow: '0 1px 3px rgba(0,0,0,0.2)' }}></div>
+                          </div>
+                       </label>
+                    </div>
 
                     {/* Highly Polished AI Suggestion Inline Panel */}
                     {aiSuggestionPanel && !aiSuggestionPanel.error && (
