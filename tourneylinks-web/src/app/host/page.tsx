@@ -49,11 +49,14 @@ export default function HostLiveCampaignBuilder() {
   const activeSecondaryColor = secondaryThemeColor || themeColor;
 
   const [heroImage, setHeroImage] = useState<string | null>(null);
-  const [heroPosition, setHeroPosition] = useState('center');
+  const [heroPosition, setHeroPosition] = useState(50);
   const [heroZoom, setHeroZoom] = useState(100);
   const [tileImage, setTileImage] = useState<string | null>(null);
   const [tilePosition, setTilePosition] = useState('center');
   const [tileZoom, setTileZoom] = useState(100);
+
+  const [enableGallery, setEnableGallery] = useState(false);
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
   
   const [coHostEmail, setCoHostEmail] = useState('');
   
@@ -512,15 +515,14 @@ export default function HostLiveCampaignBuilder() {
                             <span style={{ fontSize: '0.65rem', color: 'var(--mist)' }}>Zoom</span>
                             <input type="range" min="50" max="250" value={heroZoom} onChange={e => setHeroZoom(Number(e.target.value))} style={{ width: '50px' }} />
                          </div>
-                         <select value={heroPosition} onChange={e => setHeroPosition(e.target.value)} style={{ padding: '0.2rem 0.5rem', fontSize: '0.7rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }}>
-                            <option value="top">Align Top</option>
-                            <option value="center">Align Center</option>
-                            <option value="bottom">Align Bottom</option>
-                         </select>
+                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                             <span style={{ fontSize: '0.65rem', color: 'var(--mist)' }}>Position Y</span>
+                             <input type="range" min="0" max="100" value={heroPosition} onChange={e => setHeroPosition(Number(e.target.value))} style={{ width: '50px' }} />
+                          </div>
                      </div>
                    )}
                 </label>
-                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(0,0,0,0.1)', borderRadius: '8px', padding: '2rem', background: heroImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${heroImage}) ${heroPosition}/${heroZoom}%` : '#fafaf5', backgroundRepeat: 'no-repeat', cursor: 'pointer', minHeight: '160px', position: 'relative' }}>
+                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(0,0,0,0.1)', borderRadius: '8px', padding: '2rem', background: heroImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${heroImage}) center ${heroPosition}%/${heroZoom}%` : '#fafaf5', backgroundRepeat: 'no-repeat', cursor: 'pointer', minHeight: '160px', position: 'relative' }}>
                    <input type="file" style={{ display: 'none' }} accept="image/*" onChange={e => handleImageUpload(e, setHeroImage)} />
                    {!heroImage && (
                      <>
@@ -569,8 +571,45 @@ export default function HostLiveCampaignBuilder() {
                       <div style={{ fontSize: '0.7rem', color: 'var(--mist)' }}>{course ? `${course} · ${city}` : 'Course Location'}</div>
                    </div>
                 </div>
-             </div>
-          </div>
+              </div>
+           </div>
+        </div>
+
+        <div className="wizard-card" style={{ marginTop: '2rem' }}>
+           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+              <div className="wizard-card-title" style={{ marginBottom: 0 }}>Media Gallery Module</div>
+              <label className="toggle-switch">
+                 <input type="checkbox" checked={enableGallery} onChange={e => setEnableGallery(e.target.checked)} />
+                 <span className="toggle-slider"></span>
+              </label>
+           </div>
+           {enableGallery && (
+              <div style={{ animation: 'fadeIn 0.3s' }}>
+                 <div style={{ fontSize: '0.8rem', color: 'var(--mist)', marginBottom: '1.2rem', lineHeight: 1.4 }}>
+                    Upload up to 10 photos from past events, charitable impact, or course highlights to increase engagement.
+                 </div>
+                 
+                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.8rem' }}>
+                    {galleryImages.map((img, idx) => (
+                       <div key={idx} style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '6px', backgroundImage: `url(${img})`, backgroundSize: 'cover', backgroundPosition: 'center', border: '1px solid rgba(0,0,0,0.1)' }}>
+                          <button type="button" onClick={() => setGalleryImages(prev => prev.filter((_, i) => i !== idx))} style={{ position: 'absolute', top: '-6px', right: '-6px', background: 'var(--flag-red)', color: '#fff', border: 'none', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 800, boxShadow: '0 2px 5px rgba(0,0,0,0.2)' }}>×</button>
+                       </div>
+                    ))}
+                    
+                    {galleryImages.length < 10 && (
+                       <label style={{ width: '80px', height: '80px', borderRadius: '6px', border: '2px dashed rgba(0,0,0,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: '#fafaf5', transition: '0.2s' }}>
+                          <input type="file" style={{ display: 'none' }} accept="image/*" multiple onChange={(e) => {
+                             if(e.target.files) {
+                                const newFiles = Array.from(e.target.files).map(f => URL.createObjectURL(f));
+                                setGalleryImages(prev => [...prev, ...newFiles].slice(0, 10));
+                             }
+                          }} />
+                          <Plus size={20} color="var(--mist)" />
+                       </label>
+                    )}
+                 </div>
+              </div>
+           )}
         </div>
 
      </div>
@@ -1228,7 +1267,7 @@ export default function HostLiveCampaignBuilder() {
                                 setNewSponsor({ tier: s.tier, price: s.price, spots: s.spots, incentivesText: (s.incentives || []).join('\n'), includesIntent: s.includesIntent || false, includesDinner: s.includesDinner || false, rotatesOnTv: s.rotatesOnTv || false });
                                 setShowSponsorForm(true);
                              }} style={{ background: 'none', border: 'none', color: '#3399FF', fontSize: '0.75rem', cursor: 'pointer', fontWeight: 600 }}>Edit</button>
-                             <button onClick={() => setSponsors(sponsors.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: '#ff5f56', fontSize: '0.75rem', cursor: 'pointer', fontWeight: 600 }}>Remove</button>
+                             <button onClick={() => setSponsors(sponsors.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: '#ff5f56', fontSize: '0.75rem', cursor: 'pointer', fontWeight: '600' }}>Remove</button>
                           </div>
                        </div>
                     </div>
@@ -1303,7 +1342,7 @@ export default function HostLiveCampaignBuilder() {
      if (activeTab === 'content' || activeTab === 'launch') {
         return (
            <div style={{ height: '450px', overflowY: 'auto', background: '#f8faf9', display: 'flex', flexDirection: 'column' }}>
-              <div style={{ padding: '2rem', background: heroImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${heroImage}) ${heroPosition}/${heroZoom}% no-repeat` : `linear-gradient(135deg, ${activeSecondaryColor}, ${themeColor})`, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', textAlign: 'center' }}>
+              <div style={{ padding: '2rem', minHeight: '450px', background: heroImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${heroImage}) center ${heroPosition}%/${heroZoom}% no-repeat` : `linear-gradient(135deg, ${activeSecondaryColor}, ${themeColor})`, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', textAlign: 'center' }}>
                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `radial-gradient(circle at top right, ${themeColor} 0%, transparent 60%)`, opacity: 0.3, pointerEvents: 'none' }}></div>
                  <div style={{ position: 'relative', zIndex: 10 }}>
                     <span style={{ fontSize: '0.7rem', padding: '0.2rem 0.6rem', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(4px)', color: '#fff', borderRadius: '4px', fontWeight: 700, marginBottom: '0.75rem', display: 'inline-block' }}>{formatName}</span>
@@ -1327,6 +1366,17 @@ export default function HostLiveCampaignBuilder() {
                  <div style={{ flex: '1 1 60%' }}>
                     <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--forest)', marginBottom: '0.5rem' }}>About Event</div>
                     <div style={{ fontSize: '0.85rem', color: 'var(--mist)', lineHeight: 1.6, marginBottom: '1.5rem', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{desc || 'Tournament description will appear here...'}</div>
+
+                    {enableGallery && galleryImages.length > 0 && (
+                        <div style={{ marginBottom: '1.5rem' }}>
+                           <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '0.75rem' }}>Event Gallery</div>
+                           <div style={{ display: 'flex', gap: '0.6rem', overflowX: 'auto', scrollSnapType: 'x mandatory', paddingBottom: '0.5rem', WebkitOverflowScrolling: 'touch' }} className="hide-scrollbar">
+                              {galleryImages.map((img, idx) => (
+                                 <img key={idx} src={img} alt="Gallery" style={{ height: '160px', width: '220px', objectFit: 'cover', borderRadius: '6px', scrollSnapAlign: 'start', flexShrink: 0, boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }} />
+                              ))}
+                           </div>
+                        </div>
+                     )}
 
                     <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '0.75rem' }}>Sponsors</div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
@@ -1667,7 +1717,7 @@ export default function HostLiveCampaignBuilder() {
      if (activeTab === 'content' || activeTab === 'launch') {
         return (
            <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative' }}>
-              <div style={{ height: '300px', background: heroImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${heroImage}) ${heroPosition}/${heroZoom}% no-repeat` : `linear-gradient(135deg, ${activeSecondaryColor}, ${themeColor})`, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '1.5rem', position: 'relative' }}>
+              <div style={{ height: '350px', background: heroImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${heroImage}) center ${heroPosition}%/${heroZoom}% no-repeat` : `linear-gradient(135deg, ${activeSecondaryColor}, ${themeColor})`, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '1.5rem', position: 'relative' }}>
                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `radial-gradient(circle at top right, ${themeColor} 0%, transparent 60%)`, opacity: 0.3, pointerEvents: 'none' }}></div>
                  
                  <div style={{ position: 'relative', zIndex: 10 }}>
@@ -1702,6 +1752,17 @@ export default function HostLiveCampaignBuilder() {
                     <div style={{ marginBottom: '1.5rem' }}>
                        <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '0.5rem' }}>About Event</div>
                        <div style={{ fontSize: '0.85rem', color: 'var(--mist)', lineHeight: 1.6, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{desc}</div>
+                    </div>
+                 )}
+
+                 {enableGallery && galleryImages.length > 0 && (
+                    <div style={{ marginBottom: '1.5rem' }}>
+                       <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '0.5rem' }}>Event Gallery</div>
+                       <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto', scrollSnapType: 'x mandatory', paddingBottom: '0.5rem', WebkitOverflowScrolling: 'touch', margin: '0 -1.5rem', padding: '0 1.5rem' }} className="hide-scrollbar">
+                          {galleryImages.map((img, idx) => (
+                             <img key={idx} src={img} alt="Gallery" style={{ height: '140px', width: '200px', objectFit: 'cover', borderRadius: '6px', scrollSnapAlign: 'center', flexShrink: 0 }} />
+                          ))}
+                       </div>
                     </div>
                  )}
 
