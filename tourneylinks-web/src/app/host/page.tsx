@@ -453,7 +453,7 @@ export default function HostLiveCampaignBuilder() {
                        {charityType === 'golf_sponsored' && (
                           <div style={{ background: '#fff', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '6px', padding: '1rem', marginTop: '0.5rem', animation: 'fadeIn 0.3s' }} onClick={e => e.preventDefault()}>
                              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem', color: 'var(--forest)' }}>Describe your cause (required for board approval):</label>
-                             <div style={{ fontSize: '0.7rem', color: 'var(--mist)', marginBottom: '0.8rem', lineHeight: 1.4 }}>
+                             <div style={{ fontSize: '0.8rem', color: 'var(--mist)', marginBottom: '0.8rem', lineHeight: 1.4 }}>
                                 Our foundation supports a broad spectrum of causes—from disease awareness and medical tragedies, to youth sports and group fundraisers. As long as it's legal, ethical, and well-intended, we want to help!
                              </div>
                              <div style={{ border: '1px solid rgba(0,0,0,0.1)', borderRadius: '4px', overflow: 'visible', marginBottom: '0.8rem', background: '#fff' }}>
@@ -581,7 +581,7 @@ export default function HostLiveCampaignBuilder() {
             </div>
             <div className="wfield wform-full">
                <label>Co-Host Emails (Optional)</label>
-               <div style={{ fontSize: '0.7rem', color: 'var(--mist)', marginBottom: '0.8rem', lineHeight: 1.4 }}>Grant additional people full Administration Hub access to this event. If they don't have an account yet, they will receive an email invite to collaborate on this saved draft!</div>
+               <div style={{ fontSize: '0.8rem', color: 'var(--mist)', marginBottom: '0.8rem', lineHeight: 1.4 }}>Grant additional people full Administration Hub access to this event. If they don't have an account yet, they will receive an email invite to collaborate on this saved draft!</div>
                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                  {coHostEmails.map((ch, idx) => (
                     <div key={idx} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
@@ -628,7 +628,7 @@ export default function HostLiveCampaignBuilder() {
                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.2rem' }}>
                     <label style={{ margin: 0 }}>Secondary Theme Color</label>
                  </div>
-                 <div style={{ fontSize: '0.7rem', color: 'var(--mist)', marginBottom: '0.6rem', lineHeight: 1.4 }}>
+                 <div style={{ fontSize: '0.8rem', color: 'var(--mist)', marginBottom: '0.6rem', lineHeight: 1.4 }}>
                     Optional: Disable the secondary color for a single primary color vibe.
                  </div>
                  <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
@@ -654,15 +654,15 @@ export default function HostLiveCampaignBuilder() {
                    {heroImage && (
                      <div style={{ display: 'flex', gap: '0.75rem' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                             <span style={{ fontSize: '0.65rem', color: 'var(--mist)' }}>Zoom</span>
+                             <span style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>Zoom</span>
                              <input type="range" min="50" max="250" value={heroZoom} onChange={e => setHeroZoom(Number(e.target.value))} style={{ width: '50px' }} />
                           </div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                             <span style={{ fontSize: '0.65rem', color: 'var(--mist)' }}>Position X</span>
+                             <span style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>Position X</span>
                              <input type="range" min="0" max="100" value={heroPositionX} onChange={e => setHeroPositionX(Number(e.target.value))} style={{ width: '50px' }} />
                           </div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                             <span style={{ fontSize: '0.65rem', color: 'var(--mist)' }}>Position Y</span>
+                             <span style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>Position Y</span>
                              <input type="range" min="0" max="100" value={heroPosition} onChange={e => setHeroPosition(Number(e.target.value))} style={{ width: '50px' }} />
                           </div>
                      </div>
@@ -686,15 +686,15 @@ export default function HostLiveCampaignBuilder() {
                    {tileImage && (
                      <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                            <span style={{ fontSize: '0.65rem', color: 'var(--mist)' }}>Zoom</span>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>Zoom</span>
                             <input type="range" min="50" max="250" value={tileZoom} onChange={e => setTileZoom(Number(e.target.value))} style={{ width: '50px' }} />
                          </div>
                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                            <span style={{ fontSize: '0.65rem', color: 'var(--mist)' }}>Position X</span>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>Position X</span>
                             <input type="range" min="0" max="100" value={tilePositionX} onChange={e => setTilePositionX(Number(e.target.value))} style={{ width: '50px' }} />
                          </div>
                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                            <span style={{ fontSize: '0.65rem', color: 'var(--mist)' }}>Position Y</span>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>Position Y</span>
                             <input type="range" min="0" max="100" value={tilePosition} onChange={e => setTilePosition(Number(e.target.value))} style={{ width: '50px' }} />
                          </div>
                      </div>
@@ -717,7 +717,7 @@ export default function HostLiveCampaignBuilder() {
                    <div style={{ height: '140px', background: tileImage ? `url(${tileImage}) ${tilePositionX}% ${tilePosition}%/${tileZoom}% no-repeat` : '#fafaf5' }}></div>
                    <div style={{ padding: '0.75rem' }}>
                       <div style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--forest)' }}>{name || 'Tournament Title'}</div>
-                      <div style={{ fontSize: '0.7rem', color: 'var(--mist)' }}>{course ? `${course} · ${city}` : 'Course Location'}</div>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--mist)' }}>{course ? `${course} · ${city}` : 'Course Location'}</div>
                    </div>
                 </div>
               </div>
@@ -741,7 +741,7 @@ export default function HostLiveCampaignBuilder() {
                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.8rem' }}>
                     {galleryImages.map((img, idx) => (
                        <div key={idx} style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '6px', backgroundImage: `url(${img})`, backgroundSize: 'cover', backgroundPosition: 'center', border: '1px solid rgba(0,0,0,0.1)' }}>
-                          <button type="button" onClick={() => setGalleryImages(prev => prev.filter((_, i) => i !== idx))} style={{ position: 'absolute', top: '-6px', right: '-6px', background: 'var(--flag-red)', color: '#fff', border: 'none', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 800, boxShadow: '0 2px 5px rgba(0,0,0,0.2)' }}>×</button>
+                          <button type="button" onClick={() => setGalleryImages(prev => prev.filter((_, i) => i !== idx))} style={{ position: 'absolute', top: '-6px', right: '-6px', background: 'var(--flag-red)', color: '#fff', border: 'none', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 800, boxShadow: '0 2px 5px rgba(0,0,0,0.2)' }}>×</button>
                        </div>
                     ))}
                     
@@ -780,7 +780,7 @@ export default function HostLiveCampaignBuilder() {
            </div>
            
            {showPackageForm && (
-              <div style={{ padding: '1.5rem', background: '#f4f7f5', borderRadius: '8px', border: '1px dashed rgba(0,0,0,0.1)', marginBottom: '1.5rem' }}>
+              <div style={{ padding: '1.2rem', background: '#f4f7f5', borderRadius: '8px', border: '1px dashed rgba(0,0,0,0.1)', marginBottom: '1.5rem' }}>
                  <div style={{ fontWeight: 700, color: 'var(--forest)', marginBottom: '1rem', fontSize: '0.9rem' }}>Create Custom Package</div>
                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <div style={{ display: 'flex', gap: '1rem' }}>
@@ -829,21 +829,21 @@ export default function HostLiveCampaignBuilder() {
                                {isSuggestingPrice ? 'Calculating...' : '✨ AI Suggest'}
                              </button>
                           </div>
-                          <div style={{ fontSize: '0.65rem', color: 'var(--mist)', lineHeight: 1.3, marginTop: '0.4rem' }}>Analyzes venue reputation & regional wealth data</div>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--mist)', lineHeight: 1.3, marginTop: '0.4rem' }}>Analyzes venue reputation & regional wealth data</div>
                        </div>
                     </div>
                     <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', cursor: 'pointer' }}>
                        <input type="checkbox" checked={newPackage.isTeam} onChange={e => setNewPackage({...newPackage, isTeam: e.target.checked})} style={{ marginTop: '0.15rem' }} />
                        <div>
                           <div style={{ fontSize: '0.8rem', color: 'var(--ink)', fontWeight: 600 }}>This is a Foursome/Team Package</div>
-                          <div style={{ fontSize: '0.7rem', color: 'var(--mist)', marginTop: '0.1rem', lineHeight: 1.4 }}>When checked, the system will prompt the buyer to enter names & contact info for 4 registered players during checkout.</div>
+                          <div style={{ fontSize: '0.8rem', color: 'var(--mist)', marginTop: '0.1rem', lineHeight: 1.4 }}>When checked, the system will prompt the buyer to enter names & contact info for 4 registered players during checkout.</div>
                        </div>
                     </label>
 
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#fff', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.1)', marginTop: '0.8rem' }}>
                        <div>
                           <div style={{ fontSize: '0.8rem', color: 'var(--ink)', fontWeight: 600 }}>Pass Fees to Registrant</div>
-                          <div style={{ fontSize: '0.7rem', color: 'var(--mist)', marginTop: '0.1rem', lineHeight: 1.4 }}>When toggled on, the buyer pays the processing fee. When off, the tournament absorbs it.</div>
+                          <div style={{ fontSize: '0.8rem', color: 'var(--mist)', marginTop: '0.1rem', lineHeight: 1.4 }}>When toggled on, the buyer pays the processing fee. When off, the tournament absorbs it.</div>
                        </div>
                        <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', position: 'relative', marginLeft: '1rem', flexShrink: 0 }}>
                           <input type="checkbox" checked={newPackage.passFees} onChange={e => setNewPackage({...newPackage, passFees: e.target.checked})} style={{ opacity: 0, position: 'absolute', width: '100%', height: '100%', cursor: 'pointer' }} />
@@ -899,7 +899,7 @@ export default function HostLiveCampaignBuilder() {
                               <div style={{ width: '100%', fontSize: '0.8rem', fontWeight: 700, color: 'var(--ink)' }}>Live Payout Preview</div>
                               <div style={{ flex: 1, background: charityType === 'none' ? 'rgba(0,0,0,0.03)' : 'transparent', padding: '0.8rem', borderRadius: '6px', border: charityType === 'none' ? '1px solid rgba(0,0,0,0.1)' : '1px dashed rgba(0,0,0,0.1)', opacity: charityType === 'none' ? 1 : 0.5 }}>
                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
-                                    <div style={{ fontSize: '0.65rem', color: 'var(--mist)', fontWeight: 800, letterSpacing: '0.5px' }}>STANDARD (2.9% + 30¢)</div>
+                                    <div style={{ fontSize: '0.75rem', color: 'var(--mist)', fontWeight: 800, letterSpacing: '0.5px' }}>STANDARD (2.9% + 30¢)</div>
                                     {charityType === 'none' && <div style={{ fontSize: '0.55rem', background: '#e0e0e0', color: '#555', padding: '0.1rem 0.3rem', borderRadius: '4px', fontWeight: 700 }}>ACTIVE</div>}
                                  </div>
                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px dotted rgba(0,0,0,0.1)', paddingBottom: '0.4rem', marginBottom: '0.4rem' }}>
@@ -913,7 +913,7 @@ export default function HostLiveCampaignBuilder() {
                               </div>
                               <div style={{ flex: 1, background: charityType !== 'none' ? 'rgba(212,175,55,0.05)' : 'transparent', padding: '0.8rem', borderRadius: '6px', border: charityType !== 'none' ? '1px solid rgba(212,175,55,0.3)' : '1px dashed rgba(0,0,0,0.1)', opacity: charityType !== 'none' ? 1 : 0.5 }}>
                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
-                                    <div style={{ fontSize: '0.65rem', color: charityType !== 'none' ? 'var(--forest)' : 'var(--mist)', fontWeight: 800, letterSpacing: '0.5px' }}>★ 501C3 (2.2% + 30¢)</div>
+                                    <div style={{ fontSize: '0.75rem', color: charityType !== 'none' ? 'var(--forest)' : 'var(--mist)', fontWeight: 800, letterSpacing: '0.5px' }}>★ 501C3 (2.2% + 30¢)</div>
                                     {charityType !== 'none' && <div style={{ fontSize: '0.55rem', background: 'var(--gold)', color: '#fff', padding: '0.1rem 0.3rem', borderRadius: '4px', fontWeight: 700 }}>ACTIVE</div>}
                                  </div>
                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px dotted rgba(212,175,55,0.3)', paddingBottom: '0.4rem', marginBottom: '0.4rem' }}>
@@ -998,7 +998,7 @@ export default function HostLiveCampaignBuilder() {
                               
                               <div style={{ flex: 1, background: charityType === 'none' ? 'rgba(0,0,0,0.03)' : 'transparent', padding: '0.8rem', borderRadius: '6px', border: charityType === 'none' ? '1px solid rgba(0,0,0,0.1)' : '1px dashed rgba(0,0,0,0.1)', opacity: charityType === 'none' ? 1 : 0.5 }}>
                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
-                                    <div style={{ fontSize: '0.65rem', color: 'var(--mist)', fontWeight: 800, letterSpacing: '0.5px' }}>STANDARD (2.9% + 30¢)</div>
+                                    <div style={{ fontSize: '0.75rem', color: 'var(--mist)', fontWeight: 800, letterSpacing: '0.5px' }}>STANDARD (2.9% + 30¢)</div>
                                     {charityType === 'none' && <div style={{ fontSize: '0.55rem', background: '#e0e0e0', color: '#555', padding: '0.1rem 0.3rem', borderRadius: '4px', fontWeight: 700 }}>ACTIVE</div>}
                                  </div>
                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px dotted rgba(0,0,0,0.1)', paddingBottom: '0.4rem', marginBottom: '0.4rem' }}>
@@ -1012,7 +1012,7 @@ export default function HostLiveCampaignBuilder() {
                               </div>
                               <div style={{ flex: 1, background: charityType !== 'none' ? 'rgba(212,175,55,0.05)' : 'transparent', padding: '0.8rem', borderRadius: '6px', border: charityType !== 'none' ? '1px solid rgba(212,175,55,0.3)' : '1px dashed rgba(0,0,0,0.1)', opacity: charityType !== 'none' ? 1 : 0.5 }}>
                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
-                                    <div style={{ fontSize: '0.65rem', color: charityType !== 'none' ? 'var(--forest)' : 'var(--mist)', fontWeight: 800, letterSpacing: '0.5px' }}>★ 501C3 (2.2% + 30¢)</div>
+                                    <div style={{ fontSize: '0.75rem', color: charityType !== 'none' ? 'var(--forest)' : 'var(--mist)', fontWeight: 800, letterSpacing: '0.5px' }}>★ 501C3 (2.2% + 30¢)</div>
                                     {charityType !== 'none' && <div style={{ fontSize: '0.55rem', background: 'var(--gold)', color: '#fff', padding: '0.1rem 0.3rem', borderRadius: '4px', fontWeight: 700 }}>ACTIVE</div>}
                                  </div>
                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px dotted rgba(212,175,55,0.3)', paddingBottom: '0.4rem', marginBottom: '0.4rem' }}>
@@ -1040,7 +1040,7 @@ export default function HostLiveCampaignBuilder() {
            </div>
            
            {showAddonForm && (
-              <div style={{ padding: '1.5rem', background: '#f4f7f5', borderRadius: '8px', border: '1px dashed rgba(0,0,0,0.1)', marginBottom: '1.5rem' }}>
+              <div style={{ padding: '1.2rem', background: '#f4f7f5', borderRadius: '8px', border: '1px dashed rgba(0,0,0,0.1)', marginBottom: '1.5rem' }}>
                  <div style={{ fontWeight: 700, color: 'var(--forest)', marginBottom: '1rem', fontSize: '0.9rem' }}>Create Custom Add-on</div>
                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <div style={{ display: 'flex', gap: '1rem' }}>
@@ -1070,7 +1070,7 @@ export default function HostLiveCampaignBuilder() {
                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fff', padding: '0.8rem 1rem', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.05)', marginTop: '0.5rem' }}>
                         <div>
                            <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--forest)' }}>Pass Fees to Registrant?</div>
-                           <div style={{ fontSize: '0.65rem', color: 'var(--mist)' }}>Automatically append processing costs to checkout.</div>
+                           <div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>Automatically append processing costs to checkout.</div>
                         </div>
                         <label className="toggle-switch">
                            <input type="checkbox" checked={newAddon.passFees} onChange={e => setNewAddon({...newAddon, passFees: e.target.checked})} />
@@ -1138,14 +1138,14 @@ export default function HostLiveCampaignBuilder() {
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginTop: '1rem', paddingTop: '0.8rem', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
                        <div style={{ flex: 1, background: charityType === 'none' ? 'rgba(0,0,0,0.03)' : 'transparent', padding: '0.4rem 0.6rem', borderRadius: '4px', border: charityType === 'none' ? '1px solid rgba(0,0,0,0.1)' : '1px dashed rgba(0,0,0,0.1)', opacity: charityType === 'none' ? 1 : 0.5 }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.2rem' }}>
-                             <div style={{ fontSize: '0.65rem', color: 'var(--mist)', fontWeight: 600 }}>STANDARD PAYOUT</div>
+                             <div style={{ fontSize: '0.75rem', color: 'var(--mist)', fontWeight: 600 }}>STANDARD PAYOUT</div>
                              {charityType === 'none' && <div style={{ fontSize: '0.55rem', background: '#e0e0e0', color: '#555', padding: '0.1rem 0.3rem', borderRadius: '4px', fontWeight: 700 }}>ACTIVE</div>}
                           </div>
                           <div style={{ fontSize: '0.85rem', color: 'var(--ink)', fontWeight: 700 }}>${payoutStandard.toFixed(2)}</div>
                        </div>
                        <div style={{ flex: 1, background: charityType !== 'none' ? 'rgba(212,175,55,0.05)' : 'transparent', padding: '0.4rem 0.6rem', borderRadius: '4px', border: charityType !== 'none' ? '1px solid rgba(212,175,55,0.2)' : '1px dashed rgba(0,0,0,0.1)', opacity: charityType !== 'none' ? 1 : 0.5 }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.2rem' }}>
-                             <div style={{ fontSize: '0.65rem', color: charityType !== 'none' ? 'var(--forest)' : 'var(--mist)', fontWeight: 600 }}>★ 501(C)(3) PAYOUT</div>
+                             <div style={{ fontSize: '0.75rem', color: charityType !== 'none' ? 'var(--forest)' : 'var(--mist)', fontWeight: 600 }}>★ 501(C)(3) PAYOUT</div>
                              {charityType !== 'none' && <div style={{ fontSize: '0.55rem', background: 'var(--gold)', color: '#fff', padding: '0.1rem 0.3rem', borderRadius: '4px', fontWeight: 700 }}>ACTIVE</div>}
                           </div>
                           <div style={{ fontSize: '0.85rem', color: charityType !== 'none' ? 'var(--grass)' : 'var(--mist)', fontWeight: 700 }}>${payoutCharity.toFixed(2)}</div>
@@ -1249,7 +1249,7 @@ export default function HostLiveCampaignBuilder() {
                   </div>
                   
                   {showDonorForm && (
-                     <div style={{ padding: '1.5rem', background: '#f4f7f5', borderRadius: '8px', border: '1px dashed rgba(0,0,0,0.1)', marginBottom: '1.5rem' }}>
+                     <div style={{ padding: '1.2rem', background: '#f4f7f5', borderRadius: '8px', border: '1px dashed rgba(0,0,0,0.1)', marginBottom: '1.5rem' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                            <div style={{ fontWeight: 700, color: 'var(--forest)', fontSize: '0.9rem' }}>
                               {editingDonorIdx !== null ? 'Edit Donor Tier' : 'Create Custom Donor Tier'}
@@ -1424,7 +1424,7 @@ export default function HostLiveCampaignBuilder() {
            </div>
            
            {showSponsorForm && (
-              <div style={{ padding: '1.5rem', background: '#f4f7f5', borderRadius: '8px', border: '1px dashed rgba(0,0,0,0.1)', marginBottom: '1.5rem' }}>
+              <div style={{ padding: '1.2rem', background: '#f4f7f5', borderRadius: '8px', border: '1px dashed rgba(0,0,0,0.1)', marginBottom: '1.5rem' }}>
                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                     <div style={{ fontWeight: 700, color: 'var(--forest)', fontSize: '0.9rem' }}>
                        {editingSponsorIdx !== null ? 'Edit Sponsor Tier' : 'Create Custom Tier'}
@@ -1453,7 +1453,7 @@ export default function HostLiveCampaignBuilder() {
                         <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fff', padding: '0.8rem 1rem', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.05)' }}>
                            <div>
                               <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--forest)' }}>Player Flow?</div>
-                              <div style={{ fontSize: '0.65rem', color: 'var(--mist)' }}>Include foursome registration link.</div>
+                              <div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>Include foursome registration link.</div>
                            </div>
                            <label className="toggle-switch">
                               <input 
@@ -1467,7 +1467,7 @@ export default function HostLiveCampaignBuilder() {
                         <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fff', padding: '0.8rem 1rem', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.05)' }}>
                            <div>
                               <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--forest)' }}>Hospitality Flow?</div>
-                              <div style={{ fontSize: '0.65rem', color: 'var(--mist)' }}>Include dinner seating link.</div>
+                              <div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>Include dinner seating link.</div>
                            </div>
                            <label className="toggle-switch">
                               <input 
@@ -1482,7 +1482,7 @@ export default function HostLiveCampaignBuilder() {
                      <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fff', padding: '0.8rem 1rem', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.05)' }}>
                            <div>
                               <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--forest)' }}>Rotate on TV?</div>
-                              <div style={{ fontSize: '0.65rem', color: 'var(--mist)' }}>Include in live leaderboard rotation.</div>
+                              <div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>Include in live leaderboard rotation.</div>
                            </div>
                            <label className="toggle-switch">
                               <input 
@@ -1502,7 +1502,7 @@ export default function HostLiveCampaignBuilder() {
                           rows={3}
                           style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)', resize: 'vertical' }}
                        />
-                       <div style={{ fontSize: '0.65rem', color: 'var(--mist)', marginTop: '0.3rem' }}>Hit enter to create a new bullet point for the sponsor.</div>
+                       <div style={{ fontSize: '0.75rem', color: 'var(--mist)', marginTop: '0.3rem' }}>Hit enter to create a new bullet point for the sponsor.</div>
                     </div>
                     <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
                        <button 
@@ -1541,7 +1541,7 @@ export default function HostLiveCampaignBuilder() {
                  <div key={i} style={{ display: 'flex', flexDirection: 'column', padding: '1rem', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px', background: '#f8faf9', transition: '0.2s', ...(editingSponsorIdx === i ? { opacity: 0.5, pointerEvents: 'none' } : {}) }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: s.incentives && s.incentives.length > 0 ? '1px solid rgba(0,0,0,0.05)' : 'none', paddingBottom: s.incentives && s.incentives.length > 0 ? '0.75rem' : 0, marginBottom: s.incentives && s.incentives.length > 0 ? '0.75rem' : 0 }}>
                        <div>
-                          <div style={{ fontWeight: 700, color: 'var(--forest)', fontSize: '0.95rem' }}>{s.tier} <span style={{ fontSize: '0.7rem', color: 'var(--mist)', fontWeight: 400, marginLeft: '0.5rem' }}>({s.spots} {s.spots === 1 ? 'spot' : 'spots'})</span></div>
+                          <div style={{ fontWeight: 700, color: 'var(--forest)', fontSize: '0.95rem' }}>{s.tier} <span style={{ fontSize: '0.8rem', color: 'var(--mist)', fontWeight: 400, marginLeft: '0.5rem' }}>({s.spots} {s.spots === 1 ? 'spot' : 'spots'})</span></div>
                        </div>
                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                           <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--grass)' }}>${s.price.toLocaleString()}</div>
@@ -1577,7 +1577,7 @@ export default function HostLiveCampaignBuilder() {
         <div className="wizard-card" style={{ marginBottom: '2rem' }}>
            <div className="wizard-card-title">Payouts & Treasury</div>
            {charityType === 'golf_sponsored' ? (
-              <div style={{ background: 'rgba(212,175,55,0.05)', border: '1px solid var(--gold)', borderRadius: '8px', padding: '1.5rem', display: 'flex', gap: '1rem' }}>
+              <div style={{ background: 'rgba(212,175,55,0.05)', border: '1px solid var(--gold)', borderRadius: '8px', padding: '1.2rem', display: 'flex', gap: '1rem' }}>
                  <div style={{ fontSize: '1.5rem' }}>⏳</div>
                  <div>
                     <strong style={{ color: 'var(--ink)', display: 'block', marginBottom: '0.4rem' }}>Gateway Links Foundation Treasury</strong>
@@ -1593,7 +1593,7 @@ export default function HostLiveCampaignBuilder() {
                     Connect a validated Stripe account to enable automated payouts. Player entry fees and sponsor revenue will bypass TourneyLinks and flow directly into your connected treasury account.
                  </div>
                  
-                 <div style={{ background: '#f8faf9', padding: '1.5rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                 <div style={{ background: '#f8faf9', padding: '1.2rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                       <DollarSign color="var(--forest)" size={24} />
                       <div>
@@ -1632,7 +1632,7 @@ export default function HostLiveCampaignBuilder() {
               <div style={{ padding: '2rem', minHeight: '260px', background: heroImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${heroImage}) ${heroPositionX}% ${heroPosition}%/${heroZoom}% no-repeat` : `linear-gradient(135deg, ${activeSecondaryColor}, ${themeColor})`, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', textAlign: 'center' }}>
                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `radial-gradient(circle at top right, ${themeColor} 0%, transparent 60%)`, opacity: 0.3, pointerEvents: 'none' }}></div>
                  <div style={{ position: 'relative', zIndex: 10 }}>
-                    <span style={{ fontSize: '0.7rem', padding: '0.2rem 0.6rem', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(4px)', color: '#fff', borderRadius: '4px', fontWeight: 700, marginBottom: '0.75rem', display: 'inline-block' }}>{formatName}</span>
+                    <span style={{ fontSize: '0.8rem', padding: '0.2rem 0.6rem', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(4px)', color: '#fff', borderRadius: '4px', fontWeight: 700, marginBottom: '0.75rem', display: 'inline-block' }}>{formatName}</span>
                     <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '2.5rem', color: '#fff', margin: 0, lineHeight: 1.1, textShadow: '0 2px 8px rgba(0,0,0,0.4), 0 4px 20px rgba(0,0,0,0.2)' }}>
                        {name || 'Tournament Title'}
                     </h2>
@@ -1649,7 +1649,7 @@ export default function HostLiveCampaignBuilder() {
                  )}
               </div>
               
-              <div style={{ padding: '1.5rem', display: 'flex', gap: '1.5rem', flex: 1 }}>
+              <div style={{ padding: '1.2rem', display: 'flex', gap: '1.5rem', flex: 1 }}>
                  <div style={{ flex: '1 1 60%', minWidth: 0 }}>
                     <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--forest)', marginBottom: '0.5rem' }}>About Event</div>
                     <div style={{ fontSize: '0.85rem', color: 'var(--mist)', lineHeight: 1.6, marginBottom: '1.5rem', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{desc || 'Tournament description will appear here...'}</div>
@@ -1737,7 +1737,7 @@ export default function HostLiveCampaignBuilder() {
                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.85rem' }}>
                           <div style={{ display: 'flex', flexDirection: 'column' }}>
                              <span style={{ color: 'var(--mist)', fontWeight: 600 }}>Standard Credit Card Processing Entity Fee</span>
-                             <span style={{ color: '#aaa', fontSize: '0.65rem' }}>TourneyLinks charges exactly $0 platform & convenience fees.</span>
+                             <span style={{ color: '#aaa', fontSize: '0.75rem' }}>TourneyLinks charges exactly $0 platform & convenience fees.</span>
                           </div>
                           <span style={{ fontWeight: 600, color: 'var(--mist)' }}>${totalProcessing.toFixed(2)}</span>
                        </div>
@@ -1811,7 +1811,7 @@ export default function HostLiveCampaignBuilder() {
                              </div>
                              <button style={{ padding: '0 2rem', background: 'var(--gold)', color: '#000', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer' }}>Contribute</button>
                           </div>
-                          {minCustomDonation > 0 && <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)' }}>* Minimum contribution is ${minCustomDonation}</div>}
+                          {minCustomDonation > 0 && <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)' }}>* Minimum contribution is ${minCustomDonation}</div>}
                        </div>
                     )}
                     
@@ -1891,7 +1891,7 @@ export default function HostLiveCampaignBuilder() {
                    <button style={{ width: '100%', padding: '0.9rem', background: '#e0ece0', color: 'var(--forest)', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Connect Bank (ACH)</button>
                 </div>
                 
-                <div style={{ textAlign: 'center', fontSize: '0.65rem', color: 'var(--mist)', marginTop: '1rem' }}>
+                <div style={{ textAlign: 'center', fontSize: '0.75rem', color: 'var(--mist)', marginTop: '1rem' }}>
                    Credit card incurs standard processing fees. ACH processing is recommended for larger donations.
                 </div>
              </div>
@@ -1955,7 +1955,7 @@ export default function HostLiveCampaignBuilder() {
                 <h3 style={{ margin: '0 0 0.5rem 0', fontFamily: 'Playfair Display, serif', fontSize: '1.5rem', color: 'var(--forest)' }}>{topSponsor.tier}</h3>
                 <div style={{ fontSize: '0.85rem', color: 'var(--mist)', marginBottom: '1.5rem', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                    <span>{topSponsor.spots} remaining</span>
-                   {topSponsor.incentives && topSponsor.incentives.length > 0 && <span style={{ color: 'var(--forest)', background: 'rgba(46, 204, 113, 0.1)', padding: '0.1rem 0.4rem', borderRadius: '4px', fontSize: '0.7rem' }}>Includes Perks</span>}
+                   {topSponsor.incentives && topSponsor.incentives.length > 0 && <span style={{ color: 'var(--forest)', background: 'rgba(46, 204, 113, 0.1)', padding: '0.1rem 0.4rem', borderRadius: '4px', fontSize: '0.8rem' }}>Includes Perks</span>}
                 </div>
 
                 <div style={{ borderTop: '1px solid rgba(0,0,0,0.05)', borderBottom: '1px solid rgba(0,0,0,0.05)', padding: '1.5rem 0', marginBottom: '1.5rem' }}>
@@ -2003,7 +2003,7 @@ export default function HostLiveCampaignBuilder() {
                    <button style={{ width: '100%', padding: '0.9rem', background: 'transparent', color: 'var(--forest)', fontWeight: 600, border: '1px dashed rgba(0,0,0,0.2)', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', transition: '0.2s' }}>Commit manually via Check or Wire transfer</button>
                 </div>
                 
-                <div style={{ textAlign: 'center', fontSize: '0.65rem', color: 'var(--mist)', marginTop: '1rem' }}>
+                <div style={{ textAlign: 'center', fontSize: '0.75rem', color: 'var(--mist)', marginTop: '1rem' }}>
                    Credit card incurs standard 2.9% + 30¢ processing fee (${(topSponsor.price * 0.029 + 0.3).toFixed(2)}). ACH processing is recommended.
                 </div>
              </div>
@@ -2018,13 +2018,13 @@ export default function HostLiveCampaignBuilder() {
      if (activeTab === 'content' || activeTab === 'launch') {
         return (
            <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative' }}>
-              <div style={{ height: '240px', background: heroImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${heroImage}) ${heroPositionX}% ${heroPosition}%/${heroZoom}% no-repeat` : `linear-gradient(135deg, ${activeSecondaryColor}, ${themeColor})`, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '1.5rem', position: 'relative', flexShrink: 0 }}>
+              <div style={{ height: '240px', background: heroImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${heroImage}) ${heroPositionX}% ${heroPosition}%/${heroZoom}% no-repeat` : `linear-gradient(135deg, ${activeSecondaryColor}, ${themeColor})`, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '1.2rem', position: 'relative', flexShrink: 0 }}>
                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `radial-gradient(circle at top right, ${themeColor} 0%, transparent 60%)`, opacity: 0.3, pointerEvents: 'none' }}></div>
                  
                  <div style={{ position: 'relative', zIndex: 10 }}>
                     <div style={{ display: 'flex', gap: '0.4rem', marginBottom: '0.5rem' }}>
-                       <span style={{ fontSize: '0.65rem', padding: '0.2rem 0.5rem', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(4px)', color: '#fff', borderRadius: '4px', fontWeight: 700 }}>{formatName}</span>
-                       {isCharity && <span style={{ fontSize: '0.65rem', padding: '0.2rem 0.5rem', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', color: '#fff', borderRadius: '4px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.3rem' }}><span>🎗️</span> 501(c)(3)</span>}
+                       <span style={{ fontSize: '0.75rem', padding: '0.2rem 0.5rem', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(4px)', color: '#fff', borderRadius: '4px', fontWeight: 700 }}>{formatName}</span>
+                       {isCharity && <span style={{ fontSize: '0.75rem', padding: '0.2rem 0.5rem', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', color: '#fff', borderRadius: '4px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.3rem' }}><span>🎗️</span> 501(c)(3)</span>}
                     </div>
                     <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.8rem', color: '#fff', margin: 0, lineHeight: 1.1, textShadow: '0 2px 8px rgba(0,0,0,0.4), 0 4px 20px rgba(0,0,0,0.2)' }}>
                        {name || 'Tournament Title'}
@@ -2035,14 +2035,14 @@ export default function HostLiveCampaignBuilder() {
                  </div>
               </div>
 
-              <div style={{ padding: '1.5rem', background: '#fff' }}>
+              <div style={{ padding: '1.2rem', background: '#fff' }}>
                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
                     <div>
-                       <div style={{ fontSize: '0.7rem', color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>{packages.length > 0 ? 'Packages' : 'Entry Fee'}</div>
+                       <div style={{ fontSize: '0.8rem', color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>{packages.length > 0 ? 'Packages' : 'Entry Fee'}</div>
                        <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--forest)' }}>{packages.length > 0 ? 'Available' : `$${totalFee.toFixed(2)}`}</div>
                     </div>
                     <div style={{ textAlign: 'right' }}>
-                       <div style={{ fontSize: '0.7rem', color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>Date</div>
+                       <div style={{ fontSize: '0.8rem', color: 'var(--mist)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>Date</div>
                        <div style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--ink)', fontFamily: 'DM Mono, monospace' }}>
                           {date ? new Date(date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }) : 'TBD'}
                        </div>
@@ -2116,8 +2116,8 @@ export default function HostLiveCampaignBuilder() {
          const totalDue = entryFeeSubtotal + totalAddon + totalProcessing;
         
         return (
-           <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative', background: '#f8faf9', padding: '1.5rem' }}>
-             <div style={{ background: 'linear-gradient(180deg, #ffffff 0%, #fcfefc 100%)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.6)', boxShadow: '0 10px 40px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)', padding: '1.5rem' }}>
+           <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative', background: '#f8faf9', padding: '1.2rem' }}>
+             <div style={{ background: 'linear-gradient(180deg, #ffffff 0%, #fcfefc 100%)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.6)', boxShadow: '0 10px 40px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)', padding: '1.2rem' }}>
                 <h3 style={{ margin: '0 0 0.5rem 0', fontFamily: 'Playfair Display, serif', fontSize: '1.4rem', color: 'var(--forest)' }}>Registration</h3>
                 <div style={{ fontSize: '0.75rem', color: 'var(--mist)', marginBottom: '1.5rem' }}>{name || 'Tournament Title'}</div>
 
@@ -2136,7 +2136,7 @@ export default function HostLiveCampaignBuilder() {
                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.8rem' }}>
                           <div style={{ display: 'flex', flexDirection: 'column' }}>
                              <span style={{ color: 'var(--mist)', fontWeight: 600 }}>Standard Credit Card Processing Entity Fee</span>
-                             <span style={{ color: '#aaa', fontSize: '0.65rem' }}>TourneyLinks charges exactly $0 platform & convenience fees.</span>
+                             <span style={{ color: '#aaa', fontSize: '0.75rem' }}>TourneyLinks charges exactly $0 platform & convenience fees.</span>
                           </div>
                           <span style={{ fontWeight: 600, color: 'var(--mist)' }}>${totalProcessing.toFixed(2)}</span>
                        </div>
@@ -2192,9 +2192,9 @@ export default function HostLiveCampaignBuilder() {
 
         if (donorPreviewMode === 'directory') {
            return (
-              <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative', background: '#f8faf9', padding: '1.5rem' }}>
+              <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative', background: '#f8faf9', padding: '1.2rem' }}>
                  <div style={{ textAlign: 'left', marginBottom: '2rem' }}>
-                    <div style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.3rem' }}>Support the Cause</div>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.3rem' }}>Support the Cause</div>
                     {charityType !== 'none' && <div style={{ marginBottom: '0.2rem' }}><span style={{ background: '#0a1a12', border: '1px solid var(--gold)', color: 'var(--gold)', fontSize: '0.75rem', padding: '0.4rem 0.9rem', borderRadius: '30px', fontWeight: 700, letterSpacing: '0.05em', boxShadow: 'inset 0 0 10px rgba(212,175,55,0.15)' }}>501(c)(3) Tax-Deductible</span></div>}
                     <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.6rem', color: 'var(--forest)', margin: 0, lineHeight: 1.1 }}>Every Contribution Helps</h2>
                  </div>
@@ -2248,13 +2248,13 @@ export default function HostLiveCampaignBuilder() {
         const topDonor = donorTiers.length > 0 ? donorTiers[0] : { tier: 'Custom Amount', price: minCustomDonation || 5, incentives: [] };
 
         return (
-           <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative', background: '#f8faf9', padding: '1.5rem' }}>
-             <div style={{ background: 'linear-gradient(180deg, #ffffff 0%, #fcfefc 100%)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.6)', boxShadow: '0 10px 40px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)', padding: '1.5rem' }}>
-                <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Secure Donation</div>
+           <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative', background: '#f8faf9', padding: '1.2rem' }}>
+             <div style={{ background: 'linear-gradient(180deg, #ffffff 0%, #fcfefc 100%)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.6)', boxShadow: '0 10px 40px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)', padding: '1.2rem' }}>
+                <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Secure Donation</div>
                 <h3 style={{ margin: '0 0 0.5rem 0', fontFamily: 'Playfair Display, serif', fontSize: '1.3rem', color: 'var(--forest)' }}>{topDonor.tier}</h3>
                 
                 {charityTaxIdDonationInfo && (
-                   <div style={{ fontSize: '0.65rem', color: 'var(--mist)', background: 'rgba(0,0,0,0.03)', padding: '0.5rem', borderRadius: '4px', marginBottom: '1.2rem', lineHeight: 1.4 }}>
+                   <div style={{ fontSize: '0.75rem', color: 'var(--mist)', background: 'rgba(0,0,0,0.03)', padding: '0.5rem', borderRadius: '4px', marginBottom: '1.2rem', lineHeight: 1.4 }}>
                       <strong>501(c)(3) Receipt:</strong> Your donation may be tax-deductible. Tax ID: {charityTaxIdDonationInfo}
                    </div>
                 )}
@@ -2293,9 +2293,9 @@ export default function HostLiveCampaignBuilder() {
      if (activeTab === 'sponsorships') {
         if (sponsorPreviewMode === 'directory') {
            return (
-              <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative', background: '#f8faf9', padding: '1.5rem' }}>
+              <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative', background: '#f8faf9', padding: '1.2rem' }}>
                  <div style={{ textAlign: 'left', marginBottom: '2rem' }}>
-                    <div style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.3rem' }}>Partnerships</div>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.3rem' }}>Partnerships</div>
                     {charityType !== 'none' && <div style={{ marginBottom: '0.2rem' }}><span style={{ background: '#0a1a12', border: '1px solid var(--gold)', color: 'var(--gold)', fontSize: '0.75rem', padding: '0.4rem 0.9rem', borderRadius: '30px', fontWeight: 700, letterSpacing: '0.05em', boxShadow: 'inset 0 0 10px rgba(212,175,55,0.15)' }}>501(c)(3) Tax-Deductible</span></div>}
                     <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.6rem', color: 'var(--forest)', margin: 0, lineHeight: 1.1 }}>Sponsorship Opportunities</h2>
                  </div>
@@ -2321,7 +2321,7 @@ export default function HostLiveCampaignBuilder() {
                                       </div>
                                    ))}
                                    {sponsor.incentives.length > 3 && (
-                                      <div style={{ fontSize: '0.7rem', color: 'var(--mist)', marginTop: '0.3rem', fontStyle: 'italic' }}>+ {sponsor.incentives.length - 3} more perks</div>
+                                      <div style={{ fontSize: '0.8rem', color: 'var(--mist)', marginTop: '0.3rem', fontStyle: 'italic' }}>+ {sponsor.incentives.length - 3} more perks</div>
                                    )}
                                 </div>
                              )}
@@ -2340,13 +2340,13 @@ export default function HostLiveCampaignBuilder() {
         const achFee = Math.min(topSponsor.price * 0.008, 5.00);
 
         return (
-           <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative', background: '#f8faf9', padding: '1.5rem' }}>
-             <div style={{ background: 'linear-gradient(180deg, #ffffff 0%, #fcfefc 100%)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.6)', boxShadow: '0 10px 40px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)', padding: '1.5rem' }}>
-                <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Secure Checkout</div>
+           <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative', background: '#f8faf9', padding: '1.2rem' }}>
+             <div style={{ background: 'linear-gradient(180deg, #ffffff 0%, #fcfefc 100%)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.6)', boxShadow: '0 10px 40px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)', padding: '1.2rem' }}>
+                <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Secure Checkout</div>
                 <h3 style={{ margin: '0 0 0.5rem 0', fontFamily: 'Playfair Display, serif', fontSize: '1.3rem', color: 'var(--forest)' }}>{topSponsor.tier}</h3>
                 <div style={{ fontSize: '0.8rem', color: 'var(--mist)', marginBottom: '1.5rem', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                    <span>{topSponsor.spots} remaining</span>
-                   {topSponsor.incentives && topSponsor.incentives.length > 0 && <span style={{ color: 'var(--forest)', background: 'rgba(46, 204, 113, 0.1)', padding: '0.1rem 0.4rem', borderRadius: '4px', fontSize: '0.65rem' }}>Includes Perks</span>}
+                   {topSponsor.incentives && topSponsor.incentives.length > 0 && <span style={{ color: 'var(--forest)', background: 'rgba(46, 204, 113, 0.1)', padding: '0.1rem 0.4rem', borderRadius: '4px', fontSize: '0.75rem' }}>Includes Perks</span>}
                 </div>
 
                 <div style={{ borderTop: '1px solid rgba(0,0,0,0.05)', borderBottom: '1px solid rgba(0,0,0,0.05)', padding: '1.5rem 0', marginBottom: '1.5rem' }}>
@@ -2370,9 +2370,9 @@ export default function HostLiveCampaignBuilder() {
                    <div style={{ marginBottom: '1.5rem' }}>
                       <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--ink)', marginBottom: '0.5rem' }}>Participant Intent</div>
                       <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                         <button style={{ flex: 1, minWidth: '100px', padding: '0.5rem', border: '2px solid var(--forest)', background: 'var(--forest)', color: '#fff', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 600 }}>Sponsor Only</button>
-                         {topSponsor.includesIntent && <button style={{ flex: 1, minWidth: '100px', padding: '0.5rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 600 }}>Play & Sponsor</button>}
-                         {topSponsor.includesDinner && <button style={{ flex: 1, minWidth: '100px', padding: '0.5rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 600 }}>Sponsor & Dinner</button>}
+                         <button style={{ flex: 1, minWidth: '100px', padding: '0.5rem', border: '2px solid var(--forest)', background: 'var(--forest)', color: '#fff', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 600 }}>Sponsor Only</button>
+                         {topSponsor.includesIntent && <button style={{ flex: 1, minWidth: '100px', padding: '0.5rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 600 }}>Play & Sponsor</button>}
+                         {topSponsor.includesDinner && <button style={{ flex: 1, minWidth: '100px', padding: '0.5rem', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 600 }}>Sponsor & Dinner</button>}
                       </div>
                    </div>
                 )}
@@ -2394,7 +2394,7 @@ export default function HostLiveCampaignBuilder() {
                    <button style={{ width: '100%', padding: '0.8rem', background: 'transparent', color: 'var(--forest)', fontWeight: 600, border: '1px dashed rgba(0,0,0,0.2)', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.8rem' }}>Commit manually via Check or Wire transfer</button>
                 </div>
                 
-                <div style={{ textAlign: 'center', fontSize: '0.65rem', color: 'var(--mist)', marginTop: '1rem' }}>
+                <div style={{ textAlign: 'center', fontSize: '0.75rem', color: 'var(--mist)', marginTop: '1rem' }}>
                    Credit card incurs standard processing fee (${(topSponsor.price * 0.029 + 0.3).toFixed(2)}). ACH processing is recommended.
                 </div>
              </div>
@@ -2561,7 +2561,7 @@ export default function HostLiveCampaignBuilder() {
                             <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ff5f56' }} />
                             <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ffbd2e' }} />
                             <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#27c93f' }} />
-                            <div style={{ marginLeft: '1rem', background: '#fff', padding: '0.2rem 1rem', borderRadius: '4px', fontSize: '0.7rem', color: 'var(--mist)', flex: 1, border: '1px solid rgba(0,0,0,0.05)' }}>demo.tourneylinks.com/tournaments/live</div>
+                            <div style={{ marginLeft: '1rem', background: '#fff', padding: '0.2rem 1rem', borderRadius: '4px', fontSize: '0.8rem', color: 'var(--mist)', flex: 1, border: '1px solid rgba(0,0,0,0.05)' }}>demo.tourneylinks.com/tournaments/live</div>
                          </div>
                          {/* Desktop Canvas */}
                          {renderDesktopSimulator()}
