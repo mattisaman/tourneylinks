@@ -6,6 +6,7 @@ import { db, users, registrations, tournaments, saved_courses, courses } from '@
 import { eq, desc } from 'drizzle-orm';
 import { UserPlus, Trophy, Link as LinkIcon, Edit3, MapPin, Bell } from 'lucide-react';
 import TransferTicketModal from '@/components/profile/TransferTicketModal';
+import DeleteDraftButton from '@/components/profile/DeleteDraftButton';
 
 export default async function ProfilePage() {
   const { userId } = await getUserId();
@@ -55,6 +56,9 @@ export default async function ProfilePage() {
     .innerJoin(courses, eq(saved_courses.courseId, courses.id))
     .where(eq(saved_courses.userId, userId))
     .orderBy(desc(saved_courses.createdAt));
+
+  // Fetch the Player's Hosted Events & Drafts
+  const hostedEvents = await db.select().from(tournaments).where(eq(tournaments.hostUserId, dbUser.id)).orderBy(desc(tournaments.createdAt));
 
   return (
     <div className="min-h-screen flex flex-col pt-[80px] relative" style={{
@@ -201,6 +205,56 @@ export default async function ProfilePage() {
                    ))}
                  </div>
                )}
+            </div>
+
+            {/* Widget 3.5: Hosted Events & Drafts */}
+            <div className="md:col-span-2 w-full relative bg-[rgba(255,255,255,0.02)] backdrop-blur-2xl border border-[rgba(255,255,255,0.05)] p-10 lg:p-12 hover:border-[var(--gold)] transition-colors shadow-2xl rounded-2xl z-10 flex flex-col h-full min-h-[400px]">
+               <div className="flex items-center justify-between border-b border-[rgba(255,255,255,0.1)] pb-6 mb-6">
+                 <h3 className="text-sm uppercase tracking-[0.15em] font-black flex items-center gap-3 text-white">
+                   <Edit3 size={18} className="text-[var(--gold)]" /> Hosted Events & Drafts
+                 </h3>
+                 <a href="/host" className="text-xs bg-[var(--gold)] text-black hover:bg-white hover:text-black hover:shadow-[0_0_15px_rgba(255,255,255,0.5)] px-4 py-2 uppercase tracking-widest font-bold transition-all rounded">+ Create New</a>
+               </div>
+               
+               <div className="flex-1 flex flex-col px-2 overflow-y-auto max-h-[500px] custom-scrollbar">
+                 {hostedEvents.length === 0 ? (
+                   <div className="w-full h-full flex flex-col items-center justify-center py-16 opacity-50">
+                     <p className="text-lg font-light mb-4 text-center">No hosted events or drafts found.</p>
+                   </div>
+                 ) : (
+                   <div className="flex flex-col gap-2">
+                     {hostedEvents.map((t) => (
+                       <div key={t.id} className="py-6 border-b border-[rgba(255,255,255,0.05)] flex flex-col xl:flex-row xl:items-center justify-between gap-6 group hover:bg-[rgba(255,255,255,0.03)] px-4 rounded-xl transition-colors">
+                         <div className="min-w-0 pr-4">
+                           <div className="text-2xl font-bold text-white group-hover:text-[var(--gold)] transition-colors" style={{ fontFamily: 'var(--font-serif)' }}>{t.name}</div>
+                           <div className="flex items-center gap-4 text-xs font-mono text-[rgba(255,255,255,0.6)] mt-2">
+                             <span className="flex items-center gap-2"><span className="text-[var(--gold)] opacity-80">DATE</span> {t.dateStart ? new Date(t.dateStart).toLocaleDateString() : 'TBD'}</span>
+                             <span className="w-px h-3 bg-[rgba(255,255,255,0.3)]" />
+                             {t.isActive ? (
+                               <span className="uppercase font-bold tracking-widest text-[#4ade80]">LIVE</span>
+                             ) : (
+                               <span className="uppercase font-bold tracking-widest text-[#f1c40f]">DRAFT</span>
+                             )}
+                           </div>
+                         </div>
+                         
+                         <div className="flex items-center gap-4 mt-2 xl:mt-0 transition-opacity">
+                            <a href={`/host?tournamentId=${t.id}`} className="bg-transparent border border-white text-white hover:border-[var(--gold)] hover:text-[var(--gold)] uppercase font-black tracking-widest text-xs px-6 py-3 rounded transition-colors flex items-center gap-2 whitespace-nowrap">
+                               Continue Editing
+                            </a>
+                            {t.isActive ? (
+                               <a href={`/tournaments/${t.id}`} className="bg-[var(--gold)] text-[#050B08] uppercase font-black tracking-widest text-xs px-6 py-3 rounded shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:bg-white transition-colors flex items-center gap-2 whitespace-nowrap">
+                                  View Live
+                               </a>
+                            ) : (
+                               <DeleteDraftButton tournamentId={t.id} />
+                            )}
+                         </div>
+                       </div>
+                     ))}
+                   </div>
+                 )}
+               </div>
             </div>
 
             {/* Widget 4: Affiliate Architecture */}

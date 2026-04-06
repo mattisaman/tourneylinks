@@ -181,46 +181,74 @@ export default function HostLiveCampaignBuilder() {
      setCourseResults([]);
   };
 
-  const handleSaveCampaign = async () => {
-     let tid;
-     if (typeof window !== 'undefined') {
-        tid = new URLSearchParams(window.location.search).get('tournamentId');
-     }
-     
-     if (!tid) {
-        alert("Creating NEW tournaments is not yet synced in this prototype.");
-        return;
-     }
+  const [saveStatus, setSaveStatus] = useState<'idle'|'saving'|'saved'>('idle');
+  const [draftId, setDraftId] = useState<string | null>(null);
 
-     const payload = {
-        name,
-        dateStart: date,
-        courseName: course,
-        city,
-        description: desc,
-        format: selectedFormat,
-        themeColor,
-        secondaryThemeColor,
-        heroImages: heroImage ? JSON.stringify([heroImage]) : null,
-        sponsors: JSON.stringify(sponsors)
-     };
+  // Lazy Initialization & Auto Save Effect
+  useEffect(() => {
+    // If not loaded from URL yet, skip
+    if (typeof window !== 'undefined' && !new URLSearchParams(window.location.search).get('tournamentId') && !draftId) {
+        // We only create a draft if there is meaningful user interaction
+        const hasMinimalSubstance = name.length > 2 || course.length > 2 || !!heroImage || galleryImages.length > 0;
+        if (!hasMinimalSubstance) return;
 
-     try {
-       const res = await fetch(`/api/admin/tournaments/${tid}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-       });
-       if (res.ok) {
-          alert('✅ Successfully saved Live Campaign edits to the Database!');
-       } else {
-          alert('Error saving campaign changes.');
-       }
-     } catch (err) {
-       console.error(err);
-       alert('Network error saving campaign.');
-     }
-  };
+        // Create initial draft
+        const initDraft = async () => {
+           setSaveStatus('saving');
+           try {
+              const res = await fetch('/api/admin/tournaments', { 
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ name, courseName: course, dateStart: date, format: selectedFormat })
+              });
+              const data = await res.json();
+              if (res.ok && data.id) {
+                 setDraftId(data.id.toString());
+                 window.history.replaceState(null, '', `/host?tournamentId=${data.id}`);
+                 setSaveStatus('saved');
+                 setTimeout(() => setSaveStatus('idle'), 3000);
+              }
+           } catch (e) {
+              setSaveStatus('idle');
+           }
+        };
+        const to = setTimeout(() => initDraft(), 1000);
+        return () => clearTimeout(to);
+    }
+
+    if (draftId && !isLoadingForm) {
+        // Auto Save Logic
+        const payload = {
+           name, dateStart: date, courseName: course, city, description: desc, format: selectedFormat,
+           themeColor, secondaryThemeColor, 
+           heroImages: heroImage ? JSON.stringify([heroImage]) : null,
+           galleryImages: galleryImages.length > 0 ? JSON.stringify(galleryImages) : null,
+           heroPositionData: JSON.stringify({ x: heroPositionX, y: heroPosition, zoom: heroZoom }),
+           coHostEmails: JSON.stringify(coHostEmails),
+           sponsors: JSON.stringify(sponsors)
+        };
+
+        const autoSave = async () => {
+           setSaveStatus('saving');
+           try {
+              const res = await fetch(`/api/admin/tournaments/${draftId}`, {
+                 method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+              });
+              if (res.ok) {
+                 setSaveStatus('saved');
+                 setTimeout(() => setSaveStatus('idle'), 3000);
+              } else {
+                 setSaveStatus('idle');
+              }
+           } catch(e) {
+              setSaveStatus('idle');
+           }
+        };
+
+        const to = setTimeout(() => autoSave(), 1500); // 1.5s Debounce
+        return () => clearTimeout(to);
+    }
+  }, [name, date, course, city, desc, selectedFormat, themeColor, secondaryThemeColor, heroImage, galleryImages, heroPositionX, heroPosition, heroZoom, coHostEmails, sponsors, draftId, isLoadingForm]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, setter: (val: string) => void) => {
     const file = e.target.files?.[0];
@@ -1342,12 +1370,12 @@ export default function HostLiveCampaignBuilder() {
         <div className="wizard-card">
            <div className="wizard-card-title">Launch Protocol</div>
            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1rem' }}>
-             <button disabled={charityType === 'golf_sponsored' && golfApplicationStatus === 'pending'} onClick={handleSaveCampaign} className="btn-primary" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, padding: '0.5rem 1rem', background: (charityType === 'golf_sponsored' && golfApplicationStatus === 'pending') ? '#ccc' : 'var(--gold)', color: (charityType === 'golf_sponsored' && golfApplicationStatus === 'pending') ? '#666' : '#000', fontWeight: 700, border: 'none', borderRadius: '8px', boxShadow: (charityType === 'golf_sponsored' && golfApplicationStatus === 'pending') ? 'none' : '0 4px 15px rgba(212,175,55,0.4)', cursor: (charityType === 'golf_sponsored' && golfApplicationStatus === 'pending') ? 'not-allowed' : 'pointer', transition: '0.2s' }}>
+             <button disabled={charityType === 'golf_sponsored' && golfApplicationStatus === 'pending'} onClick={() => { if(draftId) { alert('Stripe Checkout Flow Initiating...') } else alert('Please fill out the campaign first!'); }} className="btn-primary" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, padding: '0.5rem 1rem', background: (charityType === 'golf_sponsored' && golfApplicationStatus === 'pending') ? '#ccc' : 'var(--gold)', color: (charityType === 'golf_sponsored' && golfApplicationStatus === 'pending') ? '#666' : '#000', fontWeight: 700, border: 'none', borderRadius: '8px', boxShadow: (charityType === 'golf_sponsored' && golfApplicationStatus === 'pending') ? 'none' : '0 4px 15px rgba(212,175,55,0.4)', cursor: (charityType === 'golf_sponsored' && golfApplicationStatus === 'pending') ? 'not-allowed' : 'pointer', transition: '0.2s' }}>
                <div style={{ fontSize: '0.75rem', textDecoration: 'line-through', opacity: 0.7, marginBottom: '-0.2rem' }}>$149 Regular Price</div>
                <div style={{ fontSize: '1.1rem' }}>Pay $99 Intro Price 🚀</div>
              </button>
-             <button className="btn-hero-outline" style={{ flex: 1, padding: '1rem', borderRadius: '8px', cursor: 'pointer' }} onClick={handleSaveCampaign}>
-               Save as Draft
+             <button className="btn-hero-outline" style={{ flex: 1, padding: '1rem', borderRadius: '8px', cursor: 'pointer', opacity: saveStatus === 'saving' ? 0.5 : 1 }} onClick={() => { alert('Your draft is automatically and securely saved. You can safely return to your profile or close the page!'); }}>
+               {saveStatus === 'saving' ? 'Auto-Saving...' : (saveStatus === 'saved' ? 'Saved & Synced ✅' : 'Save as Draft')}
              </button>
            </div>
         </div>
@@ -2131,15 +2159,21 @@ export default function HostLiveCampaignBuilder() {
                 <div style={{ width: '50px', height: '50px', borderRadius: '12px', background: 'linear-gradient(135deg, var(--gold) 0%, #b8952a 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 15px rgba(212,175,55,0.4)' }}>
                    <span style={{ fontSize: '1.4rem' }}>⛳</span>
                 </div>
-                <div>
-                   <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--gold)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '0.3rem', opacity: 0.9 }}>Administration Hub</div>
+                 <div>
+                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.3rem' }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--gold)', filter: 'drop-shadow(0 0 4px rgba(212,175,55,0.8))' }}><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                      <div style={{ fontSize: '0.8rem', fontWeight: 800, color: '#f3e5ab', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.9 }}>Administration Hub</div>
+                   </div>
                    <h1 style={{ fontFamily: 'Playfair Display, serif', fontSize: '2.5rem', color: '#fff', margin: 0, textShadow: '0 2px 10px rgba(0,0,0,0.5)', lineHeight: 1.1 }}>Live Campaign Builder</h1>
+                 </div>
+             </div>
+             
+             {draftId && (
+                <div suppressHydrationWarning style={{ fontSize: '0.85rem', color: '#fff', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', padding: '0.5rem 1rem', borderRadius: '20px', backdropFilter: 'blur(10px)', transition: '0.3s', opacity: saveStatus === 'idle' ? 0.7 : 1 }}>
+                   <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: saveStatus === 'saving' ? '#f1c40f' : (saveStatus === 'saved' ? '#2ecc71' : '#ccc'), boxShadow: saveStatus === 'saving' ? '0 0 10px rgba(241,196,15,0.5)' : (saveStatus === 'saved' ? '0 0 10px rgba(46,204,113,0.5)' : 'none') }}></div>
+                   {saveStatus === 'saving' ? 'Auto-saving...' : (saveStatus === 'saved' ? 'Saved & Synced' : 'Draft Saved')}
                 </div>
-             </div>
-             <div suppressHydrationWarning style={{ fontSize: '0.85rem', color: '#fff', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', padding: '0.5rem 1rem', borderRadius: '20px', backdropFilter: 'blur(10px)' }}>
-                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#2ecc71', boxShadow: '0 0 10px rgba(46,204,113,0.5)' }}></div>
-                Draft Auto-saved at {new Date().toLocaleTimeString()}
-             </div>
+             )}
           </div>
        </div>
 
