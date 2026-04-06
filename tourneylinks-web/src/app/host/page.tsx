@@ -28,6 +28,7 @@ export default function HostLiveCampaignBuilder() {
 
   const [showEmojiDesc, setShowEmojiDesc] = useState(false);
   const [showEmojiDonation, setShowEmojiDonation] = useState(false);
+  const [showEmojiGolfCause, setShowEmojiGolfCause] = useState(false);
 
   const [packages, setPackages] = useState<{name: string, price: number, isTeam: boolean}[]>([
      { name: 'Foursome', price: 500, isTeam: true },
@@ -307,19 +308,38 @@ export default function HostLiveCampaignBuilder() {
                        {charityType === 'golf_sponsored' && (
                           <div style={{ background: '#fff', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '6px', padding: '1rem', marginTop: '0.5rem', animation: 'fadeIn 0.3s' }} onClick={e => e.preventDefault()}>
                              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.5rem', color: 'var(--forest)' }}>Describe your cause (required for board approval):</label>
-                             <textarea value={golfApplicationCause} onChange={e => { e.stopPropagation(); setGolfApplicationCause(e.target.value); }} rows={3} style={{ width: '100%', padding: '0.6rem', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '4px', fontSize: '0.85rem', marginBottom: '0.8rem', resize: 'vertical' }} placeholder="E.g. We are raising funds for medical bills for a local high schooler..."></textarea>
+                             <div style={{ border: '1px solid rgba(0,0,0,0.1)', borderRadius: '4px', overflow: 'visible', marginBottom: '0.8rem', background: '#fff' }}>
+                                <div style={{ background: '#f8faf9', borderBottom: '1px solid rgba(0,0,0,0.1)', padding: '0.4rem 0.5rem', display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                                   <button type="button" onClick={e => e.stopPropagation()} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontWeight: 700, padding: '0.2rem 0.5rem', borderRadius: '4px' }}>B</button>
+                                   <button type="button" onClick={e => e.stopPropagation()} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontStyle: 'italic', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>I</button>
+                                   <button type="button" onClick={e => e.stopPropagation()} style={{ background: 'transparent', border: 'none', cursor: 'pointer', textDecoration: 'underline', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>U</button>
+                                   <span style={{ width: '1px', height: '14px', background: 'rgba(0,0,0,0.1)', margin: '0 0.2rem' }}></span>
+                                   <button type="button" onClick={e => e.stopPropagation()} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '0.8rem', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>🔗 Link</button>
+                                   <button type="button" onClick={e => e.stopPropagation()} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '0.8rem', padding: '0.2rem 0.5rem', borderRadius: '4px', fontWeight: 600 }}>• Bullet List</button>
+                                   <div style={{ position: 'relative', display: 'inline-flex' }}>
+                                      <button type="button" onClick={(e) => { e.stopPropagation(); setShowEmojiGolfCause(!showEmojiGolfCause); }} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '0.9rem', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>😀</button>
+                                      {showEmojiGolfCause && (
+                                         <div style={{ position: 'absolute', top: '100%', left: 0, zIndex: 100, marginTop: '5px' }}>
+                                            <EmojiPicker onEmojiClick={(emojiData) => { setGolfApplicationCause(prev => prev + emojiData.emoji); setShowEmojiGolfCause(false); }} />
+                                         </div>
+                                      )}
+                                   </div>
+                                </div>
+                                <textarea value={golfApplicationCause} onChange={e => { e.stopPropagation(); setGolfApplicationCause(e.target.value); }} rows={3} style={{ width: '100%', padding: '0.8rem', border: 'none', borderBottomLeftRadius: '4px', borderBottomRightRadius: '4px', fontSize: '0.85rem', resize: 'vertical', outline: 'none' }} placeholder="E.g. We are raising funds for medical bills for a local high schooler..."></textarea>
+                             </div>
                              
                              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.5rem', color: 'var(--forest)' }}>Preferred Disbursement Method:</label>
-                             <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.8rem' }}>
-                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem', cursor: 'pointer' }}>
+                             <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.4rem' }}>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem', cursor: 'pointer', fontWeight: golfPayoutMethod === 'bank' ? 600 : 400 }}>
                                    <input type="radio" checked={golfPayoutMethod === 'bank'} onChange={(e) => { e.stopPropagation(); setGolfPayoutMethod('bank'); }} style={{ accentColor: 'var(--forest)' }} /> Bank Transfer
                                 </label>
-                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem', cursor: 'pointer' }}>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem', cursor: 'pointer', fontWeight: golfPayoutMethod === 'check' ? 600 : 400 }}>
                                    <input type="radio" checked={golfPayoutMethod === 'check'} onChange={(e) => { e.stopPropagation(); setGolfPayoutMethod('check'); }} style={{ accentColor: 'var(--forest)' }} /> Mailed Check
                                 </label>
                              </div>
-                             
-                             <input type="text" value={golfPayoutInfo} onChange={e => { e.stopPropagation(); setGolfPayoutInfo(e.target.value); }} placeholder={golfPayoutMethod === 'bank' ? "Enter Routing / Account Number or Zelle Email" : "Enter full mailing address"} style={{ width: '100%', padding: '0.6rem', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '4px', fontSize: '0.85rem', marginBottom: '1rem' }} />
+                             <div style={{ fontSize: '0.75rem', color: 'var(--mist)', marginBottom: '1rem', lineHeight: 1.4 }}>
+                               (You can securely provide your preferred routing/mailing details later once your application is approved.)
+                             </div>
 
                              <div style={{ background: '#f8faf9', padding: '1rem', borderRadius: '4px', border: '1px solid #e2e8f0', marginBottom: '1rem' }}>
                                 <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', cursor: 'pointer' }}>
@@ -463,14 +483,18 @@ export default function HostLiveCampaignBuilder() {
                  <div style={{ fontSize: '0.7rem', color: 'var(--mist)', marginBottom: '0.6rem', lineHeight: 1.4 }}>
                     Optional: Disable the secondary color for a single primary color vibe.
                  </div>
-                 <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                    <input type="color" value={activeSecondaryColor} onChange={e => setSecondaryThemeColor(e.target.value)} style={{ padding: 0, width: '40px', height: '40px', border: 'none', borderRadius: '4px', cursor: 'pointer', opacity: secondaryThemeColor ? 1 : 0.3 }} />
-                    <input type="text" value={secondaryThemeColor ? secondaryThemeColor.toUpperCase() : ''} onChange={e => { let v = e.target.value.toLowerCase(); if(v === '' || v === '#') { setSecondaryThemeColor(''); return; } if(!v.startsWith('#')) v='#'+v; if(v.length<=7) setSecondaryThemeColor(v); }} placeholder="Disabled" style={{ fontSize: '0.8rem', fontFamily: 'monospace', color: 'var(--ink)', width: '85px', padding: '0.4rem 0.6rem', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '4px' }} />
-                    {secondaryThemeColor && (
-                       <button type="button" onClick={(e) => { e.preventDefault(); setSecondaryThemeColor(''); }} style={{ background: 'none', border: 'none', color: 'var(--mist)', fontSize: '0.75rem', cursor: 'pointer', opacity: 0.8, marginLeft: '0.5rem', fontWeight: 600 }}>
-                          Clear
-                       </button>
-                    )}
+                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <label className="toggle-switch">
+                       <input type="checkbox" checked={!!secondaryThemeColor} onChange={(e) => {
+                          if (e.target.checked) setSecondaryThemeColor('#000000');
+                          else setSecondaryThemeColor('');
+                       }} />
+                       <span className="toggle-slider"></span>
+                    </label>
+                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', opacity: secondaryThemeColor ? 1 : 0.4, pointerEvents: secondaryThemeColor ? 'auto' : 'none' }}>
+                       <input type="color" value={activeSecondaryColor} onChange={e => setSecondaryThemeColor(e.target.value)} style={{ padding: 0, width: '40px', height: '40px', border: 'none', borderRadius: '4px', cursor: 'pointer' }} disabled={!secondaryThemeColor} />
+                       <input type="text" value={secondaryThemeColor ? secondaryThemeColor.toUpperCase() : ''} onChange={e => { let v = e.target.value.toLowerCase(); if(v === '' || v === '#') { setSecondaryThemeColor(''); return; } if(!v.startsWith('#')) v='#'+v; if(v.length<=7) setSecondaryThemeColor(v); }} placeholder="Disabled" style={{ fontSize: '0.8rem', fontFamily: 'monospace', color: 'var(--ink)', width: '85px', padding: '0.4rem 0.6rem', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '4px' }} disabled={!secondaryThemeColor} />
+                    </div>
                  </div>
               </div>
           </div>
