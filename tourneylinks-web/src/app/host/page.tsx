@@ -1118,7 +1118,7 @@ export default function HostLiveCampaignBuilder() {
                                  </div>
                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px dotted rgba(212,175,55,0.3)', paddingBottom: '0.4rem', marginBottom: '0.4rem' }}>
                                     <div style={{ fontSize: '0.75rem', color: charityType !== 'none' ? 'var(--forest)' : 'var(--mist)' }}>Golfer Pays:</div>
-                                    <div style={{ fontSize: '0.85rem', color: charityType !== 'none' ? 'var(--forest)', fontWeight: 600 }}>${golferPaysCharity.toFixed(2)}</div>
+                                    <div style={{ fontSize: '0.85rem', color: charityType !== 'none' ? 'var(--forest)' : 'var(--mist)', fontWeight: 600 }}>${golferPaysCharity.toFixed(2)}</div>
                                  </div>
                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <div style={{ fontSize: '0.85rem', color: charityType !== 'none' ? 'var(--grass)' : 'var(--mist)', fontWeight: 600 }}>You Keep:</div>
