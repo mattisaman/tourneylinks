@@ -4,6 +4,9 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Smartphone, Monitor, Image as ImageIcon, DollarSign, Settings, ShoppingBag, Plus, UploadCloud } from 'lucide-react';
 import StripeOnboardButton from './onboarding/StripeOnboardButton';
+import dynamic from 'next/dynamic';
+
+const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });
 
 export default function HostLiveCampaignBuilder() {
   const [activeTab, setActiveTab] = useState<'content' | 'finance' | 'donations' | 'sponsorships' | 'launch'>('content');
@@ -22,6 +25,9 @@ export default function HostLiveCampaignBuilder() {
   const [org, setOrg] = useState('');
   const [email, setEmail] = useState('');
   const [passFees, setPassFees] = useState(false);
+
+  const [showEmojiDesc, setShowEmojiDesc] = useState(false);
+  const [showEmojiDonation, setShowEmojiDonation] = useState(false);
 
   const [packages, setPackages] = useState<{name: string, price: number, isTeam: boolean}[]>([
      { name: 'Foursome', price: 500, isTeam: true },
@@ -395,7 +401,7 @@ export default function HostLiveCampaignBuilder() {
             </div>
             <div className="wfield wform-full">
                <label>Public Description</label>
-               <div style={{ border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px', overflow: 'hidden', transition: 'border-color 0.2s', background: '#fff' }}>
+               <div style={{ border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px', overflow: 'visible', transition: 'border-color 0.2s', background: '#fff' }}>
                  <div style={{ background: '#f4f7f5', borderBottom: '1px solid rgba(0,0,0,0.1)', padding: '0.4rem 0.6rem', display: 'flex', gap: '0.3rem', alignItems: 'center' }}>
                     <button type="button" style={{ background: 'none', border: 'none', fontWeight: 'bold', cursor: 'pointer', padding: '0.3rem 0.6rem', borderRadius: '4px', color: 'var(--ink)' }}>B</button>
                     <button type="button" style={{ background: 'none', border: 'none', fontStyle: 'italic', cursor: 'pointer', padding: '0.3rem 0.6rem', borderRadius: '4px', color: 'var(--ink)' }}>I</button>
@@ -403,7 +409,14 @@ export default function HostLiveCampaignBuilder() {
                     <div style={{ width: '1px', height: '16px', background: 'rgba(0,0,0,0.1)', margin: '0 0.3rem' }}></div>
                     <button type="button" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.3rem 0.6rem', borderRadius: '4px', fontSize: '0.85rem', color: 'var(--ink)' }}>🔗 Link</button>
                     <button type="button" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.3rem 0.6rem', borderRadius: '4px', fontSize: '0.85rem', color: 'var(--ink)', fontWeight: 600 }}>• Bullet List</button>
-                    <button type="button" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.3rem 0.6rem', borderRadius: '4px', fontSize: '0.9rem', color: 'var(--ink)' }}>😀</button>
+                    <div style={{ position: 'relative', display: 'inline-flex' }}>
+                       <button type="button" onClick={() => setShowEmojiDesc(!showEmojiDesc)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.3rem 0.6rem', borderRadius: '4px', fontSize: '0.9rem', color: 'var(--ink)' }}>😀</button>
+                       {showEmojiDesc && (
+                          <div style={{ position: 'absolute', top: '100%', left: 0, zIndex: 100, marginTop: '5px' }}>
+                             <EmojiPicker onEmojiClick={(emojiData) => { setDesc(prev => prev + emojiData.emoji); setShowEmojiDesc(false); }} />
+                          </div>
+                       )}
+                    </div>
                  </div>
                  <textarea style={{ border: 'none', width: '100%', padding: '1rem', outline: 'none', resize: 'vertical', minHeight: '120px', fontFamily: 'inherit', fontSize: '0.9rem' }} rows={4} value={desc} onChange={e => setDesc(e.target.value)} placeholder="Tell players what makes this tournament special. For example, copy-paste a bulleted list of events or schedule information here..."></textarea>
                </div>
@@ -984,14 +997,21 @@ export default function HostLiveCampaignBuilder() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                      <div>
                         <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.3rem', display: 'block' }}>Thank You Email Message</label>
-                        <div style={{ border: '1px solid rgba(0,0,0,0.1)', borderRadius: '6px', overflow: 'hidden' }}>
+                        <div style={{ border: '1px solid rgba(0,0,0,0.1)', borderRadius: '6px', overflow: 'visible' }}>
                            <div style={{ background: '#f8faf9', borderBottom: '1px solid rgba(0,0,0,0.1)', padding: '0.5rem', display: 'flex', gap: '0.5rem' }}>
                               <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontWeight: 700, padding: '0.2rem 0.6rem', borderRadius: '4px' }}>B</button>
                               <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontStyle: 'italic', padding: '0.2rem 0.6rem', borderRadius: '4px' }}>I</button>
                               <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', textDecoration: 'underline', padding: '0.2rem 0.6rem', borderRadius: '4px' }}>U</button>
                               <span style={{ width: '1px', background: 'rgba(0,0,0,0.1)', margin: '0 0.2rem' }}></span>
                               <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '0.8rem', padding: '0.2rem 0.6rem', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>🔗 Link</button>
-                              <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '0.9rem', padding: '0.2rem 0.6rem', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>😀</button>
+                              <div style={{ position: 'relative', display: 'inline-flex' }}>
+                                 <button onClick={() => setShowEmojiDonation(!showEmojiDonation)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '0.9rem', padding: '0.2rem 0.6rem', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>😀</button>
+                                 {showEmojiDonation && (
+                                    <div style={{ position: 'absolute', top: '100%', left: 0, zIndex: 100, marginTop: '5px' }}>
+                                       <EmojiPicker onEmojiClick={(emojiData) => { setDonationThankYouEmail(prev => prev + emojiData.emoji); setShowEmojiDonation(false); }} />
+                                    </div>
+                                 )}
+                              </div>
                            </div>
                            <textarea 
                               value={donationThankYouEmail}
