@@ -307,7 +307,10 @@ export default function HostLiveCampaignBuilder() {
                        
                        {charityType === 'golf_sponsored' && (
                           <div style={{ background: '#fff', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '6px', padding: '1rem', marginTop: '0.5rem', animation: 'fadeIn 0.3s' }} onClick={e => e.preventDefault()}>
-                             <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.5rem', color: 'var(--forest)' }}>Describe your cause (required for board approval):</label>
+                             <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem', color: 'var(--forest)' }}>Describe your cause (required for board approval):</label>
+                             <div style={{ fontSize: '0.7rem', color: 'var(--mist)', marginBottom: '0.8rem', lineHeight: 1.4 }}>
+                                Our foundation supports a broad spectrum of causes—from disease awareness and medical tragedies, to youth sports and group fundraisers. As long as it's legal, ethical, and well-intended, we want to help!
+                             </div>
                              <div style={{ border: '1px solid rgba(0,0,0,0.1)', borderRadius: '4px', overflow: 'visible', marginBottom: '0.8rem', background: '#fff' }}>
                                 <div style={{ background: '#f8faf9', borderBottom: '1px solid rgba(0,0,0,0.1)', padding: '0.4rem 0.5rem', display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
                                    <button type="button" onClick={e => e.stopPropagation()} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontWeight: 700, padding: '0.2rem 0.5rem', borderRadius: '4px' }}>B</button>
@@ -325,7 +328,7 @@ export default function HostLiveCampaignBuilder() {
                                       )}
                                    </div>
                                 </div>
-                                <textarea value={golfApplicationCause} onChange={e => { e.stopPropagation(); setGolfApplicationCause(e.target.value); }} rows={3} style={{ width: '100%', padding: '0.8rem', border: 'none', borderBottomLeftRadius: '4px', borderBottomRightRadius: '4px', fontSize: '0.85rem', resize: 'vertical', outline: 'none' }} placeholder="E.g. We are raising funds for medical bills for a local high schooler..."></textarea>
+                                <textarea value={golfApplicationCause} onChange={e => { e.stopPropagation(); setGolfApplicationCause(e.target.value); }} rows={3} style={{ width: '100%', padding: '0.8rem', border: 'none', borderBottomLeftRadius: '4px', borderBottomRightRadius: '4px', fontSize: '0.85rem', resize: 'vertical', outline: 'none' }} placeholder="E.g. We are raising funds for medical bills for a local family, or, generating funds for our inner-city youth baseball league's new uniforms..."></textarea>
                              </div>
                              
                              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.5rem', color: 'var(--forest)' }}>Preferred Disbursement Method:</label>
