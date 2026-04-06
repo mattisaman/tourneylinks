@@ -433,7 +433,7 @@ export default function HostLiveCampaignBuilder() {
                     <input type="radio" name="charityType" checked={charityType === 'golf_sponsored'} onChange={() => { setCharityType('golf_sponsored'); setCharityName('G.O.L.F. Foundation'); }} style={{ width: '1.2rem', height: '1.2rem', accentColor: 'var(--gold)', marginTop: '0.2rem' }} />
                     <div style={{ flex: 1 }}>
                        <div style={{ fontWeight: 600, color: 'var(--ink)' }}>Apply for Fiscal Sponsorship (G.O.L.F.)</div>
-                       <div style={{ fontSize: '0.75rem', color: 'var(--mist)', marginBottom: charityType === 'golf_sponsored' ? '1rem' : 0 }}>Process donations tax-free through the Gateway Outreach Links Foundation.</div>
+                       <div style={{ fontSize: '0.75rem', color: 'var(--mist)', marginBottom: charityType === 'golf_sponsored' ? '1rem' : 0 }}>Process donations and sponsorships tax-free through the Gateway Outreach Links Foundation.</div>
                        
                        {charityType === 'golf_sponsored' && (
                           <div style={{ background: '#fff', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '6px', padding: '1rem', marginTop: '0.5rem', animation: 'fadeIn 0.3s' }} onClick={e => e.preventDefault()}>
@@ -1444,7 +1444,7 @@ export default function HostLiveCampaignBuilder() {
                     <strong style={{ color: 'var(--ink)', display: 'block', marginBottom: '0.4rem' }}>Gateway Links Foundation Treasury</strong>
                     <div style={{ color: 'var(--mist)', fontSize: '0.85rem', lineHeight: 1.5 }}>
                        Your application for Fiscal Sponsorship is currently <strong>Under Review</strong>. <br/><br/>
-                       You do not need to connect a Stripe account. All transactions will be securely routed directly through the Foundation's audited accounts. You will be cleared for launch within 24 hours.
+                       If approved, all transactions will be securely routed directly through the foundation's audited accounts. You can expect a response on your application and a status update within 48 hours.
                     </div>
                  </div>
               </div>
