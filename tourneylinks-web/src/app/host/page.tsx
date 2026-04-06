@@ -424,11 +424,23 @@ export default function HostLiveCampaignBuilder() {
                     </div>
                  </label>
 
-                 <label style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', padding: '1rem', background: charityType === 'own' ? 'rgba(212,175,55,0.05)' : '#fff', borderRadius: '6px', border: charityType === 'own' ? '1px solid var(--gold)' : '1px solid rgba(0,0,0,0.1)', cursor: 'pointer', transition: '0.2s' }}>
-                    <input type="radio" name="charityType" checked={charityType === 'own'} onChange={() => { setCharityType('own'); if(charityName === 'G.O.L.F. Foundation') setCharityName(''); }} style={{ width: '1.2rem', height: '1.2rem', accentColor: 'var(--gold)' }} />
-                    <div>
+                 <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.8rem', padding: '1rem', background: charityType === 'own' ? 'rgba(212,175,55,0.05)' : '#fff', borderRadius: '6px', border: charityType === 'own' ? '1px solid var(--gold)' : '1px solid rgba(0,0,0,0.1)', cursor: 'pointer', transition: '0.2s' }}>
+                    <input type="radio" name="charityType" checked={charityType === 'own'} onChange={() => { setCharityType('own'); if(charityName === 'G.O.L.F. Foundation') setCharityName(''); }} style={{ width: '1.2rem', height: '1.2rem', accentColor: 'var(--gold)', marginTop: '0.2rem' }} />
+                    <div style={{ flex: 1 }}>
                        <div style={{ fontWeight: 600, color: 'var(--ink)' }}>We have our own 501(c)(3)</div>
                        <div style={{ fontSize: '0.75rem', color: 'var(--mist)' }}>Provide your Tax ID instantly for donor receipts.</div>
+                       {charityType === 'own' && (
+                          <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', padding: '1rem', borderTop: '1px solid rgba(0,0,0,0.05)', background: '#fff', borderRadius: '6px' }} onClick={e => e.preventDefault()}>
+                             <div className="wfield" style={{ flex: 2, marginBottom: 0 }}>
+                                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, marginBottom: '0.3rem', color: 'var(--forest)' }}>501(c)(3) Organization Name</label>
+                                <input type="text" value={charityName} onChange={e => setCharityName(e.target.value)} placeholder="e.g. Jimmy Fund" style={{ padding: '0.5rem', width: '100%', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }} />
+                             </div>
+                             <div className="wfield" style={{ flex: 1, marginBottom: 0 }}>
+                                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, marginBottom: '0.3rem', color: 'var(--forest)' }}>Tax ID (EIN)</label>
+                                <input type="text" value={charityTaxId} onChange={e => setCharityTaxId(e.target.value)} placeholder="e.g. 12-3456789" style={{ padding: '0.5rem', width: '100%', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }} />
+                             </div>
+                          </div>
+                       )}
                     </div>
                  </label>
 
@@ -509,18 +521,7 @@ export default function HostLiveCampaignBuilder() {
                  </label>
               </div>
 
-              {charityType === 'own' && (
-                 <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', animation: 'fadeIn 0.3s' }}>
-                    <div className="wfield wform-full" style={{ flex: 2 }}>
-                      <label>501(c)(3) Organization Name</label>
-                      <input type="text" value={charityName} onChange={e => setCharityName(e.target.value)} placeholder="e.g. Jimmy Fund" />
-                    </div>
-                    <div className="wfield wform-full" style={{ flex: 1 }}>
-                      <label>Tax ID (EIN)</label>
-                      <input type="text" value={charityTaxId} onChange={e => setCharityTaxId(e.target.value)} placeholder="e.g. 12-3456789" />
-                    </div>
-                 </div>
-              )}
+              
            </div>
         </div>
         <div className="wizard-card" style={{ marginBottom: '2rem' }}>
@@ -825,9 +826,12 @@ export default function HostLiveCampaignBuilder() {
                           </div>
                        </div>
                     </div>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
-                       <input type="checkbox" checked={newPackage.isTeam} onChange={e => setNewPackage({...newPackage, isTeam: e.target.checked})} />
-                       <span style={{ fontSize: '0.8rem', color: 'var(--ink)', fontWeight: 600 }}>This is a Foursome/Team Package</span>
+                    <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', cursor: 'pointer' }}>
+                       <input type="checkbox" checked={newPackage.isTeam} onChange={e => setNewPackage({...newPackage, isTeam: e.target.checked})} style={{ marginTop: '0.15rem' }} />
+                       <div>
+                          <div style={{ fontSize: '0.8rem', color: 'var(--ink)', fontWeight: 600 }}>This is a Foursome/Team Package</div>
+                          <div style={{ fontSize: '0.7rem', color: 'var(--mist)', marginTop: '0.1rem', lineHeight: 1.4 }}>When checked, the system will prompt the buyer to enter names & contact info for 4 registered players during checkout.</div>
+                       </div>
                     </label>
 
                     {/* Highly Polished AI Suggestion Inline Panel */}
@@ -1694,6 +1698,7 @@ export default function HostLiveCampaignBuilder() {
               <div style={{ padding: '3rem 2rem', background: '#f8faf9', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                  <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
                     <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Support the Cause</div>
+                    {charityType !== 'none' && <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.5rem' }}><div style={{ background: 'var(--forest)', color: '#fff', fontSize: '0.6rem', padding: '0.2rem 0.6rem', borderRadius: '12px', fontWeight: 600, letterSpacing: '0.05em' }}>501(c)(3) Tax-Deductible</div></div>}
                     <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '2rem', color: 'var(--forest)', margin: 0 }}>Every Contribution Helps</h2>
                  </div>
                  
@@ -1801,10 +1806,8 @@ export default function HostLiveCampaignBuilder() {
            return (
               <div style={{ padding: '3rem 2rem', background: '#f8faf9', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                  <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                        <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Partnership Opportunities</div>
-                        {charityType !== 'none' && <div style={{ background: 'var(--forest)', color: '#fff', fontSize: '0.6rem', padding: '0.2rem 0.6rem', borderRadius: '12px', fontWeight: 600, letterSpacing: '0.05em' }}>501(c)(3) Tax-Deductible</div>}
-                     </div>
+                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Partnership Opportunities</div>
+                    {charityType !== 'none' && <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.5rem' }}><div style={{ background: 'var(--forest)', color: '#fff', fontSize: '0.6rem', padding: '0.2rem 0.6rem', borderRadius: '12px', fontWeight: 600, letterSpacing: '0.05em' }}>501(c)(3) Tax-Deductible</div></div>}
                     <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '2rem', color: 'var(--forest)', margin: 0 }}>Support Our Mission</h2>
                  </div>
                  
@@ -2095,6 +2098,7 @@ export default function HostLiveCampaignBuilder() {
               <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative', background: '#f8faf9', padding: '1.5rem' }}>
                  <div style={{ textAlign: 'left', marginBottom: '2rem' }}>
                     <div style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.3rem' }}>Support the Cause</div>
+                    {charityType !== 'none' && <div style={{ marginBottom: '0.2rem' }}><span style={{ background: 'var(--forest)', color: '#fff', fontSize: '0.55rem', padding: '0.2rem 0.5rem', borderRadius: '12px', fontWeight: 600, letterSpacing: '0.05em' }}>501(c)(3) Tax-Deductible</span></div>}
                     <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.6rem', color: 'var(--forest)', margin: 0, lineHeight: 1.1 }}>Every Contribution Helps</h2>
                  </div>
                  
@@ -2195,6 +2199,7 @@ export default function HostLiveCampaignBuilder() {
               <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative', background: '#f8faf9', padding: '1.5rem' }}>
                  <div style={{ textAlign: 'left', marginBottom: '2rem' }}>
                     <div style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.3rem' }}>Partnerships</div>
+                    {charityType !== 'none' && <div style={{ marginBottom: '0.2rem' }}><span style={{ background: 'var(--forest)', color: '#fff', fontSize: '0.55rem', padding: '0.2rem 0.5rem', borderRadius: '12px', fontWeight: 600, letterSpacing: '0.05em' }}>501(c)(3) Tax-Deductible</span></div>}
                     <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.6rem', color: 'var(--forest)', margin: 0, lineHeight: 1.1 }}>Sponsorship Opportunities</h2>
                  </div>
                  
