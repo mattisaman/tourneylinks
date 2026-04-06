@@ -490,7 +490,7 @@ export default function HostLiveCampaignBuilder() {
                              </div>
 
                              <div style={{ background: '#f8faf9', padding: '1rem', borderRadius: '4px', border: '1px solid #e2e8f0', marginBottom: '1rem' }}>
-                                <label style={{ display: \'flex\', alignItems: \'flex-start\', gap: \'0.6rem\', cursor: \'pointer\' }}>
+                                <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', cursor: 'pointer' }}>
                                    <input type="checkbox" checked={golfAgreementChecked} onChange={(e) => { e.stopPropagation(); setGolfAgreementChecked(!golfAgreementChecked); }} style={{ marginTop: '0.2rem', accentColor: 'var(--forest)', width: '1rem', height: '1rem' }} />
                                    <span style={{ fontSize: '0.75rem', color: 'var(--ink)', lineHeight: 1.5 }}>
                                       <strong>Terms of Agreement:</strong> I acknowledge that by applying for fiscal sponsorship, all collected funds will be managed by the Gateway Outreach Links Foundation. Upon successful completion of the event, the Foundation will disburse all gross proceeds (minus standard Stripe processing fees of 2.2% + 30¢) directly to the tournament organizer using the method specified above.

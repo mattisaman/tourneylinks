@@ -1,56 +1,18 @@
-import re
-
 with open("src/app/host/page.tsx", "r") as f:
-    content = f.read()
+    text = f.read()
 
-# The missing `</div>` at the end of addons.
-# Let's locate the Add-ons block end.
-# It ends with:
-#                ))}
-#             </div>
-#             <div className="wizard-card" style={{ marginBottom: '2rem' }}>
-#              <div className="wizard-card-title">Setup Donations & 501(c)(3) Entity</div>
+# Fix Donations (revert that mistake!)
+wrong = r"<div style={{ height: '600px', width: '100%', display: 'flex', justifyContent: 'flex-start', alignItems: 'flex-start', padding: '2rem', textAlign: 'center', background: '#f8faf9' }}>"
+right = r"<div style={{ height: '600px', width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '2rem', textAlign: 'center', background: '#f8faf9' }}>"
+text = text.replace(wrong, right)
 
-addons_end_pattern = r"(\s*\}\)\)\n\s*</div\>)\n(\s*\<div className=\"wizard-card\" style=\{\{ marginBottom: '2rem' \}\}\>\n\s*\<div className=\"wizard-card-title\"\>Setup Donations \& 501\(c\)\(3\) Entity\</div\>)"
+# Fix Finance!
+finance_wrong = r'<div className="no-scrollbar" style={{ padding: \'3rem 2rem\', background: \'#f8faf9\', display: \'flex\', flexDirection: \'column\', alignItems: \'center\', height: \'600px\', overflowY: \'auto\', width: \'100%\' }}>\n              <div style={{ width: \'100%\', maxWidth: \'400px\', background: \'#fff\', borderRadius: \'12px\', border: \'1px solid rgba(0,0,0,0.08)\', boxShadow: \'0 10px 40px rgba(0,0,0,0.05)\', padding: \'2rem\' }}>'
 
-if re.search(addons_end_pattern, content):
-    print("Found missing div location!")
-    content = re.sub(addons_end_pattern, r"\1\n         </div>\n\n\2", content)
-else:
-    print("Could not find the missing div location.")
+finance_right = r'<div className="no-scrollbar" style={{ height: \'600px\', overflowY: \'auto\', background: \'#f8faf9\', display: \'flex\', justifyContent: \'center\', alignItems: \'flex-start\', padding: \'3rem 2rem\', width: \'100%\' }}>\n              <div style={{ width: \'100%\', maxWidth: \'400px\', background: \'#fff\', borderRadius: \'12px\', border: \'1px solid rgba(0,0,0,0.08)\', boxShadow: \'0 10px 40px rgba(0,0,0,0.05)\', padding: \'2rem\' }}>'
 
-# Now we want to move Setup Donations to Content Tab!
-setup_donations_start = r"(\s*\<div className=\"wizard-card\" style=\{\{ marginBottom: '2rem' \}\}\>\n\s*\<div className=\"wizard-card-title\"\>Setup Donations \& 501\(c\)\(3\) Entity\</div\>)"
-
-# Setup donations ends with:
-#                )}
-#             </div>
-#          </div>
-#
-#         <div className="wizard-card" style={{ marginBottom: '2rem' }}>
-#            <div className="wizard-card-title">Prizes & Raffles</div>
-
-setup_donations_end_pattern = r"(?s)(Setup Donations & 501\(c\)\(3\) Entity.*?\{\s*charityType === 'own' && \(.*?\)\s*\}\s*\</div\>\s*\</div\>)\n"
-
-match = re.search(setup_donations_end_pattern, content)
-if match:
-    print("Found Setup Donations block!")
-    block = match.group(1)
-    
-    # Remove block from its current location
-    content = content.replace(block + "\n", "", 1)
-    
-    # Insert block before Tournament Logistics in renderContentTab
-    logistics_pattern = r"(\s*\<div className=\"wizard-card\" style=\{\{ marginBottom: '2rem' \}\}\>\n\s*\<div className=\"wizard-card-title\"\>Tournament Logistics\</div\>)"
-    if re.search(logistics_pattern, content):
-        content = re.sub(logistics_pattern, f"\n{block}\n\\1", content, count=1)
-        print("Injected into Tournament Logistics.")
-    else:
-        print("Could not find Tournament Logistics.")
-else:
-    print("Could not find Setup Donations block.")
+text = text.replace(finance_wrong, finance_right)
 
 with open("src/app/host/page.tsx", "w") as f:
-    f.write(content)
+    f.write(text)
 
-print("Done!")
