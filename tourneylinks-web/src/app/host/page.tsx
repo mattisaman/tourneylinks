@@ -1379,7 +1379,7 @@ export default function HostLiveCampaignBuilder() {
               </div>
               
               <div style={{ padding: '1.5rem', display: 'flex', gap: '1.5rem', flex: 1 }}>
-                 <div style={{ flex: '1 1 60%' }}>
+                 <div style={{ flex: '1 1 60%', minWidth: 0 }}>
                     <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--forest)', marginBottom: '0.5rem' }}>About Event</div>
                     <div style={{ fontSize: '0.85rem', color: 'var(--mist)', lineHeight: 1.6, marginBottom: '1.5rem', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{desc || 'Tournament description will appear here...'}</div>
 
