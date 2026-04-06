@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Smartphone, Monitor, Image as ImageIcon, DollarSign, Settings, ShoppingBag, Plus, UploadCloud } from 'lucide-react';
+import { Smartphone, Monitor, Image as ImageIcon, DollarSign, Settings, ShoppingBag, Plus, UploadCloud, Lightbulb } from 'lucide-react';
 import { useAuth, SignInButton } from '@clerk/nextjs';
 import StripeOnboardButton from './onboarding/StripeOnboardButton';
 import dynamic from 'next/dynamic';
@@ -490,7 +490,7 @@ export default function HostLiveCampaignBuilder() {
                              </div>
 
                              <div style={{ background: '#f8faf9', padding: '1rem', borderRadius: '4px', border: '1px solid #e2e8f0', marginBottom: '1rem' }}>
-                                <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', cursor: 'pointer' }}>
+                                <label style={{ display: \'flex\', alignItems: \'flex-start\', gap: \'0.6rem\', cursor: \'pointer\' }}>
                                    <input type="checkbox" checked={golfAgreementChecked} onChange={(e) => { e.stopPropagation(); setGolfAgreementChecked(!golfAgreementChecked); }} style={{ marginTop: '0.2rem', accentColor: 'var(--forest)', width: '1rem', height: '1rem' }} />
                                    <span style={{ fontSize: '0.75rem', color: 'var(--ink)', lineHeight: 1.5 }}>
                                       <strong>Terms of Agreement:</strong> I acknowledge that by applying for fiscal sponsorship, all collected funds will be managed by the Gateway Outreach Links Foundation. Upon successful completion of the event, the Foundation will disburse all gross proceeds (minus standard Stripe processing fees of 2.2% + 30¢) directly to the tournament organizer using the method specified above.
@@ -775,7 +775,7 @@ export default function HostLiveCampaignBuilder() {
            </div>
            
            <div style={{ background: 'rgba(212,175,55,0.1)', border: '1px dashed var(--gold)', padding: '0.6rem 0.8rem', borderRadius: '6px', fontSize: '0.75rem', color: 'var(--ink)', marginBottom: '1.5rem', display: 'flex', alignItems: 'flex-start', gap: '0.6rem', lineHeight: 1.4 }}>
-              <span style={{ fontSize: '1rem', filter: 'drop-shadow(0 2px 2px rgba(212,175,55,0.4))' }}>��</span>
+              <Lightbulb size={20} color="var(--gold)" style={{ marginTop: '0.2rem', filter: 'drop-shadow(0 2px 2px rgba(212,175,55,0.4))' }} />
               <div><strong style={{ color: 'var(--forest)' }}>PRO TIP:</strong> If you plan to "Absorb Fees" so registrants don't see Stripe processing fees at checkout, look at the active payout ledger below and raise your package price slightly to offset the fee! It's a great way to offer clean, round numbers.</div>
            </div>
            
