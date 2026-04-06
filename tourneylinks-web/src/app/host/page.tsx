@@ -985,7 +985,7 @@ export default function HostLiveCampaignBuilder() {
                              }} />
                              <span className="toggle-slider"></span>
                           </label>
-                          <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--grass)' }}>${typeof p.price === 'number' ? p.price.toFixed(2) : Number(p.price).toFixed(2)}</span>
+                          <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--grass)' }}>${Number(p.price).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                           <button onClick={() => {
                              setNewPackage(p);
                              setPackages(packages.filter((_, idx) => idx !== i));
@@ -1768,7 +1768,7 @@ export default function HostLiveCampaignBuilder() {
                        {sponsors.map((s, idx) => (
                           <div key={idx} style={{ padding: '0.75rem', background: '#fff', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.05)', textAlign: 'center' }}>
                              <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)' }}>{s.tier}</div>
-                             <div style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--grass)' }}>${s.price}</div>
+                             <div style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--grass)' }}>${Number(s.price).toLocaleString()}</div>
                           </div>
                        ))}
                     </div>
@@ -1788,7 +1788,7 @@ export default function HostLiveCampaignBuilder() {
                              {packages.map((p, idx) => (
                                 <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem', fontSize: '0.75rem' }}>
                                    <span style={{ color: 'var(--mist)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100px' }}>{p.name}</span>
-                                   <span style={{ fontWeight: 600, color: 'var(--ink)' }}>${p.price}</span>
+                                   <span style={{ fontWeight: 600, color: 'var(--ink)' }}>${Number(p.price).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                                 </div>
                              ))}
                           </div>
@@ -2178,7 +2178,7 @@ export default function HostLiveCampaignBuilder() {
                     {sponsors.map((s, idx) => (
                        <div key={idx} style={{ padding: '1rem', background: '#f8faf9', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                           <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--forest)' }}>{s.tier}</span>
-                          <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--grass)' }}>${s.price}</span>
+                          <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--grass)' }}>${Number(s.price).toLocaleString()}</span>
                        </div>
                     ))}
                  </div>
@@ -2190,7 +2190,7 @@ export default function HostLiveCampaignBuilder() {
                           {packages.map((p, idx) => (
                              <div key={idx} style={{ padding: '1rem', background: '#f4f7f5', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink)' }}>{p.name}</span>
-                                <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--ink)' }}>${p.price}</span>
+                                <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--ink)' }}>${Number(p.price).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                              </div>
                           ))}
                        </div>
