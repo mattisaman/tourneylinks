@@ -1536,7 +1536,7 @@ export default function HostLiveCampaignBuilder() {
   const renderDesktopSimulator = () => {
      if (activeTab === 'content' || activeTab === 'launch') {
         return (
-           <div className="no-scrollbar" style={{ height: '600px', overflowY: 'auto', background: '#f8faf9', display: 'flex', flexDirection: 'column', width: '100%' }}>
+           <div className="no-scrollbar" style={{ padding: '3rem 2rem', background: '#f8faf9', display: 'flex', flexDirection: 'column', alignItems: 'center', height: '600px', overflowY: 'auto', width: '100%' }}>
               <div style={{ padding: '2rem', minHeight: '260px', background: heroImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${heroImage}) ${heroPositionX}% ${heroPosition}%/${heroZoom}% no-repeat` : `linear-gradient(135deg, ${activeSecondaryColor}, ${themeColor})`, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', textAlign: 'center' }}>
                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `radial-gradient(circle at top right, ${themeColor} 0%, transparent 60%)`, opacity: 0.3, pointerEvents: 'none' }}></div>
                  <div style={{ position: 'relative', zIndex: 10 }}>
@@ -1625,7 +1625,7 @@ export default function HostLiveCampaignBuilder() {
          const totalDue = entryFeeSubtotal + totalAddon + totalProcessing;
 
         return (
-           <div className="no-scrollbar" style={{ height: '600px', overflowY: 'auto', background: '#f8faf9', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: '3rem 2rem', width: '100%' }}>
+           <div className="no-scrollbar" style={{ padding: '3rem 2rem', background: '#f8faf9', display: 'flex', flexDirection: 'column', alignItems: 'center', height: '600px', overflowY: 'auto', width: '100%' }}>
              <div style={{ width: '100%', maxWidth: '400px', background: '#fff', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 10px 40px rgba(0,0,0,0.05)', padding: '2rem' }}>
                 <h3 style={{ margin: '0 0 0.5rem 0', fontFamily: 'Playfair Display, serif', fontSize: '1.5rem', color: 'var(--forest)' }}>Registration</h3>
                 <div style={{ fontSize: '0.8rem', color: 'var(--mist)', marginBottom: '1.5rem' }}>{name || 'Tournament Title'}</div>
@@ -1760,7 +1760,7 @@ export default function HostLiveCampaignBuilder() {
         const topDonor = donorTiers.length > 0 ? donorTiers[0] : { tier: 'Custom Amount', price: minCustomDonation || 5, incentives: [] };
 
         return (
-           <div className="no-scrollbar" style={{ height: '600px', overflowY: 'auto', background: '#f8faf9', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: '3rem 2rem', width: '100%' }}>
+           <div className="no-scrollbar" style={{ padding: '3rem 2rem', background: '#f8faf9', display: 'flex', flexDirection: 'column', alignItems: 'center', height: '600px', overflowY: 'auto', width: '100%' }}>
              <div style={{ width: '100%', maxWidth: '450px', background: 'linear-gradient(180deg, #ffffff 0%, #fcfefc 100%)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.6)', boxShadow: '0 15px 50px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)', padding: '2rem' }}>
                 <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Secure Donation</div>
                 <h3 style={{ margin: '0 0 0.5rem 0', fontFamily: 'Playfair Display, serif', fontSize: '1.5rem', color: 'var(--forest)' }}>{topDonor.tier}</h3>
@@ -1857,7 +1857,7 @@ export default function HostLiveCampaignBuilder() {
         const achFee = Math.min(topSponsor.price * 0.008, 5.00);
 
         return (
-           <div className="no-scrollbar" style={{ height: '600px', overflowY: 'auto', background: '#f8faf9', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: '3rem 2rem', width: '100%' }}>
+           <div className="no-scrollbar" style={{ padding: '3rem 2rem', background: '#f8faf9', display: 'flex', flexDirection: 'column', alignItems: 'center', height: '600px', overflowY: 'auto', width: '100%' }}>
              <div style={{ width: '100%', maxWidth: '450px', background: 'linear-gradient(180deg, #ffffff 0%, #fcfefc 100%)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.6)', boxShadow: '0 15px 50px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)', padding: '2rem' }}>
                 <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Secure Checkout</div>
                 <h3 style={{ margin: '0 0 0.5rem 0', fontFamily: 'Playfair Display, serif', fontSize: '1.5rem', color: 'var(--forest)' }}>{topSponsor.tier}</h3>
