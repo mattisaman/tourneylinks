@@ -909,14 +909,20 @@ export default function HostLiveCampaignBuilder() {
                           <button onClick={() => setPackages(packages.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: '#e74c3c', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600 }}>Remove</button>
                        </div>
                     </div>
-                    <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', paddingTop: '0.8rem', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
-                       <div style={{ flex: 1 }}>
-                          <div style={{ fontSize: '0.65rem', color: 'var(--mist)', fontWeight: 600, marginBottom: '0.2rem' }}>STANDARD PAYOUT</div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginTop: '1rem', paddingTop: '0.8rem', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
+                       <div style={{ flex: 1, background: charityType === 'none' ? 'rgba(0,0,0,0.03)' : 'transparent', padding: '0.4rem 0.6rem', borderRadius: '4px', border: charityType === 'none' ? '1px solid rgba(0,0,0,0.1)' : '1px dashed rgba(0,0,0,0.1)', opacity: charityType === 'none' ? 1 : 0.5 }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.2rem' }}>
+                             <div style={{ fontSize: '0.65rem', color: 'var(--mist)', fontWeight: 600 }}>STANDARD PAYOUT</div>
+                             {charityType === 'none' && <div style={{ fontSize: '0.55rem', background: '#e0e0e0', color: '#555', padding: '0.1rem 0.3rem', borderRadius: '4px', fontWeight: 700 }}>ACTIVE</div>}
+                          </div>
                           <div style={{ fontSize: '0.85rem', color: 'var(--ink)', fontWeight: 700 }}>${payoutStandard.toFixed(2)}</div>
                        </div>
-                       <div style={{ flex: 1, background: 'rgba(212,175,55,0.05)', padding: '0.4rem 0.6rem', borderRadius: '4px', border: '1px solid rgba(212,175,55,0.2)' }}>
-                          <div style={{ fontSize: '0.65rem', color: 'var(--forest)', fontWeight: 600, marginBottom: '0.2rem' }}>★ 501(C)(3) PAYOUT</div>
-                          <div style={{ fontSize: '0.85rem', color: 'var(--grass)', fontWeight: 700 }}>${payoutCharity.toFixed(2)}</div>
+                       <div style={{ flex: 1, background: charityType !== 'none' ? 'rgba(212,175,55,0.05)' : 'transparent', padding: '0.4rem 0.6rem', borderRadius: '4px', border: charityType !== 'none' ? '1px solid rgba(212,175,55,0.2)' : '1px dashed rgba(0,0,0,0.1)', opacity: charityType !== 'none' ? 1 : 0.5 }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.2rem' }}>
+                             <div style={{ fontSize: '0.65rem', color: charityType !== 'none' ? 'var(--forest)' : 'var(--mist)', fontWeight: 600 }}>★ 501(C)(3) PAYOUT</div>
+                             {charityType !== 'none' && <div style={{ fontSize: '0.55rem', background: 'var(--gold)', color: '#fff', padding: '0.1rem 0.3rem', borderRadius: '4px', fontWeight: 700 }}>ACTIVE</div>}
+                          </div>
+                          <div style={{ fontSize: '0.85rem', color: charityType !== 'none' ? 'var(--grass)' : 'var(--mist)', fontWeight: 700 }}>${payoutCharity.toFixed(2)}</div>
                        </div>
                     </div>
                  </div>
@@ -1029,14 +1035,20 @@ export default function HostLiveCampaignBuilder() {
                           <button onClick={() => setAddons(addons.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: '#ff5f56', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600 }}>Remove</button>
                        </div>
                     </div>
-                    <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', paddingTop: '0.8rem', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
-                       <div style={{ flex: 1 }}>
-                          <div style={{ fontSize: '0.65rem', color: 'var(--mist)', fontWeight: 600, marginBottom: '0.2rem' }}>STANDARD PAYOUT</div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginTop: '1rem', paddingTop: '0.8rem', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
+                       <div style={{ flex: 1, background: charityType === 'none' ? 'rgba(0,0,0,0.03)' : 'transparent', padding: '0.4rem 0.6rem', borderRadius: '4px', border: charityType === 'none' ? '1px solid rgba(0,0,0,0.1)' : '1px dashed rgba(0,0,0,0.1)', opacity: charityType === 'none' ? 1 : 0.5 }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.2rem' }}>
+                             <div style={{ fontSize: '0.65rem', color: 'var(--mist)', fontWeight: 600 }}>STANDARD PAYOUT</div>
+                             {charityType === 'none' && <div style={{ fontSize: '0.55rem', background: '#e0e0e0', color: '#555', padding: '0.1rem 0.3rem', borderRadius: '4px', fontWeight: 700 }}>ACTIVE</div>}
+                          </div>
                           <div style={{ fontSize: '0.85rem', color: 'var(--ink)', fontWeight: 700 }}>${payoutStandard.toFixed(2)}</div>
                        </div>
-                       <div style={{ flex: 1, background: 'rgba(212,175,55,0.05)', padding: '0.4rem 0.6rem', borderRadius: '4px', border: '1px solid rgba(212,175,55,0.2)' }}>
-                          <div style={{ fontSize: '0.65rem', color: 'var(--forest)', fontWeight: 600, marginBottom: '0.2rem' }}>★ 501(C)(3) PAYOUT</div>
-                          <div style={{ fontSize: '0.85rem', color: 'var(--grass)', fontWeight: 700 }}>${payoutCharity.toFixed(2)}</div>
+                       <div style={{ flex: 1, background: charityType !== 'none' ? 'rgba(212,175,55,0.05)' : 'transparent', padding: '0.4rem 0.6rem', borderRadius: '4px', border: charityType !== 'none' ? '1px solid rgba(212,175,55,0.2)' : '1px dashed rgba(0,0,0,0.1)', opacity: charityType !== 'none' ? 1 : 0.5 }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.2rem' }}>
+                             <div style={{ fontSize: '0.65rem', color: charityType !== 'none' ? 'var(--forest)' : 'var(--mist)', fontWeight: 600 }}>★ 501(C)(3) PAYOUT</div>
+                             {charityType !== 'none' && <div style={{ fontSize: '0.55rem', background: 'var(--gold)', color: '#fff', padding: '0.1rem 0.3rem', borderRadius: '4px', fontWeight: 700 }}>ACTIVE</div>}
+                          </div>
+                          <div style={{ fontSize: '0.85rem', color: charityType !== 'none' ? 'var(--grass)' : 'var(--mist)', fontWeight: 700 }}>${payoutCharity.toFixed(2)}</div>
                        </div>
                     </div>
                  </div>
@@ -1789,7 +1801,10 @@ export default function HostLiveCampaignBuilder() {
            return (
               <div style={{ padding: '3rem 2rem', background: '#f8faf9', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                  <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Partnership Opportunities</div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                        <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Partnership Opportunities</div>
+                        {charityType !== 'none' && <div style={{ background: 'var(--forest)', color: '#fff', fontSize: '0.6rem', padding: '0.2rem 0.6rem', borderRadius: '12px', fontWeight: 600, letterSpacing: '0.05em' }}>501(c)(3) Tax-Deductible</div>}
+                     </div>
                     <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '2rem', color: 'var(--forest)', margin: 0 }}>Support Our Mission</h2>
                  </div>
                  
