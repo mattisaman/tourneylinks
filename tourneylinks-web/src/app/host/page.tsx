@@ -777,6 +777,10 @@ export default function HostLiveCampaignBuilder() {
            {showPackageForm && (
               <div style={{ padding: '1.5rem', background: '#f4f7f5', borderRadius: '8px', border: '1px dashed rgba(0,0,0,0.1)', marginBottom: '1.5rem' }}>
                  <div style={{ fontWeight: 700, color: 'var(--forest)', marginBottom: '1rem', fontSize: '0.9rem' }}>Create Custom Package</div>
+                 <div style={{ background: 'rgba(212,175,55,0.1)', border: '1px dashed var(--gold)', padding: '0.6rem 0.8rem', borderRadius: '6px', fontSize: '0.75rem', color: 'var(--ink)', marginBottom: '1rem', display: 'flex', alignItems: 'flex-start', gap: '0.6rem', lineHeight: 1.4 }}>
+                    <span style={{ fontSize: '1rem', filter: 'drop-shadow(0 2px 2px rgba(212,175,55,0.4))' }}>💡</span>
+                    <div><strong style={{ color: 'var(--forest)' }}>PRO TIP:</strong> If you plan to "Absorb Fees" so registrants don't see Stripe processing fees at checkout, look at the active payout ledger below and raise your package price slightly to offset the fee! It's a great way to offer clean, round numbers.</div>
+                 </div>
                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <div style={{ display: 'flex', gap: '1rem' }}>
                        <div style={{ flex: 2 }}>
@@ -1307,7 +1311,8 @@ export default function HostLiveCampaignBuilder() {
            <div>
               <strong style={{ color: 'var(--forest)', fontSize: '0.85rem', display: 'block', marginBottom: '0.2rem' }}>PRO TIP: Sponsor Tiers Maximize Revenue</strong>
               <div style={{ color: 'var(--mist)', fontSize: '0.8rem', lineHeight: 1.5 }}>
-                 Pre-selling automated digital sponsorship real estate can cover the entire cost of the tournament before a single golfer registers.
+                 Pre-selling automated digital sponsorship real estate can cover the entire cost of the tournament before a single golfer registers. <br/><br/>
+                 <strong>Did you know?</strong> Empty holes default to TourneyLinks branding! You can reach out to local golf product companies, offer them a discounted "Product Placement" tier, and they automatically get their ads blasted across our <strong>Mobile Scorer & TV Liveboards</strong>!
               </div>
            </div>
         </div>
@@ -1531,7 +1536,7 @@ export default function HostLiveCampaignBuilder() {
   const renderDesktopSimulator = () => {
      if (activeTab === 'content' || activeTab === 'launch') {
         return (
-           <div style={{ height: '450px', overflowY: 'auto', background: '#f8faf9', display: 'flex', flexDirection: 'column' }}>
+           <div className="no-scrollbar" style={{ height: '600px', overflowY: 'auto', background: '#f8faf9', display: 'flex', flexDirection: 'column', width: '100%' }}>
               <div style={{ padding: '2rem', minHeight: '260px', background: heroImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${heroImage}) ${heroPositionX}% ${heroPosition}%/${heroZoom}% no-repeat` : `linear-gradient(135deg, ${activeSecondaryColor}, ${themeColor})`, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', textAlign: 'center' }}>
                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `radial-gradient(circle at top right, ${themeColor} 0%, transparent 60%)`, opacity: 0.3, pointerEvents: 'none' }}></div>
                  <div style={{ position: 'relative', zIndex: 10 }}>
@@ -1620,7 +1625,7 @@ export default function HostLiveCampaignBuilder() {
          const totalDue = entryFeeSubtotal + totalAddon + totalProcessing;
 
         return (
-           <div style={{ height: '450px', overflowY: 'auto', background: '#f8faf9', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: '3rem 2rem' }}>
+           <div className="no-scrollbar" style={{ height: '600px', overflowY: 'auto', background: '#f8faf9', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: '3rem 2rem', width: '100%' }}>
              <div style={{ width: '100%', maxWidth: '400px', background: '#fff', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 10px 40px rgba(0,0,0,0.05)', padding: '2rem' }}>
                 <h3 style={{ margin: '0 0 0.5rem 0', fontFamily: 'Playfair Display, serif', fontSize: '1.5rem', color: 'var(--forest)' }}>Registration</h3>
                 <div style={{ fontSize: '0.8rem', color: 'var(--mist)', marginBottom: '1.5rem' }}>{name || 'Tournament Title'}</div>
@@ -1685,7 +1690,7 @@ export default function HostLiveCampaignBuilder() {
      if (activeTab === 'donations') {
         if (!donationsEnabled) {
            return (
-              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '2rem', textAlign: 'center', background: '#f8faf9' }}>
+              <div style={{ height: '600px', width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '2rem', textAlign: 'center', background: '#f8faf9' }}>
                  <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>⛳</div>
                  <div style={{ fontWeight: 700, color: 'var(--mist)' }}>Donations Disabled</div>
                  <div style={{ fontSize: '0.8rem', color: 'var(--mist)', marginTop: '0.5rem' }}>The donations module is currently disabled for this tournament.</div>
@@ -1695,10 +1700,10 @@ export default function HostLiveCampaignBuilder() {
 
         if (donorPreviewMode === 'directory') {
            return (
-              <div style={{ padding: '3rem 2rem', background: '#f8faf9', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div className="no-scrollbar" style={{ padding: '3rem 2rem', background: '#f8faf9', display: 'flex', flexDirection: 'column', alignItems: 'center', height: '600px', overflowY: 'auto', width: '100%' }}>
                  <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
                     <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Support the Cause</div>
-                    {charityType !== 'none' && <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.5rem' }}><div style={{ background: 'var(--forest)', color: '#fff', fontSize: '0.6rem', padding: '0.2rem 0.6rem', borderRadius: '12px', fontWeight: 600, letterSpacing: '0.05em' }}>501(c)(3) Tax-Deductible</div></div>}
+                    {charityType !== 'none' && <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.5rem' }}><div style={{ background: '#0a1a12', border: '1px solid var(--gold)', color: 'var(--gold)', fontSize: '0.85rem', padding: '0.5rem 1.2rem', borderRadius: '30px', fontWeight: 700, letterSpacing: '0.05em', boxShadow: 'inset 0 0 10px rgba(212,175,55,0.15)' }}>501(c)(3) Tax-Deductible</div></div>}
                     <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '2rem', color: 'var(--forest)', margin: 0 }}>Every Contribution Helps</h2>
                  </div>
                  
@@ -1755,7 +1760,7 @@ export default function HostLiveCampaignBuilder() {
         const topDonor = donorTiers.length > 0 ? donorTiers[0] : { tier: 'Custom Amount', price: minCustomDonation || 5, incentives: [] };
 
         return (
-           <div style={{ height: '450px', overflowY: 'auto', background: '#f8faf9', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: '3rem 2rem' }}>
+           <div className="no-scrollbar" style={{ height: '600px', overflowY: 'auto', background: '#f8faf9', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: '3rem 2rem', width: '100%' }}>
              <div style={{ width: '100%', maxWidth: '450px', background: 'linear-gradient(180deg, #ffffff 0%, #fcfefc 100%)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.6)', boxShadow: '0 15px 50px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)', padding: '2rem' }}>
                 <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Secure Donation</div>
                 <h3 style={{ margin: '0 0 0.5rem 0', fontFamily: 'Playfair Display, serif', fontSize: '1.5rem', color: 'var(--forest)' }}>{topDonor.tier}</h3>
@@ -1804,10 +1809,10 @@ export default function HostLiveCampaignBuilder() {
      if (activeTab === 'sponsorships') {
         if (sponsorPreviewMode === 'directory') {
            return (
-              <div style={{ padding: '3rem 2rem', background: '#f8faf9', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div className="no-scrollbar" style={{ padding: '3rem 2rem', background: '#f8faf9', display: 'flex', flexDirection: 'column', alignItems: 'center', height: '600px', overflowY: 'auto', width: '100%' }}>
                  <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
                     <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Partnership Opportunities</div>
-                    {charityType !== 'none' && <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.5rem' }}><div style={{ background: 'var(--forest)', color: '#fff', fontSize: '0.6rem', padding: '0.2rem 0.6rem', borderRadius: '12px', fontWeight: 600, letterSpacing: '0.05em' }}>501(c)(3) Tax-Deductible</div></div>}
+                    {charityType !== 'none' && <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.5rem' }}><div style={{ background: '#0a1a12', border: '1px solid var(--gold)', color: 'var(--gold)', fontSize: '0.85rem', padding: '0.5rem 1.2rem', borderRadius: '30px', fontWeight: 700, letterSpacing: '0.05em', boxShadow: 'inset 0 0 10px rgba(212,175,55,0.15)' }}>501(c)(3) Tax-Deductible</div></div>}
                     <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '2rem', color: 'var(--forest)', margin: 0 }}>Support Our Mission</h2>
                  </div>
                  
@@ -1852,7 +1857,7 @@ export default function HostLiveCampaignBuilder() {
         const achFee = Math.min(topSponsor.price * 0.008, 5.00);
 
         return (
-           <div style={{ height: '450px', overflowY: 'auto', background: '#f8faf9', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: '3rem 2rem' }}>
+           <div className="no-scrollbar" style={{ height: '600px', overflowY: 'auto', background: '#f8faf9', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: '3rem 2rem', width: '100%' }}>
              <div style={{ width: '100%', maxWidth: '450px', background: 'linear-gradient(180deg, #ffffff 0%, #fcfefc 100%)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.6)', boxShadow: '0 15px 50px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)', padding: '2rem' }}>
                 <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Secure Checkout</div>
                 <h3 style={{ margin: '0 0 0.5rem 0', fontFamily: 'Playfair Display, serif', fontSize: '1.5rem', color: 'var(--forest)' }}>{topSponsor.tier}</h3>
@@ -2085,7 +2090,7 @@ export default function HostLiveCampaignBuilder() {
      if (activeTab === 'donations') {
         if (!donationsEnabled) {
            return (
-              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '2rem', textAlign: 'center', background: '#f8faf9' }}>
+              <div style={{ height: '600px', width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '2rem', textAlign: 'center', background: '#f8faf9' }}>
                  <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>⛳</div>
                  <div style={{ fontWeight: 700, color: 'var(--mist)' }}>Donations Disabled</div>
                  <div style={{ fontSize: '0.8rem', color: 'var(--mist)', marginTop: '0.5rem' }}>The donations module is currently disabled for this tournament.</div>
@@ -2098,7 +2103,7 @@ export default function HostLiveCampaignBuilder() {
               <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative', background: '#f8faf9', padding: '1.5rem' }}>
                  <div style={{ textAlign: 'left', marginBottom: '2rem' }}>
                     <div style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.3rem' }}>Support the Cause</div>
-                    {charityType !== 'none' && <div style={{ marginBottom: '0.2rem' }}><span style={{ background: 'var(--forest)', color: '#fff', fontSize: '0.55rem', padding: '0.2rem 0.5rem', borderRadius: '12px', fontWeight: 600, letterSpacing: '0.05em' }}>501(c)(3) Tax-Deductible</span></div>}
+                    {charityType !== 'none' && <div style={{ marginBottom: '0.2rem' }}><span style={{ background: '#0a1a12', border: '1px solid var(--gold)', color: 'var(--gold)', fontSize: '0.75rem', padding: '0.4rem 0.9rem', borderRadius: '30px', fontWeight: 700, letterSpacing: '0.05em', boxShadow: 'inset 0 0 10px rgba(212,175,55,0.15)' }}>501(c)(3) Tax-Deductible</span></div>}
                     <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.6rem', color: 'var(--forest)', margin: 0, lineHeight: 1.1 }}>Every Contribution Helps</h2>
                  </div>
                  
@@ -2199,7 +2204,7 @@ export default function HostLiveCampaignBuilder() {
               <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative', background: '#f8faf9', padding: '1.5rem' }}>
                  <div style={{ textAlign: 'left', marginBottom: '2rem' }}>
                     <div style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.3rem' }}>Partnerships</div>
-                    {charityType !== 'none' && <div style={{ marginBottom: '0.2rem' }}><span style={{ background: 'var(--forest)', color: '#fff', fontSize: '0.55rem', padding: '0.2rem 0.5rem', borderRadius: '12px', fontWeight: 600, letterSpacing: '0.05em' }}>501(c)(3) Tax-Deductible</span></div>}
+                    {charityType !== 'none' && <div style={{ marginBottom: '0.2rem' }}><span style={{ background: '#0a1a12', border: '1px solid var(--gold)', color: 'var(--gold)', fontSize: '0.75rem', padding: '0.4rem 0.9rem', borderRadius: '30px', fontWeight: 700, letterSpacing: '0.05em', boxShadow: 'inset 0 0 10px rgba(212,175,55,0.15)' }}>501(c)(3) Tax-Deductible</span></div>}
                     <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.6rem', color: 'var(--forest)', margin: 0, lineHeight: 1.1 }}>Sponsorship Opportunities</h2>
                  </div>
                  
@@ -2359,7 +2364,7 @@ export default function HostLiveCampaignBuilder() {
        </div>
 
        {/* Campaign Builder Two-Column Grid */}
-       <div style={{ maxWidth: '1600px', margin: '2rem auto 0 auto', padding: '0 2rem', display: 'flex', flexWrap: 'wrap', gap: '3rem' }}>
+       <div style={{ maxWidth: '96%', margin: '2rem auto 0 auto', padding: '0 1rem', display: 'flex', flexWrap: 'wrap', gap: '3rem' }}>
           
           {/* EDITOR COLUMN (Left) */}
           <div style={{ flex: '1 1 600px', display: 'flex', flexDirection: 'column', minWidth: 0 }}>
