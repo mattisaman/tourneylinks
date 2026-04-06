@@ -1477,19 +1477,29 @@ export default function HostLiveCampaignBuilder() {
        <div style={{ position: 'absolute', top: '-10%', left: '-5%', width: '500px', height: '500px', background: 'radial-gradient(circle, rgba(212,175,55,0.15) 0%, rgba(212,175,55,0) 70%)', filter: 'blur(80px)', pointerEvents: 'none', zIndex: 0 }}></div>
        <div style={{ position: 'absolute', top: '20%', right: '-10%', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(34,74,44,0.1) 0%, rgba(34,74,44,0) 70%)', filter: 'blur(100px)', pointerEvents: 'none', zIndex: 0 }}></div>
 
-       {/* Global Title Header */}
-       <div style={{ background: 'rgba(255, 255, 255, 0.7)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(255,255,255,0.5)', padding: '1.5rem 0', position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 4px 30px rgba(0,0,0,0.03)' }}>
-          <div style={{ maxWidth: '1600px', margin: '0 auto', padding: '0 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'linear-gradient(135deg, var(--gold) 0%, #b8952a 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 10px rgba(212,175,55,0.3)' }}>
-                   <span style={{ fontSize: '1.2rem' }}>✨</span>
+       {/* Global Title Header - Dark Immersive Hub */}
+       <div style={{ 
+          position: 'relative',
+          background: 'linear-gradient(to bottom, rgba(7, 18, 11, 0.75), rgba(5, 11, 8, 0.95)), url(/hero-bg-4.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center 40%', 
+          paddingTop: '6rem', // Clears absolute global nav
+          paddingBottom: '2.5rem',
+          borderBottom: '1px solid rgba(212,175,55,0.15)',
+          boxShadow: '0 10px 40px rgba(0,0,0,0.3) inset',
+          zIndex: 10
+       }}>
+          <div style={{ maxWidth: '1600px', margin: '0 auto', padding: '0 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+             <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+                <div style={{ width: '50px', height: '50px', borderRadius: '12px', background: 'linear-gradient(135deg, var(--gold) 0%, #b8952a 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 15px rgba(212,175,55,0.4)' }}>
+                   <span style={{ fontSize: '1.4rem' }}>⛳</span>
                 </div>
                 <div>
-                   <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--mist)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '0.2rem' }}>Administration Hub</div>
-                   <h1 style={{ fontFamily: 'Playfair Display, serif', fontSize: '2.2rem', color: 'var(--forest)', margin: 0, textShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>Live Campaign Builder</h1>
+                   <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--gold)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '0.3rem', opacity: 0.9 }}>Administration Hub</div>
+                   <h1 style={{ fontFamily: 'Playfair Display, serif', fontSize: '2.5rem', color: '#fff', margin: 0, textShadow: '0 2px 10px rgba(0,0,0,0.5)', lineHeight: 1.1 }}>Live Campaign Builder</h1>
                 </div>
              </div>
-             <div style={{ fontSize: '0.85rem', color: 'var(--mist)', display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(0,0,0,0.03)', padding: '0.5rem 1rem', borderRadius: '20px' }}>
+             <div style={{ fontSize: '0.85rem', color: '#fff', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', padding: '0.5rem 1rem', borderRadius: '20px', backdropFilter: 'blur(10px)' }}>
                 <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#2ecc71', boxShadow: '0 0 10px rgba(46,204,113,0.5)' }}></div>
                 Draft Auto-saved at {new Date().toLocaleTimeString()}
              </div>
