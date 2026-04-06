@@ -40,6 +40,8 @@ export async function POST(req: NextRequest) {
        galleryImages: payload.galleryImages || null,
        heroImages: payload.heroImages || null,
        heroPositionData: payload.heroPositionData || null,
+       tileImage: payload.tileImage || null,
+       tilePositionData: payload.tilePositionData || null,
        coHostEmails: payload.coHostEmails || null,
        themeColor: payload.themeColor || '#1A2E1A',
        secondaryThemeColor: payload.secondaryThemeColor || '#C9A84C'

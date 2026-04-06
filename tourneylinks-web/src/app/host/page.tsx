@@ -123,11 +123,12 @@ export default function HostLiveCampaignBuilder() {
                 setName(data.name || '');
                 setDate(data.dateStart ? new Date(data.dateStart).toISOString().split('T')[0] : '');
                 setCourse(data.courseName || '');
-                setCity(data.city || '');
+                setCity(data.courseCity || '');
                 setDesc(data.description || '');
                 if (data.format) setSelectedFormat(data.format);
                 if (data.isPrivate !== undefined) setSelectedVis(data.isPrivate ? 'private' : 'public');
                 
+                // Hydrate images
                 if (data.heroImages) {
                    try {
                      const imgs = typeof data.heroImages === 'string' && data.heroImages.startsWith('[') ? JSON.parse(data.heroImages) : data.heroImages;
@@ -139,7 +140,52 @@ export default function HostLiveCampaignBuilder() {
                 } else if (data.heroImageUrl) {
                    setHeroImage(data.heroImageUrl);
                 }
+
+                if (data.galleryImages) {
+                   try {
+                     const parsed = typeof data.galleryImages === 'string' ? JSON.parse(data.galleryImages) : data.galleryImages;
+                     if (Array.isArray(parsed)) {
+                        setGalleryImages(parsed);
+                        if (parsed.length > 0) setEnableGallery(true);
+                     }
+                   } catch(e) {}
+                }
+
+                if (data.tileImage) setTileImage(data.tileImage);
                 
+                // Hydrate configs
+                if (data.heroPositionData) {
+                   try {
+                     const parsed = typeof data.heroPositionData === 'string' ? JSON.parse(data.heroPositionData) : data.heroPositionData;
+                     if (parsed.x !== undefined) setHeroPositionX(parsed.x);
+                     if (parsed.y !== undefined) setHeroPosition(parsed.y);
+                     if (parsed.zoom !== undefined) setHeroZoom(parsed.zoom);
+                   } catch(e) {}
+                }
+                
+                if (data.tilePositionData) {
+                   try {
+                     const parsed = typeof data.tilePositionData === 'string' ? JSON.parse(data.tilePositionData) : data.tilePositionData;
+                     if (parsed.x !== undefined) setTilePositionX(parsed.x);
+                     if (parsed.y !== undefined) setTilePosition(parsed.y);
+                     if (parsed.zoom !== undefined) setTileZoom(parsed.zoom);
+                   } catch(e) {}
+                }
+                
+                if (data.coHostEmails) {
+                   try {
+                     const parsed = typeof data.coHostEmails === 'string' ? JSON.parse(data.coHostEmails) : data.coHostEmails;
+                     if (Array.isArray(parsed) && parsed.length > 0) setCoHostEmails(parsed);
+                   } catch(e) {}
+                }
+
+                if (data.sponsors) {
+                   try {
+                     const parsed = typeof data.sponsors === 'string' ? JSON.parse(data.sponsors) : data.sponsors;
+                     if (Array.isArray(parsed) && parsed.length > 0) setSponsors(parsed);
+                   } catch(e) {}
+                }
+
                 if (data.themeColor) setThemeColor(data.themeColor);
                 if (data.secondaryThemeColor) setSecondaryThemeColor(data.secondaryThemeColor);
              }
@@ -226,6 +272,8 @@ export default function HostLiveCampaignBuilder() {
            heroImages: heroImage ? JSON.stringify([heroImage]) : null,
            galleryImages: galleryImages.length > 0 ? JSON.stringify(galleryImages) : null,
            heroPositionData: JSON.stringify({ x: heroPositionX, y: heroPosition, zoom: heroZoom }),
+           tileImage: tileImage || null,
+           tilePositionData: JSON.stringify({ x: tilePositionX, y: tilePosition, zoom: tileZoom }),
            coHostEmails: JSON.stringify(coHostEmails),
            sponsors: JSON.stringify(sponsors)
         };
@@ -257,6 +305,8 @@ export default function HostLiveCampaignBuilder() {
            heroImages: heroImage ? JSON.stringify([heroImage]) : null,
            galleryImages: galleryImages.length > 0 ? JSON.stringify(galleryImages) : null,
            heroPositionData: JSON.stringify({ x: heroPositionX, y: heroPosition, zoom: heroZoom }),
+           tileImage: tileImage || null,
+           tilePositionData: JSON.stringify({ x: tilePositionX, y: tilePosition, zoom: tileZoom }),
            coHostEmails: JSON.stringify(coHostEmails),
            sponsors: JSON.stringify(sponsors)
         };

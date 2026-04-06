@@ -102,6 +102,8 @@ export const tournaments = pgTable('tournaments', {
   heroImages: text('hero_images'), // JSON array of urls
   galleryImages: text('gallery_images'), // JSON array of urls
   heroPositionData: text('hero_position_data'), // JSON object { x, y, zoom }
+  tileImage: text('tile_image'), // url string
+  tilePositionData: text('tile_position_data'), // JSON object { x, y, zoom }
   coHostEmails: text('co_host_emails'), // JSON array of strings
   themeColor: text('theme_color'), // hex code primary
   secondaryThemeColor: text('secondary_theme_color'), // hex code secondary
