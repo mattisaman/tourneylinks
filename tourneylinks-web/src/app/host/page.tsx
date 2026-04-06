@@ -1536,7 +1536,7 @@ export default function HostLiveCampaignBuilder() {
   const renderDesktopSimulator = () => {
      if (activeTab === 'content' || activeTab === 'launch') {
         return (
-           <div className="no-scrollbar" style={{ padding: '3rem 2rem', background: '#f8faf9', display: 'flex', flexDirection: 'column', alignItems: 'center', height: '600px', overflowY: 'auto', width: '100%' }}>
+           <div className="no-scrollbar" style={{ height: '600px', overflowY: 'auto', background: '#f8faf9', display: 'flex', flexDirection: 'column', width: '100%' }}>
               <div style={{ padding: '2rem', minHeight: '260px', background: heroImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${heroImage}) ${heroPositionX}% ${heroPosition}%/${heroZoom}% no-repeat` : `linear-gradient(135deg, ${activeSecondaryColor}, ${themeColor})`, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', textAlign: 'center' }}>
                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `radial-gradient(circle at top right, ${themeColor} 0%, transparent 60%)`, opacity: 0.3, pointerEvents: 'none' }}></div>
                  <div style={{ position: 'relative', zIndex: 10 }}>
