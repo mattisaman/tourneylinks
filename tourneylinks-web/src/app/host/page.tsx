@@ -1059,7 +1059,7 @@ export default function HostLiveCampaignBuilder() {
                           <select value={newAddon.type} onChange={e => setNewAddon({...newAddon, type: e.target.value as any})} style={{ width: '100%', padding: '0.6rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }}>
                              <option value="per_player">Per Player (Scales with roster size)</option>
                              <option value="per_team">Per Foursome Team (Flat team addition)</option>
-                             <option value="flat">Flat Purchase (e.g. 50/50 Raffle Tickets)</option>
+                             <option value="flat">Flat Purchase</option>
                           </select>
                        </div>
                        <div style={{ flex: 1 }}>
@@ -1181,7 +1181,7 @@ export default function HostLiveCampaignBuilder() {
                        <div>
                           <div style={{ fontWeight: 600, color: 'var(--forest)', fontSize: '0.95rem' }}>
                              {a.name}
-                             {a.maxQuantity ? <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--mist)', marginLeft: '0.5rem' }}>(Max {a.maxQuantity})</span> : null}
+                             {a.maxQuantity ? <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--mist)', marginLeft: '0.5rem' }}>(Max {a.maxQuantity}{a.type === 'per_player' ? ' per player' : a.type === 'per_team' ? ' per team' : ' total'})</span> : null}
                           </div>
                           <div style={{ fontSize: '0.75rem', color: 'var(--mist)', marginTop: '0.2rem' }}>
                              {a.type === 'per_player' ? 'Per Player' : a.type === 'per_team' ? 'Per Team' : 'Flat Purchase'}
@@ -1800,7 +1800,7 @@ export default function HostLiveCampaignBuilder() {
                    </div>
                    {addons.map((a, i) => (
                        <div key={i} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.85rem' }}>
-                          <span style={{ color: 'var(--mist)' }}>+ {a.name}</span>
+                          <span style={{ color: 'var(--mist)' }}>+ {a.name}{a.maxQuantity ? <span style={{ fontSize: '0.7rem', color: '#999', marginLeft: '0.4rem', fontWeight: 500 }}>(Max {a.maxQuantity}{a.type === 'per_player' ? ' per player' : a.type === 'per_team' ? ' per team' : ' total'})</span> : null}</span>
                           <span style={{ fontWeight: 600, color: 'var(--mist)' }}>${a.price.toFixed(2)}</span>
                        </div>
                    ))}
@@ -2199,7 +2199,7 @@ export default function HostLiveCampaignBuilder() {
                    </div>
                    {addons.map((a, i) => (
                        <div key={i} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.8rem' }}>
-                          <span style={{ color: 'var(--mist)' }}>+ {a.name}</span>
+                          <span style={{ color: 'var(--mist)' }}>+ {a.name}{a.maxQuantity ? <span style={{ fontSize: '0.7rem', color: '#999', marginLeft: '0.4rem', fontWeight: 500 }}>(Max {a.maxQuantity}{a.type === 'per_player' ? ' per player' : a.type === 'per_team' ? ' per team' : ' total'})</span> : null}</span>
                           <span style={{ fontWeight: 600, color: 'var(--mist)' }}>${a.price.toFixed(2)}</span>
                        </div>
                    ))}
