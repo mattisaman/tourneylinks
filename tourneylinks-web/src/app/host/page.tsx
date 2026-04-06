@@ -53,7 +53,8 @@ export default function HostLiveCampaignBuilder() {
   const [heroPosition, setHeroPosition] = useState(50);
   const [heroZoom, setHeroZoom] = useState(100);
   const [tileImage, setTileImage] = useState<string | null>(null);
-  const [tilePosition, setTilePosition] = useState('center');
+  const [tilePositionX, setTilePositionX] = useState(50);
+  const [tilePosition, setTilePosition] = useState(50);
   const [tileZoom, setTileZoom] = useState(100);
 
   const [enableGallery, setEnableGallery] = useState(false);
@@ -193,6 +194,7 @@ export default function HostLiveCampaignBuilder() {
     if (draftId || !hasMinimalSubstance) return;
 
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+       if ((window as any).__skipBeforeUnload) return;
        e.preventDefault();
        e.returnValue = '';
     };
@@ -618,15 +620,18 @@ export default function HostLiveCampaignBuilder() {
                             <span style={{ fontSize: '0.65rem', color: 'var(--mist)' }}>Zoom</span>
                             <input type="range" min="50" max="250" value={tileZoom} onChange={e => setTileZoom(Number(e.target.value))} style={{ width: '50px' }} />
                          </div>
-                         <select value={tilePosition} onChange={e => setTilePosition(e.target.value)} style={{ padding: '0.2rem 0.5rem', fontSize: '0.7rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)' }}>
-                            <option value="top">Align Top</option>
-                            <option value="center">Align Center</option>
-                            <option value="bottom">Align Bottom</option>
-                         </select>
+                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                            <span style={{ fontSize: '0.65rem', color: 'var(--mist)' }}>Position X</span>
+                            <input type="range" min="0" max="100" value={tilePositionX} onChange={e => setTilePositionX(Number(e.target.value))} style={{ width: '50px' }} />
+                         </div>
+                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                            <span style={{ fontSize: '0.65rem', color: 'var(--mist)' }}>Position Y</span>
+                            <input type="range" min="0" max="100" value={tilePosition} onChange={e => setTilePosition(Number(e.target.value))} style={{ width: '50px' }} />
+                         </div>
                      </div>
                    )}
                 </label>
-                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(0,0,0,0.1)', borderRadius: '8px', padding: '2rem', background: tileImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${tileImage}) ${tilePosition}/${tileZoom}% no-repeat` : '#fafaf5', cursor: 'pointer', minHeight: '160px', position: 'relative' }}>
+                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(0,0,0,0.1)', borderRadius: '8px', padding: '2rem', background: tileImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${tileImage}) ${tilePositionX}% ${tilePosition}%/${tileZoom}% no-repeat` : '#fafaf5', cursor: 'pointer', minHeight: '160px', position: 'relative' }}>
                    <input type="file" style={{ display: 'none' }} accept="image/*" onChange={e => handleImageUpload(e, setTileImage)} />
                    {!tileImage && (
                      <>
@@ -640,7 +645,7 @@ export default function HostLiveCampaignBuilder() {
                 {/* Embedded Tile Preview */}
                 <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--mist)', marginTop: '0.5rem' }}>Search Page Preview</div>
                 <div style={{ width: '100%', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.1)', background: '#fff' }}>
-                   <div style={{ height: '140px', background: tileImage ? `url(${tileImage}) ${tilePosition}/${tileZoom}% no-repeat` : '#fafaf5' }}></div>
+                   <div style={{ height: '140px', background: tileImage ? `url(${tileImage}) ${tilePositionX}% ${tilePosition}%/${tileZoom}% no-repeat` : '#fafaf5' }}></div>
                    <div style={{ padding: '0.75rem' }}>
                       <div style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--forest)' }}>{name || 'Tournament Title'}</div>
                       <div style={{ fontSize: '0.7rem', color: 'var(--mist)' }}>{course ? `${course} · ${city}` : 'Course Location'}</div>
@@ -2369,11 +2374,15 @@ export default function HostLiveCampaignBuilder() {
              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                <button onClick={async () => {
                   const saved = await handleManualSaveAsDraft();
-                  if (saved || draftId) window.location.href = showExitModal.targetUrl || '/profile';
+                  if (saved || draftId) {
+                     (window as any).__skipBeforeUnload = true;
+                     window.location.href = showExitModal.targetUrl || '/profile';
+                  }
                }} style={{ background: 'var(--gold)', color: '#000', fontWeight: 800, padding: '1.1rem', borderRadius: '12px', border: 'none', cursor: 'pointer', fontSize: '0.9rem', letterSpacing: '0.05em', textTransform: 'uppercase', transition: '0.2s', boxShadow: '0 4px 15px rgba(212,175,55,0.3)' }}>
                   Save to Profile & Leave
                </button>
                <button onClick={() => {
+                  (window as any).__skipBeforeUnload = true;
                   window.location.href = showExitModal.targetUrl || '/profile';
                }} style={{ background: 'transparent', color: '#fff', border: '1px solid rgba(255,255,255,0.15)', padding: '1rem', borderRadius: '12px', cursor: 'pointer', fontWeight: 600, transition: '0.2s' }}>
                   Leave Without Saving
