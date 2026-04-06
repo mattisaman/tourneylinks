@@ -627,8 +627,9 @@ nav {
   .wizard-panel.active { display: block; }
 
   .wizard-card {
-    background: white; border: 1px solid rgba(26,46,26,0.08);
-    border-radius: 6px; padding: 2.5rem; margin-bottom: 1.5rem;
+    background: white; border: 1px solid rgba(26,46,26,0.06);
+    border-radius: 8px; padding: 2.5rem; margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02), 0 15px 40px rgba(0,0,0,0.04);
   }
   .wizard-card-title {
     font-family: 'Playfair Display', serif;
