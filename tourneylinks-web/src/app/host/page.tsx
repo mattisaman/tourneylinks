@@ -1973,10 +1973,12 @@ export default function HostLiveCampaignBuilder() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--stone)', paddingBottom: '5rem', position: 'relative', overflowX: 'hidden' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--stone)', paddingBottom: '5rem', position: 'relative' }}>
        {/* Glassmorphic Background Elements */}
-       <div style={{ position: 'absolute', top: '-10%', left: '-5%', width: '500px', height: '500px', background: 'radial-gradient(circle, rgba(212,175,55,0.15) 0%, rgba(212,175,55,0) 70%)', filter: 'blur(80px)', pointerEvents: 'none', zIndex: 0 }}></div>
-       <div style={{ position: 'absolute', top: '20%', right: '-10%', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(34,74,44,0.1) 0%, rgba(34,74,44,0) 70%)', filter: 'blur(100px)', pointerEvents: 'none', zIndex: 0 }}></div>
+       <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
+          <div style={{ position: 'absolute', top: '-10%', left: '-5%', width: '500px', height: '500px', background: 'radial-gradient(circle, rgba(212,175,55,0.15) 0%, rgba(212,175,55,0) 70%)', filter: 'blur(80px)' }}></div>
+          <div style={{ position: 'absolute', top: '20%', right: '-10%', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(34,74,44,0.1) 0%, rgba(34,74,44,0) 70%)', filter: 'blur(100px)' }}></div>
+       </div>
 
        {/* Global Title Header - Dark Immersive Hub */}
        <div style={{ 
@@ -2000,7 +2002,7 @@ export default function HostLiveCampaignBuilder() {
                    <h1 style={{ fontFamily: 'Playfair Display, serif', fontSize: '2.5rem', color: '#fff', margin: 0, textShadow: '0 2px 10px rgba(0,0,0,0.5)', lineHeight: 1.1 }}>Live Campaign Builder</h1>
                 </div>
              </div>
-             <div style={{ fontSize: '0.85rem', color: '#fff', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', padding: '0.5rem 1rem', borderRadius: '20px', backdropFilter: 'blur(10px)' }}>
+             <div suppressHydrationWarning style={{ fontSize: '0.85rem', color: '#fff', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', padding: '0.5rem 1rem', borderRadius: '20px', backdropFilter: 'blur(10px)' }}>
                 <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#2ecc71', boxShadow: '0 0 10px rgba(46,204,113,0.5)' }}></div>
                 Draft Auto-saved at {new Date().toLocaleTimeString()}
              </div>
@@ -2054,8 +2056,8 @@ export default function HostLiveCampaignBuilder() {
           {/* SIMULATOR COLUMN (Right) */}
           <div style={{ flex: '1 1 500px', display: 'flex', flexDirection: 'column' }}>
              
-             {/* Sticky Wrapper - using max-content and overflow visible to avoid double scrollbars */}
-             <div style={{ position: 'sticky', top: '100px', width: '100%', paddingRight: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', paddingBottom: '3rem' }}>
+             {/* Sticky Wrapper - using height and overflow-y to allow internal scroll without disrupting layout */}
+             <div className="no-scrollbar" style={{ position: 'sticky', top: '100px', height: 'calc(100vh - 120px)', overflowY: 'auto', width: '100%', paddingRight: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', paddingBottom: '3rem' }}>
                 
                 <div className="animated-gold-border" style={{ background: '#0a1a12', padding: '0.4rem', borderRadius: '30px', display: 'flex', border: '1px solid rgba(212,175,55,0.8)', boxShadow: '0 0 15px rgba(212,175,55,0.3)', width: 'max-content', gap: '0.3rem' }}>
                    <button 
