@@ -45,7 +45,8 @@ export default function HostLiveCampaignBuilder() {
 
   const [themeColor, setThemeColor] = useState('#c9a84c');
   const [secondaryThemeColor, setSecondaryThemeColor] = useState('#1a2e1a');
-  
+  const activeSecondaryColor = secondaryThemeColor || themeColor;
+
   const [heroImage, setHeroImage] = useState<string | null>(null);
   const [heroPosition, setHeroPosition] = useState('center');
   const [heroZoom, setHeroZoom] = useState(100);
@@ -456,13 +457,20 @@ export default function HostLiveCampaignBuilder() {
                  </div>
               </div>
               <div className="wfield">
-                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.4rem' }}>
+                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.2rem' }}>
                     <label style={{ margin: 0 }}>Secondary Theme Color</label>
-                    <span title="Optional: Set to grayscale or blank to disable the dynamic accent gradient, resulting in a single dominant primary color vibe." style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '14px', height: '14px', borderRadius: '50%', background: 'rgba(0,0,0,0.1)', color: 'rgba(0,0,0,0.5)', fontSize: '0.6rem', cursor: 'help' }}>?</span>
+                 </div>
+                 <div style={{ fontSize: '0.7rem', color: 'var(--mist)', marginBottom: '0.6rem', lineHeight: 1.4 }}>
+                    Optional: Disable the secondary color for a single primary color vibe.
                  </div>
                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                    <input type="color" value={secondaryThemeColor} onChange={e => setSecondaryThemeColor(e.target.value)} style={{ padding: 0, width: '40px', height: '40px', border: 'none', borderRadius: '4px', cursor: 'pointer' }} />
-                    <input type="text" value={secondaryThemeColor.toUpperCase()} onChange={e => { let v = e.target.value.toLowerCase(); if(!v.startsWith('#')) v='#'+v; if(v.length<=7) setSecondaryThemeColor(v); }} style={{ fontSize: '0.8rem', fontFamily: 'monospace', color: 'var(--ink)', width: '85px', padding: '0.4rem 0.6rem', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '4px' }} />
+                    <input type="color" value={activeSecondaryColor} onChange={e => setSecondaryThemeColor(e.target.value)} style={{ padding: 0, width: '40px', height: '40px', border: 'none', borderRadius: '4px', cursor: 'pointer', opacity: secondaryThemeColor ? 1 : 0.3 }} />
+                    <input type="text" value={secondaryThemeColor ? secondaryThemeColor.toUpperCase() : ''} onChange={e => { let v = e.target.value.toLowerCase(); if(v === '' || v === '#') { setSecondaryThemeColor(''); return; } if(!v.startsWith('#')) v='#'+v; if(v.length<=7) setSecondaryThemeColor(v); }} placeholder="Disabled" style={{ fontSize: '0.8rem', fontFamily: 'monospace', color: 'var(--ink)', width: '85px', padding: '0.4rem 0.6rem', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '4px' }} />
+                    {secondaryThemeColor && (
+                       <button type="button" onClick={(e) => { e.preventDefault(); setSecondaryThemeColor(''); }} style={{ background: 'none', border: 'none', color: 'var(--mist)', fontSize: '0.75rem', cursor: 'pointer', opacity: 0.8, marginLeft: '0.5rem', fontWeight: 600 }}>
+                          Clear
+                       </button>
+                    )}
                  </div>
               </div>
           </div>
@@ -485,7 +493,7 @@ export default function HostLiveCampaignBuilder() {
                      </div>
                    )}
                 </label>
-                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(0,0,0,0.1)', borderRadius: '8px', padding: '2rem', background: heroImage ? `linear-gradient(135deg, ${secondaryThemeColor}99, ${themeColor}99), url(${heroImage}) ${heroPosition}/${heroZoom}%` : '#fafaf5', backgroundRepeat: 'no-repeat', cursor: 'pointer', minHeight: '160px', position: 'relative' }}>
+                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(0,0,0,0.1)', borderRadius: '8px', padding: '2rem', background: heroImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${heroImage}) ${heroPosition}/${heroZoom}%` : '#fafaf5', backgroundRepeat: 'no-repeat', cursor: 'pointer', minHeight: '160px', position: 'relative' }}>
                    <input type="file" style={{ display: 'none' }} accept="image/*" onChange={e => handleImageUpload(e, setHeroImage)} />
                    {!heroImage && (
                      <>
@@ -514,7 +522,7 @@ export default function HostLiveCampaignBuilder() {
                      </div>
                    )}
                 </label>
-                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(0,0,0,0.1)', borderRadius: '8px', padding: '2rem', background: tileImage ? `linear-gradient(135deg, ${secondaryThemeColor}99, ${themeColor}99), url(${tileImage}) ${tilePosition}/${tileZoom}%` : '#fafaf5', backgroundRepeat: 'no-repeat', cursor: 'pointer', minHeight: '160px', position: 'relative' }}>
+                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(0,0,0,0.1)', borderRadius: '8px', padding: '2rem', background: tileImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${tileImage}) ${tilePosition}/${tileZoom}%` : '#fafaf5', backgroundRepeat: 'no-repeat', cursor: 'pointer', minHeight: '160px', position: 'relative' }}>
                    <input type="file" style={{ display: 'none' }} accept="image/*" onChange={e => handleImageUpload(e, setTileImage)} />
                    {!tileImage && (
                      <>
@@ -1268,7 +1276,7 @@ export default function HostLiveCampaignBuilder() {
      if (activeTab === 'content' || activeTab === 'launch') {
         return (
            <div style={{ height: '450px', overflowY: 'auto', background: '#f8faf9', display: 'flex', flexDirection: 'column' }}>
-              <div style={{ padding: '2rem', background: heroImage ? `linear-gradient(135deg, ${secondaryThemeColor}99, ${themeColor}99), url(${heroImage}) ${heroPosition}/${heroZoom}% no-repeat` : `linear-gradient(135deg, ${secondaryThemeColor}, ${themeColor})`, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', textAlign: 'center' }}>
+              <div style={{ padding: '2rem', background: heroImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${heroImage}) ${heroPosition}/${heroZoom}% no-repeat` : `linear-gradient(135deg, ${activeSecondaryColor}, ${themeColor})`, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', textAlign: 'center' }}>
                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `radial-gradient(circle at top right, ${themeColor} 0%, transparent 60%)`, opacity: 0.3, pointerEvents: 'none' }}></div>
                  <div style={{ position: 'relative', zIndex: 10 }}>
                     <span style={{ fontSize: '0.7rem', padding: '0.2rem 0.6rem', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(4px)', color: '#fff', borderRadius: '4px', fontWeight: 700, marginBottom: '0.75rem', display: 'inline-block' }}>{formatName}</span>
@@ -1310,7 +1318,7 @@ export default function HostLiveCampaignBuilder() {
                        {packages.length === 0 && (
                           <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--forest)', margin: '0.5rem 0' }}>${totalFee.toFixed(2)}</div>
                        )}
-                       <button style={{ width: '100%', padding: '0.8rem', background: `linear-gradient(135deg, ${themeColor}, ${secondaryThemeColor})`, color: '#fff', fontWeight: 700, border: `1px solid ${secondaryThemeColor}40`, borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem', boxShadow: `0 8px 20px ${themeColor}40`, transition: '0.2s', marginBottom: packages.length > 0 ? '1rem' : 0, marginTop: packages.length > 0 ? '1rem' : 0 }}>Register Now</button>
+                       <button style={{ width: '100%', padding: '0.8rem', background: `linear-gradient(135deg, ${themeColor}, ${activeSecondaryColor})`, color: '#fff', fontWeight: 700, border: `1px solid ${activeSecondaryColor}40`, borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem', boxShadow: `0 8px 20px ${themeColor}40`, transition: '0.2s', marginBottom: packages.length > 0 ? '1rem' : 0, marginTop: packages.length > 0 ? '1rem' : 0 }}>Register Now</button>
                        
                        {packages.length > 0 && (
                           <div style={{ borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '1rem', textAlign: 'left' }}>
@@ -1632,7 +1640,7 @@ export default function HostLiveCampaignBuilder() {
      if (activeTab === 'content' || activeTab === 'launch') {
         return (
            <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative' }}>
-              <div style={{ height: '300px', background: heroImage ? `linear-gradient(135deg, ${secondaryThemeColor}99, ${themeColor}99), url(${heroImage}) ${heroPosition}/${heroZoom}% no-repeat` : `linear-gradient(135deg, ${secondaryThemeColor}, ${themeColor})`, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '1.5rem', position: 'relative' }}>
+              <div style={{ height: '300px', background: heroImage ? `linear-gradient(135deg, ${activeSecondaryColor}99, ${themeColor}99), url(${heroImage}) ${heroPosition}/${heroZoom}% no-repeat` : `linear-gradient(135deg, ${activeSecondaryColor}, ${themeColor})`, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '1.5rem', position: 'relative' }}>
                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `radial-gradient(circle at top right, ${themeColor} 0%, transparent 60%)`, opacity: 0.3, pointerEvents: 'none' }}></div>
                  
                  <div style={{ position: 'relative', zIndex: 10 }}>
@@ -1696,7 +1704,7 @@ export default function HostLiveCampaignBuilder() {
               </div>
 
               <div style={{ position: 'sticky', bottom: 0, background: '#fff', padding: '1rem', borderTop: '1px solid rgba(0,0,0,0.05)', display: 'flex', justifyContent: 'center', zIndex: 50 }}>
-                 <button style={{ width: '100%', padding: '0.9rem', background: `linear-gradient(135deg, ${themeColor}, ${secondaryThemeColor})`, color: '#fff', fontWeight: 700, border: `1px solid ${secondaryThemeColor}40`, borderRadius: '12px', boxShadow: `0 8px 20px ${themeColor}40` }}>
+                 <button style={{ width: '100%', padding: '0.9rem', background: `linear-gradient(135deg, ${themeColor}, ${activeSecondaryColor})`, color: '#fff', fontWeight: 700, border: `1px solid ${activeSecondaryColor}40`, borderRadius: '12px', boxShadow: `0 8px 20px ${themeColor}40` }}>
                     Register Now
                  </button>
               </div>
