@@ -5,8 +5,8 @@ import { eq, ilike } from 'drizzle-orm';
 import { GoogleGenAI } from '@google/genai';
 import FirecrawlApp from '@mendable/firecrawl-js';
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-const firecrawl = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY });
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "mock_gemini_key" });
+const firecrawl = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY || "mock_firecrawl_key" });
 
 export const maxDuration = 60; // Allow Vercel functions to run up to 60s
 export const dynamic = 'force-dynamic';
