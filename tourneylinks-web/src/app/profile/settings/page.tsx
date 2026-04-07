@@ -9,10 +9,13 @@ export default function ProfileSettingsPage() {
 
   // Mock initial state for MVP. This will eventually pull from /api/notifications/settings
   const [preferences, setPreferences] = useState<any>({
-    ticketUpdates: { email: true, sms: false, push: true },
+    ticketUpdates: { email: true, sms: false, push: true, mobile_app: false },
     tournamentBroadcasts: { email: true, sms: true, push: true },
     registrationAlerts: { email: true, sms: false, push: false },
-    sponsorInquiries: { email: true, sms: true, push: true },
+    courseRadars: { email: true, push: true },
+    pairingInvites: { email: true, push: false },
+    receipts: { email: true, push: false },
+    affiliatePayouts: { email: true, push: false },
   });
 
   const handleToggle = (topic: string, channel: 'email' | 'sms' | 'push' | 'mobile_app') => {
@@ -117,6 +120,62 @@ export default function ProfileSettingsPage() {
                         <button onClick={() => handleToggle('tournamentBroadcasts', 'push')} className={`flex flex-col items-center justify-center p-3 w-[80px] rounded border ${preferences.tournamentBroadcasts.push ? 'bg-[rgba(90,140,58,0.15)] border-[var(--grass)] text-[#4ade80]' : 'bg-[rgba(255,255,255,0.02)] border-[rgba(255,255,255,0.1)] text-[rgba(255,255,255,0.3)]'} transition-colors blur-[1px] opacity-50 cursor-not-allowed`}>
                            <Smartphone size={16} className="mb-2" />
                            <span className="text-[9px] uppercase font-bold tracking-wider">Push</span>
+                        </button>
+                     </div>
+                  </div>
+
+                  {/* Topic: Course Radars */}
+                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-[rgba(255,255,255,0.05)]">
+                     <div className="max-w-[400px]">
+                       <h3 className="text-white font-bold mb-1">Course Radar Hits</h3>
+                       <p className="text-xs text-[rgba(255,255,255,0.4)] leading-relaxed">Alerts when a new tournament is published that matches your saved course filters.</p>
+                     </div>
+                     <div className="flex items-center gap-2">
+                        <button onClick={() => handleToggle('courseRadars', 'email')} className={`flex flex-col items-center justify-center p-3 w-[80px] rounded border ${preferences.courseRadars.email ? 'bg-[rgba(90,140,58,0.15)] border-[var(--grass)] text-[#4ade80]' : 'bg-[rgba(255,255,255,0.02)] border-[rgba(255,255,255,0.1)] text-[rgba(255,255,255,0.3)]'} transition-colors`}>
+                           <Mail size={16} className="mb-2" />
+                           <span className="text-[9px] uppercase font-bold tracking-wider">Email</span>
+                        </button>
+                     </div>
+                  </div>
+
+                  {/* Topic: Pairing Invites */}
+                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-[rgba(255,255,255,0.05)]">
+                     <div className="max-w-[400px]">
+                       <h3 className="text-white font-bold mb-1">Auto-Flight Sync Invites</h3>
+                       <p className="text-xs text-[rgba(255,255,255,0.4)] leading-relaxed">Alerts when another golfer requests to sync profiles with you for automatic tournament pairing.</p>
+                     </div>
+                     <div className="flex items-center gap-2">
+                        <button onClick={() => handleToggle('pairingInvites', 'email')} className={`flex flex-col items-center justify-center p-3 w-[80px] rounded border ${preferences.pairingInvites.email ? 'bg-[rgba(90,140,58,0.15)] border-[var(--grass)] text-[#4ade80]' : 'bg-[rgba(255,255,255,0.02)] border-[rgba(255,255,255,0.1)] text-[rgba(255,255,255,0.3)]'} transition-colors`}>
+                           <Mail size={16} className="mb-2" />
+                           <span className="text-[9px] uppercase font-bold tracking-wider">Email</span>
+                        </button>
+                     </div>
+                  </div>
+
+                  {/* Topic: Receipts */}
+                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-[rgba(255,255,255,0.05)]">
+                     <div className="max-w-[400px]">
+                       <h3 className="text-white font-bold mb-1">Receipts & Confirmations</h3>
+                       <p className="text-xs text-[rgba(255,255,255,0.4)] leading-relaxed">Important payment receipts, tickets, and successful registration confirmations.</p>
+                     </div>
+                     <div className="flex items-center gap-2">
+                        <button onClick={() => handleToggle('receipts', 'email')} className={`flex flex-col items-center justify-center p-3 w-[80px] rounded border ${preferences.receipts.email ? 'bg-[rgba(90,140,58,0.15)] border-[var(--grass)] text-[#4ade80]' : 'bg-[rgba(255,255,255,0.02)] border-[rgba(255,255,255,0.1)] text-[rgba(255,255,255,0.3)]'} transition-colors cursor-not-allowed opacity-80`} title="Required fields cannot be disabled">
+                           <Mail size={16} className="mb-2" />
+                           <span className="text-[9px] uppercase font-bold tracking-wider text-white">Email</span>
+                        </button>
+                     </div>
+                  </div>
+
+                  {/* Topic: Affiliate Payouts */}
+                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-[rgba(255,255,255,0.05)]">
+                     <div className="max-w-[400px]">
+                       <h3 className="text-white font-bold mb-1">Affiliate Bank Payouts</h3>
+                       <p className="text-xs text-[rgba(255,255,255,0.4)] leading-relaxed">Alerts when you earn credits from organizers registering via your referral link.</p>
+                     </div>
+                     <div className="flex items-center gap-2">
+                        <button onClick={() => handleToggle('affiliatePayouts', 'email')} className={`flex flex-col items-center justify-center p-3 w-[80px] rounded border ${preferences.affiliatePayouts.email ? 'bg-[rgba(90,140,58,0.15)] border-[var(--grass)] text-[#4ade80]' : 'bg-[rgba(255,255,255,0.02)] border-[rgba(255,255,255,0.1)] text-[rgba(255,255,255,0.3)]'} transition-colors`}>
+                           <Mail size={16} className="mb-2" />
+                           <span className="text-[9px] uppercase font-bold tracking-wider">Email</span>
                         </button>
                      </div>
                   </div>

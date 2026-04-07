@@ -1,21 +1,26 @@
 "use client";
 
 import React from 'react';
-import { Bell } from 'lucide-react';
+import { Flag } from 'lucide-react';
 import WidgetCard from './WidgetCard';
 
 export default function CommsWidget() {
   return (
     <WidgetCard className="h-full">
-       <h3 className="hero-eyebrow !mb-6 flex items-center justify-between !bg-none !border-none !shadow-none !backdrop-filter-none !p-0 !text-sm shrink-0" style={{ borderBottom: '1px solid rgba(245,240,232,0.1)', paddingBottom: '1rem' }}>
-         <div className="flex items-center gap-3"><Bell size={20} style={{ color: 'var(--gold)' }} /> Command Center</div>
-         <span className="px-3 py-1 rounded font-bold text-[10px] animate-pulse" style={{ background: 'rgba(212,175,55,0.2)', color: 'var(--gold)', border: '1px solid rgba(212,175,55,0.3)' }}>ALERTS</span>
+       <h3 className="hero-eyebrow !mb-6 flex items-center justify-between !bg-none !border-none !shadow-none !backdrop-filter-none !p-0 !text-sm lg:!text-base shrink-0" style={{ borderBottom: '1px solid rgba(245,240,232,0.1)', paddingBottom: '1rem' }}>
+         <div className="flex items-center gap-4">
+           <div className="relative inline-flex items-center justify-center">
+             <Flag size={20} className="text-red-500 fill-red-500 animate-[pulse_2s_ease-in-out_infinite] drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
+             <span className="absolute -top-2.5 -right-3.5 bg-red-600 border border-black text-white text-[9px] font-black rounded-full h-4 w-4 flex items-center justify-center shadow-[0_0_10px_rgba(239,68,68,1)]">3</span>
+           </div>
+           Command Center
+         </div>
        </h3>
-       <div className="flex-1 flex flex-col gap-6 overflow-y-auto custom-scrollbar">
-          <p className="text-base leading-relaxed font-medium" style={{ color: 'rgba(245,240,232,0.6)' }}>Internal routing system for secure transmissions directly from Hosts and Platform Support.</p>
-          <div className="mt-auto flex flex-col gap-4 pt-4">
-             <a href="/profile/inbox" className="btn-primary w-full justify-center">Access Inbox</a>
-             <a href="/profile/settings" className="btn-ghost w-full justify-center">Notification Rules</a>
+       <div className="flex-1 flex flex-col justify-between">
+          <p className="text-base leading-relaxed font-medium text-white mb-4">Internal routing system for secure transmissions directly from Hosts and Platform Support.</p>
+          <div className="mt-auto flex flex-col gap-3 pt-3">
+             <a href="/profile/inbox" className="btn-primary w-full justify-center text-base py-3">Access Inbox</a>
+             <a href="/profile/settings" className="btn-ghost w-full justify-center text-base py-3">Notification Rules</a>
           </div>
        </div>
     </WidgetCard>

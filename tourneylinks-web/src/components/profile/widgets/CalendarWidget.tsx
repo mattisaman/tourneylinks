@@ -54,7 +54,7 @@ export default function CalendarWidget({ registrations, hostedEvents, radarTourn
      const hasRadar = events.some(e => e.type === 'radar');
 
      return (
-        <div key={dayNumber} className="relative flex items-center justify-center h-14 w-14 lg:h-16 lg:w-16 text-base lg:text-lg transition-all cursor-pointer group">
+        <div key={dayNumber} className="relative flex items-center justify-center h-10 w-10 lg:h-12 lg:w-12 text-sm lg:text-base transition-all cursor-pointer group">
            {/* Background hover / selection states for neumorphic feel */}
            <div className={`absolute inset-0 rounded-full transition-all duration-300 ${isToday ? 'bg-[var(--gold)] opacity-20 ring-1 ring-[var(--gold)]' : 'group-hover:bg-white/5'} ${hasRadar && !hasPlay ? 'bg-[rgba(40,80,50,0.3)] ring-1 ring-[rgba(74,222,128,0.2)]' : ''}`} />
            
@@ -73,9 +73,9 @@ export default function CalendarWidget({ registrations, hostedEvents, radarTourn
   };
 
   return (
-    <WidgetCard className="min-h-[460px]">
-      <div className="flex items-center justify-between pb-6 relative z-10">
-         <h3 className="text-2xl lg:text-3xl font-medium tracking-tight" style={{ color: 'var(--cream)', fontFamily: 'var(--font-serif), serif' }}>
+    <WidgetCard>
+      <div className="flex items-center justify-between pb-4 lg:pb-6 relative z-10">
+         <h3 className="text-3xl lg:text-4xl font-medium tracking-tight" style={{ color: 'var(--cream)', fontFamily: 'var(--font-serif), serif' }}>
             {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
          </h3>
          <div className="flex items-center gap-2">
@@ -86,7 +86,7 @@ export default function CalendarWidget({ registrations, hostedEvents, radarTourn
 
       <div className="grid grid-cols-7 mb-6 text-center relative z-10">
          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-            <div key={day} className="text-xs uppercase tracking-widest font-bold" style={{ color: 'rgba(245,240,232,0.5)' }}>{day}</div>
+            <div key={day} className="text-sm uppercase tracking-widest font-bold" style={{ color: 'rgba(245,240,232,0.5)' }}>{day}</div>
          ))}
       </div>
 
@@ -96,13 +96,13 @@ export default function CalendarWidget({ registrations, hostedEvents, radarTourn
       </div>
 
       <div className="flex items-center justify-start gap-6 mt-auto pt-6 relative z-10" style={{ borderTop: '1px solid rgba(245,240,232,0.05)' }}>
-         <div className="flex items-center gap-2 text-xs" style={{ color: 'rgba(245,240,232,0.6)' }}>
+         <div className="flex items-center gap-2 text-sm" style={{ color: 'rgba(245,240,232,0.6)' }}>
             <div className="w-2 h-2 rounded-full border border-white/20 bg-white/10 flex items-center justify-center">
                <div className="w-1 h-1 bg-white rounded-full" />
             </div> 
             Registered
          </div>
-         <div className="flex items-center gap-2 text-xs" style={{ color: 'rgba(245,240,232,0.6)' }}>
+         <div className="flex items-center gap-2 text-sm" style={{ color: 'rgba(245,240,232,0.6)' }}>
             <div className="w-2 h-2 rounded-full border border-green-500/30 bg-green-500/10" /> 
             Radar Match
          </div>
