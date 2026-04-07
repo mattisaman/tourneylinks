@@ -1,52 +1,58 @@
-import { db } from '../lib/db';
+import * as dotenv from 'dotenv';
+import { resolve } from 'path';
+
+// Load ENV and force Node.js direct driver connection BEFORE standard pool mapping
+dotenv.config({ path: resolve(process.cwd(), '.env.local') });
+if (process.env.DATABASE_URL) {
+  process.env.DATABASE_URL = process.env.DATABASE_URL.replace(':6543', ':5432');
+}
+
+import { drizzle } from 'drizzle-orm/node-postgres';
+import pg from 'pg';
+const _pool = new pg.Pool({
+    connectionString: process.env.DATABASE_URL,
+    max: 5,
+});
+const localDb = drizzle(_pool);
+
 import { tournaments, courses } from '../lib/db';
 import { eq, or, ilike } from 'drizzle-orm';
 import { GoogleGenAI } from '@google/genai';
-import * as dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
-import { dirname, resolve } from 'path';
-
-dotenv.config({ path: resolve(process.cwd(), '.env.local') });
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-// The regions we want to scan
 const TARGET_REGIONS = [
+  "New York, NY",
+  "Albany, NY",
   "Rochester, NY",
+  "Syracuse, NY",
   "Buffalo, NY",
-  "Syracuse, NY"
+  "Long Island, NY"
 ];
 
-// Permutations to catch 100% of event naming conventions
 const SEARCH_PERMUTATIONS = [
   "Charity Golf Tournaments",
   "Golf Scramble",
-  "Golf Classic",
   "Upcoming Golf Outings"
 ];
 
-async function searchDuckDuckGo(query: string): Promise<string[]> {
-  console.log(`\n🔍 DuckDuckGo: "${query}"`);
+async function searchGoogleSerpApi(query: string): Promise<string[]> {
+  console.log(`\n🔍 Google Search (SerpApi): "${query}"`);
   try {
-    const res = await fetch(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
-      }
-    });
-    const html = await res.text();
+    const res = await fetch(`https://serpapi.com/search.json?q=${encodeURIComponent(query)}&api_key=${process.env.SERPAPI_KEY}`);
+    const json = await res.json();
     
-    // Extract top 5 URLs from the search results
-    const links: string[] = [];
-    const regex = /class="result__url"[^>]*href="([^"]+)"/gi;
-    let match;
-    while ((match = regex.exec(html)) !== null && links.length < 5) {
-      let url = match[1];
-      if (url.startsWith('//')) url = 'https:' + url;
-      // Skip generic proxy aggregators or non-event URLs
-      if (url.includes('duckduckgo') || url.includes('facebook') || url.includes('instagram')) continue;
-      links.push(url);
+    if (!json.organic_results) {
+      console.log(`  -> No results payload from SerpApi.`);
+      return [];
     }
     
+    // Extract top 6 URLs, filter social media
+    const links = json.organic_results
+      .slice(0, 6)
+      .map((r: any) => r.link)
+      .filter((url: string) => !url.includes('facebook') && !url.includes('instagram') && !url.includes('pinterest'));
+      
     return links;
   } catch (err) {
     console.error(`Search Failed:`, err);
@@ -54,8 +60,13 @@ async function searchDuckDuckGo(query: string): Promise<string[]> {
   }
 }
 
-async function scrapeAndExtract(url: string) {
-  console.log(`🕷️ Crawling URL: ${url}`);
+async function scrapeAndExtract(url: string, isDeepCrawl: boolean = false, previousContext: string = "") {
+  if (isDeepCrawl) {
+     console.log(`   --> 🤿 DEEP CRAWL INITIATED: ${url}`);
+  } else {
+     console.log(`🕷️ Primary Surface Crawl: ${url}`);
+  }
+  
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
@@ -65,22 +76,29 @@ async function scrapeAndExtract(url: string) {
     if (!res.ok) return null;
     
     const html = await res.text();
-    const cleanText = html
+    let cleanText = html
       .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, ' ')
       .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, ' ')
       .replace(/<[^>]+>/g, ' ')
       .replace(/\s+/g, ' ')
       .trim()
-      .substring(0, 45000); // Gemini 2.5 Flash token bounds
+      .substring(0, 45000); 
+
+    // Combine surface text with deep text if this is a secondary pass for massive LLM context
+    if (isDeepCrawl && previousContext) {
+       cleanText = `=== SURFACE CONTEXT ===\n${previousContext}\n\n=== DEEP LINK CONTEXT ===\n${cleanText}`;
+    }
 
     const prompt = `You are a professional golf tournament data extractor. Read this raw text from a website and extract all available details about the Golf Tournament.
 CRITICAL INSTRUCTIONS:
 - You must ONLY output valid JSON.
 - If a field is not explicitly stated, use null.
-- Attempt to extract exact pricing, max handicap rules, included meals/drinks, the exact Date of the event, and the Organizer Info.
+- Attempt to extract exact pricing, max handicap rules, included meals/drinks, the exact Date of the event, and Organizer Info.
+${!isDeepCrawl ? "- If this text is just a summary directory and you see a URL pointing to the actual registration or event details page, set 'deepCrawlUrl' to that exact absolute URL and leave the rest null/empty so we can spider it." : ""}
 
 JSON SCHEMA:
 {
+  "deepCrawlUrl": "string or null",
   "name": "string (Tournament Name)",
   "dateStart": "string (YYYY-MM-DD or best guess text)",
   "courseName": "string",
@@ -106,6 +124,12 @@ RAW TEXT: ${cleanText}`;
     });
 
     const data = JSON.parse(completion.text || "{}");
+    
+    // Evaluate if a Deep Crawl is requested and possible
+    if (!isDeepCrawl && data.deepCrawlUrl && data.deepCrawlUrl.startsWith('http')) {
+        return scrapeAndExtract(data.deepCrawlUrl, true, cleanText); // RECURSIVE DEEP DIVE
+    }
+
     // Ensure we actually found a tournament and not just a random news article
     if (!data.name || !data.courseName || !data.dateStart) return null;
     return data;
@@ -116,24 +140,24 @@ RAW TEXT: ${cleanText}`;
 }
 
 async function run() {
-  console.log("🚀 Starting Phase 30 Native Tournament Discovery...\n");
+  console.log("🚀 Starting Phase 30 Native Tournament Discovery (New York Corridor)...\n");
 
   for (const region of TARGET_REGIONS) {
     for (const prefix of SEARCH_PERMUTATIONS) {
       const query = `${prefix} ${region}`;
-      const urls = await searchDuckDuckGo(query);
+      const urls = await searchGoogleSerpApi(query);
       
       console.log(`Found ${urls.length} targets for ${query}`);
 
       for (const url of urls) {
         // 1. Check if we already crawled this URL to prevent database duplication
-        const existing = await db.select({ id: tournaments.id }).from(tournaments).where(eq(tournaments.sourceUrl, url));
+        const existing = await localDb.select({ id: tournaments.id }).from(tournaments).where(eq(tournaments.sourceUrl, url));
         if (existing.length > 0) {
           console.log(`⏭️ Skipping (Already Indexed): ${url}`);
           continue;
         }
 
-        // 2. Scrape & Extract
+        // 2. Scrape & Extract (Will Auto-Route to Deep Crawl if Needed)
         const parsed = await scrapeAndExtract(url);
         if (!parsed) {
           console.log(`⚠️ Low Fidelity/Failed Parse: ${url}`);
@@ -144,14 +168,14 @@ async function run() {
         
         // 3. Attempt to automatically link it to an existing Course ID in our DB
         let courseZip = null;
-        const matchingCourses = await db.select().from(courses)
+        const matchingCourses = await localDb.select().from(courses)
           .where(ilike(courses.name, `%${parsed.courseName}%`))
           .limit(1);
           
         if (matchingCourses.length > 0) courseZip = matchingCourses[0].zip;
 
         // 4. Inject into PostgreSQL
-        await db.insert(tournaments).values({
+        await localDb.insert(tournaments).values({
           name: parsed.name,
           sourceUrl: url,
           sourceId: `duckduckgo-${Date.now()}`,
