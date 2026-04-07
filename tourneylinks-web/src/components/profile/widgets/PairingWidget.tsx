@@ -2,19 +2,20 @@
 
 import React from 'react';
 import { UserPlus } from 'lucide-react';
+import WidgetCard from './WidgetCard';
 
 export default function PairingWidget() {
   return (
-    <div className="w-full h-full bg-[rgba(255,255,255,0.01)] backdrop-blur-2xl border border-[rgba(255,255,255,0.05)] p-8 hover:border-[var(--gold)] transition-colors flex flex-col shadow-2xl cursor-not-allowed group rounded-2xl z-10 overflow-hidden">
-       <h3 className="text-sm uppercase tracking-[0.15em] font-black mb-4 text-[rgba(255,255,255,0.5)] pb-4 border-b border-[rgba(255,255,255,0.05)] flex items-center gap-3 shrink-0">
-         <UserPlus size={18} /> Pairing Network
+    <WidgetCard className="h-full">
+       <h3 className="hero-eyebrow !mb-4 flex items-center gap-3 !bg-none !border-none !shadow-none !backdrop-filter-none !p-0 !text-sm shrink-0" style={{ borderBottom: '1px solid rgba(245,240,232,0.1)', paddingBottom: '1rem' }}>
+         <UserPlus size={20} style={{ color: 'var(--mist)' }} /> Pairing Network
        </h3>
-       <div className="flex-1 flex flex-col items-center justify-center text-center">
-         <p className="text-xs text-[rgba(255,255,255,0.4)] font-light leading-relaxed mb-4">Invite playing partners using their verified email address to let the Auto-Flight Engine securely pair you together.</p>
-         <div className="inline-block text-[10px] text-[rgba(255,255,255,0.3)] bg-[rgba(255,255,255,0.03)] px-4 py-2 uppercase tracking-widest font-bold rounded shadow-inner">
+       <div className="flex-1 flex flex-col items-center justify-center text-center opacity-50 grayscale px-4">
+         <p className="text-sm font-medium leading-relaxed mb-6" style={{ color: 'rgba(245,240,232,0.6)' }}>Invite playing partners using their verified email address to let the Auto-Flight Engine securely pair you together.</p>
+         <div className="inline-block text-xs px-6 py-3 uppercase tracking-widest font-bold rounded-lg" style={{ color: 'rgba(245,240,232,0.3)', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
            Sync Unavailable
          </div>
        </div>
-    </div>
+    </WidgetCard>
   );
 }

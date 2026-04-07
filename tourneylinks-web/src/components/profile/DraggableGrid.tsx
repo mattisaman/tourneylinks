@@ -113,7 +113,7 @@ export default function DraggableGrid({
     }
   }
 
-  if (!isLoaded) return <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse" style={{ minHeight: '600px' }} />;
+  if (!isLoaded) return <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8 lg:gap-10 animate-pulse" style={{ minHeight: '600px' }} />;
 
   return (
     <DndContext 
@@ -125,7 +125,7 @@ export default function DraggableGrid({
         items={items}
         strategy={rectSortingStrategy}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8 lg:gap-10 items-start w-full">
           {items.map(id => {
             const widget = childrenMap[id];
             if (!widget) return null;

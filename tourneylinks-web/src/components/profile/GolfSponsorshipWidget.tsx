@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { ShieldCheck, ArrowRight, Loader2 } from 'lucide-react';
+import WidgetCard from './widgets/WidgetCard';
 
 type HostedEvent = {
    id: number;
@@ -46,81 +47,87 @@ export default function GolfSponsorshipWidget({ tournaments }: { tournaments: Ho
 
    if (successParam) {
       return (
-         <div className="w-full relative bg-[rgba(212,175,55,0.05)] backdrop-blur-2xl border border-[var(--gold)] p-10 lg:p-12 shadow-[0_0_30px_rgba(212,175,55,0.15)] rounded-2xl z-10 text-center">
-            <h3 className="text-xl text-[var(--gold)] font-bold mb-4" style={{ fontFamily: 'var(--font-serif)' }}>Application Received!</h3>
-            <p className="text-sm text-[rgba(255,255,255,0.7)] font-light leading-relaxed">
-               Your application for 501(c)(3) fiscal sponsorship has been securely deposited. The G.O.L.F. Foundation board will review your request and you can expect a status update within <strong className="text-white">48 hours</strong>.
+         <WidgetCard className="text-center h-full">
+            <h3 className="text-xl font-bold mb-4 font-sans tracking-tight" style={{ color: 'var(--gold)' }}>Application Received!</h3>
+            <p className="text-sm font-medium leading-relaxed" style={{ color: 'rgba(245,240,232,0.6)' }}>
+               Your application for 501(c)(3) fiscal sponsorship has been securely deposited. The G.O.L.F. Foundation board will review your request and you can expect a status update within <strong style={{ color: 'var(--cream)' }}>48 hours</strong>.
             </p>
-            <button onClick={() => window.location.reload()} className="mt-8 bg-transparent border border-white hover:border-[var(--gold)] hover:text-[var(--gold)] text-white px-6 py-3 uppercase text-xs font-bold tracking-widest rounded transition-colors">Acknowledge</button>
-         </div>
+            <button onClick={() => window.location.reload()} className="btn-ghost mt-8" style={{ width: 'auto' }}>Acknowledge</button>
+         </WidgetCard>
       );
    }
 
    return (
-      <div className="w-full relative bg-[rgba(255,255,255,0.02)] backdrop-blur-2xl border border-[rgba(255,255,255,0.05)] p-10 lg:p-12 hover:border-[var(--gold)] transition-colors flex flex-col shadow-2xl rounded-2xl z-10">
-         <h3 className="text-sm uppercase tracking-[0.15em] font-black mb-6 text-white pb-6 border-b border-[rgba(255,255,255,0.1)] flex items-center gap-3">
-            <ShieldCheck size={18} className="text-[var(--gold)]" /> 501(c)(3) Sponsorship
-         </h3>
+      <WidgetCard className="h-full" noPadding={true}>
+         <div className="p-6 lg:p-8 flex flex-col h-full">
+            <h3 className="hero-eyebrow !mb-6 flex items-center gap-3 !bg-none !border-none !shadow-none !backdrop-filter-none !p-0 !text-sm" style={{ borderBottom: '1px solid rgba(245,240,232,0.1)', paddingBottom: '1.5rem' }}>
+               <ShieldCheck size={20} style={{ color: 'var(--gold)' }} /> 501(c)(3) Sponsorship
+            </h3>
 
-         {eligibleEvents.length === 0 ? (
-            <div className="text-center py-6 opacity-50">
-               <p className="text-sm font-light">All active events are already covered or pending review.</p>
-            </div>
-         ) : (
-            <div className="flex flex-col gap-4">
-               <p className="text-sm text-[rgba(255,255,255,0.6)] font-light leading-relaxed mb-4">
-                  Request fiscal sponsorship processing. If approved, we will automatically disconnect your localized Stripe and route donor transactions completely tax-free through our audited accounts.
-               </p>
-
-               <div className="flex flex-col gap-2">
-                  <label className="text-[10px] text-[var(--gold)] uppercase font-bold tracking-widest">Select Campaign</label>
-                  <select 
-                     value={selectedTournamentId} 
-                     onChange={e => setSelectedTournamentId(e.target.value === '' ? '' : parseInt(e.target.value))}
-                     className="bg-[rgba(5,11,8,0.8)] border border-[rgba(255,255,255,0.1)] focus:border-[var(--gold)] text-white p-3 rounded text-sm outline-none w-full appearance-none transition-colors"
-                  >
-                     <option value="">-- Choose Campaign --</option>
-                     {eligibleEvents.map(t => (
-                        <option key={t.id} value={t.id}>{t.name}</option>
-                     ))}
-                  </select>
+            {eligibleEvents.length === 0 ? (
+               <div className="text-center py-6 opacity-50 flex-1 flex flex-col justify-center">
+                  <p className="text-sm font-medium">All active events are already covered or pending review.</p>
                </div>
+            ) : (
+               <div className="flex flex-col gap-4 flex-1">
+                  <p className="text-base font-medium leading-relaxed mb-6" style={{ color: 'rgba(245,240,232,0.6)' }}>
+                     Request fiscal sponsorship processing. If approved, we will automatically disconnect your localized Stripe and route donor transactions completely tax-free through our audited accounts.
+                  </p>
 
-               {selectedTournamentId !== '' && (
-                  <div className="flex flex-col gap-4 mt-2 animate-fadeIn">
-                     <div className="flex flex-col gap-2">
-                        <label className="text-[10px] text-[var(--gold)] uppercase font-bold tracking-widest">Cause Description</label>
-                        <textarea 
-                           className="bg-[rgba(5,11,8,0.8)] border border-[rgba(255,255,255,0.1)] focus:border-[var(--gold)] text-white p-3 rounded text-sm outline-none w-full min-h-[80px] resize-none transition-colors"
-                           placeholder="Who or what are we raising money for?"
-                           value={causeDesc}
-                           onChange={e => setCauseDesc(e.target.value)}
-                        />
-                     </div>
-                     <div className="flex flex-col gap-2">
-                        <label className="text-[10px] text-[var(--gold)] uppercase font-bold tracking-widest">Disbursement Instructions</label>
-                        <input 
-                           type="text"
-                           className="bg-[rgba(5,11,8,0.8)] border border-[rgba(255,255,255,0.1)] focus:border-[var(--gold)] text-white p-3 rounded text-sm outline-none w-full transition-colors"
-                           placeholder="Where should the official check be delivered?"
-                           value={payoutInfo}
-                           onChange={e => setPayoutInfo(e.target.value)}
-                        />
-                     </div>
-                     
-                     <div className="mt-4 pt-4 border-t border-[rgba(255,255,255,0.1)] flex justify-end">
-                        <button 
-                           onClick={handleApply}
-                           disabled={isSubmitting}
-                           className="bg-[var(--gold)] text-[#050B08] uppercase font-black tracking-widest text-xs px-6 py-3 rounded shadow-[0_0_20px_rgba(212,175,55,0.3)] hover:bg-white hover:shadow-white transition-all flex items-center gap-2"
-                        >
-                           {isSubmitting ? <Loader2 size={16} className="animate-spin" /> : 'Submit for Review'} <ArrowRight size={14} />
-                        </button>
-                     </div>
+                  <div className="flex flex-col gap-2">
+                     <label className="text-[10px] uppercase font-bold tracking-widest" style={{ color: 'var(--gold)' }}>Select Campaign</label>
+                     <select 
+                        value={selectedTournamentId} 
+                        onChange={e => setSelectedTournamentId(e.target.value === '' ? '' : parseInt(e.target.value))}
+                        className="p-3 rounded-lg text-sm outline-none w-full appearance-none transition-colors border"
+                        style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(212,175,55,0.15)', color: 'var(--cream)' }}
+                     >
+                        <option value="" className="text-black">-- Choose Campaign --</option>
+                        {eligibleEvents.map(t => (
+                           <option key={t.id} value={t.id} className="text-black">{t.name}</option>
+                        ))}
+                     </select>
                   </div>
-               )}
-            </div>
-         )}
-      </div>
+
+                  {selectedTournamentId !== '' && (
+                     <div className="flex flex-col gap-4 mt-2 animate-fadeIn flex-1">
+                        <div className="flex flex-col gap-2">
+                           <label className="text-[10px] uppercase font-bold tracking-widest" style={{ color: 'var(--gold)' }}>Cause Description</label>
+                           <textarea 
+                              className="p-3 rounded-lg text-sm outline-none w-full min-h-[80px] resize-none transition-colors border"
+                              style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(212,175,55,0.15)', color: 'var(--cream)' }}
+                              placeholder="Who or what are we raising money for?"
+                              value={causeDesc}
+                              onChange={e => setCauseDesc(e.target.value)}
+                           />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                           <label className="text-[10px] uppercase font-bold tracking-widest" style={{ color: 'var(--gold)' }}>Disbursement Instructions</label>
+                           <input 
+                              type="text"
+                              className="p-3 rounded-lg text-sm outline-none w-full transition-colors border"
+                              style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(212,175,55,0.15)', color: 'var(--cream)' }}
+                              placeholder="Where should the official check be delivered?"
+                              value={payoutInfo}
+                              onChange={e => setPayoutInfo(e.target.value)}
+                           />
+                        </div>
+                        
+                        <div className="mt-auto pt-4 flex justify-end" style={{ borderTop: '1px solid rgba(245,240,232,0.1)' }}>
+                           <button 
+                              onClick={handleApply}
+                              disabled={isSubmitting}
+                              className="btn-primary flex items-center gap-2"
+                              style={{ padding: '0.8rem 1.5rem' }}
+                           >
+                              {isSubmitting ? <Loader2 size={16} className="animate-spin" /> : 'Submit for Review'} <ArrowRight size={14} />
+                           </button>
+                        </div>
+                     </div>
+                  )}
+               </div>
+            )}
+         </div>
+      </WidgetCard>
    );
 }

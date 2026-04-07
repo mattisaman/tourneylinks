@@ -3,11 +3,12 @@ import { getCurrentUser } from '@/lib/auth-util';
 import { getUserId } from '@/lib/auth-util';
 import { redirect } from 'next/navigation';
 import { db, users, registrations, tournaments, saved_courses, courses } from '@/lib/db';
-import { eq, desc } from 'drizzle-orm';
+import { eq, desc, inArray } from 'drizzle-orm';
 import { Edit3 } from 'lucide-react';
 
 // Draggable OS Elements
 import DraggableGrid from '@/components/profile/DraggableGrid';
+import ProfileWidget from '@/components/profile/widgets/ProfileWidget';
 import CalendarWidget from '@/components/profile/widgets/CalendarWidget';
 import RegistrationsWidget from '@/components/profile/widgets/RegistrationsWidget';
 import RadarsWidget from '@/components/profile/widgets/RadarsWidget';
@@ -52,105 +53,86 @@ export default async function ProfilePage() {
     .where(eq(saved_courses.userId, userId))
     .orderBy(desc(saved_courses.createdAt));
 
+  const radarCourseIds = userRadars.map(r => r.course.id);
+  const radarTournaments = radarCourseIds.length > 0 
+    ? await db.select().from(tournaments).where(inArray(tournaments.courseId, radarCourseIds))
+    : [];
+
   const hostedEvents = await db.select().from(tournaments).where(eq(tournaments.hostUserId, dbUser.id)).orderBy(desc(tournaments.createdAt));
 
   const widgetMap = {
-    calendar: { component: <CalendarWidget registrations={userRegistrations} hostedEvents={hostedEvents} />, span: 2 },
-    registrations: { component: <RegistrationsWidget userRegistrations={userRegistrations} />, span: 2 },
+    calendar: { component: <CalendarWidget registrations={userRegistrations} hostedEvents={hostedEvents} radarTournaments={radarTournaments} />, span: 2 },
+    registrations: { component: <RegistrationsWidget userRegistrations={userRegistrations} />, span: 1 },
     radars: { component: <RadarsWidget userRadars={userRadars} />, span: 1 },
     hosted: { component: <HostedDraftsWidget hostedEvents={hostedEvents} />, span: 2 },
     comms: { component: <CommsWidget />, span: 1 },
     affiliate: { component: <AffiliateWidget dbUser={dbUser} userId={userId} />, span: 1 },
     pairing: { component: <PairingWidget />, span: 1 },
-    sponsorship: { component: <GolfSponsorshipWidget tournaments={hostedEvents} />, span: 3 }
+    sponsorship: { component: <GolfSponsorshipWidget tournaments={hostedEvents} />, span: 2 }
   };
   
   const defaultOrder = ['calendar', 'radars', 'registrations', 'hosted', 'comms', 'pairing', 'affiliate', 'sponsorship'];
 
   return (
-    <div className="min-h-screen flex flex-col pt-[80px] relative bg-[#0a0c0a]">
+    <div className="min-h-[120vh] flex flex-col pb-32 relative bg-[#071510] overflow-hidden" style={{ paddingTop: '220px' }}>
       
-      {/* Dynamic Dramatic Background Simulation */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-         {/* Base dark canvas */}
-         <div className="absolute inset-0 bg-[#050605]" />
-         {/* Moody central green spotlight mimicking the golf bag night image */}
-         <div className="absolute top-[10%] left-[-10%] w-[70vw] h-[70vw] bg-[radial-gradient(ellipse_at_center,rgba(40,80,50,0.15),transparent_60%)] filter blur-3xl opacity-80 mix-blend-screen" />
-         <div className="absolute top-[30%] right-[-10%] w-[50vw] h-[50vw] bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.05),transparent_60%)] filter blur-3xl opacity-60 mix-blend-screen" />
-         {/* Heavy vignette for edge darkness */}
-         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.8)_100%)]" />
-         {/* Optional texture overly */}
-         <div className="absolute inset-0 opacity-[0.02] bg-[url('/hero-bg-4.jpg')] bg-cover bg-center mix-blend-overlay" />
+      {/* Home Page Baseline Background Implementation */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+         <div className="absolute inset-0" style={{
+             backgroundImage: `
+               linear-gradient(to right, rgba(7, 21, 16, 0.98) 0%, rgba(7, 21, 16, 0.85) 40%, rgba(7, 21, 16, 0.45) 100%),
+               linear-gradient(to bottom, rgba(7, 21, 16, 0.95) 0%, transparent 60%),
+               linear-gradient(to top, rgba(7, 21, 16, 1) 0%, transparent 40%),
+               url('/profile-bg.jpg')
+             `,
+             backgroundSize: 'cover',
+             backgroundPosition: 'left 20%',
+             backgroundRepeat: 'no-repeat'
+         }} />
+         <div className="hero-grid fixed inset-0 pointer-events-none z-10 opacity-[0.04]" />
+         <div className="hero-dots fixed inset-0 pointer-events-none z-20 opacity-[0.05]" />
       </div>
 
-      {/* Cinematic Prestige Profile Header */}
-      <div className="w-full relative z-10 border-b border-[rgba(255,255,255,0.02)] bg-[rgba(5,6,5,0.4)] backdrop-blur-3xl pt-16 pb-8 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
-         <div className="w-full relative z-10 flex flex-col md:flex-row items-start md:items-end justify-between gap-8" style={{ maxWidth: '1400px', margin: '0 auto', paddingLeft: 'clamp(2rem, 5vw, 4rem)', paddingRight: 'clamp(2rem, 5vw, 4rem)' }}>
-            
-            <div className="flex items-center gap-8 lg:gap-12">
-              <div className="relative group">
-                 {/* Avatar Ring Glow */}
-                 <div className="absolute -inset-1 bg-gradient-to-tr from-[var(--gold)] to-[rgba(40,80,50,1)] rounded-full blur opacity-30 group-hover:opacity-60 transition-opacity duration-500" />
-                 <img 
-                   src={dbUser.avatarUrl || '/placeholder_avatar.png'} 
-                   alt="Profile Avatar" 
-                   className="relative w-28 h-28 lg:w-36 lg:h-36 object-cover rounded-full border-4 border-[#111] shadow-2xl"
-                 />
-              </div>
-              <div>
-                <h1 
-                  className="text-5xl lg:text-7xl font-black mb-3 tracking-tight flex items-center gap-4 relative z-10" 
-                  style={{ 
-                     fontFamily: 'var(--font-serif)',
-                     color: '#e5e5e5', // High contrast silver/grey
-                     // Advanced stitched leather embossed effect using text-shadows
-                     textShadow: '0px 2px 3px rgba(0,0,0,1), -1px -1px 1px rgba(255,255,255,0.1), 0px 0px 20px rgba(0,0,0,0.8)',
-                     letterSpacing: '-0.02em',
-                  }}
-                >
-                  <span className="bg-clip-text text-transparent bg-gradient-to-b from-[#f9f9f9] to-[#999] relative">
-                     {dbUser.fullName}
-                  </span>
-                  
-                  {dbUser.role === 'HOST' && (
-                    <span className="bg-[var(--gold)] text-[#222] font-black uppercase tracking-widest relative top-[-8px] rounded-sm shadow-[0_0_10px_rgba(212,175,55,0.3)]" style={{ padding: '4px 12px', fontSize: '12px' }}>Director</span>
-                  )}
-                </h1>
-                <p className="text-[rgba(255,255,255,0.4)] text-lg font-light tracking-wide">{dbUser.email}</p>
-                
-                <div className="mt-8 flex flex-wrap items-center gap-4">
-                  <div className="flex items-center gap-4 bg-[rgba(10,15,10,0.8)] border-t border-[rgba(255,255,255,0.05)] border-b border-[rgba(0,0,0,0.8)] rounded-lg shadow-inner" style={{ padding: '10px 20px' }}>
-                    <span className="text-[10px] uppercase tracking-widest text-[var(--gold)] font-bold opacity-80">GHIN Handcap</span>
-                    <span className="w-px h-6 bg-[rgba(255,255,255,0.05)]" />
-                    <span className="font-mono text-xl font-bold text-white tracking-widest" style={{ textShadow: '0 0 15px rgba(255,255,255,0.3)'}}>
-                      {dbUser.verifiedGhin ? dbUser.handicapIndex : <span className="text-[rgba(255,255,255,0.2)] text-base">--.--</span>}
+      <main className="flex-1 w-full relative z-30 flex flex-col gap-12">
+         {/* PRESTIGE HERO SECTION */}
+         <section className="w-full flex flex-col md:flex-row items-center justify-between gap-8 relative z-40 mb-12 lg:mb-20" style={{ paddingLeft: 'clamp(2rem, 6vw, 10rem)', paddingRight: 'clamp(2rem, 6vw, 10rem)' }}>
+            <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-6 lg:gap-10">
+               <div className="relative group shrink-0">
+                  <div className="absolute -inset-1 bg-gradient-to-tr from-[var(--gold)] to-[var(--amber)] rounded-full blur-xl opacity-30 transition-opacity duration-1000" />
+                  <img 
+                    src={dbUser.avatarUrl || '/placeholder_avatar.png'} 
+                    alt="Profile Avatar" 
+                    className="relative w-32 h-32 lg:w-48 lg:h-48 object-cover rounded-full shadow-[0_0_50px_rgba(0,0,0,0.8)] bg-[var(--forest)] p-1 border-2 border-[var(--gold)]"
+                    style={{ filter: 'drop-shadow(0 0 20px rgba(212,175,55,0.4))' }}
+                  />
+               </div>
+               <div className="flex flex-col pt-2 md:pt-6">
+                  <h1 className="hero-headline !mb-2 shrink-0 leading-tight flex flex-wrap items-center justify-center md:justify-start gap-4 md:gap-6" style={{ fontSize: 'clamp(4rem, 8vw, 8rem)' }}>
+                    <span className="metallic-text" style={{ fontFamily: 'var(--font-cursive)', textTransform: 'capitalize', filter: 'drop-shadow(2px 4px 6px rgba(0,0,0,0.9))', textShadow: '1px 1px 0 rgba(255,255,255,0.4), -1px -1px 0 rgba(0,0,0,0.8)' }}>
+                      {dbUser.fullName.split(' ')[0]}
                     </span>
-                  </div>
-
-                  <a href="/verify" className="text-[10px] bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.05)] text-[rgba(255,255,255,0.6)] hover:text-[#fff] hover:border-[var(--gold)] hover:bg-[rgba(212,175,55,0.1)] uppercase tracking-widest font-bold transition-all px-4 py-3 rounded-lg">
-                     {dbUser.verifiedGhin ? 'SYNC GHIN' : 'VERIFY ACCOUNT'}
-                  </a>
-                </div>
-              </div>
+                    <span className="metallic-text" style={{ fontFamily: 'var(--font-cursive)', textTransform: 'capitalize', filter: 'drop-shadow(2px 4px 6px rgba(0,0,0,0.9))', textShadow: '1px 1px 0 rgba(255,255,255,0.4), -1px -1px 0 rgba(0,0,0,0.8)' }}>
+                      {dbUser.fullName.split(' ').slice(1).join(' ')}
+                    </span>
+                  </h1>
+               </div>
             </div>
-            
-            <a href="/profile/settings" className="border border-[rgba(255,255,255,0.05)] bg-[rgba(10,15,10,0.8)] text-[rgba(255,255,255,0.6)] hover:text-[var(--gold)] hover:border-[var(--gold)] font-bold uppercase tracking-widest transition-colors flex items-center gap-2 rounded-lg backdrop-blur-md shadow-2xl hover:shadow-[0_0_20px_rgba(212,175,55,0.15)]" style={{ padding: '14px 28px', fontSize: '11px' }}>
-               <Edit3 size={14} /> OS Settings
-            </a>
+
+            {/* Handicap Foil Display */}
+            <div className="flex flex-col items-center md:items-end text-center md:text-right mt-6 md:mt-0 shrink-0">
+               <div className="text-sm uppercase tracking-[0.2em] font-bold pr-2" style={{ color: 'var(--mist)', marginBottom: '1.5rem', fontFamily: 'var(--font-cinzel), serif' }}>Platform Handicap Index</div>
+               <div className="metallic-gold flex items-center justify-center transition-all duration-500 hover:scale-105 shadow-2xl border-2 border-[rgba(212,175,55,0.3)]" style={{ borderRadius: '4rem', padding: '1.5rem 4rem' }}>
+                  <span className="font-serif text-6xl lg:text-7xl font-bold tracking-tight" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.3)' }}>
+                    {dbUser.verifiedGhin ? dbUser.handicapIndex : '--.--'}
+                  </span>
+               </div>
+            </div>
+         </section>
+
+         {/* OS GRID */}
+         <div className="w-full relative z-30 pt-16 lg:pt-24 lg:mt-12" style={{ borderTop: '1px solid rgba(212,175,55,0.1)', paddingLeft: 'clamp(2rem, 6vw, 10rem)', paddingRight: 'clamp(2rem, 6vw, 10rem)' }}>
+            <DraggableGrid childrenMap={widgetMap} defaultOrder={defaultOrder} />
          </div>
-      </div>
-
-      <main className="flex-1 w-full pb-24 relative z-10">
-        <div className="w-full" style={{ maxWidth: '1400px', margin: '0 auto', paddingLeft: 'clamp(2rem, 5vw, 4rem)', paddingRight: 'clamp(2rem, 5vw, 4rem)', paddingTop: '4rem' }}>
-          
-          <div className="mb-6 flex items-center justify-between">
-             <h2 className="text-[10px] text-[rgba(255,255,255,0.4)] uppercase tracking-[0.3em] font-bold">Personalized Dashboard</h2>
-             <span className="text-[10px] text-[rgba(255,255,255,0.3)] uppercase tracking-[0.1em] flex items-center gap-2"><div className="w-1.5 h-1.5 bg-[#4ade80] rounded-full shadow-[0_0_5px_#4ade80]"></div> DRAG TILES TO REORGANIZE</span>
-          </div>
-
-          <DraggableGrid childrenMap={widgetMap} defaultOrder={defaultOrder} />
-
-        </div>
       </main>
     </div>
   );

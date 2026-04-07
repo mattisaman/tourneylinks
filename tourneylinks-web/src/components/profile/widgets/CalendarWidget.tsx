@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from 'react';
-import { CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import WidgetCard from './WidgetCard';
 
-export default function CalendarWidget({ registrations, hostedEvents }: { registrations: any[], hostedEvents: any[] }) {
+export default function CalendarWidget({ registrations, hostedEvents, radarTournaments = [] }: { registrations: any[], hostedEvents: any[], radarTournaments?: any[] }) {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
@@ -15,75 +16,97 @@ export default function CalendarWidget({ registrations, hostedEvents }: { regist
   const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   // Create a map of dates to events
-  const eventMap: Record<string, { title: string, type: 'play' | 'host' }> = {};
+  const eventMap: Record<string, { title: string, type: 'play' | 'host' | 'radar' }[]> = {};
   
+  const addEventToMap = (dateStr: string, event: { title: string, type: 'play' | 'host' | 'radar' }) => {
+     if (!eventMap[dateStr]) eventMap[dateStr] = [];
+     eventMap[dateStr].push(event);
+  };
+
   registrations.forEach(r => {
-    if (r.tournament.dateStart) {
-      // Very basic local date matching parsing YYYY-MM-DD
+    if (r.tournament?.dateStart) {
       const dateStr = r.tournament.dateStart.split('T')[0];
-      eventMap[dateStr] = { title: r.tournament.name, type: 'play' };
+      addEventToMap(dateStr, { title: r.tournament.name, type: 'play' });
     }
   });
 
   hostedEvents.forEach(t => {
      if (t.dateStart) {
         const dateStr = t.dateStart.split('T')[0];
-        eventMap[dateStr] = { title: t.name, type: 'host' };
+        addEventToMap(dateStr, { title: t.name, type: 'host' });
+     }
+  });
+
+  radarTournaments.forEach(t => {
+     if (t.dateStart) {
+        const dateStr = t.dateStart.split('T')[0];
+        addEventToMap(dateStr, { title: t.name, type: 'radar' });
      }
   });
 
   const getDayElement = (dayNumber: number) => {
      const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(dayNumber).padStart(2, '0')}`;
-     const event = eventMap[dateStr];
+     const events = eventMap[dateStr] || [];
      const isToday = new Date().toDateString() === new Date(currentDate.getFullYear(), currentDate.getMonth(), dayNumber).toDateString();
+     
+     const hasPlay = events.some(e => e.type === 'play');
+     const hasHost = events.some(e => e.type === 'host');
+     const hasRadar = events.some(e => e.type === 'radar');
 
      return (
-        <div key={dayNumber} className={`relative flex items-center justify-center h-10 w-10 text-sm rounded-full transition-all cursor-pointer hover:bg-[rgba(255,255,255,0.1)] ${isToday ? 'border border-[rgba(255,255,255,0.4)]' : ''}`}>
-           {dayNumber}
-           {event && (
-              <div 
-                 title={event.title}
-                 className={`absolute bottom-1 w-1.5 h-1.5 rounded-full ${event.type === 'host' ? 'bg-[#f1c40f] shadow-[0_0_8px_rgba(241,196,15,0.8)]' : 'bg-[#4ade80] shadow-[0_0_8px_rgba(74,222,128,0.8)]'}`}
-              />
-           )}
+        <div key={dayNumber} className="relative flex items-center justify-center h-14 w-14 lg:h-16 lg:w-16 text-base lg:text-lg transition-all cursor-pointer group">
+           {/* Background hover / selection states for neumorphic feel */}
+           <div className={`absolute inset-0 rounded-full transition-all duration-300 ${isToday ? 'bg-[var(--gold)] opacity-20 ring-1 ring-[var(--gold)]' : 'group-hover:bg-white/5'} ${hasRadar && !hasPlay ? 'bg-[rgba(40,80,50,0.3)] ring-1 ring-[rgba(74,222,128,0.2)]' : ''}`} />
+           
+           <span className={`relative z-10 ${hasPlay ? 'font-black text-[var(--cream)]' : 'font-medium text-[rgba(245,240,232,0.7)]'}`}>
+              {dayNumber}
+           </span>
+
+           {/* Event Indicators */}
+           <div className="absolute bottom-1.5 flex gap-1 z-10">
+              {hasPlay && <div className="w-1 h-1 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]" title="Registered to Play" />}
+              {hasHost && <div className="w-1 h-1 rounded-full bg-[var(--gold)] shadow-[0_0_8px_rgba(212,175,55,0.8)]" title="Hosting Event" />}
+              {hasRadar && !hasPlay && <div className="w-1 h-1 rounded-full bg-[#4ade80] opacity-60" title="Radar Tournament" />}
+           </div>
         </div>
      );
   };
 
   return (
-    <div className="w-full h-full bg-[rgba(2,6,4,0.6)] backdrop-blur-2xl border border-[var(--gold)]/30 p-8 hover:border-[var(--gold)] transition-colors shadow-2xl flex flex-col min-h-[400px] z-10 rounded-2xl relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-[rgba(255,255,255,0.02)] to-transparent pointer-events-none" />
-      
-      <div className="flex items-center justify-between border-b border-[rgba(255,255,255,0.1)] pb-4 mb-4 relative z-10">
-         <h3 className="text-sm uppercase tracking-[0.15em] font-black flex items-center gap-3 text-white">
-            <CalendarIcon size={18} className="text-[var(--gold)]" /> Calendar
+    <WidgetCard className="min-h-[460px]">
+      <div className="flex items-center justify-between pb-6 relative z-10">
+         <h3 className="text-2xl lg:text-3xl font-medium tracking-tight" style={{ color: 'var(--cream)', fontFamily: 'var(--font-serif), serif' }}>
+            {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
          </h3>
          <div className="flex items-center gap-2">
-            <button onClick={prevMonth} className="p-1 hover:bg-[rgba(255,255,255,0.1)] rounded"><ChevronLeft size={16} className="text-white"/></button>
-            <span className="text-xs font-bold text-white uppercase tracking-widest min-w-[100px] text-center">{monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}</span>
-            <button onClick={nextMonth} className="p-1 hover:bg-[rgba(255,255,255,0.1)] rounded"><ChevronRight size={16} className="text-white"/></button>
+            <button onClick={prevMonth} className="p-2 hover:bg-white/5 rounded-full transition-colors"><ChevronLeft size={20} strokeWidth={1.5} className="text-[rgba(245,240,232,0.6)] hover:text-white"/></button>
+            <button onClick={nextMonth} className="p-2 hover:bg-white/5 rounded-full transition-colors"><ChevronRight size={20} strokeWidth={1.5} className="text-[rgba(245,240,232,0.6)] hover:text-white"/></button>
          </div>
       </div>
 
-      <div className="grid grid-cols-7 mb-2 text-center relative z-10">
-         {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(day => (
-            <div key={day} className="text-[10px] text-[rgba(255,255,255,0.4)] font-bold uppercase tracking-widest">{day}</div>
+      <div className="grid grid-cols-7 mb-6 text-center relative z-10">
+         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+            <div key={day} className="text-xs uppercase tracking-widest font-bold" style={{ color: 'rgba(245,240,232,0.5)' }}>{day}</div>
          ))}
       </div>
 
-      <div className="flex-1 grid grid-cols-7 gap-y-2 justify-items-center relative z-10 text-white font-mono">
+      <div className="flex-1 grid grid-cols-7 gap-y-2 justify-items-center relative z-10 font-sans">
          {Array.from({ length: firstDayOfMonth }).map((_, i) => <div key={`empty-${i}`} />)}
          {Array.from({ length: daysInMonth }).map((_, i) => getDayElement(i + 1))}
       </div>
 
-      <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-[rgba(255,255,255,0.05)] relative z-10">
-         <div className="flex items-center gap-2 text-[10px] text-[rgba(255,255,255,0.6)] uppercase tracking-widest">
-            <div className="w-2 h-2 rounded-full bg-[#4ade80]" /> Playing
+      <div className="flex items-center justify-start gap-6 mt-auto pt-6 relative z-10" style={{ borderTop: '1px solid rgba(245,240,232,0.05)' }}>
+         <div className="flex items-center gap-2 text-xs" style={{ color: 'rgba(245,240,232,0.6)' }}>
+            <div className="w-2 h-2 rounded-full border border-white/20 bg-white/10 flex items-center justify-center">
+               <div className="w-1 h-1 bg-white rounded-full" />
+            </div> 
+            Registered
          </div>
-         <div className="flex items-center gap-2 text-[10px] text-[rgba(255,255,255,0.6)] uppercase tracking-widest">
-            <div className="w-2 h-2 rounded-full bg-[#f1c40f]" /> Hosting
+         <div className="flex items-center gap-2 text-xs" style={{ color: 'rgba(245,240,232,0.6)' }}>
+            <div className="w-2 h-2 rounded-full border border-green-500/30 bg-green-500/10" /> 
+            Radar Match
          </div>
       </div>
-    </div>
+    </WidgetCard>
   );
 }

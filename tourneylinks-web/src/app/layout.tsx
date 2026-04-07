@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Sans, Playfair_Display, DM_Mono } from "next/font/google";
+import { DM_Sans, Playfair_Display, DM_Mono, Great_Vibes, Cinzel, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/ui/Navbar";
 import Footer from "@/components/ui/Footer";
@@ -22,6 +22,24 @@ const dmMono = DM_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
   weight: ["400", "500"],
+});
+
+const greatVibes = Great_Vibes({
+  variable: "--font-cursive",
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const cinzel = Cinzel({
+  variable: "--font-cinzel",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+});
+
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -52,7 +70,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body
-          className={`${dmSans.variable} ${playfair.variable} ${dmMono.variable} antialiased font-sans`}
+          className={`${dmSans.variable} ${playfair.variable} ${dmMono.variable} ${greatVibes.variable} ${cinzel.variable} ${cormorant.variable} antialiased font-sans`}
         >
           <Navbar />
           {children}
