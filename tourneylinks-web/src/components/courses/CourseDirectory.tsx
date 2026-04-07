@@ -6,6 +6,10 @@ import { Search, MapPin, Flag, ChevronRight, CheckCircle2 } from 'lucide-react';
 
 export default function CourseDirectory() {
   const [query, setQuery] = useState('');
+  const [zip, setZip] = useState('');
+  const [radius, setRadius] = useState(50);
+  const [stateFilter, setStateFilter] = useState('All');
+  
   const [results, setResults] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -15,15 +19,15 @@ export default function CourseDirectory() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setPage(1);
-      fetchCourses(query, 1, true);
-    }, query ? 300 : 0); // 300ms debounce on active typing
+      fetchCourses(query, zip, radius, stateFilter, 1, true);
+    }, 300); 
     return () => clearTimeout(timer);
-  }, [query]);
+  }, [query, zip, radius, stateFilter]);
 
-  const fetchCourses = async (searchStr: string, pageNum: number = 1, isNewSearch: boolean = false) => {
+  const fetchCourses = async (searchStr: string, z: string, r: number, s: string, pageNum: number = 1, isNewSearch: boolean = false) => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/courses/search?q=${encodeURIComponent(searchStr)}&page=${pageNum}`);
+      const res = await fetch(`/api/courses/search?q=${encodeURIComponent(searchStr)}&zip=${encodeURIComponent(z)}&radius=${r}&state=${encodeURIComponent(s)}&page=${pageNum}`);
       const data = await res.json();
       
       if (isNewSearch) {
@@ -39,29 +43,45 @@ export default function CourseDirectory() {
     }
   };
 
+  const US_STATES = ['All', 'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'];
+
   return (
-    <div style={{ width: '100%', maxWidth: '1200px', margin: '0 auto', padding: '0 1.5rem', paddingBottom: '6rem' }}>
+    <div style={{ width: '100%', maxWidth: '96%', margin: '0 auto', padding: '0', paddingBottom: '6rem' }}>
       
       {/* Search Console */}
       <div className="animated-gold-border" style={{ background: 'rgba(20,35,20,0.6)', backdropFilter: 'blur(16px)', borderRadius: '16px', padding: '1.5rem', marginBottom: '3rem', position: 'relative', zIndex: 10 }}>
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          <div style={{ flex: '1 1 300px', position: 'relative' }}>
+        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
+          
+          <div style={{ flex: '2 1 300px', position: 'relative' }}>
              <style>{`.search-input::placeholder { color: var(--forest); opacity: 0.65; }`}</style>
-             <Search size={20} style={{ position: 'absolute', left: '1.25rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--forest)' }} />
+             <Search size={20} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--forest)' }} />
              <input 
                className="search-input"
                type="text" 
-               placeholder="search by name, city, state, or zip" 
+               placeholder="Keyword search..." 
                value={query}
                onChange={(e) => setQuery(e.target.value)}
-               style={{ width: '100%', padding: '1.25rem 1.25rem 1.25rem 3.5rem', background: '#FDFBF7', border: '2px solid rgba(201,168,76,0.3)', borderRadius: '12px', fontSize: '1.1rem', color: 'var(--forest)', fontWeight: 600, outline: 'none', transition: 'all 0.2s', boxShadow: 'inset 0 2px 10px rgba(0,0,0,0.05)' }}
-               onFocus={(e) => { e.target.style.borderColor = 'var(--gold)'; e.target.style.boxShadow = '0 0 0 4px rgba(201,168,76,0.1)'; }}
-               onBlur={(e) => { e.target.style.borderColor = 'rgba(201,168,76,0.3)'; e.target.style.boxShadow = 'inset 0 2px 10px rgba(0,0,0,0.05)'; }}
+               style={{ width: '100%', padding: '1rem 1rem 1rem 3rem', background: '#FDFBF7', border: '2px solid rgba(201,168,76,0.3)', borderRadius: '12px', fontSize: '1rem', color: 'var(--forest)', fontWeight: 600, outline: 'none', transition: 'all 0.2s', boxShadow: 'inset 0 2px 10px rgba(0,0,0,0.05)' }}
              />
           </div>
-          <button className="btn-primary" style={{ flex: '0 0 auto', padding: '0 2rem', background: 'var(--gold)', color: 'var(--ink)' }}>
-            Search Database
-          </button>
+
+          <div style={{ flex: '1 1 120px' }}>
+            <select value={stateFilter} onChange={e => setStateFilter(e.target.value)} style={{ padding: '1rem', background: '#FDFBF7', border: '2px solid rgba(201,168,76,0.3)', borderRadius: '12px', width: '100%', fontSize: '1rem', color: 'var(--forest)', fontWeight: 600, cursor: 'pointer' }}>
+               {US_STATES.map(state => <option key={state} value={state}>{state === 'All' ? 'All States' : state}</option>)}
+            </select>
+          </div>
+
+          <div style={{ flex: '1.5 1 200px', display: 'flex', gap: '0.5rem' }}>
+             <input type="text" placeholder="Zip or City" value={zip} onChange={e => setZip(e.target.value)} style={{ padding: '1rem', background: '#FDFBF7', border: '2px solid rgba(201,168,76,0.3)', borderRadius: '12px', flex: 1, minWidth: '100px', fontSize: '1rem', color: 'var(--forest)', fontWeight: 600 }}/>
+             <select value={radius} onChange={e => setRadius(Number(e.target.value))} style={{ padding: '1rem', background: '#FDFBF7', border: '2px solid rgba(201,168,76,0.3)', borderRadius: '12px', width: '120px', fontSize: '1rem', color: 'var(--forest)', fontWeight: 600, cursor: 'pointer' }}>
+               <option value={5}>5 mi</option>
+               <option value={20}>20 mi</option>
+               <option value={50}>50 mi</option>
+               <option value={100}>100 mi</option>
+               <option value={500}>Anywhere</option>
+             </select>
+          </div>
+
         </div>
       </div>
 
@@ -76,7 +96,7 @@ export default function CourseDirectory() {
       </div>
 
       {/* Course Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '2.5rem' }}>
         {results.map(course => (
           <Link href={`/courses/${course.id}`} key={course.id} style={{ textDecoration: 'none', color: 'inherit' }}>
             <div className="course-card gold-foil-hover" style={{
@@ -99,55 +119,55 @@ export default function CourseDirectory() {
                  e.currentTarget.style.boxShadow = 'none';
                }}>
               
-              <div style={{ background: 'linear-gradient(180deg, rgba(26,46,26,0.9) 0%, var(--ink) 100%)', borderRadius: '15px', padding: '1px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+              <div style={{ 
+                   backgroundImage: course.heroImageUrl && course.heroImageUrl !== "DEFAULT_GRADIENT" 
+                      ? `linear-gradient(180deg, rgba(7,21,16,0.3) 0%, rgba(7,21,16,0.95) 100%), url(${course.heroImageUrl})` 
+                      : `linear-gradient(180deg, rgba(7,21,16,0.85) 0%, rgba(7,21,16,1) 100%), url('https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&q=80&w=800')`,
+                   backgroundSize: 'cover',
+                   backgroundPosition: 'center',
+                   borderRadius: '15px', 
+                   flex: 1, 
+                   display: 'flex', 
+                   flexDirection: 'column',
+                   position: 'relative'
+                 }}>
                  
-                 {course.heroImageUrl && course.heroImageUrl !== "DEFAULT_GRADIENT" ? (
-                   <div style={{ width: '100%', height: '140px', borderTopLeftRadius: '14px', borderTopRightRadius: '14px', overflow: 'hidden', position: 'relative' }}>
-                     <img src={course.heroImageUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt={course.name} />
-                     {course.rating && (
-                       <div style={{ position: 'absolute', bottom: '10px', right: '10px', background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)', color: 'var(--gold)', padding: '0.2rem 0.6rem', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                         ⭐ {course.rating.toFixed(1)}
-                       </div>
-                     )}
+                 {course.rating && (
+                   <div style={{ position: 'absolute', top: '20px', right: '20px', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', color: 'var(--gold)', padding: '0.4rem 0.8rem', borderRadius: '10px', fontSize: '0.9rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.3rem', zIndex: 10, border: '1px solid rgba(212,175,55,0.2)' }}>
+                     ⭐ {course.rating.toFixed(1)}
                    </div>
-                 ) : (
-                   <div style={{ width: '100%', height: '10px', background: 'var(--gold)', borderTopLeftRadius: '14px', borderTopRightRadius: '14px' }} />
                  )}
 
-                 <div style={{ padding: '1.5rem', flex: 1, position: 'relative' }}>
-                   {course.logoUrl && (
-                     <div style={{ position: 'absolute', top: course.heroImageUrl ? '-30px' : '-15px', left: '1.5rem', width: '60px', height: '60px', borderRadius: '12px', overflow: 'hidden', border: '4px solid var(--ink)', background: '#fff', boxShadow: '0 4px 12px rgba(0,0,0,0.5)', zIndex: 10 }}>
-                        <img src={course.logoUrl} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '4px' }} alt={`${course.name} Logo`} />
+                 <div style={{ padding: '2rem 1.75rem', flex: 1, position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', paddingTop: '6rem' }}>
+                   <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
+                       <h3 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-serif), serif', color: 'var(--white)', margin: 0, lineHeight: 1.2, fontWeight: 700 }}>
+                         {course.name}
+                       </h3>
+                       {course.isActive && <CheckCircle2 size={22} color="var(--gold)" style={{ flexShrink: 0, marginLeft: '0.5rem' }} />}
                      </div>
-                   )}
-                   
-                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem', marginTop: course.logoUrl ? '1rem' : '0' }}>
-                     <h3 style={{ fontSize: '1.25rem', fontFamily: "'Clash Display', sans-serif", color: 'var(--white)', margin: 0, lineHeight: 1.2 }}>
-                       {course.name}
-                     </h3>
-                     {course.isActive && <CheckCircle2 size={20} color="var(--gold)" style={{ flexShrink: 0 }} />}
-                   </div>
 
-                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
-                     <MapPin size={16} />
-                     <span>{course.city}, {course.state} {course.zip}</span>
-                   </div>
-
-                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                     <div>
-                       <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.5)', marginBottom: '0.2rem' }}>Holes</div>
-                       <div style={{ fontWeight: 600, color: 'var(--gold)', fontSize: '1.1rem' }}>{course.holes || '18'}</div>
+                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'rgba(255,255,255,0.8)', fontSize: '0.95rem', marginBottom: '1.5rem', fontWeight: 500 }}>
+                       <MapPin size={16} />
+                       <span>{course.city}, {course.state} {course.zip}</span>
                      </div>
-                     <div>
-                       <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.5)', marginBottom: '0.2rem' }}>Par</div>
-                       <div style={{ fontWeight: 600, color: 'var(--gold)', fontSize: '1.1rem' }}>{course.par || '72'}</div>
+
+                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', padding: '1rem', background: 'rgba(255,255,255,0.05)', backdropFilter: 'blur(10px)', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                       <div>
+                         <div style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.6)', marginBottom: '0.2rem', fontWeight: 700 }}>Holes</div>
+                         <div style={{ fontWeight: 700, color: 'var(--gold)', fontSize: '1.2rem' }}>{course.holes || '18'}</div>
+                       </div>
+                       <div>
+                         <div style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.6)', marginBottom: '0.2rem', fontWeight: 700 }}>Par</div>
+                         <div style={{ fontWeight: 700, color: 'var(--gold)', fontSize: '1.2rem' }}>{course.par || '72'}</div>
+                       </div>
                      </div>
                    </div>
                  </div>
 
-                 <div style={{ padding: '1rem 1.5rem', borderTop: '1px solid rgba(255,255,255,0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(0,0,0,0.2)', borderBottomLeftRadius: '15px', borderBottomRightRadius: '15px' }}>
-                    <span style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.5)' }}>{course.type || 'Public Golf Course'}</span>
-                    <span style={{ fontSize: '0.85rem', color: 'var(--gold)', fontWeight: 600 }}>Host an Event &rarr;</span>
+                 <div style={{ padding: '1.25rem 1.75rem', borderTop: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(10px)', borderBottomLeftRadius: '15px', borderBottomRightRadius: '15px' }}>
+                    <span style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>{course.type || 'Public Golf Course'}</span>
+                    <span style={{ fontSize: '1rem', color: 'var(--gold)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>Host an Event <ChevronRight size={16} /></span>
                  </div>
               </div>
             </div>
@@ -161,7 +181,7 @@ export default function CourseDirectory() {
                onClick={() => {
                   const nextPage = page + 1;
                   setPage(nextPage);
-                  fetchCourses(query, nextPage, false);
+                  fetchCourses(query, zip, radius, stateFilter, nextPage, false);
                }}
                disabled={loading}
                className="btn-hero-outline" 

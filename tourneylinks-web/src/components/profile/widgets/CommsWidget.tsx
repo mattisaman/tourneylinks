@@ -16,11 +16,11 @@ export default function CommsWidget() {
            Command Center
          </div>
        </h3>
-       <div className="flex-1 flex flex-col justify-between">
-          <p className="text-base leading-relaxed font-medium text-white mb-4">Internal routing system for secure transmissions directly from Hosts and Platform Support.</p>
-          <div className="mt-auto flex flex-col gap-3 pt-3">
-             <a href="/profile/inbox" className="btn-primary w-full justify-center text-base py-3">Access Inbox</a>
-             <a href="/profile/settings" className="btn-ghost w-full justify-center text-base py-3">Notification Rules</a>
+       <div className="flex-1 flex flex-col gap-6 pt-2">
+          <p className="text-lg lg:text-xl leading-relaxed font-normal text-white/80 text-center px-2">Internal routing system for secure transmissions directly from Hosts and Platform Support.</p>
+          <div className="flex flex-col items-center gap-3">
+             <a href="/profile/inbox" className="btn-primary w-[85%] justify-center text-base py-3">Access Inbox</a>
+             <a href="/profile/settings" className="btn-ghost w-[85%] justify-center text-base py-3">Notification Rules</a>
           </div>
        </div>
     </WidgetCard>

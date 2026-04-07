@@ -81,14 +81,30 @@ export default function CourseProfileClient({ course, scorecards, hostedTourname
              {/* OVERVIEW */}
              {activeTab === 'overview' && (
                 <div className="animate-fadeIn">
-                   <h2 className="text-3xl font-serif text-white mb-6">Welcome to {course.name}</h2>
-                   <div className="prose prose-invert max-w-none text-white/70 text-sm leading-relaxed mb-12">
-                      <p>
-                        {course.description || `Welcome to ${course.name}, a premier golf destination that seamlessly blends championship-caliber design with immaculate conditioning. Ideal for corporate outings, charity fundraisers, and competitive tournaments, our facility offers comprehensive event hosting capabilities including full-service digital live-scoring, customized catering packages, and professional bag drop services.`}
-                      </p>
-                      <p className="mt-4">
-                        Discover why thousands of players and tournament directors elect to partner with our professional staff year over year to deliver an unforgettable premium golfing experience.
-                      </p>
+                   
+                   <div className="animated-gold-border" style={{ background: 'rgba(20,35,20,0.4)', backdropFilter: 'blur(16px)', borderRadius: '20px', padding: '3rem 2.5rem', marginBottom: '4rem', position: 'relative', overflow: 'hidden' }}>
+                      {/* Decorative Element */}
+                      <span style={{ position: 'absolute', top: '-10%', left: '2%', fontSize: '15rem', color: 'rgba(212,175,55,0.03)', fontFamily: 'serif', lineHeight: 1, pointerEvents: 'none', userSelect: 'none' }}>"</span>
+                      
+                      <div style={{ position: 'relative', zIndex: 10 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                          <span style={{ display: 'block', width: '30px', height: '2px', background: 'var(--gold)' }}></span>
+                          <span style={{ color: 'var(--gold)', letterSpacing: '0.15em', textTransform: 'uppercase', fontSize: '0.75rem', fontWeight: 700 }}>Venue Overview</span>
+                        </div>
+                        
+                        <h2 style={{ fontFamily: 'var(--font-serif), var(--font-cinzel), serif', fontSize: '2.5rem', color: 'var(--cream)', marginBottom: '1.5rem', lineHeight: 1.2 }}>
+                          Welcome to {course.name}
+                        </h2>
+                        
+                        <div style={{ color: 'rgba(255,255,255,0.85)', fontSize: '1.1rem', lineHeight: 1.8, fontWeight: 300, maxWidth: '90%' }}>
+                          <p style={{ marginBottom: '1.5rem' }}>
+                            {course.description || `A premier golf destination that seamlessly blends championship-caliber design with immaculate conditioning. Ideal for corporate outings, charity fundraisers, and competitive tournaments, our facility offers comprehensive event hosting capabilities including full-service digital live-scoring, customized catering packages, and professional bag drop services.`}
+                          </p>
+                          <p style={{ fontStyle: 'italic', color: 'var(--gold)', opacity: 0.9 }}>
+                            Discover why thousands of players and tournament directors elect to partner with our professional staff year over year to deliver an unforgettable premium golfing experience.
+                          </p>
+                        </div>
+                      </div>
                    </div>
 
                    <h3 className="text-xl font-bold text-white mb-6 tracking-wide">Course Amenities</h3>

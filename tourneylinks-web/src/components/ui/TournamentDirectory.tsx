@@ -239,7 +239,7 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
           borderTop: '1px solid rgba(255,255,255,0.05)',
           padding: '1.5rem 0 1.25rem 0',
         }}>
-          <form onSubmit={e => { e.preventDefault(); handleApplyFilters(); }} style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 2rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <form onSubmit={e => { e.preventDefault(); handleApplyFilters(); }} style={{ maxWidth: '96%', margin: '0 auto', padding: '0', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
            {/* Top Row: Primary Search & Actions */}
            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 1 500px', flexWrap: 'wrap' }}>
@@ -338,9 +338,9 @@ export default function TournamentDirectory({ initialTournaments }: { initialTou
       </div> {/* Sticky Matrix Close */}
       </div> {/* <-- CLOSE MASSIVE BACKGROUND WRAPPER */}
 
-      {/* Main Results Grid (1400px Width) */}
-      <div style={{ padding: '4rem 2rem', background: '#f8faf9', minHeight: '60vh' }}>
-          <div className="tournaments-grid" style={{ maxWidth: '1400px', margin: '0 auto', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2rem' }}>
+      {/* Main Results Grid (Full Width) */}
+      <div style={{ padding: '4rem 0', background: '#f8faf9', minHeight: '60vh' }}>
+          <div className="tournaments-grid" style={{ maxWidth: '96%', margin: '0 auto', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '2.5rem' }}>
             {filteredTournaments.map((t, i) => (
               <Link href={`/tournaments/${t.id}`} key={t.id} className="t-card" style={{ textDecoration: 'none' }}>
                 <div className="t-card-cover">
