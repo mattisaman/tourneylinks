@@ -186,10 +186,24 @@ export const crawlLogs = pgTable('crawl_logs', {
   cycleId: text('cycle_id').notNull(),
   sourceId: text('source_id').notNull(),
   url: text('url').notNull(),
+  searchVector: text('search_vector'),
   status: text('status').notNull(),
   tournamentsFound: integer('tournaments_found').default(0),
+  durationMs: integer('duration_ms').default(0),
+  fireCrawlCreditsUsed: integer('firecrawl_credits_used').default(0),
+  totalCosts: real('total_costs').default(0),
   error: text('error'),
   crawledAt: timestamp('crawled_at').defaultNow(),
+});
+
+export const operating_expenses = pgTable('operating_expenses', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  amount: real('amount').notNull(),
+  frequency: text('frequency').default('monthly').notNull(), // 'monthly', 'annual', 'one-time'
+  category: text('category').default('Software'), // 'Software', 'Infrastructure', 'Marketing', 'Legal'
+  isVariable: boolean('is_variable').default(false), // e.g. "Stripe proxy" vs "Fixed Google Ultra Seat"
+  createdAt: timestamp('created_at').defaultNow(),
 });
 
 export const support_tickets = pgTable('support_tickets', {

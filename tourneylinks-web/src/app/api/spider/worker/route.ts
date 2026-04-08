@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { verifySignatureAppRouter } from '@upstash/qstash/dist/nextjs';
-import { db, tournaments, courses } from '@/lib/db';
+import { db, tournaments, courses, crawlLogs } from '@/lib/db';
 import { eq, ilike } from 'drizzle-orm';
 import { GoogleGenAI } from '@google/genai';
 import FirecrawlApp from '@mendable/firecrawl-js';
@@ -31,7 +31,29 @@ async function searchGoogleSerpApi(query: string): Promise<string[]> {
   }
 }
 
-async function scrapeAndExtract(url: string, isDeepCrawl: boolean = false, previousContext: string = "") {
+interface TourneyPayload {
+  name?: string;
+  courseName?: string;
+  courseCity?: string;
+  courseState?: string;
+  dateStart?: string;
+  format?: string;
+  description?: string;
+  entryFee?: number;
+  isCharity?: boolean;
+  organizerName?: string;
+  organizerEmail?: string;
+  registrationUrl?: string;
+  deepCrawlUrl?: string;
+  requiresJsEngine?: boolean;
+}
+
+interface ExtractionResult {
+  payload: TourneyPayload;
+  usedFirecrawl: boolean;
+}
+
+async function scrapeAndExtract(url: string, isDeepCrawl: boolean = false, previousContext: string = "", usedFirecrawlInitially: boolean = false): Promise<ExtractionResult | null> {
   try {
     // -------------------------------------------------------------
     // ENGINE 1: Native High-Speed Fetch (Cost: $0.00)
@@ -90,6 +112,7 @@ RAW TEXT: ${sourceText}`;
     });
 
     let data = JSON.parse(completion.text || "{}");
+    let usedFirecrawl = usedFirecrawlInitially;
 
     // -------------------------------------------------------------
     // ENGINE 2 FAILOVER: Firecrawl Headless Rendering (Cost: 1 Credit)
@@ -104,6 +127,7 @@ RAW TEXT: ${sourceText}`;
                 return null;
             }
 
+            usedFirecrawl = true;
             console.log(`   --> 🔥 [ENGINE 2 SUCCESS] Extracted ${scrapeResult.markdown.length} bytes of raw markdown.`);
             
             // Re-prompt Gemini without the JS warning flags, purely on the markdown
@@ -126,11 +150,11 @@ RAW TEXT: ${sourceText}`;
     
     // Deep Crawl Router
     if (!isDeepCrawl && data.deepCrawlUrl && data.deepCrawlUrl.startsWith('http')) {
-        return scrapeAndExtract(data.deepCrawlUrl, true, sourceText); 
+        return scrapeAndExtract(data.deepCrawlUrl, true, sourceText, usedFirecrawl); 
     }
 
     if (!data.name || !data.courseName || !data.dateStart) return null;
-    return data;
+    return { payload: data, usedFirecrawl };
   } catch (err) {
     return null;
   }
@@ -140,19 +164,28 @@ RAW TEXT: ${sourceText}`;
 // THE WORKER CORE 
 // -------------------------------------------------------------------------------- //
 async function workerHandler(req: Request) {
+  const startTime = Date.now();
+  let cycleTracker = `QSTASH-${Date.now()}`;
+  let targetRegion = "UNKNOWN";
+
   try {
     const { query, region } = await req.json();
+    targetRegion = region || query;
     console.log(`\n🚀 [WORKER INITIATED] Processing Chunk: ${query}`);
 
     const urls = await searchGoogleSerpApi(query);
     let ingested = 0;
-
+    let creditsBurned = 0;
+    
     for (const url of urls) {
       const existing = await db.select({ id: tournaments.id }).from(tournaments).where(eq(tournaments.sourceUrl, url));
       if (existing.length > 0) continue;
 
-      const parsed = await scrapeAndExtract(url);
-      if (!parsed) continue;
+      const result = await scrapeAndExtract(url);
+      if (!result) continue;
+      
+      const parsed = result.payload;
+      if (result.usedFirecrawl) creditsBurned++;
 
       let courseZip = null;
       let courseIdLink = null;
@@ -165,12 +198,12 @@ async function workerHandler(req: Request) {
       }
 
       await db.insert(tournaments).values({
-        name: parsed.name,
+        name: parsed.name || "Unknown Tournament",
         sourceUrl: url,
-        sourceId: `qstash-${Date.now()}`,
+        sourceId: cycleTracker,
         source: 'GlobalSpider',
-        dateStart: parsed.dateStart,
-        courseName: parsed.courseName,
+        dateStart: parsed.dateStart || "TBD",
+        courseName: parsed.courseName || "Unknown Course",
         courseId: courseIdLink,
         courseCity: parsed.courseCity || region?.split(',')[0]?.trim(),
         courseState: parsed.courseState || region?.split(',')[1]?.trim(),
@@ -188,22 +221,39 @@ async function workerHandler(req: Request) {
 
       ingested++;
       console.log(`✅ [WORKER SUCCESS] Indexed: ${parsed.name}`);
-
-      // ================================================================= //
-      // OUTBOUND EMAIL MOCK - Phase 30
-      // ================================================================= //
-      if (parsed.organizerEmail && parsed.organizerEmail.includes('@')) {
-          console.log(`\n📧 [RESEND EMAIL STUB] Simulated outbound transmission to: ${parsed.organizerEmail}`);
-          console.log(`   --> Subject: Claim Your Listing for ${parsed.name}`);
-          console.log(`   --> Body: We discovered your event at ${parsed.courseName}. Claim admin access at tourneylinks.com to process payments.\n`);
-      }
-
     } // end loop
 
-    return NextResponse.json({ success: true, targetsCrawled: urls.length, successfullyIngested: ingested });
+    const duration = Date.now() - startTime;
+    
+    // Telemetry Sync: Push the exact cost/duration footprint into the DB for Dashboard reports
+    await db.insert(crawlLogs).values({
+        cycleId: cycleTracker,
+        sourceId: 'Worker Node',
+        url: targetRegion,
+        searchVector: targetRegion,
+        status: 'SUCCESS',
+        tournamentsFound: ingested,
+        durationMs: duration,
+        fireCrawlCreditsUsed: creditsBurned,
+        totalCosts: creditsBurned * 0.005, // Approximation: Firecrawl average scaling cost
+    });
+
+    return NextResponse.json({ success: true, targetsCrawled: urls.length, successfullyIngested: ingested, durationMs: duration, creditsBurned });
 
   } catch (e: any) {
     console.error("[WORKER CATASTROPHE]", e);
+    const duration = Date.now() - startTime;
+    await db.insert(crawlLogs).values({
+        cycleId: cycleTracker,
+        sourceId: 'Worker Node',
+        url: targetRegion,
+        searchVector: targetRegion,
+        status: 'FAILED',
+        tournamentsFound: 0,
+        durationMs: duration,
+        fireCrawlCreditsUsed: 0,
+        error: e.message
+    });
     return NextResponse.json({ error: e.message }, { status: 500 });
   }
 }

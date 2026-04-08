@@ -12,6 +12,8 @@ export default function Navbar() {
   const { user } = useUser();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  if (pathname?.startsWith('/system/dashboard')) return null;
+
   const superAdminEmails = ['matthewisaman@gmail.com', 'mattisaman@gmail.com', 'joshuafribush@gmail.com', 'matt@tourneylinks.com'];
   const isSuperAdmin = user?.primaryEmailAddress?.emailAddress && superAdminEmails.includes(user.primaryEmailAddress.emailAddress.toLowerCase()) || false;
   const showHubs = process.env.NEXT_PUBLIC_IS_DEMO === 'true' || isSuperAdmin;
