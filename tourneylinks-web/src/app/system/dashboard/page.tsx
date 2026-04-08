@@ -5,6 +5,7 @@ import { sql, desc, eq } from 'drizzle-orm';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
+import SpiderDispatcher from '@/components/system/SpiderDispatcher';
 
 export const dynamic = 'force-dynamic';
 
@@ -227,6 +228,8 @@ export default async function SuperAdminDashboard() {
             </table>
           </div>
         </div>
+
+        <SpiderDispatcher />
 
         {/* Lower Grid */}
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '3rem' }}>
