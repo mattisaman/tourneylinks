@@ -1,5 +1,5 @@
 import React from 'react';
-import { getTournamentById, db, sponsorship_tiers } from '@/lib/db';
+import { getTournamentById, db, sponsorship_packages } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
@@ -19,7 +19,7 @@ export default async function SponsorPage({ params }: { params: Promise<{ id: st
   }
 
   // Fetch available Sponsorship Tiers
-  const tiers = await db.select().from(sponsorship_tiers).where(eq(sponsorship_tiers.tournamentId, tournamentId));
+  const tiers = await db.select().from(sponsorship_packages).where(eq(sponsorship_packages.tournamentId, tournamentId));
 
   return (
     <>

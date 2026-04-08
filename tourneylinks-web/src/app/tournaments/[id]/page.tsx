@@ -1,6 +1,6 @@
 import React from 'react';
 import { db } from '@/lib/db';
-import { tournaments, sponsorship_tiers, users, stripe_accounts } from '@/lib/db';
+import { tournaments, sponsorship_packages, users, stripe_accounts } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import StripeCheckoutButton from './StripeCheckoutButton';
@@ -35,8 +35,7 @@ export default async function TournamentGatewayPage({ params }: { params: Promis
       hostHasStripe = stripeAccs.length > 0;
     }
   }
-
-  const tiers = await db.select().from(sponsorship_tiers).where(eq(sponsorship_tiers.tournamentId, tournamentId));
+  const tiers = await db.select().from(sponsorship_packages).where(eq(sponsorship_packages.tournamentId, tournamentId));
 
   const getCleanUrl = (url: string | null) => {
     if (!url) return '';

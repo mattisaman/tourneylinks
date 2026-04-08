@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
-import { db, tournaments, stripe_accounts, sponsorship_tiers } from '@/lib/db';
+import { db, tournaments, stripe_accounts, sponsorship_packages } from '@/lib/db';
 import { eq, and } from 'drizzle-orm';
 
 export async function POST(req: Request) {
@@ -22,9 +22,9 @@ export async function POST(req: Request) {
     }
 
     // Verify the Tier matches the database (prevent price tampering)
-    const tierData = await db.select().from(sponsorship_tiers).where(and(eq(sponsorship_tiers.id, tierIdInt), eq(sponsorship_tiers.tournamentId, tId))).limit(1);
+    const tierData = await db.select().from(sponsorship_packages).where(and(eq(sponsorship_packages.id, tierIdInt), eq(sponsorship_packages.tournamentId, tId))).limit(1);
     const tier = tierData[0];
-    if (!tier || tier.price !== amount) {
+    if (!tier || tier.amount !== amount) {
       return NextResponse.json({ error: 'Sponsorship tier validation failed' }, { status: 400 });
     }
 
@@ -41,7 +41,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'This tournament is not actively configured to receive payments via Stripe Connect.' }, { status: 400 });
     }
 
-    const amountCents = amount * 100;
+    const amountCents = Math.round(amount * 100);
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card', 'link', 'us_bank_account'],

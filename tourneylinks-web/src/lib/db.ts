@@ -242,6 +242,41 @@ export const ghin_history = pgTable('ghin_history', {
   verifiedAt: timestamp('verified_at').defaultNow().notNull(),
 });
 
+export const sponsor_profiles = pgTable('sponsor_profiles', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').notNull().references(() => users.id),
+  companyName: text('company_name').notNull(),
+  companyLogoUrl: text('company_logo_url').notNull(),
+  companyUrl: text('company_url'),
+  contactEmail: text('contact_email'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const sponsorship_packages = pgTable('sponsorship_packages', {
+  id: serial('id').primaryKey(),
+  tournamentId: integer('tournament_id').notNull().references(() => tournaments.id),
+  name: text('name').notNull(), // e.g. "Title Sponsor", "Hole Sponsor"
+  amount: real('amount').notNull(),
+  description: text('description'),
+  spotsAvailable: integer('spots_available').default(1).notNull(),
+  spotsSold: integer('spots_sold').default(0).notNull(),
+  isActive: boolean('is_active').default(true),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const sponsorship_purchases = pgTable('sponsorship_purchases', {
+  id: serial('id').primaryKey(),
+  packageId: integer('package_id').notNull().references(() => sponsorship_packages.id),
+  sponsorProfileId: integer('sponsor_profile_id').references(() => sponsor_profiles.id), // Link to persistent profile
+  tournamentId: integer('tournament_id').notNull().references(() => tournaments.id),
+  businessName: text('business_name').notNull(), // Snapshot in case profile changes
+  businessLogoUrl: text('business_logo_url').notNull(), // Snapshot
+  amountPaid: real('amount_paid').notNull(),
+  paymentStatus: text('payment_status').default('COMPLETED').notNull(), // 'PENDING', 'COMPLETED'
+  transactionId: text('transaction_id'), // Stripe reference
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
 const globalForDb = globalThis as unknown as {
   pool: pg.Pool | undefined;
 };

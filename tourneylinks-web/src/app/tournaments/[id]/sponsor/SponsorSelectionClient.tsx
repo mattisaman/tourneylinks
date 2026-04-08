@@ -3,10 +3,12 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+import { UploadDropzone } from "@/lib/uploadthing";
+
 interface Tier {
   id: number;
   name: string;
-  price: number;
+  amount: number;
   description: string | null;
   spotsAvailable: number | null;
 }
@@ -42,7 +44,7 @@ export default function SponsorSelectionClient({ tournamentId, tiers }: { tourna
         body: JSON.stringify({
           tournamentId,
           tierId: selectedTierId,
-          amount: parentTier.price,
+          amount: parentTier.amount,
           companyName,
           contactEmail,
           websiteUrl,
@@ -99,7 +101,7 @@ export default function SponsorSelectionClient({ tournamentId, tiers }: { tourna
               </div>
               
               <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--forest)', marginBottom: '1rem' }}>
-                ${tier.price}
+                ${tier.amount}
               </div>
               
               <p style={{ color: 'var(--mist)', fontSize: '0.95rem', lineHeight: '1.5', marginBottom: '1.5rem' }}>
@@ -159,14 +161,31 @@ export default function SponsorSelectionClient({ tournamentId, tiers }: { tourna
             />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink)', marginBottom: '0.4rem' }}>Logo Map URL (High-Res Image Link)</label>
-            <input
-              type="url"
-              value={logoUrl}
-              onChange={e => setLogoUrl(e.target.value)}
-              placeholder="https://acmecorp.com/logo.png"
-              style={{ width: '100%', padding: '0.8rem', borderRadius: '8px', border: '1px solid rgba(26,46,26,0.2)' }}
-            />
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink)', marginBottom: '0.4rem' }}>Logo Map URL (High-Res Image Link) *</label>
+            {logoUrl ? (
+              <div style={{ padding: '1.2rem', border: '1px solid var(--gold)', borderRadius: '8px', background: 'rgba(212,175,55,0.05)', color: 'var(--ink)', textAlign: 'center' }}>
+                <span style={{ fontSize: '1.5rem', display: 'block', marginBottom: '0.5rem' }}>✅</span>
+                <span style={{ fontWeight: 600 }}>Brand Logo Secured</span>
+                <div 
+                  style={{ marginTop: '0.8rem', fontSize: '0.85rem', color: '#666', textDecoration: 'underline', cursor: 'pointer' }}
+                  onClick={() => setLogoUrl('')}
+                >
+                  Upload different file
+                </div>
+              </div>
+            ) : (
+              <div style={{ border: '1px solid rgba(26,46,26,0.2)', borderRadius: '8px', overflow: 'hidden' }}>
+                <UploadDropzone
+                  endpoint="sponsorLogoUploader"
+                  onClientUploadComplete={(res) => {
+                    if (res?.[0]?.url) setLogoUrl(res[0].url);
+                  }}
+                  onUploadError={(error: Error) => {
+                    setErrorMsg(`Upload Failed: ${error.message}`);
+                  }}
+                />
+              </div>
+            )}
           </div>
         </div>
 

@@ -17,6 +17,7 @@
     "@mendable/firecrawl-js": "^4.18.1",
     "@react-email/components": "^1.0.11",
     "@stripe/stripe-js": "^8.11.0",
+    "@uploadthing/react": "^7.3.3",
     "@upstash/qstash": "^2.10.1",
     "@vercel/analytics": "^2.0.1",
     "drizzle-orm": "^0.45.1",
@@ -30,7 +31,8 @@
     "react-email": "^5.2.10",
     "recharts": "^3.8.1",
     "resend": "^6.10.0",
-    "stripe": "^20.4.1"
+    "stripe": "^20.4.1",
+    "uploadthing": "^7.7.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
