@@ -3,9 +3,10 @@ import Link from 'next/link';
 import { db, tournaments, courses, registrations, crawlLogs, missing_links } from '@/lib/db';
 import { sql, desc, eq } from 'drizzle-orm';
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
+import { redirect, notFound } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import SpiderDispatcher from '@/components/system/SpiderDispatcher';
+import { currentUser } from '@clerk/nextjs/server';
 
 export const dynamic = 'force-dynamic';
 
@@ -47,10 +48,6 @@ async function approveGolfApplication(formData: FormData) {
   if (!tournament) return;
 
   if (tournament.hostUserId) {
-     // Wipe local Stripe Account records for this user (they lose direct routing access)
-     // Or we can just sever the connection or flag it. Since the platform routs checkout through root if charityType == golf_sponsored
-     // The core checkout logic already uses the Root Acct if it's G.O.L.F. Sponsored.
-     // However, let's strictly nullify their Stripe Connect linking if exists to be 100% compliant.
      const { stripe_accounts } = await import('@/lib/db');
      await db.delete(stripe_accounts).where(eq(stripe_accounts.userId, tournament.hostUserId));
   }
@@ -68,12 +65,21 @@ async function approveGolfApplication(formData: FormData) {
 
 export default async function SuperAdminDashboard() {
   
-  // Security Layer: Validate Edge Session Cookie
-  const cookieStore = await cookies();
-  const session = cookieStore.get('super_admin_session');
+  // Security Layer: Enterprise Clerk Whitelist Authentication
+  const user = await currentUser();
+  
+  if (!user) {
+      redirect('/sign-in?redirect_url=/system/dashboard');
+  }
 
-  if (!session) {
-    redirect('/system/login');
+  const userEmail = user.emailAddresses[0]?.emailAddress?.toLowerCase();
+  const allowedEmails = (process.env.SUPER_ADMIN_EMAILS || "")
+      .split(',')
+      .map(e => e.trim().toLowerCase());
+
+  if (!userEmail || !allowedEmails.includes(userEmail)) {
+      // Stealth Block: Return a 404 instead of a flashy "Hacked" screen to trick unauthorized scanners
+      return notFound();
   }
 
   // Aggregate Metrics Queries
