@@ -16,6 +16,8 @@ import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import SponsorPipelineColumn from './SponsorPipelineColumn';
 import SponsorCard from './SponsorCard';
 import CommunicationSlideOut from './CommunicationSlideOut';
+import DiscoverMarketplaceModal from './DiscoverMarketplaceModal';
+import { Search } from 'lucide-react';
 
 const COLUMNS = [
   { id: 'TO_CONTACT', title: 'To Contact' },
@@ -30,6 +32,7 @@ export default function SponsorPipelineBoard({ tournamentId }: { tournamentId: n
   const [activeId, setActiveId] = useState<string | null>(null);
   const [slideOutLead, setSlideOutLead] = useState<any | null>(null);
   const [isMounted, setIsMounted] = useState(false);
+  const [isDiscoverModalOpen, setDiscoverModalOpen] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -140,9 +143,41 @@ export default function SponsorPipelineBoard({ tournamentId }: { tournamentId: n
     );
   }
 
+  const handleAssignMarketplaceLead = async (brand: any) => {
+    const res = await fetch('/api/host/sponsors/pipeline', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tournamentId,
+        sponsorProfileId: brand.id,
+        companyName: brand.companyName,
+        companyLogoUrl: brand.companyLogoUrl,
+        contactEmail: brand.contactEmail,
+        status: 'TO_CONTACT'
+      })
+    });
+    
+    if (res.ok) {
+      const { lead } = await res.json();
+      setLeads(prev => [...prev, lead]);
+      setDiscoverModalOpen(false);
+    }
+  };
+
   return (
-    <div className="flex h-full w-full overflow-x-auto overflow-y-hidden p-8 gap-8 bg-transparent" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(212,175,55,0.2) transparent' }}>
-      <DndContext 
+    <div className="flex flex-col h-full w-full bg-transparent overflow-hidden">
+      {/* Discovery Marketplace Toggle Header */}
+      <div className="flex justify-end px-8 pt-4 pb-0 z-10 w-full max-w-[1920px] mx-auto">
+        <button 
+           onClick={() => setDiscoverModalOpen(true)}
+           className="bg-[var(--gold)] text-black px-5 py-2.5 font-extrabold uppercase tracking-wider text-xs rounded-lg shadow-[0_0_20px_rgba(212,175,55,0.3)] flex items-center gap-2 hover:scale-105 transition-all border border-transparent hover:border-white/50"
+        >
+           <Search className="w-4 h-4" /> Discover Sponsors
+        </button>
+      </div>
+
+      <div className="flex-1 relative flex w-full overflow-x-auto overflow-y-hidden p-8 gap-6 max-w-[1920px] mx-auto" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(212,175,55,0.2) transparent' }}>
+        <DndContext 
         sensors={sensors}
         collisionDetection={closestCorners}
         onDragStart={handleDragStart}
@@ -165,6 +200,7 @@ export default function SponsorPipelineBoard({ tournamentId }: { tournamentId: n
           ) : null}
         </DragOverlay>
       </DndContext>
+      </div>
 
       <CommunicationSlideOut 
         isOpen={!!slideOutLead}
@@ -172,6 +208,13 @@ export default function SponsorPipelineBoard({ tournamentId }: { tournamentId: n
         lead={slideOutLead}
         onSaveNote={handleSaveNote}
       />
+
+      {isDiscoverModalOpen && (
+        <DiscoverMarketplaceModal 
+          onClose={() => setDiscoverModalOpen(false)}
+          onAssignLead={handleAssignMarketplaceLead}
+        />
+      )}
     </div>
   );
 }

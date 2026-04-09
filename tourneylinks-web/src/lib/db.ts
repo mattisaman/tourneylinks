@@ -1,5 +1,5 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { pgTable, serial, text, real, integer, boolean, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, real, integer, boolean, timestamp, index } from 'drizzle-orm/pg-core';
 import { eq, and, gte, asc } from 'drizzle-orm';
 import pg from 'pg';
 
@@ -114,7 +114,10 @@ export const tournaments = pgTable('tournaments', {
   updatedAt: timestamp('updated_at').defaultNow(),
   lastVerifiedAt: timestamp('last_verified_at'),
   isActive: boolean('is_active').default(true),
-});
+}, (table) => ({
+  hostUserIdIdx: index('idx_tournaments_host_user_id').on(table.hostUserId),
+  courseIdIdx: index('idx_tournaments_course_id').on(table.courseId),
+}));
 
 export const registrations = pgTable('registrations', {
   id: serial('id').primaryKey(),
@@ -131,7 +134,10 @@ export const registrations = pgTable('registrations', {
   teamGroupId: integer('team_group_id'), // Links to team_groups.id
   startingHole: integer('starting_hole'), // Phase 5: Routing Shotgun assignments
   createdAt: timestamp('created_at').defaultNow(),
-});
+}, (table) => ({
+  tournamentIdIdx: index('idx_registrations_tournament_id').on(table.tournamentId),
+  userIdIdx: index('idx_registrations_user_id').on(table.userId),
+}));
 
 export const registration_transfers = pgTable('registration_transfers', {
   id: serial('id').primaryKey(),
@@ -249,6 +255,10 @@ export const sponsor_profiles = pgTable('sponsor_profiles', {
   companyLogoUrl: text('company_logo_url').notNull(),
   companyUrl: text('company_url'),
   contactEmail: text('contact_email'),
+  isFranchise: boolean('is_franchise').default(false),
+  locationName: text('location_name'), // E.g. "Lexus of Austin" vs HQ
+  industrySegment: text('industry_segment'), // E.g. "Automotive", "Fintech"
+  proNetworkId: integer('pro_network_id'), // The ID of the Course Pro who vouched
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
@@ -280,7 +290,9 @@ export const sponsorship_purchases = pgTable('sponsorship_purchases', {
 export const sponsor_leads = pgTable('sponsor_leads', {
   id: serial('id').primaryKey(),
   tournamentId: integer('tournament_id').references(() => tournaments.id, { onDelete: 'cascade' }).notNull(),
+  sponsorProfileId: integer('sponsor_profile_id').references(() => sponsor_profiles.id),
   companyName: text('company_name').notNull(),
+  companyLogoUrl: text('company_logo_url'),
   contactName: text('contact_name'),
   contactEmail: text('contact_email'),
   contactPhone: text('contact_phone'),
@@ -289,7 +301,9 @@ export const sponsor_leads = pgTable('sponsor_leads', {
   expectedValue: integer('expected_value'), // in cents
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
-});
+}, (table) => ({
+  tournamentIdIdx: index('idx_sponsor_leads_tournament_id').on(table.tournamentId),
+}));
 
 const globalForDb = globalThis as unknown as {
   pool: pg.Pool | undefined;

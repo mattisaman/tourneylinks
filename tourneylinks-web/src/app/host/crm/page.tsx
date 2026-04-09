@@ -10,6 +10,8 @@ function CRMContent() {
   const tidParam = searchParams.get('tournamentId');
   const tournamentId = tidParam ? parseInt(tidParam) : 1; // Default to 1 for demo purposes if not provided
 
+  console.log("Rendering CRM Board Layout Hot Reload");
+
   return (
     <div className="flex flex-col h-screen bg-[#071510] relative overflow-hidden" style={{ paddingTop: '90px' }}>
       {/* Background Ambience */}

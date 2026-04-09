@@ -18,7 +18,7 @@ export default function SponsorPipelineColumn({ id, title, leads, onClickOut }: 
   const formattedTotal = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(columnTotal / 100);
 
   return (
-    <div className="flex flex-col flex-shrink-0 w-[340px] bg-[rgba(15,25,20,0.65)] backdrop-blur-md rounded-2xl overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)] border border-[rgba(212,175,55,0.15)] max-h-[85vh]">
+    <div className="flex flex-col flex-1 min-w-[320px] max-w-[380px] bg-[rgba(15,25,20,0.65)] backdrop-blur-md rounded-2xl overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)] border border-[rgba(212,175,55,0.15)] max-h-[85vh]">
       {/* Column Header */}
       <div className="px-5 pt-5 pb-4 border-b border-[rgba(212,175,55,0.1)] bg-[rgba(5,11,8,0.4)] text-center relative flex flex-col items-center">
         <div className="flex flex-col items-center justify-center mb-2 gap-1.5">

@@ -2,7 +2,7 @@ import React from 'react';
 import { getExistingTournaments } from '@/lib/db';
 import TournamentDirectory from '@/components/ui/TournamentDirectory';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export default async function TournamentsPage() {
   const tournaments = await getExistingTournaments();
