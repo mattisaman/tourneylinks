@@ -259,4 +259,8 @@ async function workerHandler(req: Request) {
 }
 
 // Wrap the route with Upstash's signature verification middleware
-export const POST = verifySignatureAppRouter(workerHandler);
+// Note: We provide fallback dummy keys to prevent Next.js static build from crashing if Vercel env vars aren't populated at build time.
+export const POST = verifySignatureAppRouter(workerHandler, {
+    currentSigningKey: process.env.QSTASH_CURRENT_SIGNING_KEY || "build_dummy_current_key",
+    nextSigningKey: process.env.QSTASH_NEXT_SIGNING_KEY || "build_dummy_next_key"
+});
