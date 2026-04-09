@@ -86,12 +86,13 @@ export default function CourseDirectory() {
       </div>
 
       {/* Registry Count */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-         <div style={{ fontSize: '0.95rem', color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', padding: '0 0.5rem' }}>
+         <div style={{ fontSize: '1.2rem', color: '#fffdf2', fontWeight: 700, textShadow: '0 2px 12px rgba(0,0,0,0.9), 0 0 30px rgba(255,255,255,0.3)', letterSpacing: '0.3px', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+           <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--gold)', boxShadow: '0 0 10px var(--gold)', display: loading ? 'none' : 'block' }}></span>
            {loading ? 'Searching registry...' : `Found ${total.toLocaleString()} courses matching your criteria`}
          </div>
-         <Link href="/system/ingest-course" style={{ color: 'var(--gold)', fontWeight: 600, fontSize: '0.95rem', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.4rem', textShadow: '0 0 12px rgba(201,168,76,0.2)' }}>
-            Missing a course? Ingest it now <ChevronRight size={16} />
+         <Link href="/system/ingest-course" style={{ color: 'var(--gold)', fontWeight: 700, fontSize: '0.95rem', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.4rem', textShadow: '0 2px 8px rgba(0,0,0,0.8)', background: 'rgba(0,0,0,0.4)', padding: '0.5rem 1rem', borderRadius: '10px', border: '1px solid rgba(212,175,55,0.3)', backdropFilter: 'blur(8px)' }} className="hover:bg-[rgba(212,175,55,0.1)] transition-all">
+            Missing a course? <span style={{ color: 'white' }}>Ingest it now</span> <ChevronRight size={16} color="var(--gold)" />
          </Link>
       </div>
 

@@ -18,11 +18,11 @@ export default function Navbar() {
   const isSuperAdmin = user?.primaryEmailAddress?.emailAddress && superAdminEmails.includes(user.primaryEmailAddress.emailAddress.toLowerCase()) || false;
   const showHubs = process.env.NEXT_PUBLIC_IS_DEMO === 'true' || isSuperAdmin;
 
-  const goldFoilStyle = {
-    background: 'rgba(212, 175, 55, 0.05)',
-    color: '#D4AF37',
+  const getFoilStyle = (isActive: boolean) => ({
+    background: isActive ? 'rgba(212, 175, 55, 0.2)' : 'rgba(212, 175, 55, 0.05)',
+    color: isActive ? '#fff' : '#D4AF37',
     border: '1px solid rgba(212,175,55,0.6)',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+    boxShadow: isActive ? '0 0 15px rgba(212,175,55,0.4)' : '0 4px 12px rgba(0,0,0,0.2)',
     padding: '0.25rem 0.6rem',
     borderRadius: '100px',
     textDecoration: 'none',
@@ -35,14 +35,14 @@ export default function Navbar() {
     justifyContent: 'center',
     cursor: 'pointer',
     backdropFilter: 'blur(8px)'
-  };
+  });
 
   // Instantly detach the Global Marketing Chrome if we are inside a Live Utility Route
   if (pathname?.includes('/tv') || pathname?.includes('/play')) {
     return null;
   }
 
-  const isHubPage = pathname?.includes('/admin') || pathname?.includes('/courses/dashboard') || pathname?.includes('/sponsor/dashboard');
+  const isHubPage = pathname?.includes('/admin') || pathname?.includes('/host/crm') || pathname?.includes('/courses/dashboard') || pathname?.includes('/sponsor/dashboard');
   const navbarBackground = isHubPage 
     ? 'linear-gradient(135deg, #050B08 0%, #073b22 50%, #050B08 100%)' 
     : 'transparent';
@@ -68,8 +68,8 @@ export default function Navbar() {
           <div className="hidden xl:flex items-center" style={{ gap: '0.25rem', fontSize: '0.85rem' }}>
             <Link href="/" className={`page-tab ${pathname === '/' ? 'active' : ''}`} style={{ background: 'transparent', borderBottom: pathname === '/' ? '2px solid var(--gold)' : '2px solid transparent', padding: '0.5rem 0.5rem', whiteSpace: 'nowrap' }}>🏠 Home</Link>
             <Link href="/tournaments" className={`page-tab ${pathname?.startsWith('/tournaments') ? 'active' : ''}`} style={{ background: 'transparent', borderBottom: pathname?.startsWith('/tournaments') ? '2px solid var(--gold)' : '2px solid transparent', padding: '0.5rem 0.5rem', whiteSpace: 'nowrap' }}>🏆 Tournaments</Link>
-            <Link href="/host" className={`page-tab ${pathname?.startsWith('/host') ? 'active' : ''}`} style={{ background: 'transparent', borderBottom: pathname?.startsWith('/host') ? '2px solid var(--gold)' : '2px solid transparent', padding: '0.5rem 0.5rem', whiteSpace: 'nowrap' }}>🚀 Host Event</Link>
-            <Link href="/courses" className={`page-tab ${pathname?.startsWith('/courses') ? 'active' : ''}`} style={{ background: 'transparent', borderBottom: pathname?.startsWith('/courses') ? '2px solid var(--gold)' : '2px solid transparent', padding: '0.5rem 0.5rem', whiteSpace: 'nowrap' }}>⛳ Courses</Link>
+            <Link href="/host" className={`page-tab ${(pathname?.startsWith('/host') && !pathname?.startsWith('/host/crm')) ? 'active' : ''}`} style={{ background: 'transparent', borderBottom: (pathname?.startsWith('/host') && !pathname?.startsWith('/host/crm')) ? '2px solid var(--gold)' : '2px solid transparent', padding: '0.5rem 0.5rem', whiteSpace: 'nowrap' }}>🚀 Host Event</Link>
+            <Link href="/courses" className={`page-tab ${pathname?.startsWith('/courses') && !pathname?.includes('dashboard') ? 'active' : ''}`} style={{ background: 'transparent', borderBottom: pathname?.startsWith('/courses') && !pathname?.includes('dashboard') ? '2px solid var(--gold)' : '2px solid transparent', padding: '0.5rem 0.5rem', whiteSpace: 'nowrap' }}>⛳ Courses</Link>
             <Link href="/sponsors" className={`page-tab ${pathname?.startsWith('/sponsors') ? 'active' : ''}`} style={{ background: 'transparent', borderBottom: pathname?.startsWith('/sponsors') ? '2px solid var(--gold)' : '2px solid transparent', padding: '0.5rem 0.5rem', whiteSpace: 'nowrap' }}>🤝 Sponsors</Link>
           </div>
 
@@ -90,9 +90,9 @@ export default function Navbar() {
             <>
               {showHubs && (
                 <div className="hidden lg:flex" style={{ gap: '0.3rem', marginRight: '0.8rem', alignItems: 'center', flexShrink: 0 }}>
-                  <Link href="/admin" style={goldFoilStyle} onMouseOver={e => e.currentTarget.style.filter = 'brightness(1.1) drop-shadow(0 4px 12px rgba(212,175,55,0.6))'} onMouseOut={e => e.currentTarget.style.filter = 'none'}>Host Hub</Link>
-                  <Link href="/courses/dashboard" style={goldFoilStyle} onMouseOver={e => e.currentTarget.style.filter = 'brightness(1.1) drop-shadow(0 4px 12px rgba(212,175,55,0.6))'} onMouseOut={e => e.currentTarget.style.filter = 'none'}>Pro Hub</Link>
-                  <Link href="/sponsor/dashboard" style={goldFoilStyle} onMouseOver={e => e.currentTarget.style.filter = 'brightness(1.1) drop-shadow(0 4px 12px rgba(212,175,55,0.6))'} onMouseOut={e => e.currentTarget.style.filter = 'none'}>Sponsor Hub</Link>
+                  <Link href="/admin" style={getFoilStyle(pathname?.includes('/admin') || pathname?.includes('/host/crm') || false)} onMouseOver={e => e.currentTarget.style.filter = 'brightness(1.1) drop-shadow(0 4px 12px rgba(212,175,55,0.6))'} onMouseOut={e => e.currentTarget.style.filter = 'none'}>Host Hub</Link>
+                  <Link href="/courses/dashboard" style={getFoilStyle(pathname?.includes('/courses/dashboard') || false)} onMouseOver={e => e.currentTarget.style.filter = 'brightness(1.1) drop-shadow(0 4px 12px rgba(212,175,55,0.6))'} onMouseOut={e => e.currentTarget.style.filter = 'none'}>Pro Hub</Link>
+                  <Link href="/sponsor/dashboard" style={getFoilStyle(pathname?.includes('/sponsor/dashboard') || false)} onMouseOver={e => e.currentTarget.style.filter = 'brightness(1.1) drop-shadow(0 4px 12px rgba(212,175,55,0.6))'} onMouseOut={e => e.currentTarget.style.filter = 'none'}>Sponsor Hub</Link>
                 </div>
               )}
               <Link href="/profile" className="profile-link hidden sm:block" style={{ marginRight: '0.8rem', color: '#f5f2ed', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600, flexShrink: 0, whiteSpace: 'nowrap' }}>My Profile</Link>

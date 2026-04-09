@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { X, Send, Mail, Link as LinkIcon, CreditCard } from 'lucide-react';
+import { X, Send, Mail, Link as LinkIcon, CreditCard, Trash2 } from 'lucide-react';
 
 interface CommunicationSlideOutProps {
   isOpen: boolean;
   onClose: () => void;
   lead: any; // Using any for brevity, represents sponsor_leads
   onSaveNote: (id: number, notes: string) => Promise<void>;
+  onDeleteLead?: (id: number) => void;
 }
 
-export default function CommunicationSlideOut({ isOpen, onClose, lead, onSaveNote }: CommunicationSlideOutProps) {
+export default function CommunicationSlideOut({ isOpen, onClose, lead, onSaveNote, onDeleteLead }: CommunicationSlideOutProps) {
   const [internalNote, setInternalNote] = useState('');
   const [emailSubject, setEmailSubject] = useState('');
   const [emailBody, setEmailBody] = useState('');
@@ -59,9 +60,9 @@ export default function CommunicationSlideOut({ isOpen, onClose, lead, onSaveNot
   };
 
   return (
-    <div className="fixed inset-y-0 right-0 w-full md:w-[450px] bg-[#0b1611] border-l border-[rgba(212,175,55,0.2)] shadow-[-10px_0_30px_rgba(0,0,0,0.8)] transform transition-transform duration-300 ease-in-out z-50 flex flex-col">
+    <div className={`fixed inset-y-0 right-0 bg-white border-l border-[#e8eada] shadow-[-10px_0_30px_rgba(0,0,0,0.05)] transform transition-transform duration-300 ease-in-out z-[100] flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'}`} style={{ width: '100%', maxWidth: '500px' }}>
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-[rgba(212,175,55,0.15)] bg-[rgba(212,175,55,0.02)] backdrop-blur-md">
+      <div className="flex items-center justify-between border-b border-[#e8eada] bg-[#FAF9F6]" style={{ padding: '24px' }}>
         <div className="flex items-center gap-3">
           {lead.companyLogoUrl && (
             <div className="w-10 h-10 bg-white rounded-full p-1 flex items-center justify-center shrink-0 shadow-md">
@@ -69,21 +70,21 @@ export default function CommunicationSlideOut({ isOpen, onClose, lead, onSaveNot
             </div>
           )}
           <div>
-            <h2 className="text-lg font-bold text-white">{lead.companyName}</h2>
-            <p className="text-sm text-neutral-400">{lead.contactName} • {lead.contactEmail}</p>
+            <h2 className="text-lg font-bold text-[#0a120e]">{lead.companyName}</h2>
+            <p className="text-sm text-neutral-500">{lead.contactName} • {lead.contactEmail}</p>
           </div>
         </div>
-        <button onClick={onClose} className="p-2 text-neutral-400 hover:text-white rounded-full hover:bg-[rgba(255,255,255,0.1)] transition-colors">
+        <button onClick={onClose} className="p-2 text-neutral-400 hover:text-[#0a120e] rounded-full hover:bg-neutral-100 transition-colors">
           <X className="w-5 h-5" />
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-6" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(212,175,55,0.3) transparent' }}>
+      <div className="flex-1 overflow-y-auto space-y-8" style={{ padding: '32px', scrollbarWidth: 'thin', scrollbarColor: 'rgba(212,175,55,0.3) transparent' }}>
         {/* Internal Notes Section */}
         <section>
-          <label className="block text-sm font-medium text-neutral-300 mb-2">Internal Scratchpad</label>
+          <label className="block text-sm font-bold text-[#0a120e] mb-2">Internal Scratchpad</label>
           <textarea
-            className="w-full h-32 p-3 border border-[rgba(212,175,55,0.2)] rounded-lg text-sm focus:ring-2 focus:ring-[var(--gold)] bg-[#13241b] text-white resize-none shadow-inner outline-none transition-all"
+            className="w-full h-32 p-3 border border-[#e8eada] rounded-lg text-sm focus:ring-2 focus:ring-[var(--gold)] bg-[#FAF9F6] text-[#0a120e] resize-none shadow-sm outline-none transition-all"
             placeholder="Jot down notes from calls, preferences, e.g. 'Loves the 8am shotgun start idea'..."
             value={internalNote}
             onChange={(e) => setInternalNote(e.target.value)}
@@ -92,7 +93,7 @@ export default function CommunicationSlideOut({ isOpen, onClose, lead, onSaveNot
             <button
               onClick={handleSaveNote}
               disabled={isSaving}
-              className="text-xs font-bold tracking-wide text-[var(--gold)] bg-[rgba(212,175,55,0.1)] border border-[rgba(212,175,55,0.3)] hover:bg-[rgba(212,175,55,0.2)] px-3 py-1.5 rounded-md transition-colors"
+              className="text-xs font-bold tracking-wide text-[var(--gold)] bg-white border border-[#e8eada] hover:bg-[#FAF9F6] px-3 py-1.5 rounded-md transition-colors shadow-sm"
             >
               {isSaving ? 'Saving...' : 'Save Note'}
             </button>
@@ -100,10 +101,10 @@ export default function CommunicationSlideOut({ isOpen, onClose, lead, onSaveNot
         </section>
 
         {/* Email Draft Section */}
-        <section className="border-t border-[rgba(212,175,55,0.15)] pt-6">
+        <section className="border-t border-[#e8eada] pt-6">
           <div className="flex items-center gap-2 mb-4">
             <Mail className="w-4 h-4 text-[var(--gold)]" />
-            <h3 className="text-sm font-bold text-white uppercase tracking-wider">Email Connect</h3>
+            <h3 className="text-sm font-bold text-[#0a120e] uppercase tracking-wider">Email Connect</h3>
           </div>
           
           <div className="space-y-3">
@@ -113,7 +114,7 @@ export default function CommunicationSlideOut({ isOpen, onClose, lead, onSaveNot
                 type="text"
                 disabled
                 value={lead.contactEmail || `Missing email for ${lead.contactName || 'contact'}`}
-                className="w-full bg-[#071510] border border-[rgba(212,175,55,0.1)] rounded-md px-3 py-2 text-sm text-neutral-500 outline-none cursor-not-allowed"
+                className="w-full bg-neutral-50 border border-[#e8eada] rounded-md px-3 py-2 text-sm text-neutral-500 outline-none cursor-not-allowed"
               />
             </div>
             <div>
@@ -122,7 +123,7 @@ export default function CommunicationSlideOut({ isOpen, onClose, lead, onSaveNot
                 type="text"
                 value={emailSubject}
                 onChange={(e) => setEmailSubject(e.target.value)}
-                className="w-full bg-[#13241b] text-white border border-[rgba(212,175,55,0.2)] rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-[var(--gold)] outline-none transition-all"
+                className="w-full bg-white border border-[#e8eada] rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-[var(--gold)] outline-none transition-all"
               />
             </div>
             <div>
@@ -130,7 +131,7 @@ export default function CommunicationSlideOut({ isOpen, onClose, lead, onSaveNot
               <textarea
                 value={emailBody}
                 onChange={(e) => setEmailBody(e.target.value)}
-                className="w-full h-48 p-3 bg-[#13241b] text-white border border-[rgba(212,175,55,0.2)] rounded-md text-sm focus:ring-1 focus:ring-[var(--gold)] resize-none outline-none transition-all"
+                className="w-full h-48 p-3 bg-white border border-[#e8eada] rounded-md text-sm focus:ring-1 focus:ring-[var(--gold)] resize-none outline-none transition-all"
               />
             </div>
           </div>
@@ -139,20 +140,20 @@ export default function CommunicationSlideOut({ isOpen, onClose, lead, onSaveNot
             {/* Quick Contract Injection Buttons */}
             <div className="flex items-center gap-3">
                <button 
-                  onClick={() => setEmailBody(prev => prev + '\n\nPay via Stripe (CC): [Stripe Payment Link]')}
-                  className="flex items-center gap-2 px-3 py-1.5 bg-[rgba(99,91,255,0.15)] hover:bg-[rgba(99,91,255,0.3)] border border-[rgba(99,91,255,0.3)] text-[#a39eff] text-xs font-bold rounded-md transition-colors"
+                  onClick={() => setEmailBody(prev => prev + '\n\nPitch Deck: [Link]')}
+                  className="flex items-center gap-2 px-3 py-2 bg-white border border-[#e8eada] shadow-sm text-neutral-500 rounded-lg hover:text-[var(--gold)] transition-colors text-xs font-semibold"
                >
-                 <CreditCard className="w-3.5 h-3.5" /> Inject Stripe Invoice
+                 <LinkIcon className="w-4 h-4" /> Pitch Link
                </button>
                <button 
-                  onClick={() => setEmailBody(prev => prev + '\n\nPay via PayPal (0-Fee Bank Transfer): [PayPal Push Link]')}
-                  className="flex items-center gap-2 px-3 py-1.5 bg-[rgba(0,121,193,0.15)] hover:bg-[rgba(0,121,193,0.3)] border border-[rgba(0,121,193,0.3)] text-[#33a8ff] text-xs font-bold rounded-md transition-colors"
+                  onClick={() => setEmailBody(prev => prev + '\n\nPay via Stripe: [Link]')}
+                  className="flex items-center gap-2 px-3 py-2 bg-white border border-[#e8eada] shadow-sm text-[#2ecc71] rounded-lg hover:bg-[rgba(46,204,113,0.1)] transition-colors text-xs font-semibold"
                >
-                 <LinkIcon className="w-3.5 h-3.5" /> Inject 0-Fee PayPal
+                 <CreditCard className="w-4 h-4" /> Payment Link
                </button>
             </div>
 
-            <div className="flex justify-end pt-2 border-t border-[rgba(212,175,55,0.1)]">
+            <div className="flex justify-end pt-2 border-t border-[#e8eada]">
               <button
                 onClick={handleSendEmail}
                 className="flex items-center gap-2 bg-[var(--gold)] hover:bg-[#b5952d] text-black px-5 py-2.5 rounded-lg text-sm font-extrabold tracking-wider transition-all shadow-[0_0_15px_rgba(212,175,55,0.4)] hover:scale-105"
@@ -162,6 +163,24 @@ export default function CommunicationSlideOut({ isOpen, onClose, lead, onSaveNot
             </div>
           </div>
         </section>
+
+        {/* Footer Controls */}
+        <div className="p-6 border-t border-[#e8eada] bg-[#FAF9F6] flex items-center justify-between shrink-0 shadow-[0_-10px_30px_rgba(0,0,0,0.02)]">
+          {onDeleteLead && (
+            <button 
+              onClick={() => onDeleteLead(lead.id)}
+              className="flex items-center gap-2 px-4 py-2 text-red-500 font-bold hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100 text-sm"
+            >
+              <Trash2 className="w-5 h-5" />
+              Remove Sponsor Lead
+            </button>
+          )}
+          <div className="flex items-center gap-2 text-xs font-bold text-neutral-400 uppercase tracking-widest ml-auto">
+            <span>In Pipeline</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#2ecc71] shadow-[0_0_8px_rgba(46,204,113,0.8)]"></span>
+          </div>
+        </div>
+
       </div>
     </div>
   );

@@ -44,7 +44,7 @@ export async function POST(req: Request) {
     {
       userId: currentUser.id,
       companyName: 'Lexus Corporate',
-      companyLogoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Lexus_logo.svg/512px-Lexus_logo.svg.png',
+      companyLogoUrl: '/logos/lexus.svg',
       isFranchise: false,
       locationName: 'North America',
       industrySegment: 'Automotive',
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
     {
       userId: currentUser.id,
       companyName: 'Lexus of Austin',
-      companyLogoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Lexus_logo.svg/512px-Lexus_logo.svg.png',
+      companyLogoUrl: '/logos/lexus.svg',
       isFranchise: true,
       locationName: 'Austin, TX',
       industrySegment: 'Automotive',
@@ -62,7 +62,7 @@ export async function POST(req: Request) {
     {
       userId: currentUser.id,
       companyName: 'Titleist',
-      companyLogoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Titleist_logo.svg/512px-Titleist_logo.svg.png',
+      companyLogoUrl: '/logos/titleist.svg',
       isFranchise: false,
       locationName: 'Global HQ',
       industrySegment: 'Golf Equipment',
@@ -70,11 +70,11 @@ export async function POST(req: Request) {
     },
     {
       userId: currentUser.id,
-      companyName: 'Barton Creek Bank',
-      companyLogoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Bank_of_America_logo.svg/512px-Bank_of_America_logo.svg.png',
+      companyName: 'Rolex Corporation',
+      companyLogoUrl: '/logos/rolex.svg',
       isFranchise: false,
-      locationName: 'Austin Local',
-      industrySegment: 'Financial Services',
+      locationName: 'Geneva, Switzerland',
+      industrySegment: 'Luxury Goods',
       proNetworkId: 1
     }
   ];

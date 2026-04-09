@@ -28,46 +28,57 @@ export default function SponsorCard({ id, lead, onClickOut }: SponsorCardProps) 
     ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(lead.expectedValue / 100)
     : 'TBD';
 
+    const logoToRender = lead.companyName?.includes('Lexus') ? '/logos/lexus.svg' :
+                         lead.companyName?.includes('Titleist') ? '/logos/titleist.svg' :
+                         (lead.companyName?.includes('Barton') || lead.companyName?.includes('Rolex')) ? '/logos/rolex.svg' :
+                         lead.companyLogoUrl;
+
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className={`relative group bg-[#0A120E] border rounded-xl p-4 shadow-[0_4px_12px_rgba(0,0,0,0.8)] transition-all ${
-        isDragging ? 'opacity-80 border-[var(--gold)] scale-105 z-50' : 'border-[rgba(212,175,55,0.2)] opacity-100 hover:border-[rgba(212,175,55,0.5)]'
+      className={`relative group bg-white rounded-2xl p-6 shadow-sm transition-all mb-4 border ${
+        isDragging ? 'opacity-90 border-[var(--gold)] scale-105 z-50 shadow-md' : 'border-[#e8eada] opacity-100 hover:border-[rgba(212,175,55,0.4)] hover:shadow-md'
       }`}
     >
       {/* Drag Handle */}
       <div 
         {...attributes} 
         {...listeners}
-        className="absolute top-3 right-3 p-1.5 text-[rgba(212,175,55,0.4)] hover:text-[var(--gold)] hover:bg-[rgba(212,175,55,0.1)] rounded-md cursor-grab active:cursor-grabbing transition-colors"
+        className="absolute top-4 right-4 p-2 text-neutral-300 hover:text-[var(--gold)] hover:bg-[#FAF9F6] rounded-lg cursor-grab active:cursor-grabbing transition-colors"
       >
-        <GripVertical className="w-4 h-4" />
+        <GripVertical className="w-5 h-5" />
       </div>
 
       <div 
-        className="cursor-pointer pr-8"
+        className="cursor-pointer pr-10"
         onClick={() => onClickOut(lead)}
       >
-        <div className="flex items-center gap-2 mb-2">
-          <div className="w-8 h-8 rounded-full bg-[rgba(212,175,55,0.1)] border border-[rgba(212,175,55,0.2)] flex items-center justify-center text-[var(--gold)]">
-            <Building2 className="w-4 h-4" />
-          </div>
+        <div className="flex items-center gap-4 mb-4">
+          {logoToRender ? (
+            <div className="w-12 h-12 rounded-full bg-white p-2 border border-neutral-100 shadow-sm flex items-center justify-center shrink-0">
+               <img src={logoToRender} alt="Logo" className="w-full h-full object-contain" />
+            </div>
+          ) : (
+            <div className="w-12 h-12 rounded-full bg-[#FAF9F6] border border-[#e8eada] flex items-center justify-center text-neutral-400 shrink-0 shadow-sm">
+              <Building2 className="w-5 h-5" />
+            </div>
+          )}
           <div>
-            <h4 className="font-bold text-white text-[0.9rem] leading-tight" style={{ fontFamily: "'DM Sans', sans-serif" }}>{lead.companyName}</h4>
-            {lead.contactName && <p className="text-xs text-[var(--mist)] mt-0.5">{lead.contactName}</p>}
+            <h4 className="text-xl font-bold text-[#0a120e] tracking-wide" style={{ fontFamily: 'var(--font-serif), var(--font-cinzel), serif' }}>{lead.companyName}</h4>
+            {lead.contactName && <p className="text-xs font-semibold text-neutral-500 uppercase tracking-widest mt-1">{lead.contactName}</p>}
           </div>
         </div>
 
-        <div className="flex items-center gap-4 mt-4 pt-4 border-t border-[rgba(212,175,55,0.1)]">
-          <div className="flex items-center gap-1.5 text-xs font-bold text-[#fafaf5] bg-[rgba(212,175,55,0.15)] border border-[rgba(212,175,55,0.3)] px-2.5 py-1 rounded-md drop-shadow-md">
+        <div className="flex items-center gap-4 pt-5 mt-1 border-t border-[#e8eada]">
+          <div className="flex items-center gap-2 text-sm font-bold text-[#0a120e] bg-white border border-[#e8eada] px-3 py-1.5 rounded-lg shadow-sm tracking-wider">
             <DollarSign className="w-3.5 h-3.5 text-[var(--gold)]" />
             {formattedValue}
           </div>
           {lead.notes && (
-            <div className="text-xs text-[var(--mist)] flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--amber)] shadow-[0_0_8px_rgba(215,160,34,0.8)]"></span>
-              Has Notes
+            <div className="text-xs text-neutral-500 flex items-center gap-1.5 font-medium ml-auto">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#f39c12] shadow-[0_0_8px_rgba(243,156,18,0.8)]"></span>
+              Notes
             </div>
           )}
         </div>

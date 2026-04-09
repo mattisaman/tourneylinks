@@ -3,6 +3,7 @@ import { db, tournaments, users } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/auth-util';
+import AdminSidebar from '@/components/admin/AdminSidebar';
 
 export default async function TournamentSecurityLayout({ 
     children, 
@@ -40,5 +41,14 @@ export default async function TournamentSecurityLayout({
     }
 
     // 6. Security clearance granted, render the actual dashboard page underneath
-    return <>{children}</>;
+    const mockTournaments = [{ id: tId, name: tourney.name }];
+    
+    return (
+        <div className="flex h-screen bg-[#050b08] relative overflow-hidden" style={{ paddingTop: '90px' }}>
+           <AdminSidebar tournamentId={tId} mockTournaments={mockTournaments} />
+           <div className="flex-1 flex flex-col relative h-full overflow-y-auto bg-[#FDFBF7] rounded-tl-3xl shadow-[-10px_0_40px_rgba(0,0,0,0.5)]">
+               {children}
+           </div>
+        </div>
+    );
 }
