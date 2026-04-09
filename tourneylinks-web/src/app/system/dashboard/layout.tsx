@@ -2,7 +2,7 @@ import React from 'react';
 import { currentUser } from '@clerk/nextjs/server';
 import { redirect, notFound } from 'next/navigation';
 import Link from 'next/link';
-import { Activity, DollarSign, Database, ShieldCheck, Globe } from 'lucide-react';
+import { Activity, DollarSign, Database, ShieldCheck, Globe, Target } from 'lucide-react';
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   // Security Layer: Enterprise Clerk Whitelist Authentication
@@ -39,6 +39,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           <NavLink href="/system/dashboard/financials" icon={<DollarSign size={18}/>} label="Financial Forensics" />
           <NavLink href="/system/dashboard/quality" icon={<ShieldCheck size={18}/>} label="Quality Control" />
           <NavLink href="/system/dashboard/courses" icon={<Database size={18}/>} label="Course DB Metrics" />
+          <NavLink href="/system/dashboard/acquisition" icon={<Target size={18} color="var(--gold)" />} label="M&A Trajectory" />
         </div>
 
         <div style={{ marginTop: 'auto', padding: '1.5rem', borderTop: '1px solid #222' }}>
