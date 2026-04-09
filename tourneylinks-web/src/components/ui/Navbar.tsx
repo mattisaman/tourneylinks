@@ -23,12 +23,12 @@ export default function Navbar() {
     color: '#D4AF37',
     border: '1px solid rgba(212,175,55,0.6)',
     boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-    padding: '0.3rem 0.75rem',
+    padding: '0.25rem 0.6rem',
     borderRadius: '100px',
     textDecoration: 'none',
-    fontSize: '0.8rem',
+    fontSize: '0.75rem',
     fontWeight: 600,
-    letterSpacing: '0.04em',
+    letterSpacing: '0.02em',
     transition: 'all 0.3s ease',
     display: 'inline-flex',
     alignItems: 'center',
@@ -59,21 +59,21 @@ export default function Navbar() {
         }
       `}} />
       <div className="site-header" style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1000, background: navbarBackground, borderBottom: isHubPage ? '1px solid rgba(212,175,55,0.1)' : 'none', boxShadow: isHubPage ? '0 4px 24px rgba(0,0,0,0.4)' : 'none' }}>
-        <nav style={{ background: 'transparent', backgroundImage: 'none', backgroundColor: 'transparent', borderBottom: 'none', paddingBottom: '1rem', flexWrap: 'nowrap' }}>
+        <nav style={{ background: 'transparent', backgroundImage: 'none', backgroundColor: 'transparent', borderBottom: 'none', paddingBottom: '1rem', flexWrap: 'nowrap', display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingLeft: '1.5rem', paddingRight: '1.5rem', width: '100%' }}>
           <Link className="nav-logo" href="/" style={{ flexShrink: 0 }}>
-             <img src="/logo_horizontal_transparent.png" alt="TourneyLinks Logo" style={{ width: '220px', height: 'auto', objectFit: 'contain', margin: '4px 0 0 0' }} />
+             <img src="/logo_horizontal_transparent.png" alt="TourneyLinks Logo" style={{ width: '180px', height: 'auto', objectFit: 'contain', margin: '4px 0 0 0' }} />
           </Link>
           
           {/* INLINE PAGE NAVIGATION TABS */}
-          <div className="hidden lg:flex" style={{ gap: '0.5rem' }}>
-            <Link href="/" className={`page-tab ${pathname === '/' ? 'active' : ''}`} style={{ background: 'transparent', borderBottom: pathname === '/' ? '2px solid var(--gold)' : '2px solid transparent' }}>🏠 Home</Link>
-            <Link href="/tournaments" className={`page-tab ${pathname?.startsWith('/tournaments') ? 'active' : ''}`} style={{ background: 'transparent', borderBottom: pathname?.startsWith('/tournaments') ? '2px solid var(--gold)' : '2px solid transparent' }}>🏆 Find Tournaments</Link>
-            <Link href="/host" className={`page-tab ${pathname?.startsWith('/host') ? 'active' : ''}`} style={{ background: 'transparent', borderBottom: pathname?.startsWith('/host') ? '2px solid var(--gold)' : '2px solid transparent' }}>🚀 Host an Event</Link>
-            <Link href="/courses" className={`page-tab ${pathname?.startsWith('/courses') ? 'active' : ''}`} style={{ background: 'transparent', borderBottom: pathname?.startsWith('/courses') ? '2px solid var(--gold)' : '2px solid transparent' }}>⛳ Course Database</Link>
-            <Link href="/sponsors" className={`page-tab ${pathname?.startsWith('/sponsors') ? 'active' : ''}`} style={{ background: 'transparent', borderBottom: pathname?.startsWith('/sponsors') ? '2px solid var(--gold)' : '2px solid transparent' }}>🤝 Sponsors</Link>
+          <div className="hidden xl:flex items-center" style={{ gap: '0.25rem', fontSize: '0.85rem' }}>
+            <Link href="/" className={`page-tab ${pathname === '/' ? 'active' : ''}`} style={{ background: 'transparent', borderBottom: pathname === '/' ? '2px solid var(--gold)' : '2px solid transparent', padding: '0.5rem 0.5rem', whiteSpace: 'nowrap' }}>🏠 Home</Link>
+            <Link href="/tournaments" className={`page-tab ${pathname?.startsWith('/tournaments') ? 'active' : ''}`} style={{ background: 'transparent', borderBottom: pathname?.startsWith('/tournaments') ? '2px solid var(--gold)' : '2px solid transparent', padding: '0.5rem 0.5rem', whiteSpace: 'nowrap' }}>🏆 Tournaments</Link>
+            <Link href="/host" className={`page-tab ${pathname?.startsWith('/host') ? 'active' : ''}`} style={{ background: 'transparent', borderBottom: pathname?.startsWith('/host') ? '2px solid var(--gold)' : '2px solid transparent', padding: '0.5rem 0.5rem', whiteSpace: 'nowrap' }}>🚀 Host Event</Link>
+            <Link href="/courses" className={`page-tab ${pathname?.startsWith('/courses') ? 'active' : ''}`} style={{ background: 'transparent', borderBottom: pathname?.startsWith('/courses') ? '2px solid var(--gold)' : '2px solid transparent', padding: '0.5rem 0.5rem', whiteSpace: 'nowrap' }}>⛳ Courses</Link>
+            <Link href="/sponsors" className={`page-tab ${pathname?.startsWith('/sponsors') ? 'active' : ''}`} style={{ background: 'transparent', borderBottom: pathname?.startsWith('/sponsors') ? '2px solid var(--gold)' : '2px solid transparent', padding: '0.5rem 0.5rem', whiteSpace: 'nowrap' }}>🤝 Sponsors</Link>
           </div>
 
-        <div className="nav-actions">
+        <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
           {/* Mobile Hamburg Toggle */}
           <button className="flex md:hidden items-center" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} style={{ background: 'none', border: 'none', color: 'var(--gold)', cursor: 'pointer', marginRight: '0.75rem' }}>
             {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
@@ -89,13 +89,13 @@ export default function Navbar() {
           ) : (
             <>
               {showHubs && (
-                <div className="hidden md:flex" style={{ gap: '0.4rem', marginRight: '1rem', alignItems: 'center', flexShrink: 0 }}>
+                <div className="hidden lg:flex" style={{ gap: '0.3rem', marginRight: '0.8rem', alignItems: 'center', flexShrink: 0 }}>
                   <Link href="/admin" style={goldFoilStyle} onMouseOver={e => e.currentTarget.style.filter = 'brightness(1.1) drop-shadow(0 4px 12px rgba(212,175,55,0.6))'} onMouseOut={e => e.currentTarget.style.filter = 'none'}>Host Hub</Link>
                   <Link href="/courses/dashboard" style={goldFoilStyle} onMouseOver={e => e.currentTarget.style.filter = 'brightness(1.1) drop-shadow(0 4px 12px rgba(212,175,55,0.6))'} onMouseOut={e => e.currentTarget.style.filter = 'none'}>Pro Hub</Link>
                   <Link href="/sponsor/dashboard" style={goldFoilStyle} onMouseOver={e => e.currentTarget.style.filter = 'brightness(1.1) drop-shadow(0 4px 12px rgba(212,175,55,0.6))'} onMouseOut={e => e.currentTarget.style.filter = 'none'}>Sponsor Hub</Link>
                 </div>
               )}
-              <Link href="/profile" className="profile-link" style={{ marginRight: '0.8rem', color: '#f5f2ed', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600, flexShrink: 0 }}>My Profile</Link>
+              <Link href="/profile" className="profile-link hidden sm:block" style={{ marginRight: '0.8rem', color: '#f5f2ed', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600, flexShrink: 0, whiteSpace: 'nowrap' }}>My Profile</Link>
               <UserButton 
                 appearance={{
                   elements: {

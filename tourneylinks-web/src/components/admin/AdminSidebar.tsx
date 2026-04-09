@@ -87,6 +87,7 @@ export default function AdminSidebar({ tournamentId, mockTournaments }: { tourna
           <a href="#flights" onClick={(e) => navClick('flights', e)} style={getNavStyle('flights')}><span>🏌️</span> Flight Builder</a>
 
           <div className="dash-section-label" style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '2rem', marginBottom: '0.8rem', paddingLeft: '1rem' }}>Sponsors & Revenue</div>
+          <Link href={`/host/crm?tournamentId=${tournamentId}`} style={{ ...getNavStyle('crm'), color: 'rgba(212,175,55,0.9)', borderLeft: '4px solid transparent' }}><span>💼</span> Sponsor CRM Tracker</Link>
           <Link href={`/admin/tournaments/${tournamentId}/payments`} style={{ ...getNavStyle('payments'), color: 'rgba(255,255,255,0.5)', borderLeft: '4px solid transparent' }}><span>💰</span> Financial Ledger</Link>
           <Link href={`/admin/tournaments/${tournamentId}/store`} style={{ ...getNavStyle('store'), color: 'rgba(255,255,255,0.5)', borderLeft: '4px solid transparent' }}><span>🛍️</span> Swag Store Items</Link>
           <a href="#sponsor" onClick={(e) => navClick('sponsor', e)} style={getNavStyle('sponsor')}><span>🤝</span> Sponsorship Grid</a>

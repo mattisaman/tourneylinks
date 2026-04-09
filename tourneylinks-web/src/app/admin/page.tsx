@@ -99,7 +99,7 @@ export default async function AdminDashboard() {
   }
 
   return (
-    <div style={{ minHeight: 'calc(100vh - 80px)' }}>
+    <div style={{ minHeight: 'calc(100vh - 80px)', paddingTop: '90px' }}>
       <div className="dashboard-wrap" style={{ minHeight: '100%' }}>
         {/* ScrollSpy Sidebar Engine */}
         <AdminSidebar tournamentId={tournamentId} mockTournaments={mockTournaments} />
@@ -112,6 +112,7 @@ export default async function AdminDashboard() {
               <div className="dash-date">{finalTourney ? `${new Date(finalTourney.dateStart).toLocaleDateString()} · ${finalTourney.courseName}` : 'Date TBD'}</div>
             </div>
             <div style={{ display: 'flex', gap: '0.75rem' }}>
+              <Link href={`/host/crm?tournamentId=${tournamentId}`} className="btn-primary" style={{ background: 'rgba(212,175,55,0.1)', color: 'var(--gold)', border: '1px solid currentColor' }}>💼 Sponsor CRM Tracker</Link>
               <Link href={`/admin/tournaments/${tournamentId}/print`} className="btn-primary" style={{ background: '#000', color: '#fff', border: 'none' }}>🖨️ Print & Post Hub</Link>
               <Link href={`/host?tournamentId=${tournamentId}`} className="btn-ghost" style={{ color: 'var(--forest)', borderColor: 'rgba(26,46,26,0.2)' }}>✏️ Edit Campaign</Link>
               <button className="btn-primary">📢 Send Notification</button>

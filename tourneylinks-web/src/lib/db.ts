@@ -277,6 +277,20 @@ export const sponsorship_purchases = pgTable('sponsorship_purchases', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+export const sponsor_leads = pgTable('sponsor_leads', {
+  id: serial('id').primaryKey(),
+  tournamentId: integer('tournament_id').references(() => tournaments.id, { onDelete: 'cascade' }).notNull(),
+  companyName: text('company_name').notNull(),
+  contactName: text('contact_name'),
+  contactEmail: text('contact_email'),
+  contactPhone: text('contact_phone'),
+  status: text('status').default('TO_CONTACT').notNull(), // 'TO_CONTACT', 'WAITING', 'IN_CONVERSATION', 'COMMITTED', 'DECLINED'
+  notes: text('notes'),
+  expectedValue: integer('expected_value'), // in cents
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
 const globalForDb = globalThis as unknown as {
   pool: pg.Pool | undefined;
 };
