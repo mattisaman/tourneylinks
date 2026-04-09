@@ -1866,6 +1866,7 @@ export default function HostLiveCampaignBuilder() {
                    </div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                    <button style={{ width: '100%', padding: '0.9rem', background: '#ffc439', color: '#003087', fontWeight: 900, border: '1px solid #f2b724', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', transition: '0.2s', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}>Pay with PayPal (0% Fee)</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: '#000', color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', transition: '0.2s', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}>Pay With Credit Card</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: '#000', color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '1.05rem' }}>
                       <span style={{ fontSize: '1.2rem', marginRight: '4px', marginBottom: '2px' }}></span> Pay
@@ -1982,6 +1983,7 @@ export default function HostLiveCampaignBuilder() {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                    <button style={{ width: '100%', padding: '0.9rem', background: '#ffc439', color: '#003087', fontWeight: 900, border: '1px solid #f2b724', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', transition: '0.2s', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}>Pay with PayPal (0% Fee)</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: '#000', color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', transition: '0.2s', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}>Pay With Credit Card</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: '#000', color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '1.05rem' }}>
                       <span style={{ fontSize: '1.2rem', marginRight: '4px', marginBottom: '2px' }}></span> Pay
@@ -2093,6 +2095,7 @@ export default function HostLiveCampaignBuilder() {
                 )}
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                    <button style={{ width: '100%', padding: '0.9rem', background: '#ffc439', color: '#003087', fontWeight: 900, border: '1px solid #f2b724', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', transition: '0.2s', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}>Pay with PayPal (0% Fee)</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: '#000', color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', transition: '0.2s', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}>Pay With Credit Card</button>
                    <button style={{ width: '100%', padding: '0.9rem', background: '#000', color: '#fff', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '1.05rem' }}>
                       <span style={{ fontSize: '1.2rem', marginRight: '4px', marginBottom: '2px' }}></span> Pay

@@ -68,7 +68,7 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <body
           className={`${dmSans.variable} ${playfair.variable} ${dmMono.variable} ${greatVibes.variable} ${cinzel.variable} ${cormorant.variable} antialiased font-sans`}
         >

@@ -70,6 +70,7 @@ export default function Navbar() {
             <Link href="/tournaments" className={`page-tab ${pathname?.startsWith('/tournaments') ? 'active' : ''}`} style={{ background: 'transparent', borderBottom: pathname?.startsWith('/tournaments') ? '2px solid var(--gold)' : '2px solid transparent' }}>🏆 Find Tournaments</Link>
             <Link href="/host" className={`page-tab ${pathname?.startsWith('/host') ? 'active' : ''}`} style={{ background: 'transparent', borderBottom: pathname?.startsWith('/host') ? '2px solid var(--gold)' : '2px solid transparent' }}>🚀 Host an Event</Link>
             <Link href="/courses" className={`page-tab ${pathname?.startsWith('/courses') ? 'active' : ''}`} style={{ background: 'transparent', borderBottom: pathname?.startsWith('/courses') ? '2px solid var(--gold)' : '2px solid transparent' }}>⛳ Course Database</Link>
+            <Link href="/sponsors" className={`page-tab ${pathname?.startsWith('/sponsors') ? 'active' : ''}`} style={{ background: 'transparent', borderBottom: pathname?.startsWith('/sponsors') ? '2px solid var(--gold)' : '2px solid transparent' }}>🤝 Sponsors</Link>
           </div>
 
         <div className="nav-actions">

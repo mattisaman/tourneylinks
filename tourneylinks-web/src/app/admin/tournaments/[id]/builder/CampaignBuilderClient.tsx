@@ -73,8 +73,24 @@ export default function CampaignBuilderClient({ initialTournament, initialCourse
               <div>
                  <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink)', display: 'block', marginBottom: '0.5rem' }}>Allowed Checkout Methods</label>
                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}><input type="checkbox" checked={true} readOnly /> Valid Credit/Debit (Stripe API)</label>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}><input type="checkbox" checked={tourneyData.allowOfflinePayment} onChange={e => setTourneyData({...tourneyData, allowOfflinePayment: e.target.checked})} /> Commit to Post-Dated Check / Cash On-Arrival</label>
+                    
+                    {/* PRIMARY: PAYPAL GIVING FUND */}
+                    <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.8rem', background: '#eaf4ff', border: '1px solid #c2deff', borderRadius: '8px', cursor: 'pointer' }}>
+                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                           <input type="checkbox" checked={true} readOnly /> 
+                           <div>
+                              <div style={{ fontWeight: 800, color: '#003087', fontSize: '0.95rem' }}>PayPal Giving Fund</div>
+                              <div style={{ fontSize: '0.75rem', color: '#005ea6', marginTop: '0.1rem' }}>Funds deposit instantly with 0% processing fees.</div>
+                           </div>
+                       </div>
+                       <div style={{ background: '#003087', color: '#fff', fontSize: '0.7rem', fontWeight: 800, padding: '0.2rem 0.5rem', borderRadius: '4px' }}>RECOMMENDED</div>
+                    </label>
+
+                    {/* SECONDARY: STRIPE */}
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', opacity: 0.8 }}><input type="checkbox" checked={true} readOnly /> Valid Credit/Debit (Stripe API Flow)</label>
+                    
+                    {/* FALLBACK: OFFLINE */}
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', opacity: 0.8 }}><input type="checkbox" checked={tourneyData.allowOfflinePayment} onChange={e => setTourneyData({...tourneyData, allowOfflinePayment: e.target.checked})} /> Commit to Post-Dated Check / Cash On-Arrival</label>
                  </div>
               </div>
 
@@ -198,11 +214,14 @@ export default function CampaignBuilderClient({ initialTournament, initialCourse
                          </div>
 
                          <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                            <button style={{ width: '100%', padding: '1.2rem', background: '#05120c', color: 'var(--gold)', borderRadius: '12px', fontWeight: 800, fontSize: '1.1rem', border: 'none' }}>
-                               Pay ${(tourneyData.entryFee + totalCart).toFixed(2)} Now
+                            <button style={{ width: '100%', padding: '1.2rem', background: '#ffc439', color: '#003087', borderRadius: '12px', fontWeight: 900, fontSize: '1.1rem', border: '1px solid #f2b724' }}>
+                               Pay ${(tourneyData.entryFee + totalCart).toFixed(2)} with PayPal
+                            </button>
+                            <button style={{ width: '100%', padding: '0.8rem', background: '#05120c', color: 'var(--gold)', borderRadius: '12px', fontWeight: 700, fontSize: '0.9rem', border: 'none' }}>
+                               Pay with Credit/Debit (Stripe)
                             </button>
                             {tourneyData.allowOfflinePayment && (
-                                <button style={{ width: '100%', padding: '1rem', background: 'transparent', color: 'var(--ink)', borderRadius: '12px', fontWeight: 700, fontSize: '0.9rem', border: '1px solid rgba(0,0,0,0.1)' }}>
+                                <button style={{ width: '100%', padding: '0.8rem', background: 'transparent', color: 'var(--ink)', borderRadius: '12px', fontWeight: 700, fontSize: '0.9rem', border: '1px solid rgba(0,0,0,0.1)' }}>
                                     Commit to Mail Check / Pay Cash
                                 </button>
                             )}
@@ -220,9 +239,14 @@ export default function CampaignBuilderClient({ initialTournament, initialCourse
                       <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🤝</div>
                       <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--ink)', marginBottom: '0.5rem' }}>Secure Sponsorship</h2>
                       <p style={{ color: 'var(--mist)', fontSize: '0.9rem', lineHeight: 1.6, marginBottom: '2rem' }}>
-                         The company will upload their high-res logo file and select their tier. They will then immediately push funds mapping straight to your Organizer Stripe Vault.
+                         The company will upload their high-res logo file and select their tier. They will then immediately push funds mapping straight to your PayPal Giving Fund charitable vault, with zero processing fees.
                       </p>
-                      <button style={{ width: '100%', padding: '1.2rem', background: '#05120c', color: '#fff', borderRadius: '12px', fontWeight: 800, border: 'none' }}>Pledge $2,500.00 via Stripe</button>
+                      <button style={{ width: '100%', padding: '1.2rem', background: '#ffc439', color: '#003087', borderRadius: '12px', fontWeight: 900, border: '1px solid #f2b724', marginBottom: '0.5rem' }}>
+                         Pledge $2,500.00 via PayPal
+                      </button>
+                      <button style={{ width: '100%', padding: '0.8rem', background: '#05120c', color: '#fff', borderRadius: '12px', fontWeight: 700, border: 'none', fontSize: '0.85rem' }}>
+                         Pledge via Credit/Debit (Stripe)
+                      </button>
                  </div>
              </div>
          );
