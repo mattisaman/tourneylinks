@@ -26,14 +26,7 @@ function CRMContent() {
       <div className="flex-1 flex flex-col relative h-full overflow-hidden bg-[#FDFBF7] rounded-tl-3xl shadow-[-10px_0_40px_rgba(0,0,0,0.5)]">
         
         {/* 3. The Dashboard Frame */}
-        <main className="flex-1 relative z-30 w-full h-full overflow-hidden flex flex-col" style={{ padding: '56px' }}>
-          {/* Header Typography within the Dashboard */}
-          <div className="mb-6 shrink-0">
-            <h1 className="text-4xl font-bold tracking-tight text-[#0a120e]" style={{ 
-              fontFamily: 'var(--font-serif), var(--font-cinzel), serif', 
-            }}>Sponsor Pipeline Tracker</h1>
-            <p className="text-neutral-500 text-sm font-semibold mt-1 tracking-widest uppercase">Manage B2B Relationships</p>
-          </div>
+        <main className="flex-1 relative z-30 w-full h-full overflow-hidden flex flex-col" style={{ padding: '56px 56px 0 56px' }}>
 
           {/* The Kanban Board Tile Wrapper */}
           <div className="flex-1 overflow-hidden flex">

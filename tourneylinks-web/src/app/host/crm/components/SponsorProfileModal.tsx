@@ -27,7 +27,7 @@ export default function SponsorProfileModal({ brand, onClose, onAssignLead }: Sp
       <div className="absolute inset-0 bg-[#0a120e]/80 backdrop-blur-md" onClick={onClose}></div>
 
       {/* Main Modal Island */}
-      <div className="bg-[#FAF9F6] w-full max-w-[1200px] h-full max-h-[90vh] rounded-md shadow-2xl relative z-10 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-300">
+      <div className="bg-[#FAF9F6] w-full max-w-[1200px] h-full max-h-[90vh] rounded-[6px] shadow-2xl relative z-10 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-300">
         
         {/* Dynamic Hero Header */}
         <div className="relative h-[240px] md:h-[300px] shrink-0 bg-neutral-900 overflow-hidden group">
@@ -48,7 +48,7 @@ export default function SponsorProfileModal({ brand, onClose, onAssignLead }: Sp
           {/* Header Internal Title & Logo */}
           <div className="absolute bottom-0 inset-x-0 p-8 flex items-end justify-between">
             <div className="flex items-end gap-6">
-              <div className="w-28 h-28 relative bg-white rounded-md shadow-xl flex items-center justify-center p-4 border-4 border-white shrink-0 overflow-hidden">
+              <div className="w-28 h-28 relative bg-white rounded-[6px] shadow-xl flex items-center justify-center p-4 border-4 border-white shrink-0 overflow-hidden">
                 <img 
                   src={
                     brand.companyName.includes('Lexus') ? '/logos/lexus.svg' :
@@ -84,7 +84,7 @@ export default function SponsorProfileModal({ brand, onClose, onAssignLead }: Sp
             <div className="hidden md:block pb-2">
               <button 
                 onClick={() => onAssignLead(brand)}
-                className="px-8 py-3.5 bg-[var(--gold)] text-black font-extrabold text-sm rounded-md hover:scale-105 transition-transform flex items-center gap-2 shadow-[0_0_20px_rgba(212,175,55,0.4)]"
+                className="px-8 py-3.5 bg-[var(--gold)] text-black font-extrabold text-sm rounded-[6px] hover:scale-105 transition-transform flex items-center gap-2 shadow-[0_0_20px_rgba(212,175,55,0.4)]"
               >
                 <Plus className="w-5 h-5 -ml-1" /> Add Brand to Pipeline
               </button>
@@ -106,8 +106,8 @@ export default function SponsorProfileModal({ brand, onClose, onAssignLead }: Sp
              <h3 className="text-xl font-bold text-[#0a120e] mb-6">Digital Media Kit <span className="ml-2 text-xs font-bold bg-[var(--gold)] text-black px-2 py-0.5 rounded-full uppercase tracking-wider">Public</span></h3>
              
              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
-                <div className="p-5 border border-[#e8eada] bg-white rounded-md hover:border-[var(--gold)] hover:shadow-md transition-all cursor-pointer group flex items-start gap-4">
-                   <div className="w-12 h-12 bg-rose-50 text-rose-500 rounded-md flex items-center justify-center shrink-0">
+                <div className="p-5 border border-[#e8eada] bg-white rounded-[6px] hover:border-[var(--gold)] hover:shadow-md transition-all cursor-pointer group flex items-start gap-4">
+                   <div className="w-12 h-12 bg-rose-50 text-rose-500 rounded-[6px] flex items-center justify-center shrink-0">
                       <ExternalLink className="w-6 h-6" />
                    </div>
                    <div>
@@ -115,8 +115,8 @@ export default function SponsorProfileModal({ brand, onClose, onAssignLead }: Sp
                      <p className="text-xs text-neutral-400 mt-1">PDF Document · 4.2 MB</p>
                    </div>
                 </div>
-                <div className="p-5 border border-[#e8eada] bg-white rounded-md hover:border-[var(--gold)] hover:shadow-md transition-all cursor-pointer group flex items-start gap-4">
-                   <div className="w-12 h-12 bg-blue-50 text-blue-500 rounded-md flex items-center justify-center shrink-0">
+                <div className="p-5 border border-[#e8eada] bg-white rounded-[6px] hover:border-[var(--gold)] hover:shadow-md transition-all cursor-pointer group flex items-start gap-4">
+                   <div className="w-12 h-12 bg-blue-50 text-blue-500 rounded-[6px] flex items-center justify-center shrink-0">
                       <MonitorPlay className="w-6 h-6" />
                    </div>
                    <div>
@@ -124,8 +124,8 @@ export default function SponsorProfileModal({ brand, onClose, onAssignLead }: Sp
                      <p className="text-xs text-neutral-400 mt-1">Video MP4 · 2:14 runtime</p>
                    </div>
                 </div>
-                <div className="p-5 border border-[#e8eada] bg-white rounded-md hover:border-[var(--gold)] hover:shadow-md transition-all cursor-pointer group flex items-start gap-4">
-                   <div className="w-12 h-12 bg-neutral-100 text-neutral-600 rounded-md flex items-center justify-center shrink-0">
+                <div className="p-5 border border-[#e8eada] bg-white rounded-[6px] hover:border-[var(--gold)] hover:shadow-md transition-all cursor-pointer group flex items-start gap-4">
+                   <div className="w-12 h-12 bg-neutral-100 text-neutral-600 rounded-[6px] flex items-center justify-center shrink-0">
                       <DownloadCloud className="w-6 h-6" />
                    </div>
                    <div>
@@ -141,7 +141,7 @@ export default function SponsorProfileModal({ brand, onClose, onAssignLead }: Sp
             <div className="mb-8">
               <h4 className="text-xs font-bold uppercase tracking-widest text-neutral-400 mb-4">Activation Contacts</h4>
               
-              <div className="p-5 border border-[#e8eada] rounded-md bg-[#FAF9F6]">
+              <div className="p-5 border border-[#e8eada] rounded-[6px] bg-[#FAF9F6]">
                 <p className="font-extrabold text-[#0a120e] text-lg leading-tight mb-3">{brand.contactName || 'Sarah Parker'}</p>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3 text-sm font-medium text-neutral-600">
@@ -164,7 +164,7 @@ export default function SponsorProfileModal({ brand, onClose, onAssignLead }: Sp
               <h4 className="text-xs font-bold uppercase tracking-widest text-neutral-400 mb-4">Pipeline Integration</h4>
               <button 
                 onClick={() => onAssignLead(brand)}
-                className="w-full py-4 bg-[#0a120e] text-[var(--gold)] font-extrabold text-sm rounded-md hover:bg-black transition-colors flex items-center justify-center gap-2 shadow-xl"
+                className="w-full py-4 bg-[#0a120e] text-[var(--gold)] font-extrabold text-sm rounded-[6px] hover:bg-black transition-colors flex items-center justify-center gap-2 shadow-xl"
               >
                 <Plus className="w-4 h-4" /> Move to "To Contact"
               </button>

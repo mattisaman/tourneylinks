@@ -18,7 +18,7 @@ export default function SponsorPipelineColumn({ id, title, leads, onClickOut }: 
   const formattedTotal = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(columnTotal / 100);
 
   return (
-    <div className="flex flex-col flex-1 min-w-[320px] max-w-[380px] bg-[#fcfcf9] rounded-2xl overflow-hidden shadow-sm border border-[#e8eada] max-h-[85vh]">
+    <div className="flex flex-col flex-1 min-w-[320px] max-w-[380px] bg-[#fcfcf9] rounded-[6px] overflow-hidden shadow-sm border border-[#e8eada] max-h-[85vh]">
       {/* Column Header */}
       <div className="px-6 pt-6 pb-5 border-b border-[#e8eada] bg-white text-center flex flex-col items-center">
         <h3 
@@ -62,7 +62,7 @@ export default function SponsorPipelineColumn({ id, title, leads, onClickOut }: 
         </SortableContext>
         
         {leads.length === 0 && (
-          <div className="h-24 border border-dashed border-[#e8eada] rounded-xl flex flex-col items-center justify-center text-xs text-neutral-400 font-medium bg-white mb-4 shadow-sm">
+          <div className="h-24 border border-dashed border-[#e8eada] rounded-[6px] flex flex-col items-center justify-center text-xs text-neutral-400 font-medium bg-white mb-4 shadow-sm">
             <span>No leads in this stage.</span>
           </div>
         )}

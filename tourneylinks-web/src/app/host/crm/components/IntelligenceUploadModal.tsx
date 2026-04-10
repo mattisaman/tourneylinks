@@ -227,7 +227,7 @@ export default function IntelligenceUploadModal({ isOpen, onClose, tournamentId,
                       <div className="flex justify-center">
                         <button 
                           onClick={() => handleDeletePreview(preview.id)}
-                          className="p-1.5 text-neutral-300 hover:text-red-500 hover:bg-red-50 rounded-md transition-colors group"
+                          className="p-1.5 text-neutral-300 hover:text-red-500 hover:bg-red-50 rounded-[6px] transition-colors group"
                           title="Remove row"
                         >
                           <X className="w-4 h-4 group-hover:scale-110 transition-transform" />

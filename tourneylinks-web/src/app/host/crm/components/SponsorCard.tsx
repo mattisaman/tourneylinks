@@ -37,7 +37,7 @@ export default function SponsorCard({ id, lead, onClickOut }: SponsorCardProps) 
     <div
       ref={setNodeRef}
       style={style}
-      className={`relative group bg-white rounded-2xl p-6 shadow-sm transition-all mb-4 border ${
+      className={`relative group bg-white rounded-[6px] p-6 shadow-sm transition-all mb-4 border ${
         isDragging ? 'opacity-90 border-[var(--gold)] scale-105 z-50 shadow-md' : 'border-[#e8eada] opacity-100 hover:border-[rgba(212,175,55,0.4)] hover:shadow-md'
       }`}
     >
@@ -45,7 +45,7 @@ export default function SponsorCard({ id, lead, onClickOut }: SponsorCardProps) 
       <div 
         {...attributes} 
         {...listeners}
-        className="absolute top-4 right-4 p-2 text-neutral-300 hover:text-[var(--gold)] hover:bg-[#FAF9F6] rounded-lg cursor-grab active:cursor-grabbing transition-colors"
+        className="absolute top-4 right-4 p-2 text-neutral-300 hover:text-[var(--gold)] hover:bg-[#FAF9F6] rounded-[6px] cursor-grab active:cursor-grabbing transition-colors"
       >
         <GripVertical className="w-5 h-5" />
       </div>
@@ -71,7 +71,7 @@ export default function SponsorCard({ id, lead, onClickOut }: SponsorCardProps) 
         </div>
 
         <div className="flex items-center gap-4 pt-5 mt-1 border-t border-[#e8eada]">
-          <div className="flex items-center gap-2 text-sm font-bold text-[#0a120e] bg-white border border-[#e8eada] px-3 py-1.5 rounded-lg shadow-sm tracking-wider">
+          <div className="flex items-center gap-2 text-sm font-bold text-[#0a120e] bg-white border border-[#e8eada] px-3 py-1.5 rounded-[6px] shadow-sm tracking-wider">
             <DollarSign className="w-3.5 h-3.5 text-[var(--gold)]" />
             {formattedValue}
           </div>

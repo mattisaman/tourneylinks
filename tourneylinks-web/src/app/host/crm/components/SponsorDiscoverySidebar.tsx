@@ -46,13 +46,13 @@ export default function SponsorDiscoverySidebar({ onAssignLead }: DiscoverModalP
     <div className="w-[420px] lg:w-[460px] shrink-0 flex flex-col h-full bg-white z-20">
         
         {/* Top Section: Global Scratchpad (Takes roughly 1/3) */}
-        <div className="flex flex-col h-[35%] min-h-[300px] border-b border-[#e8eada] bg-[#FAF9F6] relative overflow-hidden shrink-0" style={{ padding: '36px' }}>
+        <div className="flex flex-col h-[25%] min-h-[220px] border-b border-[#e8eada] bg-[#FAF9F6] relative overflow-hidden shrink-0" style={{ padding: '24px' }}>
            {/* Ambient Lighting */}
-           <div className="absolute -top-10 -left-10 w-40 h-40 bg-[var(--gold)] opacity-10 blur-[60px] rounded-md pointer-events-none"></div>
+           <div className="absolute -top-10 -left-10 w-40 h-40 bg-[var(--gold)] opacity-10 blur-[60px] rounded-[6px] pointer-events-none"></div>
            
            <div className="flex items-center justify-between mb-4 relative z-10">
              <label className="text-sm font-bold text-[var(--gold)] uppercase tracking-widest drop-shadow-md flex items-center gap-3">
-               <div className="w-10 h-10 rounded-md bg-[rgba(212,175,55,0.15)] border border-[rgba(212,175,55,0.3)] shadow-[0_0_15px_rgba(212,175,55,0.2)] flex items-center justify-center">
+               <div className="w-10 h-10 rounded-[6px] bg-[rgba(212,175,55,0.15)] border border-[rgba(212,175,55,0.3)] shadow-[0_0_15px_rgba(212,175,55,0.2)] flex items-center justify-center">
                  <PenTool className="w-5 h-5 text-[var(--gold)]" />
                </div>
                Manager Scratchpad
@@ -60,8 +60,8 @@ export default function SponsorDiscoverySidebar({ onAssignLead }: DiscoverModalP
            </div>
            
            <textarea 
-             className="flex-1 w-full bg-white border border-[#e8eada] text-[#071510] text-[0.95rem] rounded-md resize-none focus:outline-none focus:border-[var(--gold)] focus:ring-2 focus:ring-[rgba(212,175,55,0.5)] transition-all shadow-[inset_0_2px_5px_rgba(0,0,0,0.02)] leading-relaxed font-semibold relative z-10 placeholder-neutral-400"
-             style={{ padding: '24px', scrollbarWidth: 'thin', scrollbarColor: 'rgba(212,175,55,0.3) transparent' }}
+             className="flex-1 w-full bg-white border border-[#e8eada] text-[#071510] text-[0.95rem] rounded-[6px] resize-none focus:outline-none focus:border-[var(--gold)] focus:ring-2 focus:ring-[rgba(212,175,55,0.5)] transition-all shadow-[inset_0_2px_5px_rgba(0,0,0,0.02)] leading-relaxed font-semibold relative z-10 placeholder-neutral-400"
+             style={{ padding: '16px', scrollbarWidth: 'thin', scrollbarColor: 'rgba(212,175,55,0.3) transparent' }}
              placeholder="Jot down high-level strategy, bulk negotiation notes, or ideas here..."
              defaultValue="Use this scratch pad for thoughts and ideas of who to go to. (Yes, it autosaves!)"
            />
@@ -88,7 +88,7 @@ export default function SponsorDiscoverySidebar({ onAssignLead }: DiscoverModalP
                 id="sponsor-search-input"
                 type="text" 
                 placeholder="Search brands (e.g. Lexus, Tech)..."
-                className="w-full bg-white border border-[#e8eada] text-[#0a120e] rounded-md py-4 pr-6 focus:outline-none focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] transition-all shadow-[inset_0_2px_8px_rgba(0,0,0,0.03)] placeholder-neutral-400 font-medium"
+                className="w-full bg-white border border-[#e8eada] text-[#0a120e] rounded-[6px] py-4 pr-6 focus:outline-none focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] transition-all shadow-[inset_0_2px_8px_rgba(0,0,0,0.03)] placeholder-neutral-400 font-medium"
                 style={{ paddingLeft: '3.5rem' }}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
@@ -96,7 +96,7 @@ export default function SponsorDiscoverySidebar({ onAssignLead }: DiscoverModalP
               {brands.length === 0 && query === '' && (
                 <button 
                   onClick={runSeeder} 
-                  className="absolute right-3 top-1/2 -translate-y-1/2 px-4 py-2 bg-[rgba(212,175,55,0.1)] text-[var(--gold)] font-bold text-xs rounded-md border border-[rgba(212,175,55,0.3)] hover:bg-[rgba(212,175,55,0.2)] hover:scale-105 transition-all shadow-md"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 px-4 py-2 bg-[rgba(212,175,55,0.1)] text-[var(--gold)] font-bold text-xs rounded-[6px] border border-[rgba(212,175,55,0.3)] hover:bg-[rgba(212,175,55,0.2)] hover:scale-105 transition-all shadow-md"
                 >
                   Seed Mock Data
                 </button>
@@ -107,48 +107,52 @@ export default function SponsorDiscoverySidebar({ onAssignLead }: DiscoverModalP
             {/* Elevated Custom Lead Block */}
             <div className="pt-4 mt-2 mb-2">
               {isCreatingCustom ? (
-                <div className="flex bg-white rounded-md border-2 border-[var(--gold)] p-1 shadow-md animate-in fade-in zoom-in-95 duration-200">
-                  <input 
-                    type="text" 
-                    value={customName}
-                    onChange={e => setCustomName(e.target.value)}
-                    placeholder="Custom Company Name..."
-                    autoFocus
-                    className="flex-1 bg-transparent px-4 text-sm font-bold text-[#0a120e] placeholder-neutral-300 focus:outline-none w-full"
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && customName.trim()) {
-                        onAssignLead({ id: null, companyName: customName.trim(), contactEmail: '' });
-                        setIsCreatingCustom(false);
-                        setCustomName('');
-                      } else if (e.key === 'Escape') {
-                        setIsCreatingCustom(false);
-                        setCustomName('');
-                      }
-                    }}
-                  />
-                  <button 
-                    onClick={() => {
-                      if (customName.trim()) {
-                        onAssignLead({ id: null, companyName: customName.trim(), contactEmail: '' });
-                        setIsCreatingCustom(false);
-                        setCustomName('');
-                      }
-                    }}
-                    className="px-4 py-2 bg-[var(--gold)] text-black rounded-lg font-bold text-xs hover:opacity-80 transition-opacity whitespace-nowrap"
-                  >
-                    Save Lead
-                  </button>
-                  <button 
-                    onClick={() => { setIsCreatingCustom(false); setCustomName(''); }}
-                    className="px-3 py-2 text-neutral-400 hover:text-black transition-colors"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
+                <div className="bg-[#FAF9F6] rounded-[6px] border border-[var(--gold)] p-4 shadow-md animate-in fade-in zoom-in-95 duration-200">
+                  <div className="flex flex-col gap-3">
+                    <input 
+                      type="text" 
+                      value={customName}
+                      onChange={e => setCustomName(e.target.value)}
+                      placeholder="Enter company name..."
+                      autoFocus
+                      className="w-full bg-white border border-[#e8eada] rounded-[4px] px-4 py-3 text-sm font-bold text-[#0a120e] placeholder-neutral-400 focus:outline-none focus:border-[var(--gold)] shadow-sm"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && customName.trim()) {
+                          onAssignLead({ id: null, companyName: customName.trim(), contactEmail: '' });
+                          setIsCreatingCustom(false);
+                          setCustomName('');
+                        } else if (e.key === 'Escape') {
+                          setIsCreatingCustom(false);
+                          setCustomName('');
+                        }
+                      }}
+                    />
+                    <div className="flex items-center gap-2">
+                       <button 
+                         onClick={() => {
+                           if (customName.trim()) {
+                             onAssignLead({ id: null, companyName: customName.trim(), contactEmail: '' });
+                             setIsCreatingCustom(false);
+                             setCustomName('');
+                           }
+                         }}
+                         className="flex-1 py-2.5 bg-[var(--gold)] text-black rounded-[4px] font-bold text-sm hover:opacity-80 transition-opacity shadow-sm"
+                       >
+                         Save to Pipeline
+                       </button>
+                       <button 
+                         onClick={() => { setIsCreatingCustom(false); setCustomName(''); }}
+                         className="p-2.5 bg-white border border-[#e8eada] rounded-[4px] text-neutral-500 hover:text-black hover:border-neutral-300 transition-colors shadow-sm"
+                       >
+                         <X className="w-5 h-5" />
+                       </button>
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <button 
                   onClick={() => setIsCreatingCustom(true)} 
-                  className="w-full py-3.5 bg-white border border-[#e8eada] text-[#0a120e] font-bold text-sm rounded-md hover:border-[var(--gold)] hover:text-[var(--gold)] hover:shadow-sm transition-all flex items-center justify-center gap-2 group"
+                  className="w-full py-3.5 bg-white border border-[#e8eada] text-[#0a120e] font-bold text-sm rounded-[6px] hover:border-[var(--gold)] hover:text-[var(--gold)] hover:shadow-sm transition-all flex items-center justify-center gap-2 group"
                 >
                   <Plus className="w-4 h-4 transition-transform group-hover:scale-110" />
                   Add Custom Lead Manually
@@ -160,7 +164,7 @@ export default function SponsorDiscoverySidebar({ onAssignLead }: DiscoverModalP
         <div className="flex-1 min-h-0 overflow-y-auto space-y-4" style={{ padding: '0 36px 36px', scrollbarWidth: 'thin', scrollbarColor: 'rgba(212,175,55,0.3) transparent' }}>
           {isLoading ? (
             <div className="py-12 flex justify-center">
-              <div className="w-8 h-8 border-4 border-[var(--gold)] border-t-transparent rounded-md animate-spin"></div>
+              <div className="w-8 h-8 border-4 border-[var(--gold)] border-t-transparent rounded-[6px] animate-spin"></div>
             </div>
           ) : (
             <>
@@ -174,11 +178,11 @@ export default function SponsorDiscoverySidebar({ onAssignLead }: DiscoverModalP
               {brands.map(brand => (
                 <div 
                   key={brand.id}
-                  className="flex items-center justify-between p-4 rounded-md bg-white border border-[#e8eada] hover:bg-[#FAF9F6] transition-all cursor-pointer group shadow-sm hover:border-[rgba(212,175,55,0.3)]"
+                  className="flex items-center justify-between p-4 rounded-[6px] bg-white border border-[#e8eada] hover:bg-[#FAF9F6] transition-all cursor-pointer group shadow-sm hover:border-[rgba(212,175,55,0.3)]"
                   onClick={() => setPreviewBrand(brand)}
                 >
                   <div className="flex items-center gap-5">
-                    <div className="w-14 h-14 min-w-[56px] min-h-[56px] rounded-md bg-white p-3 border border-neutral-100 shadow-sm shrink-0 flex items-center justify-center">
+                    <div className="w-14 h-14 min-w-[56px] min-h-[56px] rounded-[6px] bg-white p-3 border border-neutral-100 shadow-sm shrink-0 flex items-center justify-center">
                       <img 
                         src={
                           brand.companyName.includes('Lexus') ? '/logos/lexus.svg' :
@@ -194,7 +198,7 @@ export default function SponsorDiscoverySidebar({ onAssignLead }: DiscoverModalP
                       <h4 className="text-[#0a120e] font-bold text-lg leading-tight flex items-center gap-2">
                         <span className="truncate">{brand.companyName.includes('Barton') ? 'Rolex Corporation' : brand.companyName}</span>
                         {brand.proNetworkId && (
-                          <span className="shrink-0 whitespace-nowrap flex items-center gap-1 text-[10px] uppercase font-bold tracking-widest text-[#2ecc71] bg-[rgba(46,204,113,0.1)] px-2 py-0.5 rounded-md border border-[rgba(46,204,113,0.3)]">
+                          <span className="shrink-0 whitespace-nowrap flex items-center gap-1 text-[10px] uppercase font-bold tracking-widest text-[#2ecc71] bg-[rgba(46,204,113,0.1)] px-2 py-0.5 rounded-[6px] border border-[rgba(46,204,113,0.3)]">
                             <CheckCircle2 className="w-3 h-3" /> Pro Vouched
                           </span>
                         )}
@@ -222,7 +226,7 @@ export default function SponsorDiscoverySidebar({ onAssignLead }: DiscoverModalP
                       e.stopPropagation();
                       onAssignLead(brand);
                     }}
-                    className="flex items-center justify-center w-9 h-9 rounded-md bg-[rgba(212,175,55,0.08)] text-[var(--gold)] border border-[rgba(212,175,55,0.3)] hover:bg-[var(--gold)] hover:text-white transition-all shrink-0 group-hover:scale-110 ml-2"
+                    className="flex items-center justify-center w-9 h-9 rounded-[6px] bg-[rgba(212,175,55,0.08)] text-[var(--gold)] border border-[rgba(212,175,55,0.3)] hover:bg-[var(--gold)] hover:text-white transition-all shrink-0 group-hover:scale-110 ml-2"
                     title="Add directly to pipeline"
                   >
                     <Plus className="w-5 h-5" />

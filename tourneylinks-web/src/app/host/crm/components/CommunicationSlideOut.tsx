@@ -74,8 +74,9 @@ export default function CommunicationSlideOut({ isOpen, onClose, lead, onSaveNot
             <p className="text-sm text-neutral-500">{lead.contactName} • {lead.contactEmail}</p>
           </div>
         </div>
-        <button onClick={onClose} className="p-2 text-neutral-400 hover:text-[#0a120e] rounded-full hover:bg-neutral-100 transition-colors">
-          <X className="w-5 h-5" />
+        <button onClick={onClose} className="flex items-center gap-2 px-3 py-2 text-neutral-500 hover:text-[#0a120e] font-bold text-sm bg-white border border-neutral-200 rounded-[6px] shadow-sm hover:bg-neutral-50 transition-all">
+          <X className="w-4 h-4" />
+          Close
         </button>
       </div>
 
@@ -84,7 +85,7 @@ export default function CommunicationSlideOut({ isOpen, onClose, lead, onSaveNot
         <section>
           <label className="block text-sm font-bold text-[#0a120e] mb-2">Internal Scratchpad</label>
           <textarea
-            className="w-full p-3 border border-[#e8eada] rounded-md text-sm focus:ring-2 focus:ring-[var(--gold)] bg-[#FAF9F6] text-[#0a120e] resize-none shadow-sm outline-none transition-all leading-relaxed"
+            className="w-full p-3 border border-[#e8eada] rounded-[6px] text-sm focus:ring-2 focus:ring-[var(--gold)] bg-[#FAF9F6] text-[#0a120e] resize-none shadow-sm outline-none transition-all leading-relaxed"
             style={{ lineHeight: '1.6', paddingTop: '16px', minHeight: '128px' }}
             placeholder="Jot down notes from calls, preferences, e.g. 'Loves the 8am shotgun start idea'..."
             value={internalNote}
@@ -94,7 +95,7 @@ export default function CommunicationSlideOut({ isOpen, onClose, lead, onSaveNot
             <button
               onClick={handleSaveNote}
               disabled={isSaving}
-              className="text-xs font-bold tracking-wide text-[var(--gold)] bg-white border border-[#e8eada] hover:bg-[#FAF9F6] px-3 py-1.5 rounded-md transition-colors shadow-sm"
+              className="text-xs font-bold tracking-wide text-[var(--gold)] bg-white border border-[#e8eada] hover:bg-[#FAF9F6] px-3 py-1.5 rounded-[6px] transition-colors shadow-sm"
             >
               {isSaving ? 'Saving...' : 'Save Note'}
             </button>
@@ -116,7 +117,7 @@ export default function CommunicationSlideOut({ isOpen, onClose, lead, onSaveNot
                 disabled
                 style={{ lineHeight: '1.6', paddingTop: '10px' }}
                 value={lead.contactEmail || `Missing email for ${lead.contactName || 'contact'}`}
-                className="w-full bg-neutral-50 border border-[#e8eada] rounded-md px-3 pb-2 text-sm text-neutral-500 outline-none cursor-not-allowed leading-relaxed"
+                className="w-full bg-neutral-50 border border-[#e8eada] rounded-[6px] px-3 pb-2 text-sm text-neutral-500 outline-none cursor-not-allowed leading-relaxed"
               />
             </div>
             <div>
@@ -126,7 +127,7 @@ export default function CommunicationSlideOut({ isOpen, onClose, lead, onSaveNot
                 style={{ lineHeight: '1.6', paddingTop: '10px' }}
                 value={emailSubject}
                 onChange={(e) => setEmailSubject(e.target.value)}
-                className="w-full bg-white border border-[#e8eada] rounded-md px-3 pb-2 text-sm focus:ring-1 focus:ring-[var(--gold)] outline-none transition-all leading-relaxed"
+                className="w-full bg-white border border-[#e8eada] rounded-[6px] px-3 pb-2 text-sm focus:ring-1 focus:ring-[var(--gold)] outline-none transition-all leading-relaxed"
               />
             </div>
             <div>
@@ -136,7 +137,7 @@ export default function CommunicationSlideOut({ isOpen, onClose, lead, onSaveNot
                 rows={15}
                 style={{ lineHeight: '1.6', paddingTop: '16px' }}
                 onChange={(e) => setEmailBody(e.target.value)}
-                className="w-full px-3 pb-3 bg-white border border-[#e8eada] rounded-md text-sm focus:ring-1 focus:ring-[var(--gold)] resize-y outline-none transition-all leading-relaxed"
+                className="w-full px-3 pb-3 bg-white border border-[#e8eada] rounded-[6px] text-sm focus:ring-1 focus:ring-[var(--gold)] resize-y outline-none transition-all leading-relaxed"
               />
             </div>
           </div>
@@ -146,44 +147,44 @@ export default function CommunicationSlideOut({ isOpen, onClose, lead, onSaveNot
             <div className="flex items-center gap-3">
                <button 
                   onClick={() => setEmailBody(prev => prev + '\n\nPitch Deck: [Link]')}
-                  className="flex items-center gap-2 px-3 py-2 bg-white border border-[#e8eada] shadow-sm text-neutral-500 rounded-md hover:text-[var(--gold)] transition-colors text-xs font-semibold"
+                  className="flex items-center gap-2 px-3 py-2 bg-white border border-[#e8eada] shadow-sm text-neutral-500 rounded-[6px] hover:text-[var(--gold)] transition-colors text-xs font-semibold"
                >
                  <LinkIcon className="w-4 h-4" /> Pitch Link
                </button>
                <button 
                   onClick={() => setEmailBody(prev => prev + '\n\nPay via Stripe: [Link]')}
-                  className="flex items-center gap-2 px-3 py-2 bg-white border border-[#e8eada] shadow-sm text-[#2ecc71] rounded-md hover:bg-[rgba(46,204,113,0.1)] transition-colors text-xs font-semibold"
+                  className="flex items-center gap-2 px-3 py-2 bg-white border border-[#e8eada] shadow-sm text-[#2ecc71] rounded-[6px] hover:bg-[rgba(46,204,113,0.1)] transition-colors text-xs font-semibold"
                >
                  <CreditCard className="w-4 h-4" /> Payment Link
                </button>
-            </div>
-
-            <div className="flex justify-end pt-2 border-t border-[#e8eada]">
-              <button
-                onClick={handleSendEmail}
-                className="flex items-center gap-2 bg-[var(--gold)] hover:bg-[#b5952d] text-black px-5 py-2.5 rounded-md text-sm font-extrabold tracking-wider transition-all shadow-[0_0_15px_rgba(212,175,55,0.4)] hover:scale-105"
-              >
-                <Send className="w-4 h-4" /> SEND INMAIL
-              </button>
             </div>
           </div>
         </section>
       </div>
 
-      {/* Footer Controls */}
-      <div className="p-6 border-t border-[#e8eada] bg-[#FAF9F6] flex items-center justify-between shrink-0 shadow-[0_-10px_30px_rgba(0,0,0,0.02)]">
-        {onDeleteLead && (
+      {/* Footer Actions */}
+      <div className="flex items-center justify-between border-t border-[#e8eada] bg-[#FAF9F6] p-6 shrink-0 relative z-10">
+        <button 
+          onClick={() => onDeleteLead && onDeleteLead(lead.id)}
+          className="flex items-center gap-2 px-4 py-2 text-red-500 font-bold hover:bg-red-50 rounded-[6px] transition-colors border border-transparent hover:border-red-100 text-sm"
+        >
+          <Trash2 className="w-4 h-4" />
+          Remove Sponsor Lead
+        </button>
+        <div className="flex items-center gap-3">
           <button 
-            onClick={() => onDeleteLead(lead.id)}
-            className="flex items-center gap-2 px-4 py-2 text-red-500 font-bold hover:bg-red-50 rounded-md transition-colors border border-transparent hover:border-red-100 text-sm"
+            onClick={onClose}
+            className="px-4 py-2 font-bold text-neutral-500 hover:text-[#0a120e] text-sm transition-colors"
           >
-            <Trash2 className="w-5 h-5" />
-            Remove Sponsor Lead
+            Cancel
           </button>
-        )}
-        <div className="flex items-center gap-2 text-xs font-bold text-neutral-400 uppercase tracking-widest ml-auto">
-          <span>In Pipeline</span>
-          <span className="w-1.5 h-1.5 rounded-full bg-[#2ecc71] shadow-[0_0_8px_rgba(46,204,113,0.8)]"></span>
+          <button 
+            onClick={handleSendEmail}
+            className="flex items-center gap-2 bg-[var(--gold)] hover:bg-[#b5952d] text-black px-6 py-2.5 rounded-[6px] text-sm font-extrabold tracking-wider transition-all shadow-[0_0_15px_rgba(212,175,55,0.4)] hover:scale-105"
+          >
+            <Send className="w-4 h-4" />
+            SEND INMAIL
+          </button>
         </div>
       </div>
     </div>
