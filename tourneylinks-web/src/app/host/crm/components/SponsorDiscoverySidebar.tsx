@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Building2, CheckCircle2, ShieldCheck, MapPin, PenTool, Plus, X } from 'lucide-react';
+import { Search, Building2, Check, ShieldCheck, MapPin, PenTool, Plus, X } from 'lucide-react';
 import SponsorProfileModal from './SponsorProfileModal';
 
 interface DiscoverModalProps {
@@ -107,15 +107,15 @@ export default function SponsorDiscoverySidebar({ onAssignLead }: DiscoverModalP
             {/* Elevated Custom Lead Block */}
             <div className="pt-4 mt-2 mb-2">
               {isCreatingCustom ? (
-                <div className="bg-[#FAF9F6] rounded-[6px] border border-[var(--gold)] p-4 shadow-md animate-in fade-in zoom-in-95 duration-200">
-                  <div className="flex flex-col gap-3">
+                <div style={{ backgroundColor: '#FAF9F6', borderRadius: '12px', border: '1px solid rgba(212,175,55,0.4)', padding: '1.5rem', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }} className="animate-in fade-in zoom-in-95 duration-200">
+                  <div className="flex flex-col gap-4">
                     <input 
                       type="text" 
                       value={customName}
                       onChange={e => setCustomName(e.target.value)}
                       placeholder="Enter company name..."
                       autoFocus
-                      className="w-full bg-white border border-[#e8eada] rounded-[4px] px-4 py-3 text-sm font-bold text-[#0a120e] placeholder-neutral-400 focus:outline-none focus:border-[var(--gold)] shadow-sm"
+                      style={{ width: '100%', border: '1px solid rgba(0,0,0,0.1)', padding: '1rem', borderRadius: '8px', fontSize: '1rem', outline: 'none', fontWeight: 600, color: 'var(--ink)' }}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' && customName.trim()) {
                           onAssignLead({ id: null, companyName: customName.trim(), contactEmail: '' });
@@ -127,7 +127,7 @@ export default function SponsorDiscoverySidebar({ onAssignLead }: DiscoverModalP
                         }
                       }}
                     />
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                        <button 
                          onClick={() => {
                            if (customName.trim()) {
@@ -136,13 +136,13 @@ export default function SponsorDiscoverySidebar({ onAssignLead }: DiscoverModalP
                              setCustomName('');
                            }
                          }}
-                         className="flex-1 py-2.5 bg-[var(--gold)] text-black rounded-[4px] font-bold text-sm hover:opacity-80 transition-opacity shadow-sm"
+                         style={{ padding: '0.8rem', background: '#05120c', color: 'var(--gold)', borderRadius: '8px', fontWeight: 800, fontSize: '0.9rem', flex: 1, border: 'none', cursor: 'pointer' }}
                        >
                          Save to Pipeline
                        </button>
                        <button 
                          onClick={() => { setIsCreatingCustom(false); setCustomName(''); }}
-                         className="p-2.5 bg-white border border-[#e8eada] rounded-[4px] text-neutral-500 hover:text-black hover:border-neutral-300 transition-colors shadow-sm"
+                         style={{ padding: '0.8rem 1rem', background: 'transparent', border: '1px solid rgba(0,0,0,0.1)', color: 'var(--ink)', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
                        >
                          <X className="w-5 h-5" />
                        </button>
@@ -152,9 +152,10 @@ export default function SponsorDiscoverySidebar({ onAssignLead }: DiscoverModalP
               ) : (
                 <button 
                   onClick={() => setIsCreatingCustom(true)} 
-                  className="w-full py-3.5 bg-white border border-[#e8eada] text-[#0a120e] font-bold text-sm rounded-[6px] hover:border-[var(--gold)] hover:text-[var(--gold)] hover:shadow-sm transition-all flex items-center justify-center gap-2 group"
+                  style={{ width: '100%', padding: '1rem', background: '#fff', border: '1px solid rgba(0,0,0,0.1)', color: 'var(--ink)', borderRadius: '8px', fontWeight: 800, fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}
+                  className="hover:border-[var(--gold)] hover:text-[#000] transition-all group"
                 >
-                  <Plus className="w-4 h-4 transition-transform group-hover:scale-110" />
+                  <Plus className="w-5 h-5 transition-transform group-hover:scale-110" />
                   Add Custom Lead Manually
                 </button>
               )}
@@ -199,7 +200,7 @@ export default function SponsorDiscoverySidebar({ onAssignLead }: DiscoverModalP
                         <span className="truncate">{brand.companyName.includes('Barton') ? 'Rolex Corporation' : brand.companyName}</span>
                         {brand.proNetworkId && (
                           <span className="shrink-0 whitespace-nowrap flex items-center gap-1 text-[10px] uppercase font-bold tracking-widest text-[#2ecc71] bg-[rgba(46,204,113,0.1)] px-2 py-0.5 rounded-[6px] border border-[rgba(46,204,113,0.3)]">
-                            <CheckCircle2 className="w-3 h-3" /> Pro Vouched
+                            <Check className="w-3 h-3" /> Pro Vouched
                           </span>
                         )}
                       </h4>

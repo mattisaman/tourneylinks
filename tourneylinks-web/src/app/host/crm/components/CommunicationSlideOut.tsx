@@ -65,7 +65,7 @@ export default function CommunicationSlideOut({ isOpen, onClose, lead, onSaveNot
       <div className="flex items-center justify-between border-b border-[#e8eada] bg-[#FAF9F6] shrink-0" style={{ padding: '24px' }}>
         <div className="flex items-center gap-3">
           {lead.companyLogoUrl && (
-            <div className="w-10 h-10 bg-white rounded-full p-1 flex items-center justify-center shrink-0 shadow-md">
+            <div className="w-10 h-10 bg-white rounded-[6px] p-1 flex items-center justify-center shrink-0 shadow-md">
                <img src={lead.companyLogoUrl} alt="Logo" className="max-w-full max-h-full object-contain" />
             </div>
           )}

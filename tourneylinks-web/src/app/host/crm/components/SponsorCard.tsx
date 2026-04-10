@@ -56,11 +56,11 @@ export default function SponsorCard({ id, lead, onClickOut }: SponsorCardProps) 
       >
         <div className="flex items-center gap-4 mb-4">
           {logoToRender ? (
-            <div className="w-12 h-12 rounded-full bg-white p-2 border border-neutral-100 shadow-sm flex items-center justify-center shrink-0">
+            <div className="w-12 h-12 rounded-[6px] bg-white p-2 border border-neutral-100 shadow-sm flex items-center justify-center shrink-0">
                <img src={logoToRender} alt="Logo" className="w-full h-full object-contain" />
             </div>
           ) : (
-            <div className="w-12 h-12 rounded-full bg-[#FAF9F6] border border-[#e8eada] flex items-center justify-center text-neutral-400 shrink-0 shadow-sm">
+            <div className="w-12 h-12 rounded-[6px] bg-[#FAF9F6] border border-[#e8eada] flex items-center justify-center text-neutral-400 shrink-0 shadow-sm">
               <Building2 className="w-5 h-5" />
             </div>
           )}
@@ -77,7 +77,7 @@ export default function SponsorCard({ id, lead, onClickOut }: SponsorCardProps) 
           </div>
           {lead.notes && (
             <div className="text-xs text-neutral-500 flex items-center gap-1.5 font-medium ml-auto">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#f39c12] shadow-[0_0_8px_rgba(243,156,18,0.8)]"></span>
+              <span className="w-1.5 h-1.5 rounded-[6px] bg-[#f39c12] shadow-[0_0_8px_rgba(243,156,18,0.8)]"></span>
               Notes
             </div>
           )}

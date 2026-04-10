@@ -98,7 +98,7 @@ export default function IntelligenceUploadModal({ isOpen, onClose, tournamentId,
         {/* Header Ribbon */}
         <div className="px-8 py-5 border-b border-[#e8eada] bg-white flex items-center justify-between shadow-sm relative z-20">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-full bg-[rgba(212,175,55,0.1)] border border-[rgba(212,175,55,0.3)] flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-[6px] bg-[rgba(212,175,55,0.1)] border border-[rgba(212,175,55,0.3)] flex items-center justify-center shrink-0">
                <DatabaseZap className="w-5 h-5 text-[var(--gold)]" />
             </div>
             <div>
@@ -123,9 +123,9 @@ export default function IntelligenceUploadModal({ isOpen, onClose, tournamentId,
 
           {step === 'upload' && (
             <div className="flex-1 flex flex-col items-center justify-center text-center">
-               <div className="w-20 h-20 rounded-full bg-[rgba(212,175,55,0.05)] border-2 border-dashed border-[rgba(212,175,55,0.4)] flex items-center justify-center mb-6 relative">
+               <div className="w-20 h-20 rounded-[6px] bg-[rgba(212,175,55,0.05)] border-2 border-dashed border-[rgba(212,175,55,0.4)] flex items-center justify-center mb-6 relative">
                  <Wand2 className="w-8 h-8 text-[var(--gold)]" />
-                 <div className="absolute -right-2 -bottom-2 bg-white rounded-full p-1 shadow-sm border border-[#e8eada]">
+                 <div className="absolute -right-2 -bottom-2 bg-white rounded-[6px] p-1 shadow-sm border border-[#e8eada]">
                    <UploadCloud className="w-4 h-4 text-neutral-400" />
                  </div>
                </div>
@@ -154,8 +154,8 @@ export default function IntelligenceUploadModal({ isOpen, onClose, tournamentId,
           {step === 'scanning' && (
              <div className="flex-1 flex flex-col items-center justify-center text-center animate-in fade-in zoom-in duration-500">
                <div className="w-24 h-24 mb-6 relative">
-                 <div className="absolute inset-0 border-4 border-neutral-100 rounded-full"></div>
-                 <div className="absolute inset-0 border-4 border-[var(--gold)] rounded-full border-t-transparent animate-spin drop-shadow-md"></div>
+                 <div className="absolute inset-0 border-4 border-neutral-100 rounded-[6px]"></div>
+                 <div className="absolute inset-0 border-4 border-[var(--gold)] rounded-[6px] border-t-transparent animate-spin drop-shadow-md"></div>
                  <Wand2 className="w-8 h-8 text-[var(--gold)] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse" />
                </div>
                <h4 className="text-2xl font-bold text-[var(--gold)] mb-2" style={{ fontFamily: 'var(--font-serif), var(--font-cinzel), serif' }}>Extracting Matrix...</h4>

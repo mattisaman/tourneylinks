@@ -23,8 +23,8 @@ export default function Navbar() {
     color: isActive ? '#fff' : '#D4AF37',
     border: '1px solid rgba(212,175,55,0.6)',
     boxShadow: isActive ? '0 0 15px rgba(212,175,55,0.4)' : '0 4px 12px rgba(0,0,0,0.2)',
-    padding: '0.25rem 0.6rem',
-    borderRadius: '100px',
+    padding: '0.4rem 0.8rem',
+    borderRadius: '8px',
     textDecoration: 'none',
     fontSize: '0.75rem',
     fontWeight: 600,
@@ -58,7 +58,7 @@ export default function Navbar() {
           text-shadow: 0 0 8px rgba(212,175,55,0.4);
         }
       `}} />
-      <div className="site-header" style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1000, background: navbarBackground, borderBottom: isHubPage ? '1px solid rgba(212,175,55,0.1)' : 'none', boxShadow: isHubPage ? '0 4px 24px rgba(0,0,0,0.4)' : 'none' }}>
+      <div className="site-header" style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000, background: navbarBackground, borderBottom: isHubPage ? '1px solid rgba(212,175,55,0.1)' : 'none', boxShadow: isHubPage ? '0 4px 24px rgba(0,0,0,0.4)' : 'none' }}>
         <nav style={{ background: 'transparent', backgroundImage: 'none', backgroundColor: 'transparent', borderBottom: 'none', paddingBottom: '1rem', flexWrap: 'nowrap', display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingLeft: '1.5rem', paddingRight: '1.5rem', width: '100%' }}>
           <Link className="nav-logo" href="/" style={{ flexShrink: 0 }}>
              <img src="/logo_horizontal_transparent.png" alt="TourneyLinks Logo" style={{ width: '180px', height: 'auto', objectFit: 'contain', margin: '4px 0 0 0' }} />

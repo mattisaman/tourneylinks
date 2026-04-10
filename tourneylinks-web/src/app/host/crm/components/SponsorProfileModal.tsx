@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, CheckCircle2, MapPin, Building2, ExternalLink, DownloadCloud, MonitorPlay, Plus, Award, Mail, Phone, Calendar } from 'lucide-react';
+import { X, Check, MapPin, Building2, ExternalLink, DownloadCloud, MonitorPlay, Plus, Award, Mail, Phone, Calendar } from 'lucide-react';
 
 interface SponsorProfileModalProps {
   brand: any;
@@ -34,7 +34,7 @@ export default function SponsorProfileModal({ brand, onClose, onAssignLead }: Sp
           {/* Close Button overlay */}
           <button 
             onClick={onClose} 
-            className="absolute top-6 right-6 z-30 p-2 bg-black/40 text-white hover:bg-black/70 rounded-full backdrop-blur-md transition-all shadow-md"
+            className="absolute top-6 right-6 z-30 p-2 bg-black/40 text-white hover:bg-black/70 rounded-[6px] backdrop-blur-md transition-all shadow-md"
           >
             <X className="w-5 h-5" />
           </button>
@@ -71,8 +71,8 @@ export default function SponsorProfileModal({ brand, onClose, onAssignLead }: Sp
                   {brand?.proNetworkId && (
                     <>
                       <span className="opacity-50">•</span>
-                      <span className="flex items-center gap-1.5 text-[#2ecc71] bg-black/30 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-[#2ecc71]/40 shadow-sm leading-none pt-1">
-                        <CheckCircle2 className="w-4 h-4 pb-0.5" /> Vouched by Course Pro
+                      <span className="flex items-center gap-1.5 text-[#2ecc71] bg-black/30 backdrop-blur-md px-2.5 py-0.5 rounded-[6px] border border-[#2ecc71]/40 shadow-sm leading-none pt-1">
+                        <Check className="w-4 h-4 pb-0.5" /> Vouched by Course Pro
                       </span>
                     </>
                   )}
@@ -103,7 +103,7 @@ export default function SponsorProfileModal({ brand, onClose, onAssignLead }: Sp
                {brand.overviewText || `${brandName} is a verified activation partner within the TourneyLinks Sponsor Discovery network. By adding this brand to your active pipeline tracker, you unlock direct integration with their B2B local and national activation representatives. ${brandName} highly prefers interactive, hole-in-one, and tiered brand exposure formats over standard signage.`}
              </p>
 
-             <h3 className="text-xl font-bold text-[#0a120e] mb-6">Digital Media Kit <span className="ml-2 text-xs font-bold bg-[var(--gold)] text-black px-2 py-0.5 rounded-full uppercase tracking-wider">Public</span></h3>
+             <h3 className="text-xl font-bold text-[#0a120e] mb-6">Digital Media Kit <span className="ml-2 text-xs font-bold bg-[var(--gold)] text-black px-2 py-0.5 rounded-[6px] uppercase tracking-wider">Public</span></h3>
              
              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
                 <div className="p-5 border border-[#e8eada] bg-white rounded-[6px] hover:border-[var(--gold)] hover:shadow-md transition-all cursor-pointer group flex items-start gap-4">

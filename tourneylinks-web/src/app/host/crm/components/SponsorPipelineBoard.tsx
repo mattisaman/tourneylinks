@@ -142,7 +142,7 @@ export default function SponsorPipelineBoard({ tournamentId }: { tournamentId: n
   if (!isMounted) {
     return (
       <div className="flex h-full w-full items-center justify-center bg-transparent">
-        <div className="w-8 h-8 border-4 border-[var(--gold)] border-t-transparent rounded-full animate-spin shadow-[0_0_15px_rgba(212,175,55,0.5)]"></div>
+        <div className="w-8 h-8 border-4 border-[var(--gold)] border-t-transparent rounded-[6px] animate-spin shadow-[0_0_15px_rgba(212,175,55,0.5)]"></div>
       </div>
     );
   }
