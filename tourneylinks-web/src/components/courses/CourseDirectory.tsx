@@ -77,14 +77,14 @@ export default function CourseDirectory({
           </div>
 
           <div style={{ flex: '1 1 120px' }}>
-            <select value={stateFilter} onChange={e => setStateFilter(e.target.value)} style={{ padding: '1rem', background: '#FDFBF7', border: '2px solid rgba(201,168,76,0.3)', borderRadius: '12px', width: '100%', fontSize: '1rem', color: 'var(--forest)', fontWeight: 600, cursor: 'pointer' }}>
+            <select value={stateFilter} onChange={e => setStateFilter(e.target.value)} style={{ padding: '1rem', background: '#FDFBF7', border: '2px solid rgba(201,168,76,0.3)', borderRadius: '12px', width: '100%', fontSize: '1rem', color: 'var(--forest)', fontWeight: 600, cursor: 'pointer', outline: 'none' }}>
                {US_STATES.map(state => <option key={state} value={state}>{state === 'All' ? 'All States' : state}</option>)}
             </select>
           </div>
 
           <div style={{ flex: '1.5 1 200px', display: 'flex', gap: '0.5rem' }}>
-             <input type="text" placeholder="Zip or City" value={zip} onChange={e => setZip(e.target.value)} style={{ padding: '1rem', background: '#FDFBF7', border: '2px solid rgba(201,168,76,0.3)', borderRadius: '12px', flex: 1, minWidth: '100px', fontSize: '1rem', color: 'var(--forest)', fontWeight: 600 }}/>
-             <select value={radius} onChange={e => setRadius(Number(e.target.value))} style={{ padding: '1rem', background: '#FDFBF7', border: '2px solid rgba(201,168,76,0.3)', borderRadius: '12px', width: '120px', fontSize: '1rem', color: 'var(--forest)', fontWeight: 600, cursor: 'pointer' }}>
+             <input type="text" placeholder="Zip or City" value={zip} onChange={e => setZip(e.target.value)} style={{ padding: '1rem', background: '#FDFBF7', border: '2px solid rgba(201,168,76,0.3)', borderRadius: '12px', flex: 1, minWidth: '100px', fontSize: '1rem', color: 'var(--forest)', fontWeight: 600, outline: 'none' }}/>
+             <select value={radius} onChange={e => setRadius(Number(e.target.value))} style={{ padding: '1rem', background: '#FDFBF7', border: '2px solid rgba(201,168,76,0.3)', borderRadius: '12px', width: '120px', fontSize: '1rem', color: 'var(--forest)', fontWeight: 600, cursor: 'pointer', outline: 'none' }}>
                <option value={5}>5 mi</option>
                <option value={20}>20 mi</option>
                <option value={50}>50 mi</option>
@@ -111,75 +111,78 @@ export default function CourseDirectory({
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '2.5rem' }}>
         {results.map(course => (
           <Link href={`/courses/${course.id}`} key={course.id} style={{ textDecoration: 'none', color: 'inherit' }}>
-            <div className="course-card gold-foil-hover" style={{
-                 background: 'var(--ink)',
+            <div style={{
+                 background: 'var(--white)',
                  borderRadius: '16px',
-                 border: '1px solid rgba(201,168,76,0.15)',
+                 border: '1px solid rgba(0,0,0,0.05)',
                  position: 'relative',
-                 overflow: 'hidden',
                  display: 'flex',
                  flexDirection: 'column',
                  height: '100%',
-                 transition: 'all 0.3s ease'
+                 transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                 boxShadow: '0 4px 20px rgba(0,0,0,0.03)'
                }}
                onMouseEnter={(e) => {
                  e.currentTarget.style.transform = 'translateY(-6px)';
-                 e.currentTarget.style.boxShadow = 'var(--shadow-glow)';
+                 e.currentTarget.style.boxShadow = '0 12px 30px rgba(0,0,0,0.08)';
                }}
                onMouseLeave={(e) => {
                  e.currentTarget.style.transform = 'translateY(0)';
-                 e.currentTarget.style.boxShadow = 'none';
+                 e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.03)';
                }}>
               
+              {/* Top Hero Image Layer */}
               <div style={{ 
+                   height: '220px',
                    backgroundImage: course.heroImageUrl && course.heroImageUrl !== "DEFAULT_GRADIENT" 
-                      ? `linear-gradient(180deg, rgba(7,21,16,0.3) 0%, rgba(7,21,16,0.95) 100%), url(${course.heroImageUrl})` 
-                      : `linear-gradient(180deg, rgba(7,21,16,0.85) 0%, rgba(7,21,16,1) 100%), url('https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&q=80&w=800')`,
+                      ? `linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 100%), url(${course.heroImageUrl})` 
+                      : `linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 100%), url('https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&q=80&w=800')`,
                    backgroundSize: 'cover',
                    backgroundPosition: 'center',
-                   borderRadius: '15px', 
-                   flex: 1, 
-                   display: 'flex', 
-                   flexDirection: 'column',
+                   borderTopLeftRadius: '16px',
+                   borderTopRightRadius: '16px',
                    position: 'relative'
                  }}>
                  
                  {course.rating && (
-                   <div style={{ position: 'absolute', top: '20px', right: '20px', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', color: 'var(--gold)', padding: '0.4rem 0.8rem', borderRadius: '10px', fontSize: '0.9rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.3rem', zIndex: 10, border: '1px solid rgba(212,175,55,0.2)' }}>
+                   <div style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(8px)', color: 'var(--forest)', padding: '0.4rem 0.8rem', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.3rem', zIndex: 10, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
                      ⭐ {course.rating.toFixed(1)}
                    </div>
                  )}
+              </div>
 
-                 <div style={{ padding: '2rem 1.75rem', flex: 1, position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', paddingTop: '6rem' }}>
-                   <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
-                       <h3 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-serif), serif', color: 'var(--white)', margin: 0, lineHeight: 1.2, fontWeight: 700 }}>
-                         {course.name}
-                       </h3>
-                       {course.isActive && <CheckCircle2 size={22} color="var(--gold)" style={{ flexShrink: 0, marginLeft: '0.5rem' }} />}
-                     </div>
+              {/* Bottom Info Layer */}
+              <div style={{ padding: '1rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.2rem' }}>
+                   <h3 style={{ fontSize: '1.15rem', fontFamily: 'var(--font-sans)', color: 'var(--forest)', margin: 0, lineHeight: 1.2, fontWeight: 800 }}>
+                     {course.name}
+                   </h3>
+                   {course.isActive && <CheckCircle2 size={18} color="var(--grass)" style={{ flexShrink: 0, marginLeft: '0.5rem' }} />}
+                 </div>
 
-                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'rgba(255,255,255,0.8)', fontSize: '0.95rem', marginBottom: '1.5rem', fontWeight: 500 }}>
-                       <MapPin size={16} />
-                       <span>{course.city}, {course.state} {course.zip}</span>
-                     </div>
+                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--mist)', fontSize: '0.85rem', marginBottom: '0.75rem', fontWeight: 600 }}>
+                   <MapPin size={14} color="var(--gold-dark)" />
+                   <span>{course.city}, {course.state} {course.zip}</span>
+                 </div>
 
-                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', padding: '1rem', background: 'rgba(255,255,255,0.05)', backdropFilter: 'blur(10px)', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                       <div>
-                         <div style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.6)', marginBottom: '0.2rem', fontWeight: 700 }}>Holes</div>
-                         <div style={{ fontWeight: 700, color: 'var(--gold)', fontSize: '1.2rem' }}>{course.holes || '18'}</div>
-                       </div>
-                       <div>
-                         <div style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.6)', marginBottom: '0.2rem', fontWeight: 700 }}>Par</div>
-                         <div style={{ fontWeight: 700, color: 'var(--gold)', fontSize: '1.2rem' }}>{course.par || '72'}</div>
-                       </div>
-                     </div>
+                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', padding: '0.6rem 0.8rem', background: 'var(--admin-golf-white)', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.03)', marginTop: 'auto', marginBottom: '1rem' }}>
+                   <div>
+                     <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--mist)', marginBottom: '0.1rem', fontWeight: 700 }}>Holes</div>
+                     <div style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1rem' }}>{course.holes || '18'}</div>
+                   </div>
+                   <div>
+                     <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--mist)', marginBottom: '0.1rem', fontWeight: 700 }}>Par</div>
+                     <div style={{ fontWeight: 800, color: 'var(--forest)', fontSize: '1rem' }}>{course.par || '72'}</div>
                    </div>
                  </div>
 
-                 <div style={{ padding: '1.25rem 1.75rem', borderTop: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(10px)', borderBottomLeftRadius: '15px', borderBottomRightRadius: '15px' }}>
-                    <span style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>{course.type || 'Public Golf Course'}</span>
-                    <span style={{ fontSize: '1rem', color: 'var(--gold)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>Host an Event <ChevronRight size={16} /></span>
+                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--mist)', fontWeight: 600, padding: '0.2rem 0.6rem', background: 'rgba(0,0,0,0.04)', borderRadius: '20px' }}>
+                       {course.type || 'Public Golf Course'}
+                    </span>
+                    <span style={{ fontSize: '0.85rem', color: 'var(--gold-dark)', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                       Host Event <ChevronRight size={14} />
+                    </span>
                  </div>
               </div>
             </div>

@@ -21,10 +21,10 @@ export default async function CoursesPage() {
       overflow: 'hidden'
     }}>
       {/* Immersive Dark Radial Overlay */}
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(15,25,15,0.7) 0%, rgba(10,20,10,0.95) 100%)', zIndex: 0 }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(10,15,10,0.88) 0%, rgba(5,10,5,0.99) 100%)', zIndex: 0 }} />
       
       <div style={{ position: 'relative', zIndex: 1, paddingTop: '100px', paddingBottom: '2rem' }}>
-         <div className="flex flex-col items-center justify-center text-center" style={{ width: '100%', maxWidth: '1400px', margin: '0 auto', padding: '0 2rem' }}>
+          <div className="flex flex-col items-center justify-center text-center" style={{ width: '100%', maxWidth: '1400px', margin: '0 auto', padding: '0 2rem' }}>
             <h1 className="hero-headline drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)]" style={{ 
                fontSize: 'clamp(3rem, 7vw, 6rem)', 
                fontFamily: 'var(--font-serif), var(--font-cinzel), serif', 
@@ -33,7 +33,8 @@ export default async function CoursesPage() {
                backgroundClip: 'text',
                color: 'transparent',
                marginBottom: '1.5rem',
-               lineHeight: 1.1
+               lineHeight: 1.1,
+               textShadow: '0 4px 20px rgba(0,0,0,0.05)'
             }}>
                Course Directory
             </h1>
@@ -41,9 +42,9 @@ export default async function CoursesPage() {
                Search our authoritative database of 16,200+ golf courses nationwide to find your next home for a premier tournament.
             </p>
          </div>
+         
+         <CourseDirectory initialCourses={initialData} initialTotal={initialTotal} />
       </div>
-
-      <CourseDirectory initialCourses={initialData} initialTotal={initialTotal} />
     </div>
   );
 }

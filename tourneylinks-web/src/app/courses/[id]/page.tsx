@@ -130,9 +130,9 @@ export default async function CourseDetailPage(props: { params: Promise<{ id: st
                          )}
                          
                          {!course.claimedByUserId && (
-                           <div className="col-span-1 sm:col-span-2 lg:col-span-1 mt-4 pt-4 border-t border-white/5">
-                              <div className="text-[9px] uppercase tracking-widest text-[#67786f] mb-2 font-bold">Course Administration</div>
-                              <Link href={`/courses/${course.id}/claim`} className="btn-hero-outline w-full text-center py-2" style={{ fontSize: '0.75rem', padding: '0.6rem 1rem' }}>
+                           <div className="col-span-1 sm:col-span-2 lg:col-span-1 mt-8 pt-6 border-t border-white/5">
+                              <div className="text-[10px] uppercase tracking-widest text-[#67786f] mb-3 font-bold">Course Administration</div>
+                              <Link href={`/courses/${course.id}/claim`} className="btn-hero-outline w-full text-center py-2" style={{ fontSize: '0.85rem', padding: '0.8rem 1rem' }}>
                                  Claim Pro Access →
                               </Link>
                            </div>
