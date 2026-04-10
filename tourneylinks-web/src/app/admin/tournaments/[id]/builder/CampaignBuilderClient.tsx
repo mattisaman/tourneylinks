@@ -18,6 +18,39 @@ export default function CampaignBuilderClient({ initialTournament, initialCourse
      return acc + ((i ? i.price : 0) * qty);
   }, 0) / 100;
 
+  const handleStripeCheckout = async () => {
+    const cartArray = Object.entries(fakeCart).map(([id, qty]) => {
+      let item = initialInventory.find((inv: any) => inv.id === parseInt(id));
+      return {
+        id,
+        title: item?.name || 'Add-on',
+        price: item?.price || 0, // already in cents
+        qty
+      };
+    }).filter(x => x.qty > 0);
+
+    try {
+      const res = await fetch('/api/stripe/checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tournamentId: tourneyData.id,
+          entryFee: tourneyData.entryFee,
+          cartItems: cartArray
+        })
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert(data.error || 'Failed to initialize checkout');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Network error communicating with Stripe API');
+    }
+  };
+
   // --------- RIGHT PANEL: CONTROL FORMS ---------
   const renderControlForm = () => {
     switch (activeTab) {
@@ -217,7 +250,7 @@ export default function CampaignBuilderClient({ initialTournament, initialCourse
                             <button style={{ width: '100%', padding: '1.2rem', background: '#ffc439', color: '#003087', borderRadius: '12px', fontWeight: 900, fontSize: '1.1rem', border: '1px solid #f2b724' }}>
                                Pay ${(tourneyData.entryFee + totalCart).toFixed(2)} with PayPal
                             </button>
-                            <button style={{ width: '100%', padding: '0.8rem', background: '#05120c', color: 'var(--gold)', borderRadius: '12px', fontWeight: 700, fontSize: '0.9rem', border: 'none' }}>
+                            <button onClick={handleStripeCheckout} style={{ width: '100%', padding: '0.8rem', background: '#05120c', color: 'var(--gold)', borderRadius: '12px', fontWeight: 700, fontSize: '0.9rem', border: 'none', cursor: 'pointer' }}>
                                Pay with Credit/Debit (Stripe)
                             </button>
                             {tourneyData.allowOfflinePayment && (

@@ -64,19 +64,40 @@ export default async function FinancialsDashboard() {
 
   return (
     <div>
+        <style dangerouslySetInnerHTML={{__html: `
+          .lux-card { transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; }
+          .lux-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md) !important; }
+          .lux-input { transition: border-color 0.2s, box-shadow 0.2s; }
+          .lux-input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.1); }
+          .lux-btn { transition: transform 0.2s; }
+          .lux-btn:hover { transform: translateY(-2px); }
+        `}} />
         <div style={{ marginBottom: '2rem' }}>
-          <h1 style={{ fontSize: '2.5rem', fontWeight: 700, margin: '0 0 0.5rem 0', color: '#fff' }}>Startup Financial Forensics</h1>
-          <p style={{ color: '#888', margin: 0 }}>Stripe Processing, Revenue Forecasting, Capital Burn, and AI Scaling</p>
+          <h1 style={{ fontSize: '2.5rem', fontWeight: 700, margin: '0 0 0.5rem 0', color: 'var(--forest)' }}>Startup Financial Forensics</h1>
+          <p style={{ color: 'var(--mist)', margin: 0 }}>Stripe Processing, Revenue Forecasting, Capital Burn, and AI Scaling</p>
         </div>
 
-        {/* Top level Ledger */}
+        {/* Top level Ledger (Glassmorphism Core) */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem', marginBottom: '3rem' }}>
-            <LedgerCard title="Gross Platform GMV" value={`$${realGMV.toLocaleString(undefined, {minimumFractionDigits: 2})}`} highlight="var(--gold)" />
-            <LedgerCard title="Monthly Operating Burn" value={`-$${(fixedMonthlyTotal + variableExpensesTotal).toLocaleString(undefined, {minimumFractionDigits: 2})}`} highlight="#f44336" />
-            <LedgerCard title="Sunk Setup Capital" value={`-$${totalSunkCapital.toLocaleString(undefined, {minimumFractionDigits: 2})}`} highlight="#ff9800" />
-            <div style={{ background: '#111', border: '1px solid var(--gold)', borderRadius: '12px', padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
-                <span style={{ color: 'var(--gold)', fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>Net Monthly Profit / (Loss)</span>
-                <span style={{ fontSize: '2.5rem', fontWeight: 800, color: netPlatformProfit >= 0 ? 'var(--grass)' : '#f44336', marginTop: '0.5rem' }}>
+            {/* GMV - Green */}
+            <div style={{ background: 'var(--admin-gradient-green)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '1.5rem', display: 'flex', flexDirection: 'column', boxShadow: 'var(--admin-glow-green)' }}>
+                <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>Gross Platform GMV</span>
+                <span style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--white)', marginTop: '0.5rem' }}>${realGMV.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+            </div>
+            {/* Monthly Burn - Dark */}
+            <div style={{ background: 'var(--admin-gradient-dark)', border: '1px solid var(--emerald)', borderRadius: '12px', padding: '1.5rem', display: 'flex', flexDirection: 'column', boxShadow: 'var(--admin-glow-dark)' }}>
+                <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>Monthly Burn</span>
+                <span style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--admin-pin-red)', marginTop: '0.5rem' }}>-${(fixedMonthlyTotal + variableExpensesTotal).toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+            </div>
+            {/* Sunk Capital - Gold */}
+            <div style={{ background: 'var(--admin-gradient-gold)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '12px', padding: '1.5rem', display: 'flex', flexDirection: 'column', boxShadow: 'var(--admin-glow-gold)' }}>
+                <span style={{ color: 'rgba(0,0,0,0.6)', fontSize: '0.85rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>Sunk Setup Capital</span>
+                <span style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--forest)', marginTop: '0.5rem' }}>-${totalSunkCapital.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+            </div>
+            {/* Net Profit - White Glass */}
+            <div style={{ background: 'var(--white)', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '12px', padding: '1.5rem', display: 'flex', flexDirection: 'column', boxShadow: 'var(--shadow-sm)' }}>
+                <span style={{ color: 'var(--mist)', fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>Net Monthly Profit</span>
+                <span style={{ fontSize: '2rem', fontWeight: 800, color: netPlatformProfit >= 0 ? 'var(--grass)' : 'var(--admin-pin-red)', marginTop: '0.5rem' }}>
                     {netPlatformProfit >= 0 ? '+' : '-'}${Math.abs(netPlatformProfit).toLocaleString(undefined, {minimumFractionDigits: 2})}
                 </span>
             </div>
@@ -84,74 +105,65 @@ export default async function FinancialsDashboard() {
 
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '3rem' }}>
             
-            {/* The Ledger Table */}
+            {/* The Ledger List (Replaced Table) */}
             <div>
-               <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem' }}>Operating Expenses Ledger</h2>
-               <div style={{ background: '#111', border: '1px solid #222', borderRadius: '12px', overflow: 'hidden' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
-                        <thead>
-                            <tr style={{ background: '#1a1a1a', borderBottom: '1px solid #333' }}>
-                                <th style={{ padding: '1rem', color: '#888', fontWeight: 500 }}>EXPENSE</th>
-                                <th style={{ padding: '1rem', color: '#888', fontWeight: 500 }}>CATEGORY</th>
-                                <th style={{ padding: '1rem', color: '#888', fontWeight: 500 }}>TYPE</th>
-                                <th style={{ padding: '1rem', color: '#888', fontWeight: 500, textAlign: 'right' }}>COST</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {/* Dynamically Injected Variable Cost: Firecrawl Burn */}
-                            <tr style={{ borderBottom: '1px solid #222', background: 'rgba(212,175,55,0.02)' }}>
-                                <td style={{ padding: '1rem', color: '#fff', fontWeight: 500 }}>
-                                    FireCrawl Spider API
-                                    <div style={{ fontSize: '0.75rem', color: '#666', marginTop: '4px' }}>{firecrawlStats?.totalCredits || 0} Credits Consumed</div>
-                                </td>
-                                <td style={{ padding: '1rem', color: '#ccc' }}>Infrastructure</td>
-                                <td style={{ padding: '1rem' }}><span style={{ padding: '0.2rem 0.5rem', background: '#333', borderRadius: '4px', fontSize: '0.75rem' }}>Variable Storage</span></td>
-                                <td style={{ padding: '1rem', textAlign: 'right', color: '#f44336', fontWeight: 600 }}>
-                                    -${variableExpensesTotal.toLocaleString(undefined, {minimumFractionDigits: 2})}
-                                </td>
-                            </tr>
+               <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--forest)', marginBottom: '1.5rem' }}>Operating Expenses Ledger</h2>
+               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                   
+                   {/* Dynamically Injected Variable Cost: Firecrawl Burn */}
+                   <div className="lux-card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'linear-gradient(to right, rgba(230, 194, 122, 0.1), var(--white))', border: '1px solid rgba(200, 150, 50, 0.2)', padding: '1.25rem 1.5rem', borderRadius: '8px', boxShadow: 'var(--shadow-sm)' }}>
+                       <div style={{ flex: 2 }}>
+                           <div style={{ color: 'var(--forest)', fontWeight: 700, fontSize: '1.05rem' }}>FireCrawl Spider API</div>
+                           <div style={{ color: 'var(--mist)', fontSize: '0.85rem', marginTop: '0.2rem' }}>{firecrawlStats?.totalCredits || 0} Credits Consumed</div>
+                       </div>
+                       <div style={{ flex: 1, color: 'var(--mist)', fontSize: '0.9rem' }}>Infrastructure</div>
+                       <div style={{ flex: 1 }}>
+                           <span style={{ padding: '0.3rem 0.6rem', background: 'rgba(0,0,0,0.05)', color: 'var(--mist)', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700 }}>Variable Storage</span>
+                       </div>
+                       <div style={{ flex: 1, textAlign: 'right', color: 'var(--admin-pin-red)', fontWeight: 800, fontSize: '1.1rem' }}>
+                           -${variableExpensesTotal.toLocaleString(undefined, {minimumFractionDigits: 2})}
+                       </div>
+                   </div>
 
-                            {expenses.map(exp => (
-                                <tr key={exp.id} style={{ borderBottom: '1px solid #222' }}>
-                                    <td style={{ padding: '1rem', color: '#fff', fontWeight: 500 }}>{exp.name}</td>
-                                    <td style={{ padding: '1rem', color: '#ccc' }}>{exp.category}</td>
-                                    <td style={{ padding: '1rem' }}>
-                                        <span style={{ padding: '0.2rem 0.5rem', background: exp.frequency === 'one-time' ? 'rgba(255,152,0,0.1)' : '#333', color: exp.frequency === 'one-time' ? '#ff9800' : '#ccc', borderRadius: '4px', fontSize: '0.75rem' }}>
-                                            {exp.frequency.toUpperCase()}
-                                        </span>
-                                    </td>
-                                    <td style={{ padding: '1rem', textAlign: 'right', color: exp.frequency === 'one-time' ? '#ff9800' : '#f44336', fontWeight: 600 }}>
-                                        -${exp.amount.toLocaleString(undefined, {minimumFractionDigits: 2})}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                   {expenses.map(exp => (
+                       <div key={exp.id} className="lux-card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--white)', border: '1px solid rgba(0,0,0,0.05)', padding: '1rem 1.5rem', borderRadius: '8px', boxShadow: 'var(--shadow-sm)' }}>
+                           <div style={{ flex: 2, color: 'var(--forest)', fontWeight: 600, fontSize: '0.95rem' }}>{exp.name}</div>
+                           <div style={{ flex: 1, color: 'var(--mist)', fontSize: '0.9rem' }}>{exp.category}</div>
+                           <div style={{ flex: 1 }}>
+                               <span style={{ padding: '0.3rem 0.6rem', background: exp.frequency === 'one-time' ? 'rgba(230, 194, 122, 0.2)' : 'rgba(0,0,0,0.05)', color: exp.frequency === 'one-time' ? 'var(--gold-dark)' : 'var(--mist)', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700 }}>
+                                   {exp.frequency.toUpperCase()}
+                               </span>
+                           </div>
+                           <div style={{ flex: 1, textAlign: 'right', color: exp.frequency === 'one-time' ? 'var(--gold-dark)' : 'var(--admin-pin-red)', fontWeight: 700, fontSize: '1.05rem' }}>
+                               -${exp.amount.toLocaleString(undefined, {minimumFractionDigits: 2})}
+                           </div>
+                       </div>
+                   ))}
                </div>
             </div>
 
-            {/* Insertion Form */}
+            {/* Light Insertion Form */}
             <div>
-               <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem' }}>Log New Expense</h2>
-               <form action={addExpense} style={{ background: '#111', border: '1px solid #222', borderRadius: '12px', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+               <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--forest)', marginBottom: '1.5rem' }}>Log New Expense</h2>
+               <form action={addExpense} style={{ background: 'var(--white)', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '12px', padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', boxShadow: 'var(--shadow-md)' }}>
                     <div>
-                        <label style={{ display: 'block', fontSize: '0.8rem', color: '#888', marginBottom: '0.5rem' }}>Expense Name (e.g. Graphic Designer, Vercel)</label>
-                        <input type="text" name="name" required style={{ width: '100%', padding: '0.75rem', background: '#000', border: '1px solid #333', borderRadius: '6px', color: '#fff' }} />
+                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Expense Name</label>
+                        <input className="lux-input" type="text" name="name" placeholder="e.g. Graphic Designer, Route53" required style={{ width: '100%', padding: '0.75rem 1rem', background: 'var(--admin-golf-white)', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px', color: 'var(--forest)', fontSize: '0.95rem' }} />
                     </div>
                     <div>
-                        <label style={{ display: 'block', fontSize: '0.8rem', color: '#888', marginBottom: '0.5rem' }}>Amount Spent ($)</label>
-                        <input type="number" step="0.01" name="amount" required style={{ width: '100%', padding: '0.75rem', background: '#000', border: '1px solid #333', borderRadius: '6px', color: '#fff' }} />
+                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Amount Spent ($)</label>
+                        <input className="lux-input" type="number" step="0.01" name="amount" placeholder="0.00" required style={{ width: '100%', padding: '0.75rem 1rem', background: 'var(--admin-golf-white)', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px', color: 'var(--forest)', fontSize: '0.95rem' }} />
                     </div>
                     <div>
-                        <label style={{ display: 'block', fontSize: '0.8rem', color: '#888', marginBottom: '0.5rem' }}>Frequency</label>
-                        <select name="frequency" style={{ width: '100%', padding: '0.75rem', background: '#000', border: '1px solid #333', borderRadius: '6px', color: '#fff' }}>
+                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Frequency</label>
+                        <select className="lux-input" name="frequency" style={{ width: '100%', padding: '0.75rem 1rem', background: 'var(--admin-golf-white)', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px', color: 'var(--forest)', fontSize: '0.95rem', cursor: 'pointer' }}>
                             <option value="monthly">Monthly Recurring</option>
                             <option value="one-time">One-Time Sunk Cost</option>
                         </select>
                     </div>
                     <div>
-                        <label style={{ display: 'block', fontSize: '0.8rem', color: '#888', marginBottom: '0.5rem' }}>Category</label>
-                        <select name="category" style={{ width: '100%', padding: '0.75rem', background: '#000', border: '1px solid #333', borderRadius: '6px', color: '#fff' }}>
+                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--mist)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Category</label>
+                        <select className="lux-input" name="category" style={{ width: '100%', padding: '0.75rem 1rem', background: 'var(--admin-golf-white)', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px', color: 'var(--forest)', fontSize: '0.95rem', cursor: 'pointer' }}>
                             <option value="Software">Software & Subscriptions</option>
                             <option value="Infrastructure">Infrastructure (AWS, DB)</option>
                             <option value="Legal">Legal & Compliance</option>
@@ -159,22 +171,12 @@ export default async function FinancialsDashboard() {
                             <option value="Contractors">Contractors / Services</option>
                         </select>
                     </div>
-                    <button type="submit" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '0.75rem', background: 'var(--gold)', color: '#000', border: 'none', borderRadius: '6px', fontWeight: 600, cursor: 'pointer', marginTop: '0.5rem' }}>
-                        <Plus size={16} /> Append to Ledger
+                    <button type="submit" className="lux-btn" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '0.85rem', background: 'var(--gold-foil)', color: 'var(--ink)', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', marginTop: '0.5rem', boxShadow: 'var(--metallic-shadow)', fontSize: '0.95rem' }}>
+                        <Plus size={18} /> Append to Ledger
                     </button>
                </form>
             </div>
-
         </div>
-    </div>
-  );
-}
-
-function LedgerCard({ title, value, highlight }: { title: string, value: string, highlight: string }) {
-  return (
-    <div style={{ background: '#111', border: '1px solid #222', borderRadius: '12px', padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
-        <span style={{ color: '#888', fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>{title}</span>
-        <span style={{ fontSize: '2rem', fontWeight: 800, color: highlight, marginTop: '0.5rem' }}>{value}</span>
     </div>
   );
 }

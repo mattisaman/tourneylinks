@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db, courses } from '@/lib/db';
-import { ilike, or, and } from 'drizzle-orm';
+import { ilike, or, and, sql } from 'drizzle-orm';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -48,9 +48,9 @@ export async function GET(request: Request) {
       .limit(limit)
       .offset(offset);
 
-    // Get simple count (not highly optimized, but sufficient for MVP)
-    const allMatches = await db.select({ id: courses.id }).from(courses).where(conditions);
-    const totalCount = allMatches.length;
+    // Advanced counting logic relying on Postgres native aggregates
+    const totalCountResult = await db.select({ count: sql<number>`count(*)` }).from(courses).where(conditions);
+    const totalCount = Number(totalCountResult[0].count);
 
     return NextResponse.json({ courses: results, total: totalCount });
   } catch (error) {

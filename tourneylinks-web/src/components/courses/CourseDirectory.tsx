@@ -4,19 +4,30 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Search, MapPin, Flag, ChevronRight, CheckCircle2 } from 'lucide-react';
 
-export default function CourseDirectory() {
+export default function CourseDirectory({ 
+  initialCourses = [], 
+  initialTotal = 0 
+}: { 
+  initialCourses?: any[], 
+  initialTotal?: number 
+}) {
   const [query, setQuery] = useState('');
   const [zip, setZip] = useState('');
   const [radius, setRadius] = useState(50);
   const [stateFilter, setStateFilter] = useState('All');
   
-  const [results, setResults] = useState<any[]>([]);
-  const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [results, setResults] = useState<any[]>(initialCourses);
+  const [total, setTotal] = useState(initialTotal);
+  const [loading, setLoading] = useState(initialCourses.length === 0);
   const [page, setPage] = useState(1);
+  const [hasMounted, setHasMounted] = useState(false);
 
-  // Debounced search trigger
+  // Debounced search trigger (skips initial mount if server rendered)
   useEffect(() => {
+    if (!hasMounted) {
+      setHasMounted(true);
+      if (initialCourses.length > 0) return; // Skip fetch on first load if we have SSR data
+    }
     const timer = setTimeout(() => {
       setPage(1);
       fetchCourses(query, zip, radius, stateFilter, 1, true);

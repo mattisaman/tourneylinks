@@ -2,8 +2,14 @@ import React from 'react';
 import Navbar from '@/components/ui/Navbar';
 import Footer from '@/components/ui/Footer';
 import CourseDirectory from '../../components/courses/CourseDirectory';
+import { db, courses } from '@/lib/db';
+import { sql } from 'drizzle-orm';
 
-export default function CoursesPage() {
+export default async function CoursesPage() {
+  // SSR pre-fetch the top 24 courses and the total count
+  const initialData = await db.select().from(courses).limit(24);
+  const totalCountResult = await db.select({ count: sql<number>`count(*)` }).from(courses);
+  const initialTotal = Number(totalCountResult[0].count);
   return (
     <div style={{ 
       minHeight: '100vh', 
@@ -37,7 +43,7 @@ export default function CoursesPage() {
          </div>
       </div>
 
-      <CourseDirectory />
+      <CourseDirectory initialCourses={initialData} initialTotal={initialTotal} />
     </div>
   );
 }

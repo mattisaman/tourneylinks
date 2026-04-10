@@ -2,6 +2,7 @@ import React from 'react';
 import { db, tournaments, courses, missing_links } from '@/lib/db';
 import { sql, desc, eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
+import { Tooltip } from '@/components/ui/Tooltip';
 
 export const dynamic = 'force-dynamic';
 
@@ -64,109 +65,122 @@ export default async function QualityControlDashboard() {
 
   return (
     <div>
+        <style dangerouslySetInnerHTML={{__html: `
+          .lux-card { transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; }
+          .lux-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md) !important; }
+          .lux-btn { transition: transform 0.2s; }
+          .lux-btn:hover { transform: translateY(-2px); }
+        `}} />
         <div style={{ marginBottom: '3rem' }}>
-          <h1 style={{ fontSize: '2.5rem', fontWeight: 700, margin: '0 0 0.5rem 0', color: '#fff' }}>Quality Control</h1>
-          <p style={{ color: '#888', margin: 0 }}>Human-in-the-Loop AI Corrections & Compliance Offloading</p>
+          <h1 style={{ fontSize: '2.5rem', fontWeight: 700, margin: '0 0 0.5rem 0', color: 'var(--forest)' }}>Quality Control</h1>
+          <p style={{ color: 'var(--mist)', margin: 0 }}>Human-in-the-Loop AI Corrections & Compliance Offloading</p>
         </div>
 
         {/* Pending Crowdsourced Links */}
         <div style={{ marginBottom: '3rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-             <h2 style={{ fontSize: '1.5rem', fontWeight: 600 }}>Action Required: Submitted URLs</h2>
-             <span style={{ background: pendingLinks.length > 0 ? 'rgba(212,175,55,0.1)' : 'rgba(255,255,255,0.05)', color: pendingLinks.length > 0 ? 'var(--gold)' : '#666', padding: '0.4rem 0.8rem', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 600 }}>
+             <h2 style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--forest)' }}>Action Required: Submitted URLs</h2>
+             <span style={{ background: pendingLinks.length > 0 ? 'rgba(230, 194, 122, 0.2)' : 'rgba(0,0,0,0.05)', color: pendingLinks.length > 0 ? 'var(--gold-dark)' : 'var(--mist)', padding: '0.4rem 0.8rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 700 }}>
                {pendingLinks.length} Pending
              </span>
           </div>
-          <div style={{ background: '#111', border: '1px solid #222', borderRadius: '12px', overflow: 'hidden' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
-              <thead>
-                <tr style={{ background: '#1a1a1a', borderBottom: '1px solid #333' }}>
-                  <th style={{ padding: '1rem', color: '#888', fontWeight: 500 }}>DATE</th>
-                  <th style={{ padding: '1rem', color: '#888', fontWeight: 500 }}>ENTITY ID</th>
-                  <th style={{ padding: '1rem', color: '#888', fontWeight: 500 }}>SUBMITTED URL</th>
-                  <th style={{ padding: '1rem', color: '#888', fontWeight: 500, textAlign: 'right' }}>ACTION</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pendingLinks.map(link => (
-                  <tr key={link.id} style={{ borderBottom: '1px solid #222' }}>
-                    <td style={{ padding: '1rem', color: '#ccc' }}>{new Date(link.createdAt || '').toLocaleDateString()}</td>
-                    <td style={{ padding: '1rem', color: '#ccc' }}>
-                      {link.tournamentId ? `Tournament ID: ${link.tournamentId}` : ''}
-                      {link.courseId ? `Course ID: ${link.courseId}` : ''}
-                    </td>
-                    <td style={{ padding: '1rem', color: '#ccc' }}>
-                      <a href={link.submittedUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--gold)', textDecoration: 'underline' }}>{link.submittedUrl}</a>
-                    </td>
-                    <td style={{ padding: '1rem', textAlign: 'right' }}>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+             {pendingLinks.map(link => (
+                <div key={link.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--white)', border: '1px solid rgba(0,0,0,0.05)', padding: '1.25rem 1.5rem', borderRadius: '8px', transition: 'transform 0.2s, box-shadow 0.2s', boxShadow: 'var(--shadow-sm)' }}>
+                   
+                   <div style={{ flex: 1 }}>
+                      <div style={{ color: 'var(--mist)', fontSize: '0.85rem', marginBottom: '0.2rem' }}>Submitted</div>
+                      <div style={{ color: 'var(--forest)', fontWeight: 600 }}>{new Date(link.createdAt || '').toLocaleDateString()}</div>
+                   </div>
+
+                   <div style={{ flex: 1 }}>
+                      <div style={{ color: 'var(--mist)', fontSize: '0.85rem', marginBottom: '0.2rem' }}>Entity Target</div>
+                      <div style={{ color: 'var(--forest)', fontWeight: 600 }}>
+                         {link.tournamentId ? `Tournament ID: ${link.tournamentId}` : ''}
+                         {link.courseId ? `Course ID: ${link.courseId}` : ''}
+                      </div>
+                   </div>
+
+                   <div style={{ flex: 2 }}>
+                      <div style={{ color: 'var(--mist)', fontSize: '0.85rem', marginBottom: '0.2rem' }}>Proposed URL</div>
+                      <a href={link.submittedUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--gold-dark)', textDecoration: 'underline', fontWeight: 600 }}>{link.submittedUrl}</a>
+                   </div>
+
+                   <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
                       <form action={acceptMissingLink}>
                         <input type="hidden" name="linkId" value={link.id} />
-                        <button type="submit" style={{ background: 'var(--grass)', color: 'white', border: 'none', padding: '0.4rem 0.8rem', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem' }}>Accept & Publish</button>
+                        <button type="submit" style={{ background: 'var(--green-soft)', color: 'var(--white)', border: 'none', padding: '0.6rem 1.2rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 700, boxShadow: '0 4px 10px rgba(91, 123, 97, 0.2)' }}>Accept & Publish</button>
                       </form>
-                    </td>
-                  </tr>
-                ))}
-                {pendingLinks.length === 0 && (
-                  <tr>
-                    <td colSpan={4} style={{ padding: '2rem', textAlign: 'center', color: '#666' }}>Inbox zero. No pending URLs to review.</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                   </div>
+                </div>
+             ))}
+             {pendingLinks.length === 0 && (
+                <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--mist)', background: 'var(--white)', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px' }}>
+                   Inbox zero. No pending URLs to review.
+                </div>
+             )}
           </div>
         </div>
 
         {/* Pending 501(c)(3) Applications */}
         <div style={{ marginBottom: '3rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-             <h2 style={{ fontSize: '1.5rem', fontWeight: 600 }}>Action Required: 501(c)(3) Fiscal Sponsorship Apps</h2>
-             <span style={{ background: pendingApplications.length > 0 ? 'rgba(212,175,55,0.1)' : 'rgba(255,255,255,0.05)', color: pendingApplications.length > 0 ? 'var(--gold)' : '#666', padding: '0.4rem 0.8rem', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 600 }}>
+             <Tooltip content={
+                <div>
+                   <strong style={{ color: 'var(--admin-gold-light)' }}>What is this?</strong> Approving this application instantly routes processing volume through the G.O.L.F. Foundation holding account, bypassing the host&apos;s standard Stripe connect requirement.
+                </div>
+             }>
+                 <h2 style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--forest)', borderBottom: '1px dotted var(--mist)', cursor: 'help', display: 'inline-block' }}>Action Required: 501(c)(3) Fiscal Sponsorship Apps</h2>
+             </Tooltip>
+             <span style={{ background: pendingApplications.length > 0 ? 'rgba(230, 194, 122, 0.2)' : 'rgba(0,0,0,0.05)', color: pendingApplications.length > 0 ? 'var(--gold-dark)' : 'var(--mist)', padding: '0.4rem 0.8rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 700 }}>
                {pendingApplications.length} Pending
              </span>
           </div>
-          <div style={{ background: '#111', border: '1px solid #222', borderRadius: '12px', overflow: 'hidden' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
-              <thead>
-                <tr style={{ background: '#1a1a1a', borderBottom: '1px solid #333' }}>
-                  <th style={{ padding: '1rem', color: '#888', fontWeight: 500 }}>DATE</th>
-                  <th style={{ padding: '1rem', color: '#888', fontWeight: 500 }}>CAMPAIGN / ID</th>
-                  <th style={{ padding: '1rem', color: '#888', fontWeight: 500 }}>DATA</th>
-                  <th style={{ padding: '1rem', color: '#888', fontWeight: 500, textAlign: 'right' }}>ACTION</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pendingApplications.map(app => {
-                  let parsedData = null;
-                  try {
-                     if(app.golfApplicationData) parsedData = JSON.parse(app.golfApplicationData);
-                  } catch(e) {}
-                  return (
-                  <tr key={app.id} style={{ borderBottom: '1px solid #222' }}>
-                    <td style={{ padding: '1rem', color: '#ccc' }}>{new Date(app.createdAt || '').toLocaleDateString()}</td>
-                    <td style={{ padding: '1rem', color: '#ccc' }}>
-                      <div style={{ fontWeight: 600, color: 'var(--gold)' }}>{app.name}</div>
-                      <div style={{ fontSize: '0.8rem', color: '#666' }}>ID: {app.id}</div>
-                    </td>
-                    <td style={{ padding: '1rem', color: '#ccc', fontSize: '0.8rem', maxWidth: '400px' }}>
-                      <div style={{ marginBottom: '0.5rem' }}><strong>Cause:</strong> {parsedData?.cause || 'N/A'}</div>
-                      <div><strong>Disbursement:</strong> {parsedData?.payoutInfo || 'N/A'}</div>
-                    </td>
-                    <td style={{ padding: '1rem', textAlign: 'right' }}>
-                      <form action={approveGolfApplication}>
-                        <input type="hidden" name="tournamentId" value={app.id} />
-                        <button type="submit" style={{ background: 'var(--gold)', color: 'black', border: 'none', padding: '0.6rem 1.2rem', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 800 }}>Approve & Route</button>
-                      </form>
-                    </td>
-                  </tr>
-                  );
-                })}
-                {pendingApplications.length === 0 && (
-                  <tr>
-                    <td colSpan={4} style={{ padding: '2rem', textAlign: 'center', color: '#666' }}>Queue empty. All hosts are compliant and approved!</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+             {pendingApplications.map(app => {
+                let parsedData = null;
+                try {
+                   if(app.golfApplicationData) parsedData = JSON.parse(app.golfApplicationData);
+                } catch(e) {}
+                
+                return (
+                   <div key={app.id} className="lux-card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--white)', border: '1px solid rgba(0,0,0,0.05)', padding: '1.25rem 1.5rem', borderRadius: '8px', boxShadow: 'var(--shadow-sm)' }}>
+                      
+                      <div style={{ flex: 1 }}>
+                         <div style={{ color: 'var(--mist)', fontSize: '0.85rem', marginBottom: '0.2rem' }}>Submitted</div>
+                         <div style={{ color: 'var(--forest)', fontWeight: 600 }}>{new Date(app.createdAt || '').toLocaleDateString()}</div>
+                      </div>
+
+                      <div style={{ flex: 1.5 }}>
+                         <div style={{ color: 'var(--mist)', fontSize: '0.85rem', marginBottom: '0.2rem' }}>Campaign / ID</div>
+                         <div style={{ fontWeight: 700, color: 'var(--forest)' }}>{app.name}</div>
+                         <div style={{ fontSize: '0.8rem', color: 'var(--mist)' }}>ID: {app.id}</div>
+                      </div>
+
+                      <div style={{ flex: 2 }}>
+                         <div style={{ color: 'var(--mist)', fontSize: '0.85rem', marginBottom: '0.2rem' }}>Tax / Payout Data</div>
+                         <div style={{ color: 'var(--forest)', fontSize: '0.9rem' }}>
+                            <div style={{ marginBottom: '0.2rem' }}><strong style={{ color: 'var(--ink)' }}>Cause:</strong> {parsedData?.cause || 'N/A'}</div>
+                            <div><strong style={{ color: 'var(--ink)' }}>Disbursement:</strong> {parsedData?.payoutInfo || 'N/A'}</div>
+                         </div>
+                      </div>
+
+                      <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
+                         <form action={approveGolfApplication}>
+                           <input type="hidden" name="tournamentId" value={app.id} />
+                           <button type="submit" className="lux-btn" style={{ background: 'var(--gold-foil)', color: 'var(--ink)', border: 'none', padding: '0.6rem 1.2rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 800, boxShadow: 'var(--metallic-shadow)' }}>Approve & Route</button>
+                         </form>
+                      </div>
+                   </div>
+                );
+             })}
+             {pendingApplications.length === 0 && (
+                <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--mist)', background: 'var(--white)', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '8px' }}>
+                   Queue empty. All hosts are compliant and approved!
+                </div>
+             )}
           </div>
         </div>
 

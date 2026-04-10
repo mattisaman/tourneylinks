@@ -34,6 +34,26 @@
   --gold-foil: linear-gradient(135deg, #FFDF73 0%, #C5A059 40%, #8A6825 100%);
   --gold-foil-light: linear-gradient(135deg, #FFF8E7 0%, #FFDF73 30%, #C5A059 100%);
   --metallic-shadow: inset 1px 1px 3px rgba(255,255,255,0.4), inset -1px -1px 4px rgba(0,0,0,0.5), 0 8px 20px rgba(197, 160, 89, 0.25);
+  
+  /* ========== MAX PRO ADMIN HUB PALETTE ========== */
+  --admin-gold-light: #E6C27A;
+  --admin-green-soft: #5B7B61;
+  --admin-forest-dark: #032115;
+  --admin-sand: #E2D7B4;
+  --admin-golf-white: #F7F9FA;
+  --admin-pin-red: #D13438;
+  --admin-bark-brown: #4A3B2C;
+  
+  /* ========== AMBIENT GLASSMORPHISM ENGINE ========== */
+  --admin-gradient-green: linear-gradient(135deg, #6AB085 0%, #317A54 100%);
+  --admin-gradient-gold: linear-gradient(135deg, #FBEAA7 0%, #D4A950 100%);
+  --admin-gradient-dark: linear-gradient(135deg, #103F2C 0%, #03180F 100%);
+  --admin-gradient-blurple: linear-gradient(135deg, #B2A2FA 0%, #7E63EE 100%);
+  
+  --admin-glow-green: 0 16px 32px -8px rgba(49, 122, 84, 0.45);
+  --admin-glow-gold: 0 16px 32px -8px rgba(212, 169, 80, 0.45);
+  --admin-glow-dark: 0 16px 32px -8px rgba(3, 24, 15, 0.6);
+  --admin-glow-blurple: 0 16px 32px -8px rgba(126, 99, 238, 0.45);
 }
 
 /* ========== PRISTINE LIGHTING ENGINE ========== */

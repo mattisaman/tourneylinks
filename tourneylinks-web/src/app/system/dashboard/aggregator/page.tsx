@@ -2,6 +2,7 @@ import React from 'react';
 import { db, tournaments } from '@/lib/db';
 import { sql, desc } from 'drizzle-orm';
 import { Download } from 'lucide-react';
+import { Tooltip } from '@/components/ui/Tooltip';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,67 +18,107 @@ export default async function AggregatorDashboard() {
 
   return (
     <div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2.5rem' }}>
           <div>
-            <h1 style={{ fontSize: '2.5rem', fontWeight: 700, margin: '0 0 0.5rem 0', color: '#fff' }}>Global Aggregator</h1>
-            <p style={{ color: '#888', margin: 0 }}>The Master Data Mine for Sponsorships and Analytics</p>
+            <h1 style={{ fontSize: '2.5rem', fontWeight: 800, margin: '0 0 0.5rem 0', color: 'var(--forest)', letterSpacing: '-0.5px' }}>Global Aggregator</h1>
+            <p style={{ color: 'var(--mist)', margin: 0, fontSize: '0.95rem' }}>The Master Data Mine and Crawler Control Center</p>
           </div>
           
-          {/* Mock Export Button for future CSV Hook */}
-          <button style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.25rem', background: '#222', color: '#fff', border: '1px solid #333', borderRadius: '6px', fontWeight: 600, cursor: 'pointer' }}>
-            <Download size={16} /> Export to CSV
-          </button>
+          <div style={{ display: 'flex', gap: '1rem' }}>
+             <button style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.8rem 1.5rem', background: 'var(--white)', color: 'var(--forest)', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', boxShadow: 'var(--shadow-sm)' }}>
+               <Download size={16} /> Export CSV
+             </button>
+             <button style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.8rem 1.5rem', background: 'var(--gold-foil)', color: 'var(--ink)', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', boxShadow: 'var(--metallic-shadow)', transition: 'transform 0.2s' }}>
+               Deploy Regional Crawlers
+             </button>
+          </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginBottom: '2rem' }}>
-            <div style={{ background: '#111', border: '1px solid #222', borderRadius: '12px', padding: '1.5rem' }}>
-                <div style={{ color: '#888', fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>Total Indexed Events</div>
-                <div style={{ fontSize: '2rem', fontWeight: 800, color: '#fff', marginTop: '0.5rem' }}>{stats?.total?.toLocaleString()}</div>
+        {/* Master Statistics */}
+        {/* Master Statistics (Glassmorphism Core) */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginBottom: '3rem' }}>
+            {/* Soft Green Card */}
+            <div style={{ background: 'var(--admin-gradient-green)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '1.75rem', boxShadow: 'var(--admin-glow-green)' }}>
+                <Tooltip content={
+                    <div>
+                        <strong style={{ color: 'var(--admin-gold-light)' }}>What is this?</strong> Represents the total size of your current data asset spanning the entire US Golf network.
+                    </div>
+                }>
+                    <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px', borderBottom: '1px dotted rgba(255,255,255,0.4)', display: 'inline-block' }}>Global Indexed Volume</div>
+                </Tooltip>
+                <div style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--white)', marginTop: '0.5rem' }}>{stats?.total?.toLocaleString()}</div>
             </div>
-            <div style={{ background: '#111', border: '1px solid #222', borderRadius: '12px', padding: '1.5rem' }}>
-                <div style={{ color: '#888', fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>Charity Events</div>
-                <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--blue)', marginTop: '0.5rem' }}>{stats?.charityCount?.toLocaleString()}</div>
+            
+            {/* Gold Card */}
+            <div style={{ background: 'var(--admin-gradient-gold)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '12px', padding: '1.75rem', boxShadow: 'var(--admin-glow-gold)' }}>
+                <Tooltip content={
+                    <div>
+                        <strong style={{ color: 'var(--admin-gold-light)' }}>Why track this?</strong> Fortune 500 companies exclusively deploy their golf marketing budgets toward fully verified 501(c)(3) events to claim corporate tax write-offs. This density metric proves the premium acquisition value of your network.
+                    </div>
+                }>
+                    <div style={{ color: 'rgba(0,0,0,0.6)', fontSize: '0.85rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', borderBottom: '1px dotted rgba(0,0,0,0.3)', display: 'inline-block' }}>Verified Charity Density</div>
+                </Tooltip>
+                <div style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--forest)', marginTop: '0.5rem' }}>{stats?.charityCount?.toLocaleString()}</div>
             </div>
-            <div style={{ background: '#111', border: '1px dashed var(--gold)', borderRadius: '12px', padding: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)', fontWeight: 600 }}>
-                Interactive Filtering Engine Coming Phase 40
+            
+            {/* Dark Forest Node Card */}
+            <div style={{ background: 'var(--admin-gradient-dark)', border: '1px solid var(--emerald)', borderRadius: '12px', padding: '1.75rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', boxShadow: 'var(--admin-glow-dark)' }}>
+                <Tooltip content={
+                    <div>
+                        <strong style={{ color: 'var(--admin-gold-light)' }}>System Health:</strong> These are the live scraping engines pulling fresh network data continuously into your central database.
+                    </div>
+                }>
+                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem', borderBottom: '1px dotted rgba(255,255,255,0.3)', display: 'inline-block' }}>Active Crawler Nodes</div>
+                </Tooltip>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                   <div style={{ width: '12px', height: '12px', background: 'var(--teal-light)', borderRadius: '50%', boxShadow: '0 0 12px var(--teal-light)' }}></div>
+                   <span style={{ color: 'var(--white)', fontWeight: 700, fontSize: '1.2rem' }}>14 Nodes Operational</span>
+                </div>
             </div>
         </div>
 
-        <div style={{ background: '#111', border: '1px solid #222', borderRadius: '12px', overflow: 'scroll', maxHeight: '70vh' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem', whiteSpace: 'nowrap' }}>
-                <thead style={{ position: 'sticky', top: 0, background: '#1a1a1a', zIndex: 10 }}>
-                    <tr>
-                        <th style={{ padding: '1rem', color: '#888', fontWeight: 500, borderBottom: '1px solid #333' }}>TOURNAMENT NAME</th>
-                        <th style={{ padding: '1rem', color: '#888', fontWeight: 500, borderBottom: '1px solid #333' }}>STATE</th>
-                        <th style={{ padding: '1rem', color: '#888', fontWeight: 500, borderBottom: '1px solid #333' }}>COURSE</th>
-                        <th style={{ padding: '1rem', color: '#888', fontWeight: 500, borderBottom: '1px solid #333' }}>DATE</th>
-                        <th style={{ padding: '1rem', color: '#888', fontWeight: 500, borderBottom: '1px solid #333' }}>TYPE</th>
-                        <th style={{ padding: '1rem', color: '#888', fontWeight: 500, borderBottom: '1px solid #333' }}>ENTRY FEE</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {allTournaments.map(t => (
-                    <tr key={t.id} style={{ borderBottom: '1px solid #222' }}>
-                        <td style={{ padding: '1rem', color: '#fff', fontWeight: 500, maxWidth: '250px', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t.name}</td>
-                        <td style={{ padding: '1rem', color: '#ccc' }}>
-                           <span style={{ background: '#222', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>{t.courseState}</span>
-                        </td>
-                        <td style={{ padding: '1rem', color: '#ccc', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t.courseName}</td>
-                        <td style={{ padding: '1rem', color: '#ccc' }}>{t.dateStart}</td>
-                        <td style={{ padding: '1rem' }}>
-                            {t.isCharity ? (
-                                <span style={{ color: '#4CAF50', background: 'rgba(76,175,80,0.1)', padding: '0.2rem 0.5rem', borderRadius: '4px', fontSize: '0.75rem' }}>Charity</span>
-                            ) : (
-                                <span style={{ color: '#888', background: 'rgba(255,255,255,0.05)', padding: '0.2rem 0.5rem', borderRadius: '4px', fontSize: '0.75rem' }}>Private/Open</span>
-                            )}
-                        </td>
-                        <td style={{ padding: '1rem', color: 'var(--gold)', fontWeight: 600 }}>
-                            {t.entryFee ? `$${t.entryFee}` : 'TBD'}
-                        </td>
-                    </tr>
-                    ))}
-                </tbody>
-            </table>
+        {/* Data Cards Feed (Light Luxury Overhaul) */}
+        <div>
+            <style dangerouslySetInnerHTML={{__html: `
+              .lux-card { transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; }
+              .lux-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md) !important; }
+            `}} />
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--forest)', marginBottom: '1rem', borderBottom: '1px solid rgba(0,0,0,0.1)', paddingBottom: '1rem' }}>Latest Indexed Tournaments</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {allTournaments.map(t => (
+                   <div key={t.id} className="lux-card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--white)', border: '1px solid rgba(0,0,0,0.05)', padding: '1.25rem 1.5rem', borderRadius: '8px', boxShadow: 'var(--shadow-sm)' }}>
+                      
+                      <div style={{ flex: 2 }}>
+                         <h3 style={{ margin: '0 0 0.25rem 0', color: 'var(--forest)', fontSize: '1.1rem', fontWeight: 700 }}>{t.name}</h3>
+                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--mist)', fontSize: '0.85rem' }}>
+                            <span>{t.courseName}</span>
+                            <span>•</span>
+                            <span style={{ fontWeight: 600 }}>{t.courseCity}, {t.courseState}</span>
+                         </div>
+                      </div>
+
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                         <div style={{ color: 'var(--mist)', fontSize: '0.85rem', marginBottom: '0.2rem' }}>Event Date</div>
+                         <div style={{ color: 'var(--forest)', fontWeight: 600 }}>{t.dateStart || 'TBD'}</div>
+                      </div>
+
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                         <div style={{ color: 'var(--mist)', fontSize: '0.85rem', marginBottom: '0.2rem' }}>Classification</div>
+                         {t.isCharity ? (
+                             <span style={{ color: 'var(--admin-green-soft)', background: 'rgba(91, 123, 97, 0.1)', border: '1px solid rgba(91, 123, 97, 0.2)', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700 }}>Charity Asset</span>
+                         ) : (
+                             <span style={{ color: 'var(--mist)', background: 'rgba(0,0,0,0.03)', border: '1px solid rgba(0,0,0,0.05)', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>Private / Corp</span>
+                         )}
+                      </div>
+
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                         <div style={{ color: 'var(--mist)', fontSize: '0.85rem', marginBottom: '0.2rem' }}>Entry Fee</div>
+                         <div style={{ color: 'var(--gold-dark)', fontWeight: 800, fontSize: '1.2rem' }}>{t.entryFee ? `$${t.entryFee}` : 'TBD'}</div>
+                      </div>
+
+                   </div>
+                ))}
+            </div>
         </div>
     </div>
   );
