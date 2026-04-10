@@ -219,7 +219,7 @@ export default function SponsorPipelineBoard({ tournamentId }: { tournamentId: n
     <div className="flex flex-1 w-full h-full relative gap-8">
       
       {/* Persistant Left Sidebar replacing the discovery modal */}
-      <div className="shrink-0 z-20 bg-white rounded-3xl shadow-sm border border-neutral-200 overflow-hidden flex flex-col">
+      <div className="shrink-0 z-20 bg-white rounded-md shadow-sm border border-neutral-200 overflow-hidden flex flex-col">
         <SponsorDiscoverySidebar 
           onAssignLead={handleAssignMarketplaceLead} 
         />
@@ -232,7 +232,7 @@ export default function SponsorPipelineBoard({ tournamentId }: { tournamentId: n
         <div className="shrink-0 flex items-center justify-end px-2">
            <button 
              onClick={() => setIsAIModalOpen(true)}
-             className="flex items-center gap-2 px-5 py-2.5 bg-[#FAF9F6] border border-[#e8eada] text-[#0a120e] font-bold text-sm rounded-xl hover:bg-white hover:border-[var(--gold)] hover:text-[var(--gold)] shadow-sm hover:shadow-[0_0_15px_rgba(212,175,55,0.2)] transition-all group"
+             className="flex items-center gap-2 px-5 py-2.5 bg-[#FAF9F6] border border-[#e8eada] text-[#0a120e] font-bold text-sm rounded-md hover:bg-white hover:border-[var(--gold)] hover:text-[var(--gold)] shadow-sm hover:shadow-[0_0_15px_rgba(212,175,55,0.2)] transition-all group"
            >
              <Wand2 className="w-4 h-4 text-[var(--gold)] group-hover:animate-pulse" />
              AI Bulk Import
@@ -288,20 +288,20 @@ export default function SponsorPipelineBoard({ tournamentId }: { tournamentId: n
       {leadToDelete && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-[#0a120e]/60 backdrop-blur-sm" onClick={() => setLeadToDelete(null)}></div>
-          <div className="bg-[#FAF9F6] border border-[#e8eada] rounded-2xl shadow-2xl relative z-10 w-full max-w-md p-8 text-center animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-[#FAF9F6] border border-[#e8eada] rounded-md shadow-2xl relative z-10 w-full max-w-md p-8 text-center animate-in fade-in zoom-in-95 duration-200">
             <Trash2 className="w-12 h-12 text-red-500 mx-auto mb-4" />
             <h3 className="text-2xl font-bold text-[#0a120e] mb-2" style={{ fontFamily: 'var(--font-serif), var(--font-cinzel), serif' }}>Remove Lead?</h3>
             <p className="text-neutral-500 mb-8">Are you sure you want to completely remove this sponsor lead from your pipeline? This action cannot be undone.</p>
             <div className="flex gap-4">
               <button 
                 onClick={() => setLeadToDelete(null)} 
-                className="flex-1 py-3 border border-[#e8eada] text-[#0a120e] font-bold rounded-xl hover:bg-neutral-50 transition-colors"
+                className="flex-1 py-3 border border-[#e8eada] text-[#0a120e] font-bold rounded-md hover:bg-neutral-50 transition-colors"
               >
                 Cancel
               </button>
               <button 
                 onClick={confirmDeleteLead} 
-                className="flex-1 py-3 bg-red-500 text-white font-bold rounded-xl shadow-[0_0_15px_rgba(239,68,68,0.3)] hover:scale-[1.02] transition-transform"
+                className="flex-1 py-3 bg-red-500 text-white font-bold rounded-md shadow-[0_0_15px_rgba(239,68,68,0.3)] hover:scale-[1.02] transition-transform"
               >
                 Remove
               </button>
@@ -313,13 +313,13 @@ export default function SponsorPipelineBoard({ tournamentId }: { tournamentId: n
       {duplicateWarning && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-[#0a120e]/60 backdrop-blur-sm" onClick={() => setDuplicateWarning(null)}></div>
-          <div className="bg-[#FAF9F6] border border-[var(--gold)] rounded-2xl shadow-2xl relative z-10 w-full max-w-sm p-6 text-center animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-[#FAF9F6] border border-[var(--gold)] rounded-md shadow-2xl relative z-10 w-full max-w-sm p-6 text-center animate-in fade-in zoom-in-95 duration-200">
             <ShieldCheck className="w-10 h-10 text-[var(--gold)] mx-auto mb-3" />
             <h3 className="text-xl font-bold text-[#0a120e] mb-2">Duplicate Entry</h3>
             <p className="text-neutral-500 mb-6 font-medium">{duplicateWarning}</p>
             <button 
               onClick={() => setDuplicateWarning(null)} 
-              className="w-full py-3 bg-[var(--gold)] text-black font-bold rounded-xl shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:scale-[1.02] transition-transform"
+              className="w-full py-3 bg-[var(--gold)] text-black font-bold rounded-md shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:scale-[1.02] transition-transform"
             >
               Got it
             </button>

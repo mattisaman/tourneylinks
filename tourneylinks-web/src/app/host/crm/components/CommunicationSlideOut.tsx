@@ -62,7 +62,7 @@ export default function CommunicationSlideOut({ isOpen, onClose, lead, onSaveNot
   return (
     <div className={`fixed inset-y-0 right-0 bg-white border-l border-[#e8eada] shadow-[-10px_0_30px_rgba(0,0,0,0.05)] transform transition-transform duration-300 ease-in-out z-[100] flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'}`} style={{ width: '100%', maxWidth: '500px' }}>
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-[#e8eada] bg-[#FAF9F6]" style={{ padding: '24px' }}>
+      <div className="flex items-center justify-between border-b border-[#e8eada] bg-[#FAF9F6] shrink-0" style={{ padding: '24px' }}>
         <div className="flex items-center gap-3">
           {lead.companyLogoUrl && (
             <div className="w-10 h-10 bg-white rounded-full p-1 flex items-center justify-center shrink-0 shadow-md">
@@ -79,12 +79,13 @@ export default function CommunicationSlideOut({ isOpen, onClose, lead, onSaveNot
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto space-y-8" style={{ padding: '32px', scrollbarWidth: 'thin', scrollbarColor: 'rgba(212,175,55,0.3) transparent' }}>
+      <div className="flex-1 overflow-y-auto space-y-8" style={{ padding: '32px', paddingBottom: '64px', scrollbarWidth: 'thin', scrollbarColor: 'rgba(212,175,55,0.3) transparent' }}>
         {/* Internal Notes Section */}
         <section>
           <label className="block text-sm font-bold text-[#0a120e] mb-2">Internal Scratchpad</label>
           <textarea
-            className="w-full h-32 p-3 border border-[#e8eada] rounded-lg text-sm focus:ring-2 focus:ring-[var(--gold)] bg-[#FAF9F6] text-[#0a120e] resize-none shadow-sm outline-none transition-all"
+            className="w-full p-3 border border-[#e8eada] rounded-md text-sm focus:ring-2 focus:ring-[var(--gold)] bg-[#FAF9F6] text-[#0a120e] resize-none shadow-sm outline-none transition-all leading-relaxed"
+            style={{ lineHeight: '1.6', paddingTop: '16px', minHeight: '128px' }}
             placeholder="Jot down notes from calls, preferences, e.g. 'Loves the 8am shotgun start idea'..."
             value={internalNote}
             onChange={(e) => setInternalNote(e.target.value)}
@@ -113,25 +114,29 @@ export default function CommunicationSlideOut({ isOpen, onClose, lead, onSaveNot
               <input
                 type="text"
                 disabled
+                style={{ lineHeight: '1.6', paddingTop: '10px' }}
                 value={lead.contactEmail || `Missing email for ${lead.contactName || 'contact'}`}
-                className="w-full bg-neutral-50 border border-[#e8eada] rounded-md px-3 py-2 text-sm text-neutral-500 outline-none cursor-not-allowed"
+                className="w-full bg-neutral-50 border border-[#e8eada] rounded-md px-3 pb-2 text-sm text-neutral-500 outline-none cursor-not-allowed leading-relaxed"
               />
             </div>
             <div>
               <label className="block text-xs text-neutral-400 mb-1">Subject</label>
               <input
                 type="text"
+                style={{ lineHeight: '1.6', paddingTop: '10px' }}
                 value={emailSubject}
                 onChange={(e) => setEmailSubject(e.target.value)}
-                className="w-full bg-white border border-[#e8eada] rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-[var(--gold)] outline-none transition-all"
+                className="w-full bg-white border border-[#e8eada] rounded-md px-3 pb-2 text-sm focus:ring-1 focus:ring-[var(--gold)] outline-none transition-all leading-relaxed"
               />
             </div>
             <div>
               <label className="block text-xs text-neutral-400 mb-1">Message</label>
               <textarea
                 value={emailBody}
+                rows={15}
+                style={{ lineHeight: '1.6', paddingTop: '16px' }}
                 onChange={(e) => setEmailBody(e.target.value)}
-                className="w-full h-48 p-3 bg-white border border-[#e8eada] rounded-md text-sm focus:ring-1 focus:ring-[var(--gold)] resize-none outline-none transition-all"
+                className="w-full px-3 pb-3 bg-white border border-[#e8eada] rounded-md text-sm focus:ring-1 focus:ring-[var(--gold)] resize-y outline-none transition-all leading-relaxed"
               />
             </div>
           </div>
@@ -141,13 +146,13 @@ export default function CommunicationSlideOut({ isOpen, onClose, lead, onSaveNot
             <div className="flex items-center gap-3">
                <button 
                   onClick={() => setEmailBody(prev => prev + '\n\nPitch Deck: [Link]')}
-                  className="flex items-center gap-2 px-3 py-2 bg-white border border-[#e8eada] shadow-sm text-neutral-500 rounded-lg hover:text-[var(--gold)] transition-colors text-xs font-semibold"
+                  className="flex items-center gap-2 px-3 py-2 bg-white border border-[#e8eada] shadow-sm text-neutral-500 rounded-md hover:text-[var(--gold)] transition-colors text-xs font-semibold"
                >
                  <LinkIcon className="w-4 h-4" /> Pitch Link
                </button>
                <button 
                   onClick={() => setEmailBody(prev => prev + '\n\nPay via Stripe: [Link]')}
-                  className="flex items-center gap-2 px-3 py-2 bg-white border border-[#e8eada] shadow-sm text-[#2ecc71] rounded-lg hover:bg-[rgba(46,204,113,0.1)] transition-colors text-xs font-semibold"
+                  className="flex items-center gap-2 px-3 py-2 bg-white border border-[#e8eada] shadow-sm text-[#2ecc71] rounded-md hover:bg-[rgba(46,204,113,0.1)] transition-colors text-xs font-semibold"
                >
                  <CreditCard className="w-4 h-4" /> Payment Link
                </button>
@@ -156,31 +161,30 @@ export default function CommunicationSlideOut({ isOpen, onClose, lead, onSaveNot
             <div className="flex justify-end pt-2 border-t border-[#e8eada]">
               <button
                 onClick={handleSendEmail}
-                className="flex items-center gap-2 bg-[var(--gold)] hover:bg-[#b5952d] text-black px-5 py-2.5 rounded-lg text-sm font-extrabold tracking-wider transition-all shadow-[0_0_15px_rgba(212,175,55,0.4)] hover:scale-105"
+                className="flex items-center gap-2 bg-[var(--gold)] hover:bg-[#b5952d] text-black px-5 py-2.5 rounded-md text-sm font-extrabold tracking-wider transition-all shadow-[0_0_15px_rgba(212,175,55,0.4)] hover:scale-105"
               >
                 <Send className="w-4 h-4" /> SEND INMAIL
               </button>
             </div>
           </div>
         </section>
+      </div>
 
-        {/* Footer Controls */}
-        <div className="p-6 border-t border-[#e8eada] bg-[#FAF9F6] flex items-center justify-between shrink-0 shadow-[0_-10px_30px_rgba(0,0,0,0.02)]">
-          {onDeleteLead && (
-            <button 
-              onClick={() => onDeleteLead(lead.id)}
-              className="flex items-center gap-2 px-4 py-2 text-red-500 font-bold hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100 text-sm"
-            >
-              <Trash2 className="w-5 h-5" />
-              Remove Sponsor Lead
-            </button>
-          )}
-          <div className="flex items-center gap-2 text-xs font-bold text-neutral-400 uppercase tracking-widest ml-auto">
-            <span>In Pipeline</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#2ecc71] shadow-[0_0_8px_rgba(46,204,113,0.8)]"></span>
-          </div>
+      {/* Footer Controls */}
+      <div className="p-6 border-t border-[#e8eada] bg-[#FAF9F6] flex items-center justify-between shrink-0 shadow-[0_-10px_30px_rgba(0,0,0,0.02)]">
+        {onDeleteLead && (
+          <button 
+            onClick={() => onDeleteLead(lead.id)}
+            className="flex items-center gap-2 px-4 py-2 text-red-500 font-bold hover:bg-red-50 rounded-md transition-colors border border-transparent hover:border-red-100 text-sm"
+          >
+            <Trash2 className="w-5 h-5" />
+            Remove Sponsor Lead
+          </button>
+        )}
+        <div className="flex items-center gap-2 text-xs font-bold text-neutral-400 uppercase tracking-widest ml-auto">
+          <span>In Pipeline</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-[#2ecc71] shadow-[0_0_8px_rgba(46,204,113,0.8)]"></span>
         </div>
-
       </div>
     </div>
   );
