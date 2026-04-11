@@ -48,10 +48,10 @@ export default async function CourseClaimPage(props: { params: Promise<{ id: str
          1. Provides a beautiful dark backdrop so the transparent Top Navbar text remains legible. 
          2. Roots the design in the official Max Pro Palette var(--admin-forest-dark).
       */}
-      <div className="absolute top-0 left-0 right-0 h-[540px] z-0" style={{ background: 'linear-gradient(180deg, var(--admin-forest-dark) 0%, #053321 100%)' }} />
+      <div className="absolute top-0 left-0 right-0 h-[460px] z-0" style={{ background: 'linear-gradient(180deg, var(--admin-forest-dark) 0%, #053321 100%)' }} />
 
       {/* Subtle Canvas Dot Grid for Physical Texture (From Aggregator) */}
-      <div style={{ position: 'absolute', top: '540px', left: 0, right: 0, bottom: 0, backgroundImage: 'radial-gradient(rgba(0, 0, 0, 0.04) 2px, transparent 2px)', backgroundSize: '30px 30px', zIndex: 0, pointerEvents: 'none' }}></div>
+      <div style={{ position: 'absolute', top: '460px', left: 0, right: 0, bottom: 0, backgroundImage: 'radial-gradient(rgba(0, 0, 0, 0.04) 2px, transparent 2px)', backgroundSize: '30px 30px', zIndex: 0, pointerEvents: 'none' }}></div>
 
       {/* Ambient Glassmorphism Background Washes (From Aggregator) */}
       <div style={{ position: 'absolute', top: '300px', right: '-5%', width: '700px', height: '700px', background: 'radial-gradient(circle, rgba(230, 194, 122, 0.25) 0%, rgba(255,255,255,0) 70%)', filter: 'blur(70px)', zIndex: 0, pointerEvents: 'none', mixBlendMode: 'multiply' }}></div>
@@ -62,14 +62,14 @@ export default async function CourseClaimPage(props: { params: Promise<{ id: str
       <div className="w-full relative z-10 flex flex-col items-center pb-32 px-4 md:px-12">
          
          {/* Super Admin Header Pattern */}
-         <div className="w-full max-w-4xl mb-16 text-center md:text-left" style={{ marginTop: '180px' }}>
+         <div className="w-full max-w-7xl mb-12 text-center md:text-left" style={{ marginTop: '150px' }}>
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-8">
                <div className="flex-1">
                  <h1 className="text-5xl md:text-6xl font-serif font-bold tracking-tight mb-4" style={{ letterSpacing: '-0.5px', color: 'var(--admin-golf-white)', textShadow: '0 4px 20px rgba(0,0,0,0.4)' }}>
                    Course Administration Node
                  </h1>
-                 <p className="text-lg md:text-xl max-w-2xl leading-relaxed" style={{ color: 'var(--admin-sand)' }}>
-                   Securely bind <strong className="text-white font-bold">{course.name}</strong> to your Professional Account to unlock dynamic pricing, lead routing, and roster management.
+                 <p className="text-lg md:text-[19px] max-w-2xl leading-relaxed opacity-90" style={{ color: 'var(--admin-sand)' }}>
+                   Securely bind <strong className="text-white font-bold">{course.name}</strong> to your Professional Account to unlock advanced tournament management, integrated host portals, and consolidated contracting.
                  </p>
                </div>
                
@@ -82,7 +82,7 @@ export default async function CourseClaimPage(props: { params: Promise<{ id: str
          </div>
 
          {/* Centered Form Card (Aggregator Style) */}
-         <div className="w-full max-w-4xl bg-white border border-[rgba(0,0,0,0.04)] rounded-[2.5rem] p-10 md:p-16 shadow-[0_30px_80px_rgba(0,0,0,0.15)] relative z-20">
+         <div className="w-full max-w-7xl relative z-20">
             <ClaimCourseClient courseId={course.id} courseName={course.name} />
          </div>
 

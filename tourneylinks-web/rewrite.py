@@ -1,4 +1,5 @@
-"use client";
+with open("src/app/courses/[id]/claim/ClaimCourseClient.tsx", "w") as f:
+    f.write("""\"use client\";
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -264,3 +265,4 @@ export default function ClaimCourseClient({ courseId, courseName }: { courseId: 
     </form>
   );
 }
+""")
