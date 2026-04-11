@@ -40,37 +40,49 @@ export default async function CourseClaimPage(props: { params: Promise<{ id: str
   }
 
   return (
-    <div className="min-h-screen bg-[#050B08] flex flex-col pt-[80px]">
-      <div className="flex-1 w-full flex">
-         
-         {/* Left Side: Visuals */}
-         <div className="hidden lg:flex flex-1 relative bg-[#020503] border-r border-white/5 p-16 flex-col justify-between">
-           <div className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: course.heroImageUrl && course.heroImageUrl !== 'DEFAULT_GRADIENT' ? `url('${course.heroImageUrl}')` : "url('/hero-bg-4.jpg')", opacity: 0.2 }} />
-           <div className="absolute inset-0 z-0 bg-gradient-to-t from-[#020503] to-transparent" />
-           <div className="absolute inset-0 z-0 bg-gradient-to-r from-transparent to-[#050B08]" />
-           
-           <div className="relative z-10">
-             <Link href={`/courses/${courseId}`} className="inline-flex items-center gap-2 text-white/50 hover:text-[var(--gold)] text-sm tracking-widest uppercase mb-12 transition-colors">
-                <ChevronLeft size={16} /> Cancel
-             </Link>
-             <h1 className="text-5xl xl:text-6xl font-bold text-white tracking-tight" style={{ fontFamily: "'Clash Display', sans-serif" }}>
-               Claim Official Venue Access
-             </h1>
-             <p className="text-white/60 mt-6 text-lg leading-relaxed max-w-lg">
-               Securely lock {course.name} to your Pro Account to unlock dynamic pricing tools, direct tournament lead generation, and course roster management.
-             </p>
-           </div>
+    <div className="min-h-screen bg-[#FDFBF7] relative overflow-hidden font-sans">
+      
+      {/* 
+         DARK FOREST TOP HEADER 
+         Serves two purposes: 
+         1. Provides a beautiful dark backdrop so the transparent Top Navbar text remains legible. 
+         2. Roots the design in the official Max Pro Palette var(--admin-forest-dark).
+      */}
+      <div className="absolute top-0 left-0 right-0 h-[540px] z-0" style={{ background: 'linear-gradient(180deg, var(--admin-forest-dark) 0%, #053321 100%)' }} />
 
-           <div className="relative z-10 border-t border-white/10 pt-8">
-             <div className="flex items-center gap-4 text-white/40 text-sm font-mono tracking-widest uppercase mb-2">
-               Security Layer Active
-             </div>
-             <p className="text-white/30 text-xs">PGA Affiliation verification powered by Gemini OCR Infrastructure.</p>
-           </div>
+      {/* Subtle Canvas Dot Grid for Physical Texture (From Aggregator) */}
+      <div style={{ position: 'absolute', top: '540px', left: 0, right: 0, bottom: 0, backgroundImage: 'radial-gradient(rgba(0, 0, 0, 0.04) 2px, transparent 2px)', backgroundSize: '30px 30px', zIndex: 0, pointerEvents: 'none' }}></div>
+
+      {/* Ambient Glassmorphism Background Washes (From Aggregator) */}
+      <div style={{ position: 'absolute', top: '300px', right: '-5%', width: '700px', height: '700px', background: 'radial-gradient(circle, rgba(230, 194, 122, 0.25) 0%, rgba(255,255,255,0) 70%)', filter: 'blur(70px)', zIndex: 0, pointerEvents: 'none', mixBlendMode: 'multiply' }}></div>
+      <div style={{ position: 'absolute', bottom: '-10%', left: '-5%', width: '900px', height: '900px', background: 'radial-gradient(circle, rgba(91, 123, 97, 0.2) 0%, rgba(255,255,255,0) 80%)', filter: 'blur(90px)', zIndex: 0, pointerEvents: 'none', mixBlendMode: 'multiply' }}></div>
+      <div style={{ position: 'absolute', top: '40%', left: '30%', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(126, 99, 238, 0.08) 0%, rgba(255,255,255,0) 70%)', filter: 'blur(100px)', zIndex: 0, pointerEvents: 'none', mixBlendMode: 'multiply' }}></div>
+
+
+      <div className="w-full relative z-10 flex flex-col items-center pb-32 px-4 md:px-12">
+         
+         {/* Super Admin Header Pattern */}
+         <div className="w-full max-w-4xl mb-16 text-center md:text-left" style={{ marginTop: '180px' }}>
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-8">
+               <div className="flex-1">
+                 <h1 className="text-5xl md:text-6xl font-serif font-bold tracking-tight mb-4" style={{ letterSpacing: '-0.5px', color: 'var(--admin-golf-white)', textShadow: '0 4px 20px rgba(0,0,0,0.4)' }}>
+                   Course Administration Node
+                 </h1>
+                 <p className="text-lg md:text-xl max-w-2xl leading-relaxed" style={{ color: 'var(--admin-sand)' }}>
+                   Securely bind <strong className="text-white font-bold">{course.name}</strong> to your Professional Account to unlock dynamic pricing, lead routing, and roster management.
+                 </p>
+               </div>
+               
+               <div className="flex-shrink-0 pt-2">
+                  <Link href={`/courses/${courseId}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.8rem 1.6rem', background: 'rgba(255,255,255,0.1)', color: 'var(--admin-golf-white)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '12px', fontWeight: 600, fontSize: '0.95rem', cursor: 'pointer', transition: 'all 0.2s', backdropFilter: 'blur(10px)' }} className="hover:bg-white/20 shadow-md">
+                    <ChevronLeft size={18} /> Cancel Request
+                  </Link>
+               </div>
+            </div>
          </div>
 
-         {/* Right Side: Form Client */}
-         <div className="flex-1 lg:max-w-2xl w-full flex items-center justify-center p-8 lg:p-16 relative z-10">
+         {/* Centered Form Card (Aggregator Style) */}
+         <div className="w-full max-w-4xl bg-white border border-[rgba(0,0,0,0.04)] rounded-[2.5rem] p-10 md:p-16 shadow-[0_30px_80px_rgba(0,0,0,0.15)] relative z-20">
             <ClaimCourseClient courseId={course.id} courseName={course.name} />
          </div>
 

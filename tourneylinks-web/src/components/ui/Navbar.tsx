@@ -42,7 +42,7 @@ export default function Navbar() {
     return null;
   }
 
-  const isHubPage = pathname?.includes('/admin') || pathname?.includes('/host/crm') || pathname?.includes('/courses/dashboard') || pathname?.includes('/sponsor/dashboard');
+  const isHubPage = pathname?.includes('/admin') || pathname?.includes('/host/crm') || pathname?.includes('/courses/dashboard') || pathname?.includes('/sponsor/dashboard') || pathname?.includes('/claim');
   const navbarBackground = isHubPage 
     ? 'linear-gradient(135deg, #050B08 0%, #073b22 50%, #050B08 100%)' 
     : 'transparent';
