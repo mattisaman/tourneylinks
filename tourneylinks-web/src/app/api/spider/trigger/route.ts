@@ -16,33 +16,51 @@ export async function POST(req: Request) {
     // Identify absolute URL of this server to pass to QStash so it knows where the worker is.
     // In production, you would hardcode or read process.env.NEXT_PUBLIC_SITE_URL
     const protocol = req.headers.get('x-forwarded-proto') || 'http';
-    const host = req.headers.get('host');
+    const host = req.headers.get('host') || 'localhost:3000';
     const workerUrl = `${protocol}://${host}/api/spider/worker`;
+    const isLocal = host.includes('localhost') || host.includes('127.0.0.1') || host.includes('::1');
 
     const dispatched = [];
 
     // Fan-out execution: Fire individual stateless QStash jobs per region!
     for (const region of regions) {
-      // Fire 'Golf Scramble' per region
-      let msg1 = await qstash.publishJSON({
-        url: workerUrl,
-        body: { query: `Golf Scramble ${region}`, region },
-        retries: 3, // Auto-retry 3 times
-      });
-      
-      // Fire 'Charity Golf Tournament' per region
-      let msg2 = await qstash.publishJSON({
-        url: workerUrl,
-        body: { query: `Charity Golf Tournaments ${region}`, region },
-        retries: 3,
-      });
+      if (isLocal) {
+        // Bypass QStash for local development, async fire-and-forget
+        fetch(workerUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: `Golf Scramble ${region}`, region })
+        }).catch(console.error);
 
-      dispatched.push({ region, messages: [msg1.messageId, msg2.messageId] });
+        fetch(workerUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: `Charity Golf Tournaments ${region}`, region })
+        }).catch(console.error);
+
+        dispatched.push({ region, messages: ['dev_mock_id_1', 'dev_mock_id_2'] });
+      } else {
+        // Fire 'Golf Scramble' per region
+        let msg1 = await qstash.publishJSON({
+          url: workerUrl,
+          body: { query: `Golf Scramble ${region}`, region },
+          retries: 3, // Auto-retry 3 times
+        });
+        
+        // Fire 'Charity Golf Tournament' per region
+        let msg2 = await qstash.publishJSON({
+          url: workerUrl,
+          body: { query: `Charity Golf Tournaments ${region}`, region },
+          retries: 3,
+        });
+
+        dispatched.push({ region, messages: [msg1.messageId, msg2.messageId] });
+      }
     }
 
     return NextResponse.json({
       success: true,
-      orchestration: 'Upstash QStash',
+      orchestration: isLocal ? 'Local Background Node Fetch' : 'Upstash QStash',
       jobsQueued: dispatched.length * 2,
       details: dispatched
     });

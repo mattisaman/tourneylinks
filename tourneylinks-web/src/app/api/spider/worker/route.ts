@@ -20,9 +20,9 @@ async function searchGoogleSerpApi(query: string): Promise<string[]> {
     if (!json.organic_results) return [];
     
     const links = json.organic_results
-      .slice(0, 3) 
+      .slice(0, 7) 
       .map((r: any) => r.link)
-      .filter((url: string) => !url.includes('facebook') && !url.includes('instagram') && !url.includes('pinterest'));
+      .filter((url: string) => !url.includes('facebook') && !url.includes('instagram') && !url.includes('pinterest') && !url.includes('linkedin') && !url.includes('yelp'));
       
     return links;
   } catch (err) {
@@ -205,8 +205,8 @@ async function workerHandler(req: Request) {
         dateStart: parsed.dateStart || "TBD",
         courseName: parsed.courseName || "Unknown Course",
         courseId: courseIdLink,
-        courseCity: parsed.courseCity || region?.split(',')[0]?.trim(),
-        courseState: parsed.courseState || region?.split(',')[1]?.trim(),
+        courseCity: parsed.courseCity || region?.split(/[\s,]+/)[0]?.trim() || "Unknown",
+        courseState: parsed.courseState || region?.split(',')[1]?.trim() || region?.split(' ')[1]?.trim() || "Unknown",
         courseZip: courseZip,
         format: parsed.format || 'Scramble',
         description: parsed.description,
@@ -260,7 +260,12 @@ async function workerHandler(req: Request) {
 
 // Wrap the route with Upstash's signature verification middleware
 // Note: We provide fallback dummy keys to prevent Next.js static build from crashing if Vercel env vars aren't populated at build time.
-export const POST = verifySignatureAppRouter(workerHandler, {
-    currentSigningKey: process.env.QSTASH_CURRENT_SIGNING_KEY || "build_dummy_current_key",
-    nextSigningKey: process.env.QSTASH_NEXT_SIGNING_KEY || "build_dummy_next_key"
-});
+// LOCAL DEV BYPASS: If we are in development, skip signature checks so the local trigger node can asynchronously execute this without forging headers.
+const isLocalMode = process.env.NODE_ENV !== 'production';
+
+export const POST = isLocalMode 
+  ? workerHandler 
+  : verifySignatureAppRouter(workerHandler, {
+      currentSigningKey: process.env.QSTASH_CURRENT_SIGNING_KEY || "build_dummy_current_key",
+      nextSigningKey: process.env.QSTASH_NEXT_SIGNING_KEY || "build_dummy_next_key"
+  });
