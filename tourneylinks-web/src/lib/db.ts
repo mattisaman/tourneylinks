@@ -516,6 +516,7 @@ export const course_claims = pgTable('course_claims', {
   pgaCardImageUrl: text('pga_card_image_url').notNull(),
   extractedOcrText: text('extracted_ocr_text'), // AI payload validation mapping
   status: text('status').default('PENDING').notNull(), // 'PENDING', 'APPROVED', 'REJECTED'
+  coAdminEmails: text('co_admin_emails'), // JSON array of strings
   createdAt: timestamp('created_at').defaultNow().notNull(),
   reviewedAt: timestamp('reviewed_at'),
 });
