@@ -30,9 +30,13 @@ export default function LaunchShield({ isAuthd }: { isAuthd: boolean }) {
           />
         </div>
         
-        <h1 className="text-3xl md:text-5xl font-serif text-[#d6b772] text-center mb-4 tracking-wider">
+        <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif text-[#d6b772] text-center mb-6 tracking-wider">
           Launching Soon
         </h1>
+        
+        <h2 className="text-[#d6b772]/90 text-xl md:text-2xl font-serif text-center mb-10 max-w-2xl leading-snug">
+          Find a tournament anywhere in the U.S. to play in — or manage your own seamlessly without the scattered spreadsheets and paperwork.
+        </h2>
         
         <p className="text-[#aeb9b2] text-center text-lg md:text-xl font-sans max-w-2xl leading-relaxed">
           The unified golf ecosystem bridging the management and communication gaps between players, tournament hosts, sponsors, course professionals, and hospitality. We drive participation by empowering golfers to easily find and join any tournament in their searched area.
