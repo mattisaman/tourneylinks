@@ -35,7 +35,7 @@ export default function LaunchShield({ isAuthd }: { isAuthd: boolean }) {
         </h1>
         
         <p className="text-[#aeb9b2] text-center text-lg md:text-xl font-sans max-w-2xl leading-relaxed">
-          The unified golf ecosystem bridging the management and communication gaps between tournament hosts, sponsors, course professionals, and hospitality. We are driving participation by empowering golfers to easily discover and join local tournaments wherever they are.
+          The unified golf ecosystem bridging the management and communication gaps between players, tournament hosts, sponsors, course professionals, and hospitality. We drive participation by empowering golfers to easily find and join any tournament in their searched area.
         </p>
 
         {isAuthd && (
