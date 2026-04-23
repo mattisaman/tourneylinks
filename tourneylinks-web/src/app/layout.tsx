@@ -3,7 +3,9 @@ import { DM_Sans, Playfair_Display, DM_Mono, Great_Vibes, Cinzel, Cormorant_Gara
 import "./globals.css";
 import Navbar from "@/components/ui/Navbar";
 import Footer from "@/components/ui/Footer";
+import LaunchShield from "@/components/ui/LaunchShield";
 import { ClerkProvider } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs/server";
 import { Analytics } from "@vercel/analytics/react";
 
 const dmSans = DM_Sans({
@@ -61,20 +63,37 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const user = await currentUser();
+  const email = user?.emailAddresses[0]?.emailAddress;
+  
+  const allowedEmails = [
+    'joshuafribush@gmail.com',
+    'mattisaman@gmail.com'
+  ];
+  
+  const isAllowed = !!email && allowedEmails.includes(email);
+  const isAuthd = !!user;
+
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body
           className={`${dmSans.variable} ${playfair.variable} ${dmMono.variable} ${greatVibes.variable} ${cinzel.variable} ${cormorant.variable} antialiased font-sans`}
         >
-          <Navbar />
-          {children}
-          <Footer />
+          {!isAllowed ? (
+            <LaunchShield isAuthd={isAuthd} />
+          ) : (
+            <>
+              <Navbar />
+              {children}
+              <Footer />
+            </>
+          )}
           <script dangerouslySetInnerHTML={{ __html: `
             if ('serviceWorker' in navigator) {
               window.addEventListener('load', function() {
