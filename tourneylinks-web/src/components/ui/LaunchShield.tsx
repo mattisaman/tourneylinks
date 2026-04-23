@@ -31,11 +31,11 @@ export default function LaunchShield({ isAuthd }: { isAuthd: boolean }) {
         </div>
         
         <h1 className="text-3xl md:text-5xl font-serif text-[#d6b772] text-center mb-4 tracking-wider">
-          Coming Soon
+          Launching Soon
         </h1>
         
-        <p className="text-[#aeb9b2] text-center text-lg md:text-xl font-sans max-w-md">
-          The nationwide platform for golf tournament discovery and handicap verification is launching soon.
+        <p className="text-[#aeb9b2] text-center text-lg md:text-xl font-sans max-w-2xl leading-relaxed">
+          The unified golf ecosystem bridging the management and communication gaps between tournament hosts, sponsors, course professionals, and hospitality. We are driving participation by empowering golfers to easily discover and join local tournaments wherever they are.
         </p>
 
         {isAuthd && (
