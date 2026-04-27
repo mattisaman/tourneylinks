@@ -72,7 +72,8 @@ For EACH tournament found, extract these fields as JSON, adhering to the exact t
     "handicapRules": "string or null",
     "flighting": "string or null",
     "mulligansAllowed": true,
-    "skillLevelTarget": "Open / Beginner / Competitive"
+    "skillLevelTarget": "Open / Beginner / Competitive",
+    "eventTier": "Sanctioned/Pro | Charity/Fundraiser | Corporate/Private | Local Amateur"
   },
   "socialSignals": {
     "facebookEventId": "string or null",
@@ -101,6 +102,7 @@ RULES:
 - For format, pick the closest match. "Scramble" includes charity scrambles. "Best-ball" includes 2-man/4-man best ball.
 - entryFee should be a number (just the dollar amount, no $ sign).
 - isCharity = true if it's a fundraiser, charity event, or benefit tournament.
+- eventTier is critical: 'Sanctioned/Pro' for state associations/USGA qualifiers, 'Charity/Fundraiser' for benefits, 'Local Amateur' for standard golf course events, 'Corporate/Private' for private outings.
 - Be highly aggressive and SEMANTIC in capturing the 'registrationUrl'! Do NOT just look for specific words. Look for ANY link or URL that directs a user to the event's external website, registration portal, child detail page, or booking form, regardless of the exact link text (e.g. it might say 'Register', 'Website', 'Event Details', 'Click Here', or it might just be an embedded URL on an image). If a link functionally leads to the tournament's details or registration system, you MUST capture it as the registrationUrl. This is critical for our deep-crawling system.
 - Be highly aggressive in finding the exact course location. Look for full addresses in footers or headers to derive the courseZip.
 - Allow for the fact that you might be reading a "Tournament Directory Page" (multiple events) OR a specific "Tournament Detail Page" (one event). If it's a single event, extract all possible nested details (entryFee, maxPlayers, spotsRemaining, includes) perfectly.

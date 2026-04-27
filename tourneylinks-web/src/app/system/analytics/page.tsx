@@ -83,7 +83,8 @@ export default async function AnalyticsPage({
     courseCity: tournaments.courseCity,
     courseState: tournaments.courseState,
     format: tournaments.format,
-    entryFee: tournaments.entryFee
+    entryFee: tournaments.entryFee,
+    formatDetails: tournaments.formatDetails
   })
   .from(tournaments)
   .where(baseWhere)

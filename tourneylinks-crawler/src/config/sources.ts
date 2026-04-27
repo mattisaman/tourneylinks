@@ -52,7 +52,7 @@ export const SOURCES: CrawlSource[] = [
     id: 'usga-events',
     name: 'USGA Events',
     type: 'federation',
-    enabled: true,
+    enabled: false, // Disabled per user request (focus on non-sanctioned)
     seedUrls: [
       'https://www.usga.org/championships.html',
       'https://www.usga.org/amateur.html',
@@ -68,7 +68,7 @@ export const SOURCES: CrawlSource[] = [
     id: 'state-associations',
     name: 'State Golf Associations',
     type: 'federation',
-    enabled: true,
+    enabled: false, // Disabled per user request (focus on non-sanctioned)
     // All 60+ Allied Golf Associations
     seedUrls: [
       // Northeast
@@ -158,11 +158,13 @@ export const SOURCES: CrawlSource[] = [
     enabled: true,
     searchPatterns: [
       // Rotate through metro areas + date combos
-      'charity golf scramble {city} {state} 2025',
-      'memorial golf tournament registration {city} {state} 2025',
-      '4 man scramble golf tournament {city} {state} 2025',
-      'golf outing benefit {city} 2025',
-      'charity golf classic {state} 2025',
+      'charity golf scramble {city} {state}',
+      '4 man scramble golf tournament {city} {state}',
+      'golf outing fundraiser {city} {state}',
+      'charity golf classic {city} {state}',
+      'local golf scramble {city} {state}',
+      'memorial golf tournament {city} {state}',
+      'golf tournament {city} {state}'
     ],
     requiresJavascript: false, // we follow links from search results
     rateLimit: 0.2, // very conservative with Google
