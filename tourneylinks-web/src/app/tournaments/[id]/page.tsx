@@ -163,6 +163,10 @@ export default async function TournamentGatewayPage({ params }: { params: Promis
                 <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '0.8rem', marginTop: '1.5rem' }}>
                   {hostHasStripe && tournament.entryFee ? (
                     <StripeCheckoutButton tournamentId={tournament.id} entryFee={tournament.entryFee} />
+                  ) : tournament.registrationUrl ? (
+                    <a href={getCleanUrl(tournament.registrationUrl)} target="_blank" rel="noopener noreferrer" style={{ display: 'block', width: '100%', textAlign: 'center', padding: '0.9rem 1.5rem', fontSize: '1rem', borderRadius: '8px', color: '#000', background: 'linear-gradient(135deg, #d4af37, #aa8529)', border: '1px solid rgba(255,255,255,0.4)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px', boxShadow: '0 8px 25px rgba(212,175,55,0.3)', textDecoration: 'none' }}>
+                      Register Officially ↗
+                    </a>
                   ) : (
                     <div style={{ color: 'var(--mist)', fontSize: '0.85rem', fontStyle: 'italic', textAlign: 'center', padding: '0.8rem', border: '1px dashed rgba(255,255,255,0.1)', borderRadius: '6px' }}>Host Setup Pending</div>
                   )}

@@ -65,6 +65,9 @@ export default async function NOCDashboard() {
              <h1 style={{ fontSize: '2.5rem', fontWeight: 700, margin: '0 0 0.5rem 0', color: 'var(--forest)' }}>Network Operations</h1>
              <p style={{ color: 'var(--mist)', margin: 0 }}>Global Spider Engine Telemetry Hub</p>
           </div>
+          <a href="/system/analytics" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--forest)', color: 'var(--white)', padding: '0.8rem 1.5rem', borderRadius: '8px', fontWeight: 700, textDecoration: 'none', transition: 'background 0.2s' }}>
+             View Market Intelligence ↗
+          </a>
         </div>
 
         {/* System Health Indicators */}
@@ -87,9 +90,11 @@ export default async function NOCDashboard() {
              <QuickStatCard title="Total Discoveries" value={totalTournaments.toString()} label="Tournaments Extracted to Database" color="var(--emerald)" />
              <QuickStatCard title="Active Network" value={activeTournaments.toString()} label="Upcoming Golf Events" color="var(--forest)" />
              <QuickStatCard title="Crawler Reliability" value={totalCrawls > 0 ? (successRate + '%') : 'N/A'} label="Extraction Success Rate" color="var(--grass)" />
-             <QuickStatCard title="Est. Pipeline Cost" value={`$${estCost}`} label="Gemini AI + Network Overhead" color="var(--gold-dark)" />
+             <QuickStatCard title="Est. Pipeline Cost" value={`$${estCost}`} label="Lifetime Accumulated Overhead" color="var(--gold-dark)" />
           </div>
         </div>
+
+
 
         {/* New Feature: Recently Discovered Tournaments Highlight */}
         {uniqueRecentTournaments.length > 0 && (

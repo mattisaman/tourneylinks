@@ -16,7 +16,7 @@ const logger = pino({ name: 'pipeline' });
 // Discover → Crawl → Extract → Deduplicate → Geocode → Store
 // ===========================================
 
-export async function runCrawlCycle(sourceFilter?: string): Promise<CycleStats> {
+export async function runCrawlCycle(sourceFilter?: string, targetRegion?: string): Promise<CycleStats> {
   const cycleId = randomUUID().slice(0, 8);
   const stats: CycleStats = {
     cycleId,
@@ -60,7 +60,7 @@ export async function runCrawlCycle(sourceFilter?: string): Promise<CycleStats> 
     stats.sourceBreakdown[source.id] = { pages: 0, found: 0, new: 0, failed: 0 };
 
     try {
-      await processSource(source, existingTournaments, stats, cycleId);
+      await processSource(source, existingTournaments, stats, cycleId, targetRegion);
     } catch (error) {
       logger.error({ source: source.id, error: String(error) }, 'Source processing failed');
     }
@@ -93,12 +93,13 @@ async function processSource(
   existingTournaments: Tournament[],
   stats: CycleStats,
   cycleId: string,
+  targetRegion?: string
 ): Promise<void> {
   const sourceStats = stats.sourceBreakdown[source.id];
 
   // Step 1: Discover URLs to crawl
   logger.info({ source: source.id }, 'Phase 1: URL Discovery');
-  const discoveredUrls = await discoverUrls(source);
+  const discoveredUrls = await discoverUrls(source, targetRegion);
   logger.info({ source: source.id, urls: discoveredUrls.length }, 'URLs discovered');
 
   if (!discoveredUrls.length) {

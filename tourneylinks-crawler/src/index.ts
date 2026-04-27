@@ -102,7 +102,7 @@ async function main() {
     logger.info({ job: bullJob.name, data: bullJob.data }, 'Received remote trigger from Admin Dashboard');
     if (bullJob.name === 'discover-region' || bullJob.name === 'run-cycle') {
       try {
-        await runCrawlCycle();
+        await runCrawlCycle(undefined, bullJob.data?.region);
       } catch (error) {
         logger.error({ error: String(error) }, 'Triggered crawl cycle failed');
       }

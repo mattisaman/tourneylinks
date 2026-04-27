@@ -101,7 +101,7 @@ RULES:
 - For format, pick the closest match. "Scramble" includes charity scrambles. "Best-ball" includes 2-man/4-man best ball.
 - entryFee should be a number (just the dollar amount, no $ sign).
 - isCharity = true if it's a fundraiser, charity event, or benefit tournament.
-- Be highly aggressive in capturing the 'registrationUrl'! If there is a 'More Info', 'Event Details', 'Register Here', or link to a child-page for the specific tournament, capture it as the registrationUrl. This is critical for our deep-crawling system.
+- Be highly aggressive and SEMANTIC in capturing the 'registrationUrl'! Do NOT just look for specific words. Look for ANY link or URL that directs a user to the event's external website, registration portal, child detail page, or booking form, regardless of the exact link text (e.g. it might say 'Register', 'Website', 'Event Details', 'Click Here', or it might just be an embedded URL on an image). If a link functionally leads to the tournament's details or registration system, you MUST capture it as the registrationUrl. This is critical for our deep-crawling system.
 - Be highly aggressive in finding the exact course location. Look for full addresses in footers or headers to derive the courseZip.
 - Allow for the fact that you might be reading a "Tournament Directory Page" (multiple events) OR a specific "Tournament Detail Page" (one event). If it's a single event, extract all possible nested details (entryFee, maxPlayers, spotsRemaining, includes) perfectly.
 - You must extract the raw unparsed text and schedule timeline if available.
@@ -261,12 +261,6 @@ export function isLikelyTournamentPage(pageText: string, title: string): boolean
     || /\d{1,2}\/\d{1,2}\/\d{2,4}/.test(text)
     || /202[4-9]/.test(text);
 
-  // NY TARGET LOCATION FILTER
-  const nyKeywords = [
-    'new york', '\\bny\\b', 'n\\.y\\.', 'upstate', 'long island',
-    'albany', 'allegany', 'bronx', 'broome', 'cattaraugus', 'cayuga', 'chautauqua', 'chemung', 'chenango', 'clinton', 'columbia', 'cortland', 'delaware', 'dutchess', 'erie', 'essex', 'franklin', 'fulton', 'genesee', 'greene', 'hamilton', 'herkimer', 'jefferson', 'kings', 'lewis', 'livingston', 'madison', 'monroe', 'montgomery', 'nassau', 'niagara', 'oneida', 'onondaga', 'ontario', 'orange', 'orleans', 'oswego', 'otsego', 'putnam', 'queens', 'rensselaer', 'richmond', 'rockland', 'st. lawrence', 'saratoga', 'schenectady', 'schoharie', 'schuyler', 'seneca', 'steuben', 'suffolk', 'sullivan', 'tioga', 'tompkins', 'ulster', 'warren', 'washington', 'wayne', 'westchester', 'wyoming', 'yates'
-  ];
-  const hasTargetLocation = new RegExp(nyKeywords.join('|'), 'i').test(text);
-  
-  return hasTargetLocation;
+  // We have removed the strict NY Location filter to support nationwide crawling and user-specified regions.
+  return hasDate;
 }

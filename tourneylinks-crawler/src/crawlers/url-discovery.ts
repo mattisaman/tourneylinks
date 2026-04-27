@@ -90,19 +90,30 @@ export async function discoverFromSeeds(source: CrawlSource): Promise<Discovered
 
 // ─── Discover URLs via Google search ───
 
-export async function discoverFromSearch(source: CrawlSource): Promise<DiscoveredUrl[]> {
+export async function discoverFromSearch(source: CrawlSource, targetRegion?: string): Promise<DiscoveredUrl[]> {
   if (!source.searchPatterns?.length) return [];
   const discovered: DiscoveredUrl[] = [];
 
-  // Pick a random subset of metros for this cycle
-  const shuffled = [...METRO_AREAS].sort(() => Math.random() - 0.5);
-  const metros = shuffled.slice(0, 5); // 5 metros per cycle
+  let metros = [];
+  if (targetRegion) {
+    metros = [{ city: targetRegion, state: '' }]; // Let Google/Search handle the state resolution if city includes state (e.g. "Orlando, FL")
+  } else {
+    // Pick a random subset of metros for this cycle
+    const shuffled = [...METRO_AREAS].sort(() => Math.random() - 0.5);
+    metros = shuffled.slice(0, 5); // 5 metros per cycle
+  }
 
   for (const pattern of source.searchPatterns) {
     for (const metro of metros) {
-      const query = pattern
+      let query = pattern
         .replace('{city}', metro.city)
         .replace('{state}', metro.state);
+
+      // If the pattern doesn't have {city} or {state} placeholders, append the region manually
+      // so we don't accidentally search the entire globe when a targeted region is requested.
+      if (query === pattern && metro.city) {
+        query += ` ${metro.city} ${metro.state}`.trim();
+      }
 
       try {
         // Use Google's custom search JSON API (requires API key)
@@ -147,15 +158,15 @@ export async function discoverFromSearch(source: CrawlSource): Promise<Discovere
 
 // ─── Main discovery orchestrator ───
 
-export async function discoverUrls(source: CrawlSource): Promise<DiscoveredUrl[]> {
+export async function discoverUrls(source: CrawlSource, targetRegion?: string): Promise<DiscoveredUrl[]> {
   logger.info({ source: source.id, type: source.type }, 'Starting URL discovery');
 
   const allDiscovered: DiscoveredUrl[] = [];
 
   // Run both discovery methods in parallel
   const [seedResults, searchResults] = await Promise.allSettled([
-    discoverFromSeeds(source),
-    discoverFromSearch(source),
+    targetRegion ? Promise.resolve([]) : discoverFromSeeds(source),
+    discoverFromSearch(source, targetRegion),
   ]);
 
   if (seedResults.status === 'fulfilled') allDiscovered.push(...seedResults.value);
