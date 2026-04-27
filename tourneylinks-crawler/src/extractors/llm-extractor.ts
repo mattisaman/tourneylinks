@@ -27,10 +27,10 @@ function getClient(): GoogleGenAI {
 
 const EXTRACTION_PROMPT = `You are a data extraction specialist for golf tournament information. Given the text content of a web page, extract ALL golf tournaments mentioned on the page.
 
-For EACH tournament found, extract these fields as JSON:
+For EACH tournament found, extract these fields as JSON, adhering to the exact types specified. Be extremely aggressive in finding all possible data.
 
 {
-  "name": "Tournament name",
+  "name": "Tournament name (exact string)",
   "dateStart": "YYYY-MM-DD",
   "dateEnd": "YYYY-MM-DD or null if single day",
   "registrationDeadline": "YYYY-MM-DD or null",
@@ -38,21 +38,60 @@ For EACH tournament found, extract these fields as JSON:
   "courseCity": "City",
   "courseState": "2-letter state code (e.g. NY, CA, IL)",
   "courseZip": "Exact 5-digit ZIP code if stated or clearly inferable from the address/footer, else null",
+  
   "format": "One of: stroke, scramble, best-ball, match, stableford, alternate-shot, chapman, shamble, other",
   "formatDetail": "Specific format description e.g. '4-Man Scramble', '2-Person Best Ball'",
   "holes": 18,
+  
   "entryFee": 150.00,
   "maxPlayers": 80,
   "spotsRemaining": null,
+  
   "handicapMax": 28,
   "isCharity": false,
   "isPrivate": false,
+  
   "organizerName": "Org name or null",
   "organizerEmail": "email or null",
   "organizerPhone": "phone or null",
   "registrationUrl": "Direct registration link or null",
+  
   "description": "Brief tournament description",
-  "includes": "What's included e.g. 'Cart, lunch, prizes'"
+  "includes": "What's included e.g. 'Cart, lunch, prizes'",
+
+  "pricingDetails": {
+    "perPlayer": 150.00,
+    "perTeam": 600.00,
+    "earlyBird": null,
+    "latePrice": null,
+    "paymentMethods": "string or null",
+    "refundPolicy": "string or null"
+  },
+  "formatDetails": {
+    "teamSize": 4,
+    "handicapRules": "string or null",
+    "flighting": "string or null",
+    "mulligansAllowed": true,
+    "skillLevelTarget": "Open / Beginner / Competitive"
+  },
+  "socialSignals": {
+    "facebookEventId": "string or null",
+    "interestedCount": null,
+    "shares": null
+  },
+  "schedule": [
+    {"time": "08:00 AM", "event": "Registration & Warm-up"},
+    {"time": "09:00 AM", "event": "Shotgun Start"}
+  ],
+  "prizes": [
+    "1st Place: $500",
+    "Long Drive",
+    "Closest to Pin"
+  ],
+  "sponsors": [
+    "Title Sponsor: Ford",
+    "Hole Sponsor: Torchy's"
+  ]
 }
 
 RULES:
@@ -65,7 +104,7 @@ RULES:
 - Be highly aggressive in capturing the 'registrationUrl'! If there is a 'More Info', 'Event Details', 'Register Here', or link to a child-page for the specific tournament, capture it as the registrationUrl. This is critical for our deep-crawling system.
 - Be highly aggressive in finding the exact course location. Look for full addresses in footers or headers to derive the courseZip.
 - Allow for the fact that you might be reading a "Tournament Directory Page" (multiple events) OR a specific "Tournament Detail Page" (one event). If it's a single event, extract all possible nested details (entryFee, maxPlayers, spotsRemaining, includes) perfectly.
-- Be conservative on other fields: only extract what's clearly stated on the page.
+- You must extract the raw unparsed text and schedule timeline if available.
 - If the page has NO golf tournaments, return an empty array.
 
 Return ONLY valid JSON: { "tournaments": [...], "confidence": 0.95 }
@@ -84,9 +123,15 @@ export async function extractTournaments(
   const truncatedText = pageText.slice(0, 12000);
 
   try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: `Extract golf tournament information from this web page.
+    let response;
+    let retries = 0;
+    const maxRetries = 3;
+
+    while (retries < maxRetries) {
+      try {
+        response = await ai.models.generateContent({
+          model: 'gemini-2.5-flash',
+          contents: `Extract golf tournament information from this web page.
 
 PAGE URL: ${pageUrl}
 PAGE CONTENT:
@@ -95,13 +140,26 @@ ${truncatedText}
 ---
 
 ${EXTRACTION_PROMPT}`,
-      config: {
-        responseMimeType: "application/json",
+          config: {
+            responseMimeType: "application/json",
+          }
+        });
+        break; // Success, break out of retry loop
+      } catch (err: any) {
+        const isRateLimit = err.message?.includes('503') || err.message?.includes('429');
+        if (isRateLimit && retries < maxRetries - 1) {
+          retries++;
+          const delay = Math.pow(2, retries) * 1000 + Math.random() * 1000;
+          logger.warn({ url: pageUrl, retry: retries, delay }, 'Gemini API high demand (503/429). Retrying after backoff...');
+          await new Promise(resolve => setTimeout(resolve, delay));
+        } else {
+          throw err;
+        }
       }
-    });
+    }
 
     // Parse the response
-    const responseText = response.text || '';
+    const responseText = response?.text || '';
 
     // Extract JSON from response (handle markdown fences)
     const jsonStr = responseText
@@ -137,6 +195,19 @@ ${EXTRACTION_PROMPT}`,
           holes: raw.holes || 18,
           isCharity: raw.isCharity || false,
           isPrivate: raw.isPrivate || false,
+
+          // Insert nested fields
+          schedule: raw.schedule ? JSON.stringify(raw.schedule) : null,
+          prizes: raw.prizes ? JSON.stringify(raw.prizes) : null,
+          sponsors: raw.sponsors ? JSON.stringify(raw.sponsors) : null,
+          pricingDetails: raw.pricingDetails ? JSON.stringify(raw.pricingDetails) : null,
+          formatDetails: raw.formatDetails ? JSON.stringify(raw.formatDetails) : null,
+          socialSignals: raw.socialSignals ? JSON.stringify(raw.socialSignals) : null,
+          
+          // Raw preservation
+          rawExtractionData: JSON.stringify({
+             fullTextDump: truncatedText
+          })
         });
         tournaments.push(tournament);
       } catch (validationError) {

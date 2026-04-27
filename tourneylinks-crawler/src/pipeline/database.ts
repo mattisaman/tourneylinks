@@ -85,15 +85,25 @@ export const tournaments = pgTable('tournaments', {
   registrationUrl: text('registration_url'),
   description: text('description'),
   includes: text('includes'),
+  schedule: text('schedule'), // JSON array [{time, event}]
+  prizes: text('prizes'), // JSON array
+  sponsors: text('sponsors'), // JSON array
 
   extractionConfidence: real('extraction_confidence').default(0),
   extractedAt: text('extracted_at'),
+
+  // Extended JSON Metadata
+  pricingDetails: text('pricing_details'), // JSON: { perTeam, earlyBird, latePrice, etc }
+  formatDetails: text('format_details'), // JSON: { teamSize, handicapRules, flighting, mulligans, skillLevelTarget }
+  socialSignals: text('social_signals'), // JSON: { facebookEventId, interestedCount, shares }
+  rawExtractionData: text('raw_extraction_data'), // JSON: { fullTextDump, ocrText }
 
   // Internal tracking
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
   lastVerifiedAt: timestamp('last_verified_at'),
   isActive: boolean('is_active').default(true),
+  status: text('status').default('active'), // 'active', 'archived', 'cancelled'
 }, (table) => [
   index('idx_tournaments_date').on(table.dateStart),
   index('idx_tournaments_state').on(table.courseState),
@@ -164,6 +174,13 @@ export async function insertTournament(t: Tournament): Promise<number> {
     includes: t.includes,
     extractionConfidence: t.extractionConfidence,
     extractedAt: t.extractedAt,
+    schedule: t.schedule,
+    prizes: t.prizes,
+    sponsors: t.sponsors,
+    pricingDetails: t.pricingDetails,
+    formatDetails: t.formatDetails,
+    socialSignals: t.socialSignals,
+    rawExtractionData: t.rawExtractionData,
   }).returning({ id: tournaments.id });
 
   return result[0].id;
@@ -178,13 +195,27 @@ export async function updateTournament(sourceId: string, t: Partial<Tournament>)
 
 export async function getExistingTournaments(): Promise<Tournament[]> {
   const database = getDb();
-  const rows = await database.select().from(tournaments)
-    .where(and(
-      eq(tournaments.isActive, true),
-      gte(tournaments.dateStart, new Date().toISOString().split('T')[0])
-    ));
+  // Load all tournaments (even archived ones) so we don't re-crawl them as "new"
+  const rows = await database.select().from(tournaments);
 
   return rows as unknown as Tournament[];
+}
+
+export async function archivePastTournaments(): Promise<number> {
+  const database = getDb();
+  const today = new Date().toISOString().split('T')[0];
+  
+  const result = await database.update(tournaments)
+    .set({ status: 'archived', isActive: false })
+    .where(
+      and(
+        eq(tournaments.status, 'active'),
+        sql`${tournaments.dateStart} < ${today}`
+      )
+    )
+    .returning({ id: tournaments.id });
+    
+  return result.length;
 }
 
 export async function logCrawl(cycleId: string, sourceId: string, url: string, status: string, found: number, error?: string) {

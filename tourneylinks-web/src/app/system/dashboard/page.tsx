@@ -9,7 +9,20 @@ export const dynamic = 'force-dynamic';
 export default async function NOCDashboard() {
   
   // NOC Exclusive Metrics
-  const recentLogs = await db.select().from(crawlLogs).orderBy(desc(crawlLogs.crawledAt)).limit(8);
+  const recentLogs = await db.select().from(crawlLogs).orderBy(desc(crawlLogs.crawledAt)).limit(10);
+  
+  // To make the dashboard more informative, we fetch the actual tournament names that were pulled from these URLs
+  const logUrls = recentLogs.map(l => l.url);
+  let recentTournaments: { sourceUrl: string, name: string }[] = [];
+  
+  if (logUrls.length > 0) {
+    const { inArray } = await import('drizzle-orm');
+    const { tournaments } = await import('@/lib/db');
+    recentTournaments = await db.select({
+      sourceUrl: tournaments.sourceUrl,
+      name: tournaments.name
+    }).from(tournaments).where(inArray(tournaments.sourceUrl, logUrls));
+  }
 
   return (
     <div>
@@ -50,33 +63,53 @@ export default async function NOCDashboard() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
              <div style={{ display: 'flex', padding: '1rem 1.5rem', borderBottom: '1px solid rgba(0,0,0,0.05)', color: 'var(--mist)', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                 <div style={{ flex: 1 }}>Timestamp</div>
-                <div style={{ flex: 1.5 }}>Worker ID</div>
-                <div style={{ flex: 2 }}>Target State</div>
-                <div style={{ flex: 1 }}>Performance</div>
-                <div style={{ flex: 1, textAlign: 'right' }}>Status</div>
+                <div style={{ flex: 1 }}>Source Pipeline</div>
+                <div style={{ flex: 2.5 }}>Discovered Source & Content</div>
+                <div style={{ flex: 1, textAlign: 'right' }}>Extraction Result</div>
              </div>
 
-            {recentLogs.map(log => (
-               <div key={log.id} className="lux-card" style={{ display: 'flex', alignItems: 'center', background: 'var(--white)', border: '1px solid rgba(0,0,0,0.05)', padding: '1.25rem 1.5rem', borderRadius: '8px', boxShadow: 'var(--shadow-sm)' }}>
-                 <div style={{ flex: 1, color: 'var(--mist)', fontSize: '0.9rem' }}>{new Date(log.crawledAt || '').toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
-                 <div style={{ flex: 1.5, fontFamily: 'monospace', color: 'var(--forest)', fontWeight: 600, fontSize: '0.95rem' }}>{log.cycleId.substring(0,12)}...</div>
-                 <div style={{ flex: 2, color: 'var(--forest)', fontWeight: 500 }}>{log.searchVector || log.url}</div>
-                 <div style={{ flex: 1, color: 'var(--mist)', fontSize: '0.85rem' }}>
-                   <div style={{ fontWeight: 600 }}>{log.durationMs || 0}ms</div>
-                   {log.fireCrawlCreditsUsed ? <div style={{ color: 'var(--gold-dark)', fontSize: '0.75rem', marginTop: '4px', fontWeight: 700 }}>🔥 {log.fireCrawlCreditsUsed} Credits</div> : null}
+            {recentLogs.map(log => {
+               // Find all unique tournament names extracted from this specific URL
+               const pulledNames = Array.from(new Set(
+                 recentTournaments.filter(t => t.sourceUrl === log.url).map(t => t.name)
+               ));
+
+               return (
+               <div key={log.id} className="lux-card" style={{ display: 'flex', alignItems: 'flex-start', background: 'var(--white)', border: '1px solid rgba(0,0,0,0.05)', padding: '1.25rem 1.5rem', borderRadius: '8px', boxShadow: 'var(--shadow-sm)' }}>
+                 <div style={{ flex: 1, color: 'var(--mist)', fontSize: '0.9rem', paddingTop: '4px' }}>
+                    {new Date(log.crawledAt || '').toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                  </div>
-                 <div style={{ flex: 1, textAlign: 'right' }}>
+                 <div style={{ flex: 1, paddingTop: '4px' }}>
+                    <div style={{ color: 'var(--forest)', fontWeight: 600, fontSize: '0.85rem', textTransform: 'uppercase' }}>{log.sourceId || 'Spider'}</div>
+                    <div style={{ fontFamily: 'monospace', color: 'var(--mist)', fontSize: '0.75rem', marginTop: '4px' }}>{log.cycleId.substring(0,8)}</div>
+                 </div>
+                 <div style={{ flex: 2.5, paddingRight: '1rem' }}>
+                    <div style={{ color: 'var(--forest)', fontWeight: 500, wordBreak: 'break-all', fontSize: '0.85rem' }}>
+                       {log.searchVector || log.url}
+                    </div>
+                    {pulledNames.length > 0 && (
+                       <div style={{ marginTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                         {pulledNames.map((name, idx) => (
+                            <div key={idx} style={{ fontSize: '0.8rem', color: 'var(--grass)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                               <span style={{ fontSize: '10px' }}>↳</span> {name}
+                            </div>
+                         ))}
+                       </div>
+                    )}
+                 </div>
+                 <div style={{ flex: 1, textAlign: 'right', paddingTop: '4px' }}>
                    <span style={{ 
-                     background: log.status === 'SUCCESS' ? 'rgba(76,175,80,0.1)' : 'rgba(244,67,54,0.1)', 
-                     color: log.status === 'SUCCESS' ? 'var(--grass)' : 'var(--admin-pin-red)',
+                     background: log.status === 'success' ? 'rgba(76,175,80,0.1)' : log.status === 'skipped' ? 'rgba(150,150,150,0.1)' : 'rgba(244,67,54,0.1)', 
+                     color: log.status === 'success' ? 'var(--grass)' : log.status === 'skipped' ? 'var(--mist)' : 'var(--admin-pin-red)',
                      padding: '0.4rem 0.8rem', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 800
                    }}>
-                     {log.status === 'SUCCESS' ? `FETCHED ${log.tournamentsFound}` : 'FAILED'}
+                     {log.status === 'success' ? `FETCHED ${log.tournamentsFound}` : log.status === 'skipped' ? 'SKIPPED (IRRELEVANT)' : 'FAILED'}
                    </span>
+                   <div style={{ color: 'var(--mist)', fontSize: '0.75rem', marginTop: '8px', fontWeight: 600 }}>{log.durationMs || 0}ms</div>
                    {log.error && <div style={{ fontSize: '0.75rem', color: 'var(--admin-pin-red)', marginTop: '6px', fontWeight: 500 }}>{log.error}</div>}
                  </div>
                </div>
-            ))}
+            )})}
             {recentLogs.length === 0 && (
                <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--mist)', background: 'var(--white)', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.05)' }}>
                   No recent crawler activity found in logs.

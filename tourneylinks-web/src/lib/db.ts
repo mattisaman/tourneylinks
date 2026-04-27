@@ -110,10 +110,17 @@ export const tournaments = pgTable('tournaments', {
   themeColor: text('theme_color'), // hex code primary
   secondaryThemeColor: text('secondary_theme_color'), // hex code secondary
 
+  // Extended JSON Metadata
+  pricingDetails: text('pricing_details'), // JSON: { perTeam, earlyBird, latePrice, etc }
+  formatDetails: text('format_details'), // JSON: { teamSize, handicapRules, flighting, mulligans, skillLevelTarget }
+  socialSignals: text('social_signals'), // JSON: { facebookEventId, interestedCount, shares }
+  rawExtractionData: text('raw_extraction_data'), // JSON: { fullTextDump, ocrText }
+
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
   lastVerifiedAt: timestamp('last_verified_at'),
   isActive: boolean('is_active').default(true),
+  status: text('status').default('active'), // 'active', 'archived', 'cancelled'
 }, (table) => ({
   hostUserIdIdx: index('idx_tournaments_host_user_id').on(table.hostUserId),
   courseIdIdx: index('idx_tournaments_course_id').on(table.courseId),

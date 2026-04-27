@@ -50,6 +50,17 @@ export const TournamentSchema = z.object({
   description: z.string().nullable(),
   includes: z.string().nullable(), // "Cart, lunch, prizes"
 
+  // Social / Assets
+  schedule: z.any().nullable().optional(),
+  prizes: z.any().nullable().optional(),
+  sponsors: z.any().nullable().optional(),
+
+  // Extended JSON Metadata
+  pricingDetails: z.any().nullable().optional(),
+  formatDetails: z.any().nullable().optional(),
+  socialSignals: z.any().nullable().optional(),
+  rawExtractionData: z.any().nullable().optional(),
+
   // Extraction metadata
   extractionConfidence: z.number().min(0).max(1),
   rawPageText: z.string().optional(),

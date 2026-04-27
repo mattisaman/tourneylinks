@@ -2,11 +2,13 @@
 
 import React, { useState } from 'react';
 import { Play, Loader2, Target, CheckCircle2, AlertCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function SpiderDispatcher() {
   const [regions, setRegions] = useState<string>("New York State, Texas, Florida");
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState<string>('');
+  const router = useRouter();
 
   const handleDispatch = async () => {
     if (!regions.trim()) return;
@@ -34,6 +36,9 @@ export default function SpiderDispatcher() {
       setStatus('success');
       setMessage(`[System] Successfully queued ${data.jobsQueued} parallel crawling sequences globally.`);
       
+      // Refresh the server components (like the telemetry table) to show the new queued task!
+      router.refresh();
+
       // Reset back to idle after 5 seconds to allow for more scans
       setTimeout(() => setStatus('idle'), 5000);
       

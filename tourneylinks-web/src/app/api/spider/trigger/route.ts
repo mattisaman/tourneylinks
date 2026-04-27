@@ -1,9 +1,21 @@
 import { NextResponse } from 'next/server';
-import { Client } from '@upstash/qstash';
+import { Queue } from 'bullmq';
+import IORedis from 'ioredis';
 
 export const dynamic = 'force-dynamic';
 
-const qstash = new Client({ token: process.env.QSTASH_TOKEN || "mock_token_for_build" });
+const redisUrl = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
+
+// Singleton pattern for the queue to avoid reconnection issues in dev
+const globalAny: any = global;
+let discoveryQueue: Queue;
+if (globalAny.discoveryQueue) {
+  discoveryQueue = globalAny.discoveryQueue;
+} else {
+  const connection = new IORedis(redisUrl, { maxRetriesPerRequest: null });
+  discoveryQueue = new Queue('tournament-discovery', { connection });
+  globalAny.discoveryQueue = discoveryQueue;
+}
 
 export async function POST(req: Request) {
   try {
@@ -13,55 +25,18 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Requires regions array (e.g. ["90210", "Orlando, FL"])' }, { status: 400 });
     }
 
-    // Identify absolute URL of this server to pass to QStash so it knows where the worker is.
-    // In production, you would hardcode or read process.env.NEXT_PUBLIC_SITE_URL
-    const protocol = req.headers.get('x-forwarded-proto') || 'http';
-    const host = req.headers.get('host') || 'localhost:3000';
-    const workerUrl = `${protocol}://${host}/api/spider/worker`;
-    const isLocal = host.includes('localhost') || host.includes('127.0.0.1') || host.includes('::1');
-
     const dispatched = [];
 
-    // Fan-out execution: Fire individual stateless QStash jobs per region!
+    // Fan-out execution: Fire individual BullMQ jobs per region!
     for (const region of regions) {
-      if (isLocal) {
-        // Bypass QStash for local development, async fire-and-forget
-        fetch(workerUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: `Golf Scramble ${region}`, region })
-        }).catch(console.error);
-
-        fetch(workerUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: `Charity Golf Tournaments ${region}`, region })
-        }).catch(console.error);
-
-        dispatched.push({ region, messages: ['dev_mock_id_1', 'dev_mock_id_2'] });
-      } else {
-        // Fire 'Golf Scramble' per region
-        let msg1 = await qstash.publishJSON({
-          url: workerUrl,
-          body: { query: `Golf Scramble ${region}`, region },
-          retries: 3, // Auto-retry 3 times
-        });
-        
-        // Fire 'Charity Golf Tournament' per region
-        let msg2 = await qstash.publishJSON({
-          url: workerUrl,
-          body: { query: `Charity Golf Tournaments ${region}`, region },
-          retries: 3,
-        });
-
-        dispatched.push({ region, messages: [msg1.messageId, msg2.messageId] });
-      }
+      const job = await discoveryQueue.add('discover-region', { region });
+      dispatched.push({ region, jobId: job.id });
     }
 
     return NextResponse.json({
       success: true,
-      orchestration: isLocal ? 'Local Background Node Fetch' : 'Upstash QStash',
-      jobsQueued: dispatched.length * 2,
+      orchestration: 'BullMQ',
+      jobsQueued: dispatched.length,
       details: dispatched
     });
 

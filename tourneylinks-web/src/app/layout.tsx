@@ -76,7 +76,7 @@ export default async function RootLayout({
     'mattisaman@gmail.com'
   ];
   
-  const isAllowed = !!email && allowedEmails.includes(email);
+  const isAllowed = process.env.NODE_ENV === 'development' || (!!email && allowedEmails.includes(email));
   const isAuthd = !!user;
 
   return (

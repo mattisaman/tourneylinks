@@ -102,6 +102,10 @@ export default function AdminSidebar({ tournamentId, mockTournaments }: { tourna
           <div className="dash-section-label" style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '2rem', marginBottom: '0.8rem', paddingLeft: '1rem' }}>Advanced Engine</div>
           <Link href={`/admin/tournaments/${tournamentId}/advanced`} style={{ ...getNavStyle('advanced'), color: 'rgba(255,255,255,0.5)', borderLeft: '4px solid transparent' }}><span>⛳</span> Geospatial Settings</Link>
           <Link href="/admin/guides" style={{ ...getNavStyle('guides'), color: 'rgba(255,255,255,0.5)', borderLeft: '4px solid transparent' }}><span>🧠</span> AI Pricing Intel</Link>
+
+          <div className="dash-section-label" style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '2rem', marginBottom: '0.8rem', paddingLeft: '1rem' }}>Global Systems (NOC)</div>
+          <Link href="/system/tournaments" style={{ ...getNavStyle('system-tournaments'), color: 'rgba(255,255,255,0.5)', borderLeft: '4px solid transparent' }}><span>🌐</span> Data Integrity Hub</Link>
+          <Link href="/system/dashboard" style={{ ...getNavStyle('system-dashboard'), color: 'rgba(255,255,255,0.5)', borderLeft: '4px solid transparent' }}><span>🕷️</span> Crawler Dispatch</Link>
         </div>
       </div>
    )
