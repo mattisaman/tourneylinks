@@ -305,11 +305,30 @@ export default async function TournamentGatewayPage({ params }: { params: Promis
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', position: 'relative' }}>
                     <div className="nav-accent-line" style={{ position: 'absolute', left: '2rem', top: '1rem', bottom: '1rem', width: '2px', height: 'auto', opacity: 0.6 }}></div>
                     
-                    {(parsedSchedule || [
-                      { time: '8:00 AM', event: 'Registration & Breakfast' },
-                      { time: '10:00 AM', event: 'Shotgun Start' },
-                      { time: '4:30 PM', event: 'Dinner & Awards Reception' },
-                    ]).map((item: any, idx: number) => {
+                    {(parsedSchedule || (
+                      (() => {
+                        const fmt = (tournament.format || '').toLowerCase();
+                        if (fmt.includes('stroke') || fmt.includes('medal')) {
+                          return [
+                            { time: '7:00 AM', event: 'Practice Facilities Open' },
+                            { time: '8:00 AM', event: 'First Round Tee Times' },
+                            { time: 'TBD', event: 'Trophy Presentation' },
+                          ];
+                        }
+                        if (fmt.includes('match')) {
+                          return [
+                            { time: '7:30 AM', event: 'Player Check-in & Warmup' },
+                            { time: '8:30 AM', event: 'Bracket Matches Begin' },
+                            { time: 'TBD', event: 'Championship Match' },
+                          ];
+                        }
+                        return [
+                          { time: '8:00 AM', event: 'Registration & Breakfast' },
+                          { time: '10:00 AM', event: 'Shotgun Start' },
+                          { time: '4:30 PM', event: 'Dinner & Awards Reception' },
+                        ];
+                      })()
+                    )).map((item: any, idx: number) => {
                       
                       // Auto-resolve icons based on keywords
                       let icon = '🕒';

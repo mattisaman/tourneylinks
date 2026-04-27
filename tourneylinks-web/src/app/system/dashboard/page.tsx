@@ -1,6 +1,6 @@
 import React from 'react';
-import { db, crawlLogs } from '@/lib/db';
-import { desc } from 'drizzle-orm';
+import { db, crawlLogs, tournaments } from '@/lib/db';
+import { desc, sql, inArray } from 'drizzle-orm';
 import SpiderDispatcher from '@/components/system/SpiderDispatcher';
 import { Server, Activity, Database, Zap } from 'lucide-react';
 
@@ -8,27 +8,57 @@ export const dynamic = 'force-dynamic';
 
 export default async function NOCDashboard() {
   
+  // Quick Reference Global Stats
+  const [totalTournamentsResult, activeTournamentsResult, totalCrawlsResult, successfulCrawlsResult] = await Promise.all([
+    db.select({ count: sql<number>`count(*)` }).from(tournaments),
+    db.select({ count: sql<number>`count(*)` }).from(tournaments).where(sql`${tournaments.isActive} = true`),
+    db.select({ count: sql<number>`count(*)` }).from(crawlLogs),
+    db.select({ count: sql<number>`count(*)` }).from(crawlLogs).where(sql`${crawlLogs.status} = 'success'`)
+  ]);
+
+  const totalTournaments = Number(totalTournamentsResult[0].count);
+  const activeTournaments = Number(activeTournamentsResult[0].count);
+  const totalCrawls = Number(totalCrawlsResult[0].count);
+  const successfulCrawls = Number(successfulCrawlsResult[0].count);
+  const successRate = totalCrawls > 0 ? Math.round((successfulCrawls / totalCrawls) * 100) : 0;
+  
+  // Cost Estimate (Extremely rough: $0.003 per page for Gemini Flash + Search/Scrape overhead)
+  const estCost = (totalCrawls * 0.003).toFixed(2);
+
   // NOC Exclusive Metrics
-  const recentLogs = await db.select().from(crawlLogs).orderBy(desc(crawlLogs.crawledAt)).limit(10);
+  const recentLogs = await db.select().from(crawlLogs).orderBy(desc(crawlLogs.crawledAt)).limit(12);
+  
+  // Check if crawler is actively running (if most recent log is within the last 60 seconds)
+  const isActivelyRunning = recentLogs.length > 0 && 
+      (new Date().getTime() - new Date(recentLogs[0].crawledAt || 0).getTime() < 60000);
   
   // To make the dashboard more informative, we fetch the actual tournament names that were pulled from these URLs
   const logUrls = recentLogs.map(l => l.url);
-  let recentTournaments: { sourceUrl: string, name: string }[] = [];
+  let recentTournaments: { id: string, sourceUrl: string, name: string, dateStart: string }[] = [];
   
   if (logUrls.length > 0) {
-    const { inArray } = await import('drizzle-orm');
-    const { tournaments } = await import('@/lib/db');
     recentTournaments = await db.select({
+      id: tournaments.id,
       sourceUrl: tournaments.sourceUrl,
-      name: tournaments.name
+      name: tournaments.name,
+      dateStart: tournaments.dateStart
     }).from(tournaments).where(inArray(tournaments.sourceUrl, logUrls));
   }
+
+  // Deduplicate for the Top Level "Recently Discovered" section
+  const uniqueRecentTournamentsMap = new Map();
+  recentTournaments.forEach(t => uniqueRecentTournamentsMap.set(t.name, t));
+  const uniqueRecentTournaments = Array.from(uniqueRecentTournamentsMap.values()).slice(0, 4); // Show top 4 recently discovered
 
   return (
     <div>
         <style dangerouslySetInnerHTML={{__html: `
           .lux-card { transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; }
           .lux-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md) !important; }
+          .tournament-link { transition: all 0.2s; text-decoration: none !important; }
+          .tournament-link:hover { background: rgba(76, 175, 80, 0.15) !important; transform: translateX(4px); }
+          .pulse-dot { animation: pulse 1.5s infinite; }
+          @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
         `}} />
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
           <div>
@@ -40,7 +70,7 @@ export default async function NOCDashboard() {
         {/* System Health Indicators */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem', marginBottom: '3rem' }}>
           <HealthCard title="Upstash QStash" status="Nominal" icon={<Server color="var(--grass)" />} color="var(--grass)" />
-          <HealthCard title="Engine 1: Native" status="Active" icon={<Activity color="var(--emerald)" />} color="var(--emerald)" />
+          <HealthCard title="Engine 1: Native" status={isActivelyRunning ? "Processing Payload" : "Standby"} icon={<Activity color={isActivelyRunning ? "var(--emerald)" : "var(--mist)"} />} color={isActivelyRunning ? "var(--emerald)" : "var(--mist)"} isPulsing={isActivelyRunning} />
           <HealthCard title="Engine 2: FireCrawl" status="Standby" icon={<Zap color="var(--gold-dark)" />} color="var(--gold-dark)" />
           <HealthCard title="Neon DB Ingestion" status="Synchronized" icon={<Database color="var(--forest)" />} color="var(--forest)" />
         </div>
@@ -50,13 +80,44 @@ export default async function NOCDashboard() {
            <SpiderDispatcher />
         </div>
 
+        {/* Quick Reference Dashboard */}
+        <div style={{ marginTop: '3.5rem' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--forest)', marginBottom: '1.25rem' }}>Global Ingestion Metrics</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem', marginBottom: '1rem' }}>
+             <QuickStatCard title="Total Discoveries" value={totalTournaments.toString()} label="Tournaments Extracted to Database" color="var(--emerald)" />
+             <QuickStatCard title="Active Network" value={activeTournaments.toString()} label="Upcoming Golf Events" color="var(--forest)" />
+             <QuickStatCard title="Crawler Reliability" value={totalCrawls > 0 ? (successRate + '%') : 'N/A'} label="Extraction Success Rate" color="var(--grass)" />
+             <QuickStatCard title="Est. Pipeline Cost" value={`$${estCost}`} label="Gemini AI + Network Overhead" color="var(--gold-dark)" />
+          </div>
+        </div>
+
+        {/* New Feature: Recently Discovered Tournaments Highlight */}
+        {uniqueRecentTournaments.length > 0 && (
+          <div style={{ marginTop: '3.5rem' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--forest)', marginBottom: '1.25rem' }}>Recently Extracted Listings</h2>
+            <p style={{ color: 'var(--mist)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>These events were successfully pulled from the latest payloads and are live on the directory.</p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1.5rem' }}>
+              {uniqueRecentTournaments.map((t, idx) => (
+                <a href={`/tournaments/${t.id}`} target="_blank" rel="noopener noreferrer" key={idx} className="lux-card" style={{ display: 'block', background: 'var(--white)', border: '1px solid rgba(76, 175, 80, 0.2)', padding: '1.25rem', borderRadius: '12px', textDecoration: 'none' }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--grass)', textTransform: 'uppercase', marginBottom: '0.5rem', letterSpacing: '0.5px' }}>New Arrival</div>
+                  <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--forest)', lineHeight: 1.3, marginBottom: '0.5rem' }}>{t.name}</div>
+                  <div style={{ fontSize: '0.85rem', color: 'var(--mist)', fontWeight: 500, display: 'flex', justifyContent: 'space-between' }}>
+                    <span>{t.dateStart ? new Date(t.dateStart).toLocaleDateString() : 'TBD'}</span>
+                    <span style={{ color: 'var(--emerald)' }}>View ↗</span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Live Server Logs (Glassmorphism List) */}
         <div style={{ marginTop: '3.5rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
              <h2 style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--forest)' }}>Autonomous Fleet Telemetry</h2>
-             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--grass)', background: 'rgba(76, 175, 80, 0.1)', padding: '0.4rem 0.8rem', borderRadius: '20px', fontWeight: 700 }}>
-               <div style={{ width: '8px', height: '8px', background: 'var(--grass)', borderRadius: '50%' }}></div>
-               Live Feed
+             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: isActivelyRunning ? 'var(--emerald)' : 'var(--mist)', background: isActivelyRunning ? 'rgba(76, 175, 80, 0.1)' : 'rgba(0,0,0,0.05)', padding: '0.4rem 0.8rem', borderRadius: '20px', fontWeight: 700 }}>
+               <div className={isActivelyRunning ? 'pulse-dot' : ''} style={{ width: '8px', height: '8px', background: isActivelyRunning ? 'var(--emerald)' : 'var(--mist)', borderRadius: '50%' }}></div>
+               {isActivelyRunning ? 'Live Feed Active' : 'Standby Mode'}
              </div>
           </div>
           
@@ -69,10 +130,12 @@ export default async function NOCDashboard() {
              </div>
 
             {recentLogs.map(log => {
-               // Find all unique tournament names extracted from this specific URL
-               const pulledNames = Array.from(new Set(
-                 recentTournaments.filter(t => t.sourceUrl === log.url).map(t => t.name)
-               ));
+               // Find all unique tournament names extracted from this specific URL, mapped to their ID
+               const pulledTournamentsMap = new Map();
+               recentTournaments.filter(t => t.sourceUrl === log.url).forEach(t => {
+                  pulledTournamentsMap.set(t.name, t);
+               });
+               const pulledTournaments = Array.from(pulledTournamentsMap.values());
 
                return (
                <div key={log.id} className="lux-card" style={{ display: 'flex', alignItems: 'flex-start', background: 'var(--white)', border: '1px solid rgba(0,0,0,0.05)', padding: '1.25rem 1.5rem', borderRadius: '8px', boxShadow: 'var(--shadow-sm)' }}>
@@ -87,12 +150,12 @@ export default async function NOCDashboard() {
                     <div style={{ color: 'var(--forest)', fontWeight: 500, wordBreak: 'break-all', fontSize: '0.85rem' }}>
                        {log.searchVector || log.url}
                     </div>
-                    {pulledNames.length > 0 && (
-                       <div style={{ marginTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                         {pulledNames.map((name, idx) => (
-                            <div key={idx} style={{ fontSize: '0.8rem', color: 'var(--grass)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                               <span style={{ fontSize: '10px' }}>↳</span> {name}
-                            </div>
+                    {pulledTournaments.length > 0 && (
+                       <div style={{ marginTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.4rem', alignItems: 'flex-start' }}>
+                         {pulledTournaments.map((t, idx) => (
+                            <a href={`/tournaments/${t.id}`} target="_blank" rel="noopener noreferrer" key={idx} className="tournament-link" style={{ fontSize: '0.8rem', color: 'var(--grass)', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(76, 175, 80, 0.05)', padding: '4px 10px', borderRadius: '6px', border: '1px solid rgba(76, 175, 80, 0.15)' }}>
+                               <span style={{ fontSize: '10px' }}>↳</span> {t.name} <span style={{ fontSize: '12px' }}>↗</span>
+                            </a>
                          ))}
                        </div>
                     )}
@@ -122,7 +185,7 @@ export default async function NOCDashboard() {
   );
 }
 
-function HealthCard({ title, status, icon, color }: { title: string, status: string, icon: React.ReactNode, color: string }) {
+function HealthCard({ title, status, icon, color, isPulsing = false }: { title: string, status: string, icon: React.ReactNode, color: string, isPulsing?: boolean }) {
   return (
     <div style={{ background: 'var(--white)', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '12px', padding: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem', boxShadow: 'var(--shadow-sm)' }}>
       <div style={{ background: `color-mix(in srgb, ${color} 15%, transparent)`, padding: '0.85rem', borderRadius: '10px' }}>
@@ -131,10 +194,20 @@ function HealthCard({ title, status, icon, color }: { title: string, status: str
       <div>
         <div style={{ color: 'var(--mist)', fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{title}</div>
         <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--forest)', display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.25rem' }}>
-          <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: color, boxShadow: `0 0 8px ${color}` }}></div>
+          <div className={isPulsing ? 'pulse-dot' : ''} style={{ width: '8px', height: '8px', borderRadius: '50%', background: color, boxShadow: `0 0 8px ${color}` }}></div>
           {status}
         </div>
       </div>
+    </div>
+  );
+}
+
+function QuickStatCard({ title, value, label, color }: { title: string, value: string, label: string, color: string }) {
+  return (
+    <div style={{ background: 'var(--white)', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '12px', padding: '1.5rem', boxShadow: 'var(--shadow-sm)' }}>
+       <div style={{ color: 'var(--mist)', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.5rem' }}>{title}</div>
+       <div style={{ fontSize: '2.5rem', fontWeight: 800, color: color, lineHeight: 1.1 }}>{value}</div>
+       <div style={{ color: 'var(--mist)', fontSize: '0.85rem', fontWeight: 500, marginTop: '0.5rem' }}>{label}</div>
     </div>
   );
 }
