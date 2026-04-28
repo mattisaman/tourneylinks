@@ -9,9 +9,12 @@ export const maxDuration = 300; // Allow up to 5 minutes on Vercel
 export async function POST(req: Request) {
   try {
     // 1. Verify the webhook signature or token (Optional but recommended)
-    const authHeader = req.headers.get('authorization');
-    if (process.env.APIFY_WEBHOOK_SECRET && authHeader !== `Bearer ${process.env.APIFY_WEBHOOK_SECRET}`) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // Using x-apify-secret to avoid Clerk intercepting Authorization: Bearer
+    const authHeader = req.headers.get('x-apify-secret') || req.headers.get('authorization');
+    const secret = process.env.APIFY_WEBHOOK_SECRET;
+    
+    if (secret && authHeader !== secret && authHeader !== `Bearer ${secret}`) {
+      return NextResponse.json({ error: 'Unauthorized webhook request' }, { status: 401 });
     }
 
     const payload = await req.json();
