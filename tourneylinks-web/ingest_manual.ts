@@ -6,13 +6,13 @@ import { mergeIfDuplicate } from './src/lib/deduplication';
 import fs from 'fs';
 
 async function main() {
-  if (!fs.existsSync('apify_json_full')) {
-    console.error('Error: apify_json_full not found in the current directory.');
+  if (!fs.existsSync('apify_json_full_1')) {
+    console.error('Error: apify_json_full_1 not found in the current directory.');
     return;
   }
 
-  console.log('Reading apify_json_full...');
-  const fileContent = fs.readFileSync('apify_json_full', 'utf8');
+  console.log('Reading apify_json_full_1...');
+  const fileContent = fs.readFileSync('apify_json_full_1', 'utf8');
   let events;
   try {
     events = JSON.parse(fileContent);
