@@ -36,7 +36,7 @@ async function main() {
     const title = event.title || event.name || '';
     const description = event.description || '';
     const isGolf = /golf|scramble|tournament|classic/i.test(title) || /golf|scramble/i.test(description);
-    const isMiniGolf = /mini\s*golf|minigolf|putt\s*putt|top\s*golf|pickle\s*ball|pickleball|tennis|clays/i.test(title) || /mini\s*golf|minigolf|putt\s*putt|top\s*golf|pickle\s*ball|pickleball/i.test(description);
+    const isMiniGolf = /mini\s*golf|minigolf|putt\s*putt|top\s*golf/i.test(title) || /mini\s*golf|minigolf|putt\s*putt|top\s*golf/i.test(description);
     
     if (!isGolf || isMiniGolf) {
       skippedCount++;

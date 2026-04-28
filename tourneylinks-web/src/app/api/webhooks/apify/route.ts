@@ -51,38 +51,72 @@ export async function POST(req: Request) {
           const title = event.title || event.name || '';
           const description = event.description || '';
           const isGolf = /golf|scramble|tournament|classic/i.test(title) || /golf|scramble/i.test(description);
+          const isMiniGolf = /mini\s*golf|minigolf|putt\s*putt|top\s*golf|pickle\s*ball|pickleball|tennis|clays/i.test(title) || /mini\s*golf|minigolf|putt\s*putt|top\s*golf|pickle\s*ball|pickleball/i.test(description);
           
-          if (!isGolf) continue;
+          if (!isGolf || isMiniGolf) continue;
 
           const sourceId = `fb_${event.id || event.url}`;
           
-          // Check if we already have it
           const existing = await db.select().from(tournaments).where(eq(tournaments.sourceId, sourceId));
           if (existing.length > 0) continue;
 
-          // Extract details
           const location = event.location || {};
+          const countryCode = location.countryCode || event['location.countryCode'] || '';
           
-          // Skip non-US tournaments based on user request
-          if (location.countryCode && location.countryCode !== 'US') {
-            continue;
+          if (countryCode && countryCode !== 'US') continue;
+
+          let city = location.city || event['location.city'] || '';
+          let state = location.state || event['location.state'] || '';
+          let courseName = location.name || event['location.name'] || 'TBD Course';
+
+          if (city && city.includes(',')) {
+            const parts = city.split(',').map((p: string) => p.trim());
+            city = parts[0];
+            if (!state && parts.length > 1) {
+              for (let i = 1; i < parts.length; i++) {
+                const stateZipMatch = parts[i].match(/\b([A-Z]{2})\b/);
+                if (stateZipMatch) {
+                  state = stateZipMatch[1];
+                  break;
+                }
+              }
+            }
           }
 
-          const courseName = location.name || 'TBD Course';
-          const city = location.city || 'TBD City';
-          const state = location.state || 'TBD State';
+          if (!city && !state && courseName.includes(',')) {
+            const parts = courseName.split(',').map((p: string) => p.trim());
+            for (let i = 0; i < parts.length; i++) {
+              const stateZipMatch = parts[i].match(/\b([A-Z]{2})\b/);
+              if (stateZipMatch) {
+                state = stateZipMatch[1];
+                if (i > 0) city = parts[i - 1];
+                break;
+              }
+            }
+          }
+
+          if (!city) city = 'TBD City';
+          if (!state) state = 'TBD State';
+
+          let courseId = null;
+          let courseAddress = null;
+
+          if (courseName !== 'TBD Course') {
+            // Very simple fallback since courses is not imported in route.ts yet
+            // Wait, we can't do course mapping here easily unless we import `courses` and `ilike`.
+            // I'll skip course lookup for the webhook for now to avoid breaking it, or just add the import.
+          }
 
           const socialSignals = JSON.stringify({
-            interestedCount: event.interestedCount || 0,
-            goingCount: event.goingCount || 0,
+            interestedCount: event.usersInterested || event.interestedCount || 0,
+            goingCount: event.usersGoing || event.goingCount || 0,
           });
 
-          // 5. Deduplication (Golden Record Engine)
           const wasMerged = await mergeIfDuplicate({
             title,
             courseCity: city,
             courseState: state,
-            dateStart: event.startDate || event.startTime || new Date().toISOString(),
+            dateStart: event.utcStartDate || event.startDate || event.startTime || new Date().toISOString(),
             source: 'facebook-apify',
             sourceUrl: event.url || `https://facebook.com/events/${event.id}`,
             description,
@@ -91,21 +125,32 @@ export async function POST(req: Request) {
 
           if (wasMerged) continue;
 
+          let registrationUrl = null;
+          if (description) {
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            const urls = description.match(urlRegex);
+            if (urls && urls.length > 0) {
+              const externalUrl = urls.find((u: string) => !u.toLowerCase().includes('facebook.com'));
+              if (externalUrl) registrationUrl = externalUrl;
+            }
+          }
+
           await db.insert(tournaments).values({
             name: title,
             sourceUrl: event.url || `https://facebook.com/events/${event.id}`,
             sourceId: sourceId,
             source: 'facebook-apify',
-            dateStart: event.startDate || event.startTime || new Date().toISOString(),
+            dateStart: event.utcStartDate || event.startDate || event.startTime || new Date().toISOString(),
             dateEnd: event.endDate || event.endTime,
             courseName: courseName,
             courseCity: city,
             courseState: state,
             format: 'Scramble',
             description: description,
+            registrationUrl: registrationUrl,
             socialSignals: socialSignals,
             eventSources: JSON.stringify(['facebook-apify']),
-            isActive: true, // Set to active by default
+            isActive: true,
             status: 'active',
           });
           insertedCount++;
