@@ -379,6 +379,11 @@ export async function getExistingTournaments() {
       return false;
     }
     
+    // Filter out traveling leagues for now (Phase 2 feature)
+    if (lowerName.includes('league')) {
+      return false;
+    }
+    
     return true;
   });
 }

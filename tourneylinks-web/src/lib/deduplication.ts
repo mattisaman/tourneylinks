@@ -44,24 +44,15 @@ export async function mergeIfDuplicate(newEvent: {
     const diffTime = Math.abs(newDate.getTime() - candidateDate.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    if (diffDays <= 3) {
-      // Check City match OR Name similarity
+      // Strict 100% match logic requested by user
+      const sameDate = diffDays === 0;
       const sameCity = normalizeText(candidate.courseCity) === normalizeText(newEvent.courseCity);
+      const sameTitle = normalizeText(candidate.name) === normalizeText(newEvent.title);
       
-      const normalizedCandidateTitle = normalizeText(candidate.name);
-      
-      // Simple word overlap similarity for name
-      const newWords = new Set(normalizedNewTitle.split(' '));
-      const candidateWords = new Set(normalizedCandidateTitle.split(' '));
-      const intersection = new Set([...newWords].filter(x => candidateWords.has(x)));
-      
-      const similarityThreshold = Math.min(newWords.size, candidateWords.size) * 0.5; // at least 50% overlap of the shorter title
-      
-      if (sameCity || intersection.size >= similarityThreshold) {
+      if (sameDate && sameCity && sameTitle) {
         matchFound = candidate;
         break;
       }
-    }
   }
 
   if (matchFound) {

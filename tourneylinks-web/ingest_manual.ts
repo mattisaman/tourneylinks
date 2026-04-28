@@ -49,15 +49,36 @@ async function main() {
       continue;
     }
 
-    const location = event.location || {};
+    const countryCode = event['location.countryCode'] || '';
     
-    if (location.countryCode && location.countryCode !== 'US') {
+    if (countryCode && countryCode !== 'US') {
       skippedCount++;
       continue; // Skip non-US tournaments
     }
 
-    const city = location.city || 'TBD City';
-    const state = location.state || 'TBD State';
+    let city = event['location.city'] || '';
+    let state = event['location.state'] || '';
+    let courseName = event['location.name'] || 'TBD Course';
+
+    // Fallback: If city/state are empty but location.name looks like an address
+    if (!city && !state && courseName.includes(',')) {
+      const parts = courseName.split(',').map(p => p.trim());
+      
+      // Look for a state abbreviation (e.g., TX, FL, NY) or state name + zip
+      for (let i = 0; i < parts.length; i++) {
+        const stateZipMatch = parts[i].match(/\b([A-Z]{2})\b/);
+        if (stateZipMatch) {
+          state = stateZipMatch[1];
+          if (i > 0) {
+            city = parts[i - 1]; // Usually the part right before the state is the city
+          }
+          break;
+        }
+      }
+    }
+
+    if (!city) city = 'TBD City';
+    if (!state) state = 'TBD State';
 
     const wasMerged = await mergeIfDuplicate({
       title,
@@ -82,7 +103,7 @@ async function main() {
       source: 'facebook-apify',
       dateStart: event.startDate || event.startTime || event.utcStartDate || new Date().toISOString(),
       dateEnd: event.endDate || event.endTime,
-      courseName: location.name || 'TBD Course',
+      courseName: courseName,
       courseCity: city,
       courseState: state,
       format: 'Scramble',
