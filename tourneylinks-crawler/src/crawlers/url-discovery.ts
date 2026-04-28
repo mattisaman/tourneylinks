@@ -116,6 +116,7 @@ export async function discoverFromSearch(source: CrawlSource, targetRegion?: str
         query += ` ${metro.city} ${metro.state}`.trim();
       }
 
+      try {
         // === DUCKDUCKGO FALLBACK ENGINE ===
         // Since Google Custom Search API is throwing 403s on new projects,
         // we use a direct DuckDuckGo HTML scraper which is 100% free and reliable.
