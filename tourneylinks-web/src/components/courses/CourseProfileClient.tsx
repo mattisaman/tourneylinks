@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import DigitalScorecards from './DigitalScorecards';
 import EagleValePricing from './EagleValePricing';
-import { ChevronRight, ArrowRight, Flag, Calendar as CalendarIcon, Map, Info, Star, BookOpen } from 'lucide-react';
+import { ChevronRight, ArrowRight, Flag, Calendar as CalendarIcon, Map, Info, Star, BookOpen, Zap } from 'lucide-react';
 import Link from 'next/link';
 
 export default function CourseProfileClient({ course, scorecards, hostedTournaments }: { course: any, scorecards: any[], hostedTournaments: any[] }) {
@@ -175,45 +175,97 @@ export default function CourseProfileClient({ course, scorecards, hostedTourname
                      Rules, Policies & Information
                    </h2>
 
-                   {course.normalizedRules || course.originalDocumentUrls ? (
-                     <div className="grid gap-6">
-                        {course.originalDocumentUrls && JSON.parse(course.originalDocumentUrls).length > 0 && (
-                          <div className="hero-pillar-card p-6 border border-white/10">
-                            <h3 className="text-[var(--gold)] uppercase tracking-widest text-xs font-bold mb-4">Original Attachments</h3>
-                            <div className="flex flex-col gap-3">
-                              {JSON.parse(course.originalDocumentUrls).map((url: string, i: number) => (
-                                <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-white hover:text-[var(--gold)] bg-white/5 p-3 rounded-md transition-colors">
-                                  <BookOpen size={16} className="text-[var(--gold)]" />
-                                  <span className="text-sm font-medium">Download Document {i + 1}</span>
-                                </a>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                        
-                        {course.normalizedRules && (
-                          <div className="hero-pillar-card p-6 border border-white/10">
-                            <h3 className="text-[var(--gold)] uppercase tracking-widest text-xs font-bold mb-4">Venue Rules</h3>
-                            <div className="text-white/80 text-sm leading-relaxed whitespace-pre-wrap">
-                              {course.normalizedRules}
-                            </div>
-                          </div>
-                        )}
-                     </div>
-                   ) : (
-                     <div className="text-center py-24 border border-dashed border-white/10 rounded-md bg-white/5">
-                        <BookOpen className="mx-auto text-white/20 mb-4" size={48} />
-                        <h3 className="text-white font-bold text-lg mb-2">No Documentation Available</h3>
-                        <p className="text-white/50 text-sm max-w-md mx-auto">
-                          Tournament conditions, dress codes, and outing policies for this venue have not been digitized yet.
-                        </p>
-                        <button className="btn-hero-outline mt-6 mx-auto">
-                          Request Documentation
+                    {course.normalizedRules || course.originalDocumentUrls || course.normalizedFaq ? (
+                      <div className="grid gap-6">
+                         {course.originalDocumentUrls && JSON.parse(course.originalDocumentUrls).length > 0 && (
+                           <div className="hero-pillar-card p-6 border border-white/10">
+                             <h3 className="text-[var(--gold)] uppercase tracking-widest text-xs font-bold mb-4">Original Attachments</h3>
+                             <div className="flex flex-col gap-3">
+                               {JSON.parse(course.originalDocumentUrls).map((url: string, i: number) => (
+                                 <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-white hover:text-[var(--gold)] bg-white/5 p-3 rounded-md transition-colors">
+                                   <BookOpen size={16} className="text-[var(--gold)]" />
+                                   <span className="text-sm font-medium">Download Document {i + 1}</span>
+                                 </a>
+                               ))}
+                             </div>
+                           </div>
+                         )}
+                         
+                         {course.normalizedRules && (
+                           <div className="hero-pillar-card p-6 border border-white/10">
+                             <h3 className="text-[var(--gold)] uppercase tracking-widest text-xs font-bold mb-4">Venue Rules</h3>
+                             <div className="text-white/80 text-sm leading-relaxed whitespace-pre-wrap">
+                               {course.normalizedRules}
+                             </div>
+                           </div>
+                         )}
+
+                         {course.normalizedFaq && (
+                           <div className="hero-pillar-card p-6 border border-white/10">
+                             <h3 className="text-[var(--gold)] uppercase tracking-widest text-xs font-bold mb-4">Venue FAQ</h3>
+                             <div className="text-white/80 text-sm leading-relaxed whitespace-pre-wrap">
+                               {course.normalizedFaq}
+                             </div>
+                           </div>
+                         )}
+                      </div>
+                    ) : (
+                      <div className="text-center py-24 border border-dashed border-white/10 rounded-md bg-white/5">
+                         <BookOpen className="mx-auto text-white/20 mb-4" size={48} />
+                         <h3 className="text-white font-bold text-lg mb-2">No Documentation Available</h3>
+                         <p className="text-white/50 text-sm max-w-md mx-auto">
+                           Tournament conditions, dress codes, and outing policies for this venue have not been digitized yet.
+                         </p>
+                      </div>
+                    )}
+
+                    {/* Admin Extraction Tool */}
+                    <div className="mt-8 p-6 border border-white/10 bg-black/40 rounded-xl">
+                      <h3 className="text-[var(--gold)] uppercase tracking-widest text-xs font-bold mb-4 flex items-center gap-2">
+                        <Zap size={14} /> Admin Tools: Ingest Documentation URL
+                      </h3>
+                      <div className="flex gap-4">
+                        <input 
+                          type="text" 
+                          id="docUrlInput"
+                          placeholder="Paste URL to PDF or Golf Outing webpage..." 
+                          className="flex-1 bg-white/5 border border-white/10 rounded-md px-4 py-2 text-white outline-none focus:border-[var(--gold)] transition-colors"
+                        />
+                        <button 
+                          onClick={async (e) => {
+                            const btn = e.currentTarget;
+                            const input = document.getElementById('docUrlInput') as HTMLInputElement;
+                            if (!input || !input.value) return;
+                            
+                            btn.disabled = true;
+                            btn.innerText = 'Extracting...';
+                            
+                            try {
+                              const res = await fetch('/api/courses/extract-docs', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ courseId: course.id, url: input.value })
+                              });
+                              if (res.ok) {
+                                window.location.reload();
+                              } else {
+                                btn.innerText = 'Failed';
+                                setTimeout(() => { btn.innerText = 'Run AI Extraction'; btn.disabled = false; }, 3000);
+                              }
+                            } catch (err) {
+                              console.error(err);
+                              btn.innerText = 'Error';
+                            }
+                          }}
+                          className="bg-[var(--gold-dark)] text-white font-bold px-6 py-2 rounded-md transition-colors hover:bg-[var(--gold)] disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          Run AI Extraction
                         </button>
-                     </div>
-                   )}
-                </div>
-             )}
+                      </div>
+                      <p className="text-white/40 text-xs mt-3">This will fetch the URL via FireCrawl and use Gemini to format the rules and FAQ.</p>
+                    </div>
+                 </div>
+              )}
 
              {/* MEDIA */}
              {activeTab === 'media' && (
