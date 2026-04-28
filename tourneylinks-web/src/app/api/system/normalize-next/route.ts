@@ -11,6 +11,7 @@ export const maxDuration = 300; // 5 minutes max per request to avoid timeout
 export const dynamic = 'force-dynamic';
 
 export async function POST() {
+  console.log("Normalizer API Hit");
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
