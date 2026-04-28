@@ -30,6 +30,9 @@ export const courses = pgTable('courses', {
   hasProShop: boolean('has_pro_shop').default(false),
   
   rawMetadata: text('raw_metadata'),
+  normalizedRules: text('normalized_rules'),
+  normalizedFaq: text('normalized_faq'), // Can store stringified JSON
+  originalDocumentUrls: text('original_document_urls'), // Can store stringified JSON array
   
   heroImageUrl: text('hero_image_url'),
   rating: real('rating'),

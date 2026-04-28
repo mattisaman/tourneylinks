@@ -3,23 +3,30 @@ import { db, crawlLogs, tournaments } from '@/lib/db';
 import { desc, sql, inArray } from 'drizzle-orm';
 import SpiderDispatcher from '@/components/system/SpiderDispatcher';
 import { Server, Activity, Database, Zap } from 'lucide-react';
+import CheckbackTrigger from './CheckbackTrigger';
 
 export const dynamic = 'force-dynamic';
 
 export default async function NOCDashboard() {
   
   // Quick Reference Global Stats
-  const [totalTournamentsResult, activeTournamentsResult, totalCrawlsResult, successfulCrawlsResult] = await Promise.all([
+  const [totalTournamentsResult, activeTournamentsResult, totalCrawlsResult, successfulCrawlsResult, eventbriteResult, fbResult, pendingCheckbacksResult] = await Promise.all([
     db.select({ count: sql<number>`count(*)` }).from(tournaments),
     db.select({ count: sql<number>`count(*)` }).from(tournaments).where(sql`${tournaments.isActive} = true`),
     db.select({ count: sql<number>`count(*)` }).from(crawlLogs),
-    db.select({ count: sql<number>`count(*)` }).from(crawlLogs).where(sql`${crawlLogs.status} = 'success'`)
+    db.select({ count: sql<number>`count(*)` }).from(crawlLogs).where(sql`${crawlLogs.status} = 'success'`),
+    db.select({ count: sql<number>`count(*)` }).from(tournaments).where(sql`${tournaments.source} = 'eventbrite-apify'`),
+    db.select({ count: sql<number>`count(*)` }).from(tournaments).where(sql`${tournaments.source} = 'facebook'`),
+    db.select({ count: sql<number>`count(*)` }).from(tournaments).where(sql`${tournaments.extractedAt} IS NULL AND ${tournaments.description} IS NULL`)
   ]);
 
   const totalTournaments = Number(totalTournamentsResult[0].count);
   const activeTournaments = Number(activeTournamentsResult[0].count);
   const totalCrawls = Number(totalCrawlsResult[0].count);
   const successfulCrawls = Number(successfulCrawlsResult[0].count);
+  const eventbriteCount = Number(eventbriteResult[0].count);
+  const fbCount = Number(fbResult[0].count);
+  const pendingCheckbacks = Number(pendingCheckbacksResult[0].count);
   const successRate = totalCrawls > 0 ? Math.round((successfulCrawls / totalCrawls) * 100) : 0;
   
   // Cost Estimate (Extremely rough: $0.003 per page for Gemini Flash + Search/Scrape overhead)
@@ -65,9 +72,12 @@ export default async function NOCDashboard() {
              <h1 style={{ fontSize: '2.5rem', fontWeight: 700, margin: '0 0 0.5rem 0', color: 'var(--forest)' }}>Network Operations</h1>
              <p style={{ color: 'var(--mist)', margin: 0 }}>Global Spider Engine Telemetry Hub</p>
           </div>
-          <a href="/system/analytics" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--forest)', color: 'var(--white)', padding: '0.8rem 1.5rem', borderRadius: '8px', fontWeight: 700, textDecoration: 'none', transition: 'background 0.2s' }}>
-             View Market Intelligence ↗
-          </a>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <CheckbackTrigger pendingCount={pendingCheckbacks} />
+            <a href="/system/analytics" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--forest)', color: 'var(--white)', padding: '0.8rem 1.5rem', borderRadius: '8px', fontWeight: 700, textDecoration: 'none', transition: 'background 0.2s' }}>
+               View Market Intelligence ↗
+            </a>
+          </div>
         </div>
 
         {/* System Health Indicators */}
@@ -88,8 +98,8 @@ export default async function NOCDashboard() {
           <h2 style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--forest)', marginBottom: '1.25rem' }}>Global Ingestion Metrics</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem', marginBottom: '1rem' }}>
              <QuickStatCard title="Total Discoveries" value={totalTournaments.toString()} label="Tournaments Extracted to Database" color="var(--emerald)" />
-             <QuickStatCard title="Active Network" value={activeTournaments.toString()} label="Upcoming Golf Events" color="var(--forest)" />
-             <QuickStatCard title="Crawler Reliability" value={totalCrawls > 0 ? (successRate + '%') : 'N/A'} label="Extraction Success Rate" color="var(--grass)" />
+             <QuickStatCard title="Facebook Events" value={fbCount.toString()} label="Native Social Graph Ingest" color="#1877F2" />
+             <QuickStatCard title="Eventbrite Events" value={eventbriteCount.toString()} label="Universal Parser Integration" color="#F05537" />
              <QuickStatCard title="Est. Pipeline Cost" value={`$${estCost}`} label="Lifetime Accumulated Overhead" color="var(--gold-dark)" />
           </div>
         </div>

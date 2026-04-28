@@ -3,16 +3,17 @@
 import React, { useState } from 'react';
 import DigitalScorecards from './DigitalScorecards';
 import EagleValePricing from './EagleValePricing';
-import { ChevronRight, ArrowRight, Flag, Calendar as CalendarIcon, Map, Info, Star } from 'lucide-react';
+import { ChevronRight, ArrowRight, Flag, Calendar as CalendarIcon, Map, Info, Star, BookOpen } from 'lucide-react';
 import Link from 'next/link';
 
 export default function CourseProfileClient({ course, scorecards, hostedTournaments }: { course: any, scorecards: any[], hostedTournaments: any[] }) {
-  const [activeTab, setActiveTab] = useState<'overview'|'scorecard'|'calculator'|'media'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview'|'scorecard'|'calculator'|'documentation'|'media'>('overview');
 
   const navItems = [
      { id: 'overview', label: 'Venue Overview', icon: Info },
      { id: 'scorecard', label: 'Digital Scorecard', icon: Flag },
      { id: 'calculator', label: 'Tournament Calculator', icon: CalendarIcon },
+     { id: 'documentation', label: 'Venue Documentation', icon: BookOpen },
      { id: 'media', label: 'Media Gallery', icon: Map }
   ];
 
@@ -159,6 +160,58 @@ export default function CourseProfileClient({ course, scorecards, hostedTourname
              {activeTab === 'scorecard' && (
                 <div className="animate-fadeIn -mx-4 md:-mx-12">
                    <DigitalScorecards scorecards={scorecards} />
+                </div>
+             )}
+
+             {/* VENUE DOCUMENTATION */}
+             {activeTab === 'documentation' && (
+                <div className="animate-fadeIn">
+                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                     <span style={{ display: 'block', width: '30px', height: '2px', background: 'var(--gold)' }}></span>
+                     <span style={{ color: 'var(--gold)', letterSpacing: '0.15em', textTransform: 'uppercase', fontSize: '0.75rem', fontWeight: 700 }}>Official Documents</span>
+                   </div>
+                   
+                   <h2 style={{ fontFamily: 'var(--font-serif), var(--font-cinzel), serif', fontSize: '2.5rem', color: 'var(--cream)', marginBottom: '1.5rem', lineHeight: 1.2 }}>
+                     Rules, Policies & Information
+                   </h2>
+
+                   {course.normalizedRules || course.originalDocumentUrls ? (
+                     <div className="grid gap-6">
+                        {course.originalDocumentUrls && JSON.parse(course.originalDocumentUrls).length > 0 && (
+                          <div className="hero-pillar-card p-6 border border-white/10">
+                            <h3 className="text-[var(--gold)] uppercase tracking-widest text-xs font-bold mb-4">Original Attachments</h3>
+                            <div className="flex flex-col gap-3">
+                              {JSON.parse(course.originalDocumentUrls).map((url: string, i: number) => (
+                                <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-white hover:text-[var(--gold)] bg-white/5 p-3 rounded-md transition-colors">
+                                  <BookOpen size={16} className="text-[var(--gold)]" />
+                                  <span className="text-sm font-medium">Download Document {i + 1}</span>
+                                </a>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        
+                        {course.normalizedRules && (
+                          <div className="hero-pillar-card p-6 border border-white/10">
+                            <h3 className="text-[var(--gold)] uppercase tracking-widest text-xs font-bold mb-4">Venue Rules</h3>
+                            <div className="text-white/80 text-sm leading-relaxed whitespace-pre-wrap">
+                              {course.normalizedRules}
+                            </div>
+                          </div>
+                        )}
+                     </div>
+                   ) : (
+                     <div className="text-center py-24 border border-dashed border-white/10 rounded-md bg-white/5">
+                        <BookOpen className="mx-auto text-white/20 mb-4" size={48} />
+                        <h3 className="text-white font-bold text-lg mb-2">No Documentation Available</h3>
+                        <p className="text-white/50 text-sm max-w-md mx-auto">
+                          Tournament conditions, dress codes, and outing policies for this venue have not been digitized yet.
+                        </p>
+                        <button className="btn-hero-outline mt-6 mx-auto">
+                          Request Documentation
+                        </button>
+                     </div>
+                   )}
                 </div>
              )}
 
