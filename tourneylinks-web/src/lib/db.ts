@@ -53,6 +53,7 @@ export const tournaments = pgTable('tournaments', {
   sourceUrl: text('source_url').notNull(),
   sourceId: text('source_id').notNull(),
   source: text('source').notNull(),
+  eventSources: text('event_sources'), // JSON array of merged sources (e.g., ['facebook', 'eventbrite'])
 
   dateStart: text('date_start').notNull(),
   dateEnd: text('date_end'),

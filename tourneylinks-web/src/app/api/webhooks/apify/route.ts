@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db, tournaments } from '@/lib/db';
 import { eq } from 'drizzle-orm';
+import { mergeIfDuplicate } from '@/lib/deduplication';
 
 export async function POST(req: Request) {
   try {
@@ -58,6 +59,25 @@ export async function POST(req: Request) {
       const city = location.city || 'TBD City';
       const state = location.state || 'TBD State';
 
+      const socialSignals = JSON.stringify({
+        interestedCount: event.interestedCount || 0,
+        goingCount: event.goingCount || 0,
+      });
+
+      // 5. Deduplication (Golden Record Engine)
+      const wasMerged = await mergeIfDuplicate({
+        title,
+        courseCity: city,
+        courseState: state,
+        dateStart: event.startDate || event.startTime || new Date().toISOString(),
+        source: 'facebook-apify',
+        sourceUrl: event.url || `https://facebook.com/events/${event.id}`,
+        description,
+        socialSignals
+      });
+
+      if (wasMerged) continue;
+
       await db.insert(tournaments).values({
         name: title,
         sourceUrl: event.url || `https://facebook.com/events/${event.id}`,
@@ -70,10 +90,8 @@ export async function POST(req: Request) {
         courseState: state,
         format: 'Scramble', // Default assumption for Facebook charity events
         description: description,
-        socialSignals: JSON.stringify({
-          interestedCount: event.interestedCount || 0,
-          goingCount: event.goingCount || 0,
-        }),
+        socialSignals: socialSignals,
+        eventSources: JSON.stringify(['facebook-apify']),
         isActive: false, // Default to inactive until manually verified
         status: 'active',
       });
