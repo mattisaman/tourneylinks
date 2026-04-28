@@ -20,13 +20,17 @@ async function main() {
     return;
   }
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   // Find tournaments that need checkback
   const pendingTournaments = await db.select().from(tournaments)
     .where(
       and(
         eq(tournaments.status, 'active'),
         isNotNull(tournaments.registrationUrl),
-        isNull(tournaments.extractedAt)
+        isNull(tournaments.extractedAt),
+        gte(tournaments.dateStart, today.toISOString())
       )
     )
     .limit(5); // Limit to 5 for safety during testing

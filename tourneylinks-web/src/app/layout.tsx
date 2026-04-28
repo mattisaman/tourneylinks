@@ -68,8 +68,14 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const user = await currentUser();
-  const email = user?.emailAddresses[0]?.emailAddress;
+  let user = null;
+  let email = null;
+  try {
+    user = await currentUser();
+    email = user?.emailAddresses[0]?.emailAddress;
+  } catch (err) {
+    console.error("Clerk auth error in RootLayout:", err);
+  }
   
   const allowedEmails = [
     'joshuafribush@gmail.com',
