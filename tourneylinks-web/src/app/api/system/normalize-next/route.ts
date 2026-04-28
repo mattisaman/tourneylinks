@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import { tournaments } from '@/lib/schema';
+import { db, tournaments } from '@/lib/db';
 import { and, eq, isNull, gte, asc } from 'drizzle-orm';
 import { GoogleGenAI } from '@google/genai';
 import FirecrawlApp from '@mendable/firecrawl-js';
