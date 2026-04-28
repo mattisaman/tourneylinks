@@ -150,6 +150,27 @@ export const SOURCES: CrawlSource[] = [
     extractionStrategy: 'hybrid',
   },
 
+  {
+    id: 'charity-golf-platforms',
+    name: 'Charity Golf Platforms (Birdease, PerfectGolfEvent)',
+    type: 'platform',
+    enabled: true,
+    seedUrls: [
+      'https://birdease.com/',
+      'https://perfectgolfevent.com/find-an-event/'
+    ],
+    searchPatterns: [
+      'site:birdease.com {city} {state}',
+      'site:perfectgolfevent.com {city} {state}',
+      'site:golfstatus.com {city} {state}'
+    ],
+    requiresJavascript: true,
+    rateLimit: 1,
+    respectRobotsTxt: true,
+    maxPagesPerCycle: 100,
+    extractionStrategy: 'hybrid',
+  },
+
   // ─── DISCOVERY (Google search for unknown sources) ───
   {
     id: 'google-discovery',

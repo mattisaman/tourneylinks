@@ -39,6 +39,7 @@ export async function discoverFromSeeds(source: CrawlSource): Promise<Discovered
         /tournament/i, /event/i, /registration/i, /outing/i,
         /scramble/i, /championship/i, /invitational/i, /classic/i,
         /open/i, /qualifier/i, /amateur/i, /charity/i, /benefit/i,
+        /\/e\//i, // Eventbrite specific event URL pattern
       ];
 
       $('a[href]').each((_, el) => {
@@ -115,33 +116,50 @@ export async function discoverFromSearch(source: CrawlSource, targetRegion?: str
         query += ` ${metro.city} ${metro.state}`.trim();
       }
 
-      try {
-        // Use Google's custom search JSON API (requires API key)
-        // Alternatively, scrape Google results with Playwright (riskier)
-        const googleApiKey = process.env.GOOGLE_SEARCH_API_KEY;
-        const googleCx = process.env.GOOGLE_SEARCH_CX;
+        // === DUCKDUCKGO FALLBACK ENGINE ===
+        // Since Google Custom Search API is throwing 403s on new projects,
+        // we use a direct DuckDuckGo HTML scraper which is 100% free and reliable.
+        const searchUrl = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`;
+        const response = await fetch(searchUrl, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml',
+          }
+        });
 
-        if (googleApiKey && googleCx) {
-          const searchUrl = `https://www.googleapis.com/customsearch/v1?key=${googleApiKey}&cx=${googleCx}&q=${encodeURIComponent(query)}&num=10`;
+        if (response.ok) {
+          const html = await response.text();
+          const $ = cheerio.load(html);
 
-          const response = await fetch(searchUrl);
-          const data = await response.json() as any;
+          $('.result').each((_, el) => {
+            const rawLink = $(el).find('.result__url').attr('href');
+            const title = $(el).find('.result__title').text().trim();
+            const snippet = $(el).find('.result__snippet').text().trim();
 
-          if (data.items) {
-            for (const item of data.items) {
+            if (rawLink) {
+              // DuckDuckGo wraps links in a redirect like /l/?uddg=https%3A%2F%2F...
+              let cleanUrl = rawLink;
+              if (rawLink.includes('uddg=')) {
+                try {
+                  const urlObj = new URL('https:' + rawLink);
+                  cleanUrl = decodeURIComponent(urlObj.searchParams.get('uddg') || rawLink);
+                } catch {
+                  // ignore
+                }
+              }
+
               discovered.push({
-                url: item.link,
+                url: cleanUrl,
                 sourceId: source.id,
                 discoveredAt: new Date().toISOString(),
                 priority: 3,
-                context: `${item.title}: ${item.snippet}`.slice(0, 200),
+                context: `${title}: ${snippet}`.slice(0, 200),
               });
             }
-          }
+          });
+          logger.info({ query, found: $('.result').length }, 'DuckDuckGo discovery successful');
         } else {
-          // Fallback: construct URLs we know are likely to have tournaments
-          // This is less comprehensive but doesn't require a search API
-          logger.warn('No Google Search API configured — using fallback discovery');
+          logger.warn({ query, status: response.status }, 'DuckDuckGo discovery failed');
         }
 
         // Respect rate limits

@@ -267,7 +267,7 @@ export function isLikelyTournamentPage(pageText: string, title: string): boolean
   if (!hasDate) return false;
   
   // Must mention strong scramble/tournament indicators
-  const hasStrongIndicators = /shotgun start|scramble|four-man|four-person|entry fee|foursome|sponsorship|hole sponsor|mulligan|best ball|charity golf/i.test(text);
+  const hasStrongIndicators = /shotgun start|scramble|four-man|four-person|entry fee|foursome|sponsorship|hole sponsor|mulligan|best ball|charity golf|golf tournament|golf outing|fundraiser|benefit tournament/i.test(text);
 
   // We have removed the strict NY Location filter to support nationwide crawling and user-specified regions.
   return hasStrongIndicators;

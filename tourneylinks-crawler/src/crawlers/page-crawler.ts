@@ -40,6 +40,15 @@ export async function fetchPage(url: string, userAgent: string): Promise<CrawlRe
     const html = await response.text();
     const $ = cheerio.load(html);
 
+    // Extract JSON-LD which contains the full un-truncated description!
+    let ldJsonData = '';
+    $('script[type="application/ld+json"]').each((_, el) => {
+      const content = $(el).html();
+      if (content) {
+        ldJsonData += content + '\n\n';
+      }
+    });
+
     // Remove noise: scripts, styles, nav, footer, ads
     $('script, style, nav, footer, header, .ad, .sidebar, .cookie-banner, noscript').remove();
 
@@ -51,10 +60,14 @@ export async function fetchPage(url: string, userAgent: string): Promise<CrawlRe
       }
     });
 
-    const text = $('body').text()
+    let text = $('body').text()
       .replace(/\s+/g, ' ')
       .replace(/\n\s*\n/g, '\n')
       .trim();
+
+    if (ldJsonData) {
+      text = `[STRUCTURED DATA (FULL DETAILS)]:\n${ldJsonData}\n\n[PAGE CONTENT]:\n${text}`;
+    }
 
     const title = $('title').text().trim() || $('h1').first().text().trim();
 
@@ -127,6 +140,15 @@ export async function fetchPageWithBrowser(url: string, userAgent: string): Prom
 
     const html = await page.content();
     const $ = cheerio.load(html);
+    // Extract JSON-LD which contains the full un-truncated description on Eventbrite!
+    let ldJsonData = '';
+    $('script[type="application/ld+json"]').each((_, el) => {
+      const content = $(el).html();
+      if (content) {
+        ldJsonData += content + '\n\n';
+      }
+    });
+
     $('script, style, nav, footer, header, .ad, .sidebar, noscript').remove();
 
     // Expose URLs for the LLM
@@ -137,10 +159,14 @@ export async function fetchPageWithBrowser(url: string, userAgent: string): Prom
       }
     });
 
-    const text = $('body').text()
+    let text = $('body').text()
       .replace(/\s+/g, ' ')
       .replace(/\n\s*\n/g, '\n')
       .trim();
+      
+    if (ldJsonData) {
+      text = `[STRUCTURED DATA (FULL DETAILS)]:\n${ldJsonData}\n\n[PAGE CONTENT]:\n${text}`;
+    }
 
     const title = await page.title();
     const finalUrl = page.url();
