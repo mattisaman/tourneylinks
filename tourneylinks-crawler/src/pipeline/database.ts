@@ -55,6 +55,7 @@ export const tournaments = pgTable('tournaments', {
   sourceUrl: text('source_url').notNull(),
   sourceId: text('source_id').notNull(),
   source: text('source').notNull(),
+  eventSources: text('event_sources'),
 
   dateStart: text('date_start').notNull(),
   dateEnd: text('date_end'),
@@ -143,6 +144,78 @@ export function getDb() {
 
 export async function insertTournament(t: Tournament): Promise<number> {
   const database = getDb();
+  
+  // Golden Record Deduplication Engine
+  const normalizedNewTitle = (t.name || '').toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ').trim();
+  const newDate = new Date(t.dateStart);
+  
+  if (!isNaN(newDate.getTime())) {
+    const candidates = await database.select().from(tournaments).where(
+      eq(tournaments.courseState, t.courseState)
+    );
+    
+    let matchFound = null;
+    for (const candidate of candidates) {
+      if (!candidate.dateStart) continue;
+      const candidateDate = new Date(candidate.dateStart);
+      if (isNaN(candidateDate.getTime())) continue;
+
+      const diffTime = Math.abs(newDate.getTime() - candidateDate.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays <= 3) {
+        const sameCity = (candidate.courseCity || '').toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ').trim() === 
+                         (t.courseCity || '').toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ').trim();
+        
+        const normalizedCandidateTitle = (candidate.name || '').toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ').trim();
+        const newWords = new Set(normalizedNewTitle.split(' '));
+        const candidateWords = new Set(normalizedCandidateTitle.split(' '));
+        const intersection = new Set([...newWords].filter(x => candidateWords.has(x)));
+        
+        const similarityThreshold = Math.min(newWords.size, candidateWords.size) * 0.5;
+        
+        if (sameCity || intersection.size >= similarityThreshold) {
+          matchFound = candidate;
+          break;
+        }
+      }
+    }
+    
+    if (matchFound) {
+      let sources: string[] = [];
+      try {
+        if (matchFound.eventSources) {
+          sources = JSON.parse(matchFound.eventSources as string);
+        } else {
+          sources = [matchFound.source];
+        }
+      } catch(e) {
+        sources = [matchFound.source];
+      }
+
+      if (!sources.includes(t.source)) {
+        sources.push(t.source);
+      }
+
+      const mergedData: any = {
+        eventSources: JSON.stringify(sources),
+        extractionConfidence: Math.min(((matchFound.extractionConfidence as number) || 0) + 0.1, 1.0)
+      };
+
+      if (!matchFound.description && t.description) {
+        mergedData.description = t.description;
+      }
+
+      await database.update(tournaments)
+        .set(mergedData)
+        .where(eq(tournaments.id, matchFound.id));
+
+      logger.info(`Merged duplicate event: ${t.name} into existing ID ${matchFound.id}`);
+      return matchFound.id;
+    }
+  }
+
+  // Fallback to inserting if no duplicate found
   const result = await database.insert(tournaments).values({
     name: t.name,
     sourceUrl: t.sourceUrl,
@@ -180,6 +253,7 @@ export async function insertTournament(t: Tournament): Promise<number> {
     pricingDetails: t.pricingDetails,
     formatDetails: t.formatDetails,
     socialSignals: t.socialSignals,
+    eventSources: JSON.stringify([t.source]),
     rawExtractionData: t.rawExtractionData,
   }).returning({ id: tournaments.id });
 
