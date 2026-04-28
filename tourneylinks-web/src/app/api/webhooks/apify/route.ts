@@ -55,42 +55,67 @@ export async function POST(req: Request) {
           
           if (!isGolf || isMiniGolf) continue;
 
-          const sourceId = `fb_${event.id || event.url}`;
+          const sourceUrl = event.url || event.ticketUrl || `https://facebook.com/events/${event.id}`;
+          const isEventbrite = sourceUrl.toLowerCase().includes('eventbrite.com');
+          const sourceString = isEventbrite ? 'eventbrite-apify' : 'facebook-apify';
+          const sourceId = isEventbrite ? `eb_${event.id || sourceUrl}` : `fb_${event.id || sourceUrl}`;
           
           const existing = await db.select().from(tournaments).where(eq(tournaments.sourceId, sourceId));
           if (existing.length > 0) continue;
 
-          const location = event.location || {};
-          const countryCode = location.countryCode || event['location.countryCode'] || '';
+          let city = 'TBD City';
+          let state = 'TBD State';
+          let courseName = 'TBD Course';
           
-          if (countryCode && countryCode !== 'US') continue;
+          if (isEventbrite) {
+            // Eventbrite Schema parsing (newpo/eventbrite-scraper)
+            courseName = event.venue?.name || event.location?.name || event.location?.address?.name || 'TBD Course';
+            city = event.venue?.city || event.venue?.address?.city || event.location?.address?.addressLocality || event.location?.city || '';
+            state = event.venue?.state || event.venue?.region || event.venue?.address?.region || event.location?.address?.addressRegion || event.location?.state || '';
+            const country = event.venue?.country || event.venue?.address?.country || event.location?.address?.addressCountry || '';
+            if (country && country !== 'US' && country !== 'United States') continue; // Only US events
+            
+            // If state is missing, try to infer from the raw 'location' string if it's "City, State"
+            if (!state && typeof event.location === 'string' && event.location.includes(',')) {
+               const parts = event.location.split(',').map((p:string) => p.trim());
+               if (parts.length >= 2 && parts[1].length === 2 && parts[1] !== 'US') {
+                 state = parts[1]; // e.g. "Rochester, NY"
+               }
+            }
+          } else {
+            // Facebook Schema parsing
+            const location = event.location || {};
+            const countryCode = location.countryCode || event['location.countryCode'] || '';
+            
+            if (countryCode && countryCode !== 'US') continue;
 
-          let city = location.city || event['location.city'] || '';
-          let state = location.state || event['location.state'] || '';
-          let courseName = location.name || event['location.name'] || 'TBD Course';
+            city = location.city || event['location.city'] || '';
+            state = location.state || event['location.state'] || '';
+            courseName = location.name || event['location.name'] || 'TBD Course';
 
-          if (city && city.includes(',')) {
-            const parts = city.split(',').map((p: string) => p.trim());
-            city = parts[0];
-            if (!state && parts.length > 1) {
-              for (let i = 1; i < parts.length; i++) {
-                const stateZipMatch = parts[i].match(/\b([A-Z]{2})\b/);
-                if (stateZipMatch) {
-                  state = stateZipMatch[1];
-                  break;
+            if (city && city.includes(',')) {
+              const parts = city.split(',').map((p: string) => p.trim());
+              city = parts[0];
+              if (!state && parts.length > 1) {
+                for (let i = 1; i < parts.length; i++) {
+                  const stateZipMatch = parts[i].match(/\b([A-Z]{2})\b/);
+                  if (stateZipMatch) {
+                    state = stateZipMatch[1];
+                    break;
+                  }
                 }
               }
             }
-          }
 
-          if (!city && !state && courseName.includes(',')) {
-            const parts = courseName.split(',').map((p: string) => p.trim());
-            for (let i = 0; i < parts.length; i++) {
-              const stateZipMatch = parts[i].match(/\b([A-Z]{2})\b/);
-              if (stateZipMatch) {
-                state = stateZipMatch[1];
-                if (i > 0) city = parts[i - 1];
-                break;
+            if (!city && !state && courseName.includes(',')) {
+              const parts = courseName.split(',').map((p: string) => p.trim());
+              for (let i = 0; i < parts.length; i++) {
+                const stateZipMatch = parts[i].match(/\b([A-Z]{2})\b/);
+                if (stateZipMatch) {
+                  state = stateZipMatch[1];
+                  if (i > 0) city = parts[i - 1];
+                  break;
+                }
               }
             }
           }
@@ -101,32 +126,45 @@ export async function POST(req: Request) {
           let courseId = null;
           let courseAddress = null;
 
-          if (courseName !== 'TBD Course') {
-            // Very simple fallback since courses is not imported in route.ts yet
-            // Wait, we can't do course mapping here easily unless we import `courses` and `ilike`.
-            // I'll skip course lookup for the webhook for now to avoid breaking it, or just add the import.
-          }
-
           const socialSignals = JSON.stringify({
             interestedCount: event.usersInterested || event.interestedCount || 0,
             goingCount: event.usersGoing || event.goingCount || 0,
           });
 
+          // Eventbrite might include ticket info in the payload natively!
+          let entryFee = null;
+          if (isEventbrite) {
+            if (event.ticketPrice && event.ticketPrice !== 'Free') {
+              // Usually a string like "$150.00" or "$150"
+              const match = event.ticketPrice.match(/[\d,.]+/);
+              if (match) {
+                 entryFee = parseFloat(match[0].replace(/,/g, ''));
+              }
+            } else if (event.tickets && Array.isArray(event.tickets)) {
+              const individualTicket = event.tickets.find((t: any) => t.name && (t.name.toLowerCase().includes('individual') || t.name.toLowerCase().includes('single')));
+              if (individualTicket && individualTicket.cost && individualTicket.cost.value) {
+                 entryFee = individualTicket.cost.value / 100; // Eventbrite usually uses cents
+              }
+            }
+          }
+
+          const resolvedStartDate = event.startAt || event.utcStartDate || event.startDate || event.startTime || event.start?.utc || new Date().toISOString();
+
           const wasMerged = await mergeIfDuplicate({
             title,
             courseCity: city,
             courseState: state,
-            dateStart: event.utcStartDate || event.startDate || event.startTime || new Date().toISOString(),
-            source: 'facebook-apify',
-            sourceUrl: event.url || `https://facebook.com/events/${event.id}`,
+            dateStart: resolvedStartDate,
+            source: sourceString,
+            sourceUrl: sourceUrl,
             description,
             socialSignals
           });
 
           if (wasMerged) continue;
 
-          let registrationUrl = null;
-          if (description) {
+          let registrationUrl = isEventbrite ? sourceUrl : null;
+          if (!isEventbrite && description) {
             const urlRegex = /(https?:\/\/[^\s]+)/g;
             const urls = description.match(urlRegex);
             if (urls && urls.length > 0) {
@@ -137,19 +175,21 @@ export async function POST(req: Request) {
 
           await db.insert(tournaments).values({
             name: title,
-            sourceUrl: event.url || `https://facebook.com/events/${event.id}`,
+            sourceUrl: sourceUrl,
             sourceId: sourceId,
-            source: 'facebook-apify',
-            dateStart: event.utcStartDate || event.startDate || event.startTime || new Date().toISOString(),
-            dateEnd: event.endDate || event.endTime,
+            source: sourceString,
+            dateStart: resolvedStartDate,
+            dateEnd: event.endDate || event.endTime || event.end?.utc,
             courseName: courseName,
             courseCity: city,
             courseState: state,
             format: 'Scramble',
             description: description,
+            entryFee: entryFee,
+            organizerName: isEventbrite ? (event.organizer?.name || null) : null,
             registrationUrl: registrationUrl,
             socialSignals: socialSignals,
-            eventSources: JSON.stringify(['facebook-apify']),
+            eventSources: JSON.stringify([sourceString]),
             isActive: true,
             status: 'active',
           });

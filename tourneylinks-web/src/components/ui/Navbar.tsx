@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { SignInButton, UserButton, useAuth, useUser } from '@clerk/nextjs';
 import { usePathname } from 'next/navigation';
@@ -11,6 +11,15 @@ export default function Navbar() {
   const { userId } = useAuth();
   const { user } = useUser();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   if (pathname?.startsWith('/system/dashboard')) return null;
 
@@ -45,7 +54,10 @@ export default function Navbar() {
   const isHubPage = pathname?.includes('/admin') || pathname?.includes('/host/crm') || pathname?.includes('/courses/dashboard') || pathname?.includes('/sponsor/dashboard') || pathname?.includes('/claim');
   const navbarBackground = isHubPage 
     ? 'linear-gradient(135deg, #050B08 0%, #073b22 50%, #050B08 100%)' 
-    : 'transparent';
+    : scrolled ? 'var(--forest)' : 'transparent';
+  const navbarBoxShadow = isHubPage 
+    ? '0 4px 24px rgba(0,0,0,0.4)' 
+    : scrolled ? '0 4px 24px rgba(0,0,0,0.3)' : 'none';
 
   return (
     <>
@@ -57,8 +69,11 @@ export default function Navbar() {
           color: var(--gold) !important;
           text-shadow: 0 0 8px rgba(212,175,55,0.4);
         }
+        .site-header {
+          transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
       `}} />
-      <div className="site-header" style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000, background: navbarBackground, borderBottom: isHubPage ? '1px solid rgba(212,175,55,0.1)' : 'none', boxShadow: isHubPage ? '0 4px 24px rgba(0,0,0,0.4)' : 'none' }}>
+      <div className="site-header" style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000, background: navbarBackground, borderBottom: isHubPage ? '1px solid rgba(212,175,55,0.1)' : 'none', boxShadow: navbarBoxShadow }}>
         <nav style={{ background: 'transparent', backgroundImage: 'none', backgroundColor: 'transparent', borderBottom: 'none', paddingBottom: '1rem', flexWrap: 'nowrap', display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingLeft: '1.5rem', paddingRight: '1.5rem', width: '100%' }}>
           <Link className="nav-logo" href="/" style={{ flexShrink: 0 }}>
              <img src="/logo_horizontal_transparent.png" alt="TourneyLinks Logo" style={{ width: '180px', height: 'auto', objectFit: 'contain', margin: '4px 0 0 0' }} />

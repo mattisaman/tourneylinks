@@ -1,0 +1,1 @@
+ALTER TABLE "tournaments" ADD COLUMN "raw_description" text;

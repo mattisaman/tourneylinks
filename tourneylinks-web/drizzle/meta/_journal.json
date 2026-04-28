@@ -15,6 +15,13 @@
       "when": 1777375555093,
       "tag": "0001_reflective_smasher",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1777409854758,
+      "tag": "0002_slow_starfox",
+      "breakpoints": true
     }
   ]
 }

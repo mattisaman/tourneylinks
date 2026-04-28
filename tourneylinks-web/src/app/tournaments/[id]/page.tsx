@@ -243,7 +243,7 @@ export default async function TournamentGatewayPage({ params }: { params: Promis
                   <div>
                     <h3 style={{ color: 'var(--gold)', fontSize: '1.2rem', marginBottom: '0.3rem', fontWeight: 600 }}>Are you the Tournament Director?</h3>
                     <p style={{ color: '#e0e5df', fontSize: '0.9rem', lineHeight: '1.4', maxWidth: '600px' }}>
-                      Take ownership to securely manage registrations and collect payments instantly.
+                      Claim your event to unlock premium features: Accept payments, organize volunteers, and collaborate with course admins and sponsors—all from one central dashboard.
                     </p>
                   </div>
                   <Link href="/host" className="btn-primary" style={{ padding: '0.8rem 1.5rem', fontSize: '0.95rem', whiteSpace: 'nowrap', boxShadow: '0 8px 20px rgba(212,175,55,0.3)', background: 'linear-gradient(135deg, #d4af37, #aa8529)', color: '#000', fontWeight: 700, border: 'none' }}>
