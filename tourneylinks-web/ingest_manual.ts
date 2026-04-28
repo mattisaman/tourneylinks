@@ -1,18 +1,18 @@
 import { config } from 'dotenv';
 config({ path: '.env.local' });
-import { db, tournaments } from './src/lib/db';
-import { eq } from 'drizzle-orm';
+import { db, tournaments, courses } from './src/lib/db';
+import { eq, ilike } from 'drizzle-orm';
 import { mergeIfDuplicate } from './src/lib/deduplication';
 import fs from 'fs';
 
 async function main() {
-  if (!fs.existsSync('apify_json')) {
-    console.error('Error: apify_json not found in the current directory.');
+  if (!fs.existsSync('apify_json_full')) {
+    console.error('Error: apify_json_full not found in the current directory.');
     return;
   }
 
-  console.log('Reading apify_json...');
-  const fileContent = fs.readFileSync('apify_json', 'utf8');
+  console.log('Reading apify_json_full...');
+  const fileContent = fs.readFileSync('apify_json_full', 'utf8');
   let events;
   try {
     events = JSON.parse(fileContent);
@@ -49,16 +49,16 @@ async function main() {
       continue;
     }
 
-    const countryCode = event['location.countryCode'] || '';
+    const countryCode = event.location?.countryCode || event['location.countryCode'] || '';
     
     if (countryCode && countryCode !== 'US') {
       skippedCount++;
       continue; // Skip non-US tournaments
     }
 
-    let city = event['location.city'] || '';
-    let state = event['location.state'] || '';
-    let courseName = event['location.name'] || 'TBD Course';
+    let city = event.location?.city || event['location.city'] || '';
+    let state = event.location?.state || event['location.state'] || '';
+    let courseName = event.location?.name || event['location.name'] || 'TBD Course';
 
     // Fallback: If city/state are empty but location.name looks like an address
     if (!city && !state && courseName.includes(',')) {
@@ -80,11 +80,32 @@ async function main() {
     if (!city) city = 'TBD City';
     if (!state) state = 'TBD State';
 
+    let courseId = null;
+    let courseAddress = null;
+
+    if (courseName !== 'TBD Course') {
+      let searchName = courseName.replace(/^(The |A )/i, '').trim();
+      const firstWord = searchName.split(' ')[0].replace(/[^a-zA-Z0-9]/g, '');
+      if (firstWord.length > 2) {
+        const matchingCourses = await db.select().from(courses).where(ilike(courses.name, `%${firstWord}%`));
+        if (matchingCourses.length > 0) {
+          const stateMatch = matchingCourses.find(c => c.state === state);
+          if (stateMatch) {
+            courseId = stateMatch.id;
+            courseAddress = stateMatch.address;
+          } else if (matchingCourses.length === 1) {
+            courseId = matchingCourses[0].id;
+            courseAddress = matchingCourses[0].address;
+          }
+        }
+      }
+    }
+
     const wasMerged = await mergeIfDuplicate({
       title,
       courseCity: city,
       courseState: state,
-      dateStart: event.startDate || event.startTime || event.utcStartDate || new Date().toISOString(),
+      dateStart: event.utcStartDate || event.startDate || event.startTime || new Date().toISOString(),
       source: 'facebook-apify',
       sourceUrl: event.url || `https://facebook.com/events/${event.id}`,
       description,
@@ -96,18 +117,31 @@ async function main() {
       continue;
     }
 
+    let registrationUrl = null;
+    if (description) {
+      const urlRegex = /(https?:\/\/[^\s]+)/g;
+      const urls = description.match(urlRegex);
+      if (urls && urls.length > 0) {
+        const externalUrl = urls.find(u => !u.toLowerCase().includes('facebook.com'));
+        if (externalUrl) registrationUrl = externalUrl;
+      }
+    }
+
     await db.insert(tournaments).values({
       name: title,
       sourceUrl: event.url || `https://facebook.com/events/${event.id}`,
       sourceId: sourceId,
       source: 'facebook-apify',
-      dateStart: event.startDate || event.startTime || event.utcStartDate || new Date().toISOString(),
+      dateStart: event.utcStartDate || event.startDate || event.startTime || new Date().toISOString(),
       dateEnd: event.endDate || event.endTime,
       courseName: courseName,
+      courseId: courseId,
+      courseAddress: courseAddress,
       courseCity: city,
       courseState: state,
       format: 'Scramble',
       description: description,
+      registrationUrl: registrationUrl,
       socialSignals: JSON.stringify({ interestedCount: event.usersInterested || event.interestedCount || 0, goingCount: event.usersGoing || event.goingCount || 0 }),
       eventSources: JSON.stringify(['facebook-apify']),
       isActive: true,
