@@ -1,20 +1,13 @@
 import { config } from 'dotenv';
-config({ path: './.env.local' });
-import { db, crawlLogs, tournaments } from './src/lib/db';
-import { desc, inArray } from 'drizzle-orm';
+config({ path: '.env.local' });
+import { db, tournaments } from './src/lib/db';
+import { eq } from 'drizzle-orm';
 
-async function run() {
-  const recentLogs = await db.select().from(crawlLogs).orderBy(desc(crawlLogs.crawledAt)).limit(10);
-  const logUrls = recentLogs.map(l => l.url);
-  console.log("Log URLs:", logUrls);
-  
-  const recentTournaments = await db.select({
-      id: tournaments.id,
-      sourceUrl: tournaments.sourceUrl,
-      name: tournaments.name
-    }).from(tournaments).where(inArray(tournaments.sourceUrl, logUrls));
-  
-  console.log("Recent Tournaments found:", recentTournaments);
-  process.exit(0);
+async function main() {
+  const allTournaments = await db.select().from(tournaments);
+  console.log(`Total tournaments in DB: ${allTournaments.length}`);
+  const activeTournaments = allTournaments.filter(t => t.isActive);
+  console.log(`Total active tournaments in DB: ${activeTournaments.length}`);
 }
-run();
+
+main().catch(console.error);

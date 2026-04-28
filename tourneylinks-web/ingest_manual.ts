@@ -6,18 +6,18 @@ import { mergeIfDuplicate } from './src/lib/deduplication';
 import fs from 'fs';
 
 async function main() {
-  if (!fs.existsSync('data.json')) {
-    console.error('Error: data.json not found in the current directory.');
+  if (!fs.existsSync('apify_json')) {
+    console.error('Error: apify_json not found in the current directory.');
     return;
   }
 
-  console.log('Reading data.json...');
-  const fileContent = fs.readFileSync('data.json', 'utf8');
+  console.log('Reading apify_json...');
+  const fileContent = fs.readFileSync('apify_json', 'utf8');
   let events;
   try {
     events = JSON.parse(fileContent);
   } catch (e) {
-    console.error('Failed to parse data.json:', e);
+    console.error('Failed to parse apify_json:', e);
     return;
   }
 
@@ -50,6 +50,12 @@ async function main() {
     }
 
     const location = event.location || {};
+    
+    if (location.countryCode && location.countryCode !== 'US') {
+      skippedCount++;
+      continue; // Skip non-US tournaments
+    }
+
     const city = location.city || 'TBD City';
     const state = location.state || 'TBD State';
 

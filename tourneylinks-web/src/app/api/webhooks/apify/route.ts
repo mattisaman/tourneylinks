@@ -62,6 +62,12 @@ export async function POST(req: Request) {
 
           // Extract details
           const location = event.location || {};
+          
+          // Skip non-US tournaments based on user request
+          if (location.countryCode && location.countryCode !== 'US') {
+            continue;
+          }
+
           const courseName = location.name || 'TBD Course';
           const city = location.city || 'TBD City';
           const state = location.state || 'TBD State';
