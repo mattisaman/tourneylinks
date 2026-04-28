@@ -333,12 +333,53 @@ export async function getExistingTournaments() {
   const rows = await db.select().from(tournaments)
     .where(and(
       eq(tournaments.isActive, true),
-      gte(tournaments.dateStart, new Date().toISOString().split('T')[0]),
       notInArray(tournaments.source, ['state-associations', 'usga-events']),
       sql`${tournaments.formatDetails} NOT LIKE '%Sanctioned/Pro%' OR ${tournaments.formatDetails} IS NULL`
     ))
     .orderBy(asc(tournaments.dateStart));
-  return rows;
+    
+  const todayAtMidnight = new Date();
+  todayAtMidnight.setHours(0, 0, 0, 0);
+
+  return rows.filter((t) => {
+    if (!t.dateStart) return false;
+    
+    // Attempt to parse the date string
+    const parsedDate = new Date(t.dateStart);
+    
+    // Check if the date is invalid (unparseable fuzzy text like "TBD" or "Late Summer")
+    if (isNaN(parsedDate.getTime())) {
+      return false;
+    }
+    
+    // Check if the date is in the past
+    if (parsedDate < todayAtMidnight) {
+      return false;
+    }
+    
+    // Filter out state associations that slipped in via Google Discovery
+    const lowerName = t.name.toLowerCase();
+    const lowerUrl = (t.sourceUrl || '').toLowerCase();
+    const lowerOrg = (t.organizerName || '').toLowerCase();
+    
+    // Common state association acronyms and keywords
+    const isStateAssoc = [
+      'usga', 'vsga', 'ncga', 'scga', 'nysga', 'cga', 'riga', 
+      'csga', 'njsga', 'fsga', 'gsga', 'cdga', 'iga', 'wga', 
+      'moga', 'txga', 'okga', 'oga', 'azgolf', 'state golf association',
+      'amateur championship', 'open championship'
+    ].some(keyword => 
+      lowerName.includes(keyword) || 
+      lowerUrl.includes(keyword) || 
+      lowerOrg.includes(keyword)
+    );
+    
+    if (isStateAssoc) {
+      return false;
+    }
+    
+    return true;
+  });
 }
 
 export async function getTournamentById(id: number) {

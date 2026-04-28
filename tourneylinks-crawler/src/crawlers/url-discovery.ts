@@ -100,7 +100,7 @@ export async function discoverFromSearch(source: CrawlSource, targetRegion?: str
   } else {
     // Pick a random subset of metros for this cycle
     const shuffled = [...METRO_AREAS].sort(() => Math.random() - 0.5);
-    metros = shuffled.slice(0, 5); // 5 metros per cycle
+    metros = shuffled.slice(0, 1); // 1 metro per cycle to save Google Search budget
   }
 
   for (const pattern of source.searchPatterns) {

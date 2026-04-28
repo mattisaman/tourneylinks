@@ -97,6 +97,7 @@ For EACH tournament found, extract these fields as JSON, adhering to the exact t
 
 RULES:
 - Only extract GOLF tournaments/events. Skip non-golf content.
+- CRITICAL: If the tournament is a professional tour event (PGA, LIV), a USGA qualifier, or a State Association sanctioned event, DO NOT EXTRACT IT. Return an empty array. We only want charity, corporate, and local amateur scrambles/tournaments.
 - If a field isn't mentioned, use null.
 - For dates, infer the year from context (default to current/next year for upcoming events).
 - For format, pick the closest match. "Scramble" includes charity scrambles. "Best-ball" includes 2-man/4-man best ball.
@@ -261,8 +262,13 @@ export function isLikelyTournamentPage(pageText: string, title: string): boolean
   // Must mention a date
   const hasDate = /\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\w*\s+\d{1,2}/i.test(text)
     || /\d{1,2}\/\d{1,2}\/\d{2,4}/.test(text)
-    || /202[4-9]/.test(text);
+    || /\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b/i.test(text);
+    
+  if (!hasDate) return false;
+  
+  // Must mention strong scramble/tournament indicators
+  const hasStrongIndicators = /shotgun start|scramble|four-man|four-person|entry fee|foursome|sponsorship|hole sponsor|mulligan|best ball|charity golf/i.test(text);
 
   // We have removed the strict NY Location filter to support nationwide crawling and user-specified regions.
-  return hasDate;
+  return hasStrongIndicators;
 }

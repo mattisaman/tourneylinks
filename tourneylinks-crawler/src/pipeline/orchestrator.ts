@@ -119,7 +119,7 @@ async function processSource(
       sourceId: source.id,
       url: discovered.url,
       depth: 0,
-      maxDepth: 3 // The requested depth limit
+      maxDepth: 0 // Deep crawl disabled to prevent runaway Google/Gemini API costs
     });
     
     stats.pagesCrawled++;
