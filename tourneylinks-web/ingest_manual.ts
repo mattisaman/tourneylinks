@@ -36,8 +36,9 @@ async function main() {
     const title = event.title || event.name || '';
     const description = event.description || '';
     const isGolf = /golf|scramble|tournament|classic/i.test(title) || /golf|scramble/i.test(description);
+    const isMiniGolf = /mini\s*golf|minigolf|putt\s*putt|top\s*golf/i.test(title) || /mini\s*golf|minigolf|putt\s*putt|top\s*golf/i.test(description);
     
-    if (!isGolf) {
+    if (!isGolf || isMiniGolf) {
       skippedCount++;
       continue;
     }
@@ -59,6 +60,20 @@ async function main() {
     let city = event.location?.city || event['location.city'] || '';
     let state = event.location?.state || event['location.state'] || '';
     let courseName = event.location?.name || event['location.name'] || 'TBD Course';
+
+    if (city && city.includes(',')) {
+      const parts = city.split(',').map(p => p.trim());
+      city = parts[0];
+      if (!state && parts.length > 1) {
+        for (let i = 1; i < parts.length; i++) {
+          const stateZipMatch = parts[i].match(/\b([A-Z]{2})\b/);
+          if (stateZipMatch) {
+            state = stateZipMatch[1];
+            break;
+          }
+        }
+      }
+    }
 
     // Fallback: If city/state are empty but location.name looks like an address
     if (!city && !state && courseName.includes(',')) {

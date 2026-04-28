@@ -8,6 +8,21 @@ import Link from 'next/link';
 import HeroCarousel from './HeroCarousel';
 import ContactHostModal from './ContactHostModal';
 
+const renderTextWithLinks = (text: string) => {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+  return parts.map((part, i) => {
+    if (part.match(urlRegex)) {
+      return (
+        <a key={i} href={part} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--gold)', textDecoration: 'underline' }}>
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
+};
+
 export default async function TournamentGatewayPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
   const tournamentId = parseInt(resolvedParams.id, 10);
@@ -296,7 +311,7 @@ export default async function TournamentGatewayPage({ params }: { params: Promis
                   <h2 style={{ fontSize: '1.8rem', marginBottom: '1.5rem', color: 'var(--forest)', fontWeight: 800, fontFamily: "'Playfair Display', serif" }}>Event Overview</h2>
                   <div style={{ fontSize: '1.15rem', lineHeight: '1.9', color: 'var(--ink)' }}>
                     {tournament.description ? (
-                      <p style={{ whiteSpace: 'pre-line' }}>{tournament.description}</p>
+                      <p style={{ whiteSpace: 'pre-line', wordBreak: 'break-word' }}>{renderTextWithLinks(tournament.description)}</p>
                     ) : (
                       <p style={{ fontStyle: 'italic', color: 'var(--mist)' }}>Join us for an incredible day of golf, networking, and competition. This premium event features a fully catered breakfast, 18 holes of championship golf, and an evening awards reception. Secure your foursome today before the field fills up!</p>
                     )}
