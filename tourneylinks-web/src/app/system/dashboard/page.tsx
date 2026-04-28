@@ -10,23 +10,23 @@ export const dynamic = 'force-dynamic';
 export default async function NOCDashboard() {
   
   // Quick Reference Global Stats
-  const [totalTournamentsResult, activeTournamentsResult, totalCrawlsResult, successfulCrawlsResult, eventbriteResult, fbResult, pendingCheckbacksResult] = await Promise.all([
+  const results = await Promise.all([
     db.select({ count: sql<number>`count(*)` }).from(tournaments),
     db.select({ count: sql<number>`count(*)` }).from(tournaments).where(sql`${tournaments.isActive} = true`),
     db.select({ count: sql<number>`count(*)` }).from(crawlLogs),
     db.select({ count: sql<number>`count(*)` }).from(crawlLogs).where(sql`${crawlLogs.status} = 'success'`),
     db.select({ count: sql<number>`count(*)` }).from(tournaments).where(sql`${tournaments.source} = 'eventbrite-apify'`),
     db.select({ count: sql<number>`count(*)` }).from(tournaments).where(sql`${tournaments.source} = 'facebook'`),
-    db.select({ count: sql<number>`count(*)` }).from(tournaments).where(sql`${tournaments.extractedAt} IS NULL AND ${tournaments.description} IS NULL`)
+    db.select({ count: sql<number>`count(*)` }).from(tournaments).where(sql`${tournaments.extractedAt} IS NULL`)
   ]);
 
-  const totalTournaments = Number(totalTournamentsResult[0].count);
-  const activeTournaments = Number(activeTournamentsResult[0].count);
-  const totalCrawls = Number(totalCrawlsResult[0].count);
-  const successfulCrawls = Number(successfulCrawlsResult[0].count);
-  const eventbriteCount = Number(eventbriteResult[0].count);
-  const fbCount = Number(fbResult[0].count);
-  const pendingCheckbacks = Number(pendingCheckbacksResult[0].count);
+  const totalTournaments = Number(results[0][0].count);
+  const activeTournaments = Number(results[1][0].count);
+  const totalCrawls = Number(results[2][0].count);
+  const successfulCrawls = Number(results[3][0].count);
+  const eventbriteCount = Number(results[4][0].count);
+  const fbCount = Number(results[5][0].count);
+  const pendingCheckbacks = Number(results[6][0].count);
   const successRate = totalCrawls > 0 ? Math.round((successfulCrawls / totalCrawls) * 100) : 0;
   
   // Cost Estimate (Extremely rough: $0.003 per page for Gemini Flash + Search/Scrape overhead)
@@ -88,9 +88,15 @@ export default async function NOCDashboard() {
           <HealthCard title="Neon DB Ingestion" status="Synchronized" icon={<Database color="var(--forest)" />} color="var(--forest)" />
         </div>
 
-        {/* Global Dispatch Terminal */}
-        <div style={{ filter: 'drop-shadow(var(--shadow-md))' }}>
-           <SpiderDispatcher />
+        {/* Apify External Link */}
+        <div className="lux-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem', background: 'var(--white)', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '12px' }}>
+           <div>
+              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--forest)', marginBottom: '0.25rem' }}>External Scraping Engine</h3>
+              <p style={{ color: 'var(--mist)', fontSize: '0.9rem', margin: 0 }}>Configure and launch new webhook payloads from Apify.</p>
+           </div>
+           <a href="https://console.apify.com" target="_blank" rel="noopener noreferrer" className="btn-hero" style={{ padding: '0.8rem 1.5rem', fontSize: '0.9rem' }}>
+              Open Apify Console ↗
+           </a>
         </div>
 
         {/* Quick Reference Dashboard */}

@@ -16,7 +16,7 @@ export default function CheckbackTrigger({ pendingCount }: { pendingCount: numbe
     try {
       const res = await triggerCheckbackEngine();
       if (res.success) {
-        setMessage('Engine triggered! Checkbacks running in background.');
+        setMessage('Universal Discovery Engine Triggered!');
       }
     } catch (err) {
       console.error(err);
@@ -24,10 +24,12 @@ export default function CheckbackTrigger({ pendingCount }: { pendingCount: numbe
     } finally {
       setTimeout(() => {
         setIsTriggering(false);
-        setTimeout(() => setMessage(''), 5000); // clear message after 5s
+        setTimeout(() => setMessage(''), 5000);
       }, 1000);
     }
   };
+
+
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
@@ -50,11 +52,11 @@ export default function CheckbackTrigger({ pendingCount }: { pendingCount: numbe
         }}
       >
         <Zap size={18} />
-        {isTriggering ? 'Initializing...' : 'Trigger AI Checkbacks'}
+        {isTriggering ? 'Initializing...' : 'Run Universal AI Normalizer'}
       </button>
       {message && <div style={{ fontSize: '0.8rem', color: 'var(--grass)', fontWeight: 600 }}>{message}</div>}
       <div style={{ fontSize: '0.75rem', color: 'var(--mist)', fontWeight: 600 }}>
-        {pendingCount} Pending TBD Events
+        {pendingCount} Tournaments Require Deep Search & Validation
       </div>
     </div>
   );

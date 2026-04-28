@@ -1,13 +1,19 @@
 const { Pool } = require('pg');
-require('dotenv').config({ path: '.env.local' });
+const fs = require('fs');
+
+const env = fs.readFileSync('.env.local', 'utf8');
+const match = env.match(/DATABASE_URL="([^"]+)"/);
+const dbUrl = match[1].replace('6543', '5432');
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: dbUrl,
 });
 
 async function run() {
-  const res = await pool.query("SELECT id, name, course_city, course_state, entry_fee, source_url FROM tournaments WHERE source = 'eventbrite-apify' ORDER BY created_at DESC LIMIT 5");
-  console.log(JSON.stringify(res.rows, null, 2));
+  const missing = await pool.query(`SELECT count(*) FROM tournaments WHERE extracted_at IS NULL AND description IS NULL`);
+  const premium = await pool.query(`SELECT count(*) FROM tournaments WHERE extracted_at IS NULL AND description IS NOT NULL`);
+  console.log("Missing (Checkbacks):", missing.rows[0]);
+  console.log("Need Premium:", premium.rows[0]);
   process.exit();
 }
 run();

@@ -29,7 +29,6 @@ async function main() {
       and(
         eq(tournaments.status, 'active'),
         isNull(tournaments.extractedAt),
-        like(tournaments.registrationUrl, '%eventbrite.com%'),
         gte(tournaments.dateStart, today.toISOString())
       )
     )
