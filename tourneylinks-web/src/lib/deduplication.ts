@@ -28,7 +28,7 @@ export async function mergeIfDuplicate(newEvent: {
   const fullText = (newEvent.title + ' ' + (newEvent.description || '')).toLowerCase();
   
   // Hard filter for explicitly non-golf events
-  const nonGolfKeywords = ['darts', 'bowling', 'tennis', 'softball', 'basketball', 'hockey', 'soccer', 'volleyball', 'pickleball', 'billiards', 'pool tournament', 'cornhole', 'pickle ball'];
+  const nonGolfKeywords = ['darts', 'bowling', 'tennis', 'softball', 'basketball', 'hockey', 'soccer', 'volleyball', 'pickleball', 'billiards', 'pool tournament', 'cornhole', 'pickle ball', 'kickball', 'spades'];
   if (nonGolfKeywords.some(keyword => fullText.includes(keyword))) {
     console.log(`[Golden Record Engine] Rejected non-golf event: ${newEvent.title}`);
     return { isMerged: true, needsReview: false }; // True means "skip insertion"

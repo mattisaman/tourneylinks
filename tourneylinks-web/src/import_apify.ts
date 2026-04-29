@@ -6,7 +6,7 @@ import { mergeIfDuplicate } from './lib/deduplication';
 import fs from 'fs';
 
 async function main() {
-  const filePath = 'src/apify_4_29';
+  const filePath = 'apify_4_29_2';
   if (!fs.existsSync(filePath)) {
     console.error(`Error: ${filePath} not found.`);
     return;
