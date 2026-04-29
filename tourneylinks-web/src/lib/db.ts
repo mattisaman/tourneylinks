@@ -212,6 +212,7 @@ export const crawlLogs = pgTable('crawl_logs', {
   fireCrawlCreditsUsed: integer('firecrawl_credits_used').default(0),
   totalCosts: real('total_costs').default(0),
   error: text('error'),
+  details: text('details'), // JSON string of batch breakdown
   crawledAt: timestamp('crawled_at').defaultNow(),
 });
 

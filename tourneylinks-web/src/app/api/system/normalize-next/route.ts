@@ -115,15 +115,32 @@ ${markdown.slice(0, 30000)}
         }
       }
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: contents,
-        config: {
-          responseMimeType: "application/json",
-        }
-      });
+      let response;
+      let retries = 3;
+      let delay = 1000;
       
-      const responseText = response.text || "{}";
+      while (retries > 0) {
+        try {
+          response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: contents,
+            config: {
+              responseMimeType: "application/json",
+            }
+          });
+          break; // Success, exit retry loop
+        } catch (apiError: any) {
+          retries--;
+          if (retries === 0 || !apiError.message?.includes('503')) {
+            throw apiError; // Throw if out of retries or not a 503
+          }
+          console.log(`[Gemini] 503 Service Unavailable. Retrying in ${delay}ms...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+          delay *= 2; // Exponential backoff
+        }
+      }
+      
+      const responseText = response?.text || "{}";
       let data = {};
       try {
         const cleanedText = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
@@ -187,7 +204,7 @@ ${markdown.slice(0, 30000)}
         complete: false, 
         processedId: tournament.id, 
         tournamentName: tournament.name,
-        action: 'Failed (AI Error)' 
+        action: `Failed (${e.message.substring(0, 30)})` 
       });
     }
 

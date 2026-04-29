@@ -91,7 +91,7 @@ export default function CrawlerTrigger({ pendingCount }: { pendingCount: number 
         }}
       >
         <Network size={18} />
-        {isProcessing ? 'Crawler Running...' : 'Run Clubhouse Crawler (Batch of 10)'}
+        {isProcessing ? 'Crawler Running...' : 'Extract Course Intelligence (Batch of 10)'}
       </button>
 
       {/* Progress Bar UI */}
@@ -115,8 +115,8 @@ export default function CrawlerTrigger({ pendingCount }: { pendingCount: number 
       {message && <div style={{ fontSize: '0.75rem', color: 'var(--grass)', fontWeight: 600 }}>{message}</div>}
       
       {!isProcessing && (
-        <div style={{ fontSize: '0.75rem', color: 'var(--mist)', fontWeight: 600 }}>
-          {pendingCount} Courses Eligible for Crawl
+        <div style={{ fontSize: '0.75rem', color: 'var(--mist)', fontWeight: 600, alignSelf: 'flex-start', lineHeight: 1.3 }}>
+          {pendingCount} Courses ready. Scrapes website for PDF brochures, Host-An-Event URLs, and Coordinator contact info.
         </div>
       )}
     </div>

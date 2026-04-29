@@ -5,6 +5,7 @@ import SpiderDispatcher from '@/components/system/SpiderDispatcher';
 import { Server, Activity, Database, Zap } from 'lucide-react';
 import CheckbackTrigger from './CheckbackTrigger';
 import CrawlerTrigger from './CrawlerTrigger';
+import ApifySyncTrigger from './ApifySyncTrigger';
 import { courses } from '@/lib/db';
 import { and, isNotNull, or, isNull, lt } from 'drizzle-orm';
 
@@ -48,27 +49,39 @@ export default async function NOCDashboard() {
   // NOC Exclusive Metrics
   const recentLogs = await db.select().from(crawlLogs).orderBy(desc(crawlLogs.crawledAt)).limit(12);
   
+  // Fetch the latest 4 globally discovered tournaments, regardless of source
+  const recentTournaments = await db.select({
+      id: tournaments.id,
+      sourceUrl: tournaments.sourceUrl,
+      source: tournaments.source,
+      name: tournaments.name,
+      dateStart: tournaments.dateStart,
+      courseCity: tournaments.courseCity,
+      courseState: tournaments.courseState,
+      entryFee: tournaments.entryFee
+  }).from(tournaments).orderBy(desc(tournaments.createdAt)).limit(4);
+
+  const uniqueRecentTournaments = recentTournaments;
+
   // Check if crawler is actively running (if most recent log is within the last 60 seconds)
   const isActivelyRunning = recentLogs.length > 0 && 
       (new Date().getTime() - new Date(recentLogs[0].crawledAt || 0).getTime() < 60000);
-  
-  // To make the dashboard more informative, we fetch the actual tournament names that were pulled from these URLs
+
+  // Fetch tournaments specifically related to the telemetry logs
   const logUrls = recentLogs.map(l => l.url);
-  let recentTournaments: { id: string, sourceUrl: string, name: string, dateStart: string }[] = [];
-  
+  let tournamentsFromLogs: typeof recentTournaments = [];
   if (logUrls.length > 0) {
-    recentTournaments = await db.select({
+    tournamentsFromLogs = await db.select({
       id: tournaments.id,
       sourceUrl: tournaments.sourceUrl,
+      source: tournaments.source,
       name: tournaments.name,
-      dateStart: tournaments.dateStart
+      dateStart: tournaments.dateStart,
+      courseCity: tournaments.courseCity,
+      courseState: tournaments.courseState,
+      entryFee: tournaments.entryFee
     }).from(tournaments).where(inArray(tournaments.sourceUrl, logUrls));
   }
-
-  // Deduplicate for the Top Level "Recently Discovered" section
-  const uniqueRecentTournamentsMap = new Map();
-  recentTournaments.forEach(t => uniqueRecentTournamentsMap.set(t.name, t));
-  const uniqueRecentTournaments = Array.from(uniqueRecentTournamentsMap.values()).slice(0, 4); // Show top 4 recently discovered
 
   return (
     <div>
@@ -86,6 +99,7 @@ export default async function NOCDashboard() {
              <p style={{ color: 'var(--mist)', margin: 0 }}>Global Spider Engine Telemetry Hub</p>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <ApifySyncTrigger />
             <CrawlerTrigger pendingCount={eligibleCoursesCount} />
             <CheckbackTrigger pendingCount={pendingCheckbacks} />
             <a href="/system/analytics" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--forest)', color: 'var(--white)', padding: '0.8rem 1.5rem', borderRadius: '8px', fontWeight: 700, textDecoration: 'none', transition: 'background 0.2s' }}>
@@ -131,17 +145,34 @@ export default async function NOCDashboard() {
           <div style={{ marginTop: '3.5rem' }}>
             <h2 style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--forest)', marginBottom: '1.25rem' }}>Recently Extracted Listings</h2>
             <p style={{ color: 'var(--mist)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>These events were successfully pulled from the latest payloads and are live on the directory.</p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1.5rem' }}>
-              {uniqueRecentTournaments.map((t, idx) => (
-                <a href={`/tournaments/${t.id}`} target="_blank" rel="noopener noreferrer" key={idx} className="lux-card" style={{ display: 'block', background: 'var(--white)', border: '1px solid rgba(76, 175, 80, 0.2)', padding: '1.25rem', borderRadius: '12px', textDecoration: 'none' }}>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--grass)', textTransform: 'uppercase', marginBottom: '0.5rem', letterSpacing: '0.5px' }}>New Arrival</div>
-                  <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--forest)', lineHeight: 1.3, marginBottom: '0.5rem' }}>{t.name}</div>
-                  <div style={{ fontSize: '0.85rem', color: 'var(--mist)', fontWeight: 500, display: 'flex', justifyContent: 'space-between' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
+              {uniqueRecentTournaments.map((t, idx) => {
+                const isFb = t.source.includes('facebook');
+                const isEb = t.source.includes('eventbrite');
+                const sourceColor = isFb ? '#1877F2' : isEb ? '#F05537' : 'var(--emerald)';
+                const sourceLabel = isFb ? 'Facebook' : isEb ? 'Eventbrite' : 'Native Scraper';
+
+                return (
+                <a href={`/tournaments/${t.id}`} target="_blank" rel="noopener noreferrer" key={idx} className="lux-card" style={{ display: 'block', background: 'var(--white)', border: '1px solid rgba(0, 0, 0, 0.05)', padding: '1.25rem', borderRadius: '12px', textDecoration: 'none' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                    <div style={{ fontSize: '0.7rem', fontWeight: 700, color: sourceColor, textTransform: 'uppercase', letterSpacing: '0.5px', display: 'flex', alignItems: 'center', gap: '4px', background: `${sourceColor}15`, padding: '4px 8px', borderRadius: '12px' }}>
+                      {sourceLabel}
+                    </div>
+                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--mist)' }}>
+                      {t.entryFee ? `$${t.entryFee}` : 'TBD'}
+                    </div>
+                  </div>
+                  <div style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--forest)', lineHeight: 1.3, marginBottom: '0.75rem', height: '2.6rem', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                    {t.name}
+                  </div>
+                  <div style={{ fontSize: '0.85rem', color: 'var(--mist)', fontWeight: 500, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span style={{ color: 'var(--forest)' }}>📍</span> {t.courseCity}, {t.courseState}
+                    </div>
                     <span>{t.dateStart ? new Date(t.dateStart).toLocaleDateString() : 'TBD'}</span>
-                    <span style={{ color: 'var(--emerald)' }}>View ↗</span>
                   </div>
                 </a>
-              ))}
+              )})}
             </div>
           </div>
         )}
@@ -167,7 +198,7 @@ export default async function NOCDashboard() {
             {recentLogs.map(log => {
                // Find all unique tournament names extracted from this specific URL, mapped to their ID
                const pulledTournamentsMap = new Map();
-               recentTournaments.filter(t => t.sourceUrl === log.url).forEach(t => {
+               tournamentsFromLogs.filter(t => t.sourceUrl === log.url).forEach(t => {
                   pulledTournamentsMap.set(t.name, t);
                });
                const pulledTournaments = Array.from(pulledTournamentsMap.values());
@@ -183,17 +214,47 @@ export default async function NOCDashboard() {
                  </div>
                  <div style={{ flex: 2.5, paddingRight: '1rem' }}>
                     <div style={{ color: 'var(--forest)', fontWeight: 500, wordBreak: 'break-all', fontSize: '0.85rem' }}>
-                       {log.searchVector || log.url}
+                       {log.url.startsWith('apify://') ? 
+                          `[BATCH IMPORT] Social Events — Yield: ${log.tournamentsFound} unique new tournaments saved. (Source: Apify)` : 
+                          (log.searchVector || log.url)}
                     </div>
-                    {pulledTournaments.length > 0 && (
-                       <div style={{ marginTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.4rem', alignItems: 'flex-start' }}>
-                         {pulledTournaments.map((t, idx) => (
-                            <a href={`/tournaments/${t.id}`} target="_blank" rel="noopener noreferrer" key={idx} className="tournament-link" style={{ fontSize: '0.8rem', color: 'var(--grass)', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(76, 175, 80, 0.05)', padding: '4px 10px', borderRadius: '6px', border: '1px solid rgba(76, 175, 80, 0.15)' }}>
-                               <span style={{ fontSize: '10px' }}>↳</span> {t.name} <span style={{ fontSize: '12px' }}>↗</span>
-                            </a>
-                         ))}
-                       </div>
-                    )}
+                    {(() => {
+                       let detailsObj = null;
+                       if (log.details) {
+                         try {
+                           detailsObj = JSON.parse(log.details);
+                         } catch (e) {}
+                       }
+                       
+                       const hasPulledUrlTournaments = pulledTournaments.length > 0;
+                       
+                       return (
+                         <div style={{ marginTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.4rem', alignItems: 'flex-start' }}>
+                           {/* Render individual extracted links if it was a single URL crawl */}
+                           {hasPulledUrlTournaments && pulledTournaments.map((t, idx) => (
+                              <a href={`/tournaments/${t.id}`} target="_blank" rel="noopener noreferrer" key={idx} className="tournament-link" style={{ fontSize: '0.8rem', color: 'var(--grass)', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(76, 175, 80, 0.05)', padding: '4px 10px', borderRadius: '6px', border: '1px solid rgba(76, 175, 80, 0.15)' }}>
+                                 <span style={{ fontSize: '10px' }}>↳</span> {t.name} <span style={{ fontSize: '12px' }}>↗</span>
+                              </a>
+                           ))}
+                           
+                           {/* Render detailed batch breakdown if details JSON exists */}
+                           {detailsObj && (
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', marginTop: '0.25rem' }}>
+                                {detailsObj.duplicatesSkipped > 0 && (
+                                   <div style={{ fontSize: '0.75rem', color: 'var(--mist)', fontWeight: 500 }}>
+                                     <span style={{ color: 'var(--admin-pin-red)', fontWeight: 700 }}>{detailsObj.duplicatesSkipped}</span> Duplicates Skipped
+                                   </div>
+                                )}
+                                {detailsObj.titlesFound && detailsObj.titlesFound.length > 0 && (
+                                   <div style={{ fontSize: '0.75rem', color: 'var(--forest)', fontWeight: 500, marginTop: '4px' }}>
+                                     <strong style={{ color: 'var(--grass)' }}>New Imports:</strong> {detailsObj.titlesFound.join(', ')}
+                                   </div>
+                                )}
+                              </div>
+                           )}
+                         </div>
+                       );
+                    })()}
                  </div>
                  <div style={{ flex: 1, textAlign: 'right', paddingTop: '4px' }}>
                    <span style={{ 

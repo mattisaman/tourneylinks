@@ -109,8 +109,8 @@ export default function CheckbackTrigger({ pendingCount }: { pendingCount: numbe
       {message && <div style={{ fontSize: '0.75rem', color: 'var(--grass)', fontWeight: 600 }}>{message}</div>}
       
       {!isProcessing && (
-        <div style={{ fontSize: '0.75rem', color: 'var(--mist)', fontWeight: 600 }}>
-          {pendingCount} Tournaments Require Validation
+        <div style={{ fontSize: '0.75rem', color: 'var(--mist)', fontWeight: 600, alignSelf: 'flex-start', lineHeight: 1.3 }}>
+          {pendingCount} raw tournaments require validation. Click to use Gemini to structure their data.
         </div>
       )}
     </div>

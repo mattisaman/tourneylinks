@@ -68,75 +68,96 @@ export async function POST() {
     }
 
     const prompt = `
-You are an expert golf tournament discovery AI.
+You are an expert golf course intelligence AI.
 Analyze the following markdown extracted from a golf course's website.
-Look for any upcoming public charity golf tournaments, scrambles, or outings.
-Do NOT include standard daily tee times, leagues, or generic course information.
+Look for any information related to hosting charity golf tournaments, scrambles, or corporate outings.
 
-Extract a JSON array of event objects. Each object MUST contain:
-- "name": (string) The name of the event
-- "dateStart": (string) The start date and time if available (ISO format or descriptive)
-- "entryFee": (number or null) The price per player
-- "description": (string) A brief description of the event
-- "organizerName": (string or null) The charity or host name
+Extract a JSON object with the following fields:
+- "hasTournaments": (boolean) True if the course hosts public tournaments or outings
+- "tournamentPageUrls": (array of strings) Any URLs pointing to dedicated "Host an Event" or "Tournaments" pages found in the text
+- "tournamentFiles": (array of strings) Any URLs to PDFs, DOCs, or brochures related to outings
+- "contactEmail": (string or null) The best email address for tournament/outing coordination. If none found, return null.
+- "contactPhone": (string or null) The best phone number for tournament coordination. If none found, return null.
 
-If no events are found, return an empty array [].
-
-IMPORTANT: Only return the raw JSON array. Do not wrap in markdown or backticks.
+IMPORTANT: Only return the raw JSON object. Do not wrap in markdown or backticks.
 Markdown Content:
 ${markdown.substring(0, 80000)}
 `;
 
     try {
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: [prompt],
-        config: {
-          responseMimeType: "application/json",
-        }
-      });
+      let response;
+      let retries = 3;
+      let delay = 1000;
       
-      const responseText = response.text || "[]";
-      let events: any[] = [];
+      while (retries > 0) {
+        try {
+          response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: [prompt],
+            config: {
+              responseMimeType: "application/json",
+            }
+          });
+          break; // Success, exit retry loop
+        } catch (apiError: any) {
+          retries--;
+          if (retries === 0 || !apiError.message?.includes('503')) {
+            throw apiError; // Throw if out of retries or not a 503
+          }
+          console.log(`[Gemini] 503 Service Unavailable. Retrying in ${delay}ms...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+          delay *= 2; // Exponential backoff
+        }
+      }
+      
+      const responseText = response?.text || "{}";
+      let data: any = {};
       try {
         const cleanedText = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
-        events = JSON.parse(cleanedText);
+        data = JSON.parse(cleanedText);
       } catch (parseError) {
         console.error("Failed to parse Gemini JSON. Raw response:", responseText);
         throw new Error("Invalid JSON format from Gemini");
       }
+
+      // Update the course record with the extracted intelligence
+      const updatePayload: any = {};
       
-      if (!Array.isArray(events)) {
-         events = [events];
+      // Update email and phone if we found them and they don't already exist on the course
+      if (data.contactEmail && !course.email) {
+         updatePayload.email = data.contactEmail;
+      }
+      if (data.contactPhone && !course.phone) {
+         updatePayload.phone = data.contactPhone;
       }
 
-      let insertedCount = 0;
-      
-      for (const event of events) {
-         if (!event.name) continue;
-         
-         await db.insert(tournaments).values({
-            name: event.name,
-            sourceUrl: url,
-            sourceId: `course-website-${course.id}-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-            source: 'course-website',
-            dateStart: event.dateStart || null,
-            entryFee: event.entryFee ? Number(event.entryFee) : null,
-            description: event.description || null,
-            organizerName: event.organizerName || course.name,
-            courseName: course.name,
-            courseCity: course.city,
-            courseState: course.state,
-            status: 'active'
-         });
-         insertedCount++;
+      // Handle raw metadata (tournament pages)
+      if (data.tournamentPageUrls && data.tournamentPageUrls.length > 0) {
+         try {
+           const existingMeta = course.rawMetadata ? JSON.parse(course.rawMetadata) : {};
+           existingMeta.tournamentPageUrls = data.tournamentPageUrls;
+           updatePayload.rawMetadata = JSON.stringify(existingMeta);
+         } catch(e) {}
+      }
+
+      // Handle PDF files
+      if (data.tournamentFiles && data.tournamentFiles.length > 0) {
+         try {
+           const existingDocs = course.originalDocumentUrls ? JSON.parse(course.originalDocumentUrls) : [];
+           const mergedDocs = Array.from(new Set([...existingDocs, ...data.tournamentFiles]));
+           updatePayload.originalDocumentUrls = JSON.stringify(mergedDocs);
+         } catch(e) {}
+      }
+
+      if (Object.keys(updatePayload).length > 0) {
+         await db.update(courses).set(updatePayload).where(eq(courses.id, course.id));
       }
       
       return NextResponse.json({ 
         complete: false, 
         processedId: course.id, 
         courseName: course.name,
-        action: `Extracted ${insertedCount} Events`
+        action: data.hasTournaments ? 'Found Outing Info' : 'No Outing Info'
       });
       
     } catch (e: any) {
@@ -145,7 +166,7 @@ ${markdown.substring(0, 80000)}
         complete: false, 
         processedId: course.id, 
         courseName: course.name,
-        action: 'Failed (AI Error)' 
+        action: `Failed (${e.message.substring(0, 30)})` 
       });
     }
 
