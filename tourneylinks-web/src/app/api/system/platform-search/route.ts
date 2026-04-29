@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db, tournaments, crawlLogs } from '@/lib/db';
 import { eq } from 'drizzle-orm';
-import { mergeIfDuplicate } from '@/lib/deduplication';
 
 export const maxDuration = 300;
 export const dynamic = 'force-dynamic';
@@ -73,15 +72,9 @@ export async function POST(req: Request) {
         isFullyNormalized: false, 
       }).returning();
       
-      // Run the initial deduplication sweep
       if (inserted && inserted.length > 0) {
-        const keptEvent = await mergeIfDuplicate(inserted[0]);
-        if (keptEvent.id === inserted[0].id) {
-          insertedCount++;
-          newTitles.push(title);
-        } else {
-          duplicatesSkipped++;
-        }
+        insertedCount++;
+        newTitles.push(title);
       }
     }
 
