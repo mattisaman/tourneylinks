@@ -113,8 +113,9 @@ export async function processApifyDataset(datasetId: string, apifyToken: string)
 
       const resolvedStartDate = event.startAt || event.utcStartDate || event.startDate || event.startTime || event.start?.utc || new Date().toISOString();
 
-      const wasMerged = await mergeIfDuplicate({
+      const mergeResult = await mergeIfDuplicate({
         title,
+        courseName,
         courseCity: city,
         courseState: state,
         dateStart: resolvedStartDate,
@@ -124,7 +125,7 @@ export async function processApifyDataset(datasetId: string, apifyToken: string)
         socialSignals
       });
 
-      if (wasMerged) {
+      if (mergeResult.isMerged) {
         duplicatesSkipped++;
         continue;
       }
@@ -157,7 +158,7 @@ export async function processApifyDataset(datasetId: string, apifyToken: string)
         socialSignals: socialSignals,
         eventSources: JSON.stringify([sourceString]),
         isActive: true,
-        status: 'active',
+        status: mergeResult.needsReview ? 'needs_review' : 'active',
       });
       insertedCount++;
       newTitles.push(title);

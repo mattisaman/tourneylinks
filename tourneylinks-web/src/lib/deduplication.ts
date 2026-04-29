@@ -11,10 +11,12 @@ function normalizeText(text: string): string {
  * The Golden Record Engine
  * Checks if a tournament already exists based on location, date, and name similarity.
  * If it exists, merges the new source into it.
- * If not, returns null (meaning the caller should insert it).
+ * If it doesn't match perfectly but looks like a duplicate (same city, same date), returns a flag.
+ * Otherwise, returns false (meaning the caller should insert it as active).
  */
 export async function mergeIfDuplicate(newEvent: {
   title: string;
+  courseName: string;
   courseCity: string;
   courseState: string;
   dateStart: string;
@@ -22,43 +24,48 @@ export async function mergeIfDuplicate(newEvent: {
   sourceUrl: string;
   description?: string;
   socialSignals?: string;
-}): Promise<boolean> {
-  const normalizedNewTitle = normalizeText(newEvent.title);
-  const newDate = new Date(newEvent.dateStart);
-  if (isNaN(newDate.getTime())) return false; // Can't reliably dedupe without a valid date
+}): Promise<{ isMerged: boolean, needsReview: boolean }> {
+  const fullText = (newEvent.title + ' ' + (newEvent.description || '')).toLowerCase();
+  
+  // Hard filter for explicitly non-golf events
+  const nonGolfKeywords = ['darts', 'bowling', 'tennis', 'softball', 'basketball', 'hockey', 'soccer', 'volleyball', 'pickleball', 'billiards', 'pool tournament', 'cornhole', 'pickle ball'];
+  if (nonGolfKeywords.some(keyword => fullText.includes(keyword))) {
+    console.log(`[Golden Record Engine] Rejected non-golf event: ${newEvent.title}`);
+    return { isMerged: true, needsReview: false }; // True means "skip insertion"
+  }
 
-  // 1. Fetch potential matches in the same State and roughly the same month
-  // We do a broader fetch and filter in JS for precise 3-day window to avoid complex SQL date math
+  const newDate = new Date(newEvent.dateStart);
+  if (isNaN(newDate.getTime())) return { isMerged: false, needsReview: true }; // Require review for TBD dates
+
+  // 1. Fetch potential matches in the same State
   const candidates = await db.select().from(tournaments).where(
     eq(tournaments.courseState, newEvent.courseState)
   );
 
   let matchFound = null;
+  let needsReviewFlag = false;
 
   for (const candidate of candidates) {
     if (!candidate.dateStart) continue;
     const candidateDate = new Date(candidate.dateStart);
     if (isNaN(candidateDate.getTime())) continue;
 
-    // Check if within 3 days
-    const diffTime = Math.abs(newDate.getTime() - candidateDate.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffDays = Math.abs(newDate.getTime() - candidateDate.getTime()) / (1000 * 60 * 60 * 24);
+    if (diffDays !== 0) continue; // Must be same exact date
 
-      // Strict 100% match logic requested by user
-      const sameDate = diffDays === 0;
-      const sameCity = normalizeText(candidate.courseCity) === normalizeText(newEvent.courseCity);
-      const sameTitle = normalizeText(candidate.name) === normalizeText(newEvent.title);
-      
-      if (sameDate && sameCity && sameTitle) {
-        matchFound = candidate;
-        break;
-      }
+    const sameCourse = normalizeText(candidate.courseName) === normalizeText(newEvent.courseName);
+    const sameCity = normalizeText(candidate.courseCity) === normalizeText(newEvent.courseCity);
+
+    if (sameCourse) {
+      matchFound = candidate;
+      break;
+    } else if (sameCity) {
+      needsReviewFlag = true;
+    }
   }
 
   if (matchFound) {
     // 2. Perform the "Golden Record" Merge
-    
-    // Parse existing sources or default to just the primary source
     let sources: string[] = [];
     try {
       if (matchFound.eventSources) {
@@ -74,26 +81,17 @@ export async function mergeIfDuplicate(newEvent: {
       sources.push(newEvent.source);
     }
 
-    // Prepare merged fields
-    // If the new description is significantly longer/better, we might update it, 
-    // but for now, we just merge sources to prevent duplicates.
     const mergedData: any = {
       eventSources: JSON.stringify(sources),
-      // If we found it on multiple platforms, we could increase extraction_confidence
       extractionConfidence: Math.min((matchFound.extractionConfidence || 0) + 0.1, 1.0)
     };
 
-    // If existing had no description, take the new one
     if (!matchFound.description && newEvent.description) {
       mergedData.description = newEvent.description;
     }
 
-    // Merge social signals if the new event has them
-    if (newEvent.socialSignals) {
-       // We can overwrite or combine. Let's overwrite if new event is Facebook (richer social signals)
-       if (newEvent.source === 'facebook-apify') {
-         mergedData.socialSignals = newEvent.socialSignals;
-       }
+    if (newEvent.socialSignals && newEvent.source === 'facebook-apify') {
+       mergedData.socialSignals = newEvent.socialSignals;
     }
 
     await db.update(tournaments)
@@ -101,8 +99,8 @@ export async function mergeIfDuplicate(newEvent: {
       .where(eq(tournaments.id, matchFound.id));
 
     console.log(`[Golden Record Engine] Merged duplicate event: ${newEvent.title} into existing ID ${matchFound.id}`);
-    return true; // We successfully deduplicated
+    return { isMerged: true, needsReview: false };
   }
 
-  return false; // No match found, safe to insert
+  return { isMerged: false, needsReview: needsReviewFlag };
 }

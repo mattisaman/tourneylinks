@@ -40,6 +40,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           <NavLink href="/system/dashboard/aggregator" icon={<Globe size={18}/>} label="Global Aggregator" />
           <NavLink href="/system/dashboard/financials" icon={<DollarSign size={18}/>} label="Financial Forensics" />
           <NavLink href="/system/dashboard/quality" icon={<ShieldCheck size={18}/>} label="Quality Control" />
+          <NavLink href="/system/dashboard/duplicates" icon={<Database size={18}/>} label="Duplicate Resolution" />
           <NavLink href="/system/dashboard/courses" icon={<Database size={18}/>} label="Course DB Metrics" />
           <NavLink href="/system/dashboard/acquisition" icon={<Target size={18} color="var(--gold)" />} label="M&A Trajectory" />
         </div>

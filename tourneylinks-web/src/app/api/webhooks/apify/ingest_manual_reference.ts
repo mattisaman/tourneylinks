@@ -116,8 +116,9 @@ async function main() {
       }
     }
 
-    const wasMerged = await mergeIfDuplicate({
+    const mergeResult = await mergeIfDuplicate({
       title,
+      courseName,
       courseCity: city,
       courseState: state,
       dateStart: event.utcStartDate || event.startDate || event.startTime || new Date().toISOString(),
@@ -127,7 +128,7 @@ async function main() {
       socialSignals: JSON.stringify({ interestedCount: event.usersInterested || event.interestedCount || 0, goingCount: event.usersGoing || event.goingCount || 0 })
     });
 
-    if (wasMerged) {
+    if (mergeResult.isMerged) {
       mergedCount++;
       continue;
     }
@@ -160,7 +161,7 @@ async function main() {
       socialSignals: JSON.stringify({ interestedCount: event.usersInterested || event.interestedCount || 0, goingCount: event.usersGoing || event.goingCount || 0 }),
       eventSources: JSON.stringify(['facebook-apify']),
       isActive: true,
-      status: 'active',
+      status: mergeResult.needsReview ? 'needs_review' : 'active',
     });
     insertedCount++;
   }
