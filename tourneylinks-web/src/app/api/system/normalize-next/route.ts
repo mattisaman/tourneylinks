@@ -36,15 +36,17 @@ export async function POST() {
     const url = tournament.registrationUrl;
     
     let markdown = '';
+    let screenshotUrl: string | null = null;
     
     if (url) {
       try {
-        const scrapeResult = await firecrawl.scrapeUrl(url, { formats: ['markdown'] });
-        if (!scrapeResult || !scrapeResult.markdown) {
+        const scrapeResult = await firecrawl.scrape(url, { formats: ['markdown', 'screenshot'] });
+        if (!scrapeResult || (!scrapeResult.markdown && !scrapeResult.screenshot)) {
           markdown = tournament.description || '';
         } else {
           markdown = scrapeResult.markdown || '';
         }
+        screenshotUrl = scrapeResult.screenshot || null;
       } catch (e: any) {
         console.error(`FireCrawl error: ${e.message}`);
         markdown = tournament.description || '';
@@ -84,6 +86,7 @@ Extract the relevant details and output strictly as a JSON object matching this 
   "organizerEmail": <string or null>,
   "organizerPhone": <string or null>,
   "includes": <string or null, what is included like "Dinner, Cart, Green Fees">,
+  "schedule": <array of objects, e.g. [{"time": "10:00 AM", "event": "Registration"}, {"time": "12:00 PM", "event": "Shotgun Start"}]>,
   "cleanDescription": <string, rewrite the raw event description into a professional, premium 2-3 paragraph 'Event Overview' that sounds enticing. Remove all messy hashtags, emojis, and raw formatting. Do not invent details.>
 }
 
@@ -94,9 +97,27 @@ ${markdown.slice(0, 30000)}
 `;
 
     try {
+      const contents: any[] = [prompt];
+      
+      if (screenshotUrl) {
+        try {
+          const imgRes = await fetch(screenshotUrl);
+          const arrayBuffer = await imgRes.arrayBuffer();
+          const base64 = Buffer.from(arrayBuffer).toString('base64');
+          contents.push({
+            inlineData: {
+              data: base64,
+              mimeType: 'image/jpeg'
+            }
+          });
+        } catch (imgErr) {
+          console.error("Failed to fetch screenshot for AI:", imgErr);
+        }
+      }
+
       const response = await ai.models.generateContent({
         model: 'gemini-2.5-flash',
-        contents: prompt,
+        contents: contents,
         config: {
           responseMimeType: "application/json",
         }
@@ -114,6 +135,7 @@ ${markdown.slice(0, 30000)}
         pricingDetails: JSON.stringify(data.pricingDetails || {}),
         prizes: JSON.stringify(data.prizes || []),
         sponsors: JSON.stringify(data.sponsors || []),
+        schedule: JSON.stringify(data.schedule || []),
         rawDescription: tournament.rawDescription || tournament.description,
         description: data.cleanDescription || tournament.description,
         extractedAt: new Date().toISOString(),
