@@ -8,13 +8,13 @@ const redisUrl = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
 
 // Singleton pattern for the queue to avoid reconnection issues in dev
 const globalAny: any = global;
-let discoveryQueue: Queue;
-if (globalAny.discoveryQueue) {
-  discoveryQueue = globalAny.discoveryQueue;
-} else {
-  const connection = new IORedis(redisUrl, { maxRetriesPerRequest: null });
-  discoveryQueue = new Queue('tournament-discovery', { connection });
-  globalAny.discoveryQueue = discoveryQueue;
+
+function getDiscoveryQueue() {
+  if (!globalAny.discoveryQueue) {
+    const connection = new IORedis(redisUrl, { maxRetriesPerRequest: null });
+    globalAny.discoveryQueue = new Queue('tournament-discovery', { connection });
+  }
+  return globalAny.discoveryQueue as Queue;
 }
 
 export async function POST(req: Request) {
@@ -28,6 +28,7 @@ export async function POST(req: Request) {
     const dispatched = [];
 
     // Fan-out execution: Fire individual BullMQ jobs per region!
+    const discoveryQueue = getDiscoveryQueue();
     for (const region of regions) {
       const job = await discoveryQueue.add('discover-region', { region });
       dispatched.push({ region, jobId: job.id });
