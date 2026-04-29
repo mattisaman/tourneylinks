@@ -19,7 +19,7 @@ export default async function NOCDashboard() {
     db.select({ count: sql<number>`count(*)` }).from(crawlLogs),
     db.select({ count: sql<number>`count(*)` }).from(crawlLogs).where(sql`${crawlLogs.status} = 'success'`),
     db.select({ count: sql<number>`count(*)` }).from(tournaments).where(sql`${tournaments.source} = 'eventbrite-apify'`),
-    db.select({ count: sql<number>`count(*)` }).from(tournaments).where(sql`${tournaments.source} = 'facebook'`),
+    db.select({ count: sql<number>`count(*)` }).from(tournaments).where(sql`${tournaments.source} LIKE '%facebook%'`),
     db.select({ count: sql<number>`count(*)` }).from(tournaments).where(sql`${tournaments.extractedAt} IS NULL`),
     db.select({ count: sql<number>`count(*)` }).from(courses).where(
       and(
@@ -149,7 +149,7 @@ export default async function NOCDashboard() {
         {/* Live Server Logs (Glassmorphism List) */}
         <div style={{ marginTop: '3.5rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-             <h2 style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--forest)' }}>Autonomous Fleet Telemetry</h2>
+             <h2 style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--forest)' }}>Clubhouse Crawler Telemetry</h2>
              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: isActivelyRunning ? 'var(--emerald)' : 'var(--mist)', background: isActivelyRunning ? 'rgba(76, 175, 80, 0.1)' : 'rgba(0,0,0,0.05)', padding: '0.4rem 0.8rem', borderRadius: '20px', fontWeight: 700 }}>
                <div className={isActivelyRunning ? 'pulse-dot' : ''} style={{ width: '8px', height: '8px', background: isActivelyRunning ? 'var(--emerald)' : 'var(--mist)', borderRadius: '50%' }}></div>
                {isActivelyRunning ? 'Live Feed Active' : 'Standby Mode'}

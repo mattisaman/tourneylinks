@@ -136,7 +136,7 @@ ${markdown.substring(0, 80000)}
         complete: false, 
         processedId: course.id, 
         courseName: course.name,
-        action: \`Extracted \${insertedCount} Events\`
+        action: `Extracted ${insertedCount} Events`
       });
       
     } catch (e: any) {

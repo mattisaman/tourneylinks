@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { after } from 'next/server';
-import { db, tournaments } from '@/lib/db';
+import { db, tournaments, crawlLogs } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 import { mergeIfDuplicate } from '@/lib/deduplication';
 
@@ -195,6 +195,17 @@ export async function POST(req: Request) {
           });
           insertedCount++;
         }
+        
+        await db.insert(crawlLogs).values({
+          url: `apify://dataset/${datasetId}`,
+          searchVector: `Apify Batch Ingestion (${events.length} events)`,
+          sourceId: 'APIFY WEBHOOK',
+          cycleId: datasetId,
+          tournamentsFound: insertedCount,
+          durationMs: 0,
+          status: 'success'
+        });
+        
         console.log(`[Apify Webhook] Finished processing dataset: ${datasetId}. Inserted: ${insertedCount}`);
       } catch (err) {
         console.error('[Apify Webhook] Error during background processing:', err);
