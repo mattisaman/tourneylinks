@@ -12,20 +12,38 @@ export async function POST(req: Request) {
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     const firecrawl = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY });
 
-    const { courseId, url } = await req.json();
+    const { courseId, url, fileUrl, mimeType } = await req.json();
 
-    if (!courseId || !url) {
-      return NextResponse.json({ error: 'Missing courseId or url' }, { status: 400 });
+    if (!courseId || (!url && !fileUrl)) {
+      return NextResponse.json({ error: 'Missing courseId or url/fileUrl' }, { status: 400 });
     }
 
-    // 1. Scrape the documentation URL using FireCrawl
-    const scrapeResult = await firecrawl.scrapeUrl(url, { formats: ['markdown'] });
-    
-    if (!scrapeResult || !scrapeResult.markdown) {
-      return NextResponse.json({ error: 'Failed to extract content from the provided URL' }, { status: 400 });
-    }
+    let contentsToGemini: any[] = [];
+    let documentUrlToSave = '';
 
-    const markdown = scrapeResult.markdown;
+    if (fileUrl) {
+      // Direct File Upload from UploadThing
+      documentUrlToSave = fileUrl;
+      const fileRes = await fetch(fileUrl);
+      const arrayBuffer = await fileRes.arrayBuffer();
+      const base64 = Buffer.from(arrayBuffer).toString('base64');
+      
+      contentsToGemini.push({
+        inlineData: {
+          data: base64,
+          mimeType: mimeType || 'application/pdf'
+        }
+      });
+    } else {
+      // Scrape external URL using FireCrawl
+      documentUrlToSave = url;
+      const scrapeResult = await firecrawl.scrape(url, { formats: ['markdown'] });
+      
+      if (!scrapeResult || !scrapeResult.markdown) {
+        return NextResponse.json({ error: 'Failed to extract content from the provided URL' }, { status: 400 });
+      }
+      contentsToGemini.push(`CONTENT:\n${scrapeResult.markdown.slice(0, 30000)}`);
+    }
 
     // 2. Feed the raw documentation to Gemini to extract Rules and FAQs
     const prompt = `You are a golf course documentation specialist.
@@ -39,14 +57,13 @@ Respond strictly with a JSON object matching this schema:
 }
 
 If the text does not contain enough information for one of the sections, return an empty string or a polite fallback message indicating that specific rules were not found in the document. Do not hallucinate or invent rules not present in the text.
-
-CONTENT:
-${markdown.slice(0, 30000)}
 `;
+
+    contentsToGemini.unshift(prompt);
 
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
-      contents: prompt,
+      contents: contentsToGemini,
       config: {
         responseMimeType: "application/json",
       }
@@ -58,9 +75,9 @@ ${markdown.slice(0, 30000)}
     const existingCourse = await db.select().from(courses).where(eq(courses.id, courseId));
     const currentDocs = existingCourse[0]?.originalDocumentUrls ? JSON.parse(existingCourse[0].originalDocumentUrls as string) : [];
 
-    // Append this URL to their sources
-    if (!currentDocs.includes(url)) {
-      currentDocs.push(url);
+    // Append this URL or File URL to their sources
+    if (!currentDocs.includes(documentUrlToSave)) {
+      currentDocs.push(documentUrlToSave);
     }
 
     // 3. Update the database

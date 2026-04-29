@@ -5,9 +5,12 @@ import DigitalScorecards from './DigitalScorecards';
 import EagleValePricing from './EagleValePricing';
 import { ChevronRight, ArrowRight, Flag, Calendar as CalendarIcon, Map, Info, Star, BookOpen, Zap } from 'lucide-react';
 import Link from 'next/link';
+import { UploadButton } from '@/lib/uploadthing';
 
 export default function CourseProfileClient({ course, scorecards, hostedTournaments }: { course: any, scorecards: any[], hostedTournaments: any[] }) {
   const [activeTab, setActiveTab] = useState<'overview'|'scorecard'|'calculator'|'documentation'|'media'>('overview');
+  const [isExtracting, setIsExtracting] = useState(false);
+  const [extractMode, setExtractMode] = useState<'url' | 'file'>('url');
 
   const navItems = [
      { id: 'overview', label: 'Venue Overview', icon: Info },
@@ -221,48 +224,107 @@ export default function CourseProfileClient({ course, scorecards, hostedTourname
 
                     {/* Admin Extraction Tool */}
                     <div className="mt-8 p-6 border border-white/10 bg-black/40 rounded-xl">
-                      <h3 className="text-[var(--gold)] uppercase tracking-widest text-xs font-bold mb-4 flex items-center gap-2">
-                        <Zap size={14} /> Admin Tools: Ingest Documentation URL
+                      <h3 className="text-[var(--gold)] uppercase tracking-widest text-xs font-bold mb-4 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Zap size={14} /> Admin Tools: Ingest Documentation
+                        </div>
+                        <div className="flex gap-2">
+                          <button 
+                            onClick={() => setExtractMode('url')}
+                            className={`px-3 py-1 text-xs rounded border ${extractMode === 'url' ? 'bg-[var(--gold)] text-black border-[var(--gold)]' : 'bg-transparent text-white/50 border-white/20'}`}
+                          >URL</button>
+                          <button 
+                            onClick={() => setExtractMode('file')}
+                            className={`px-3 py-1 text-xs rounded border ${extractMode === 'file' ? 'bg-[var(--gold)] text-black border-[var(--gold)]' : 'bg-transparent text-white/50 border-white/20'}`}
+                          >File</button>
+                        </div>
                       </h3>
-                      <div className="flex gap-4">
-                        <input 
-                          type="text" 
-                          id="docUrlInput"
-                          placeholder="Paste URL to PDF or Golf Outing webpage..." 
-                          className="flex-1 bg-white/5 border border-white/10 rounded-md px-4 py-2 text-white outline-none focus:border-[var(--gold)] transition-colors"
-                        />
-                        <button 
-                          onClick={async (e) => {
-                            const btn = e.currentTarget;
-                            const input = document.getElementById('docUrlInput') as HTMLInputElement;
-                            if (!input || !input.value) return;
-                            
-                            btn.disabled = true;
-                            btn.innerText = 'Extracting...';
-                            
-                            try {
-                              const res = await fetch('/api/courses/extract-docs', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ courseId: course.id, url: input.value })
-                              });
-                              if (res.ok) {
-                                window.location.reload();
-                              } else {
-                                btn.innerText = 'Failed';
-                                setTimeout(() => { btn.innerText = 'Run AI Extraction'; btn.disabled = false; }, 3000);
+                      
+                      {extractMode === 'url' ? (
+                        <div className="flex gap-4">
+                          <input 
+                            type="text" 
+                            id="docUrlInput"
+                            placeholder="Paste URL to PDF or Golf Outing webpage..." 
+                            className="flex-1 bg-white/5 border border-white/10 rounded-md px-4 py-2 text-white outline-none focus:border-[var(--gold)] transition-colors"
+                            disabled={isExtracting}
+                          />
+                          <button 
+                            onClick={async (e) => {
+                              const input = document.getElementById('docUrlInput') as HTMLInputElement;
+                              if (!input || !input.value) return;
+                              
+                              setIsExtracting(true);
+                              
+                              try {
+                                const res = await fetch('/api/courses/extract-docs', {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ courseId: course.id, url: input.value })
+                                });
+                                if (res.ok) {
+                                  window.location.reload();
+                                } else {
+                                  setIsExtracting(false);
+                                  alert("Extraction failed.");
+                                }
+                              } catch (err) {
+                                console.error(err);
+                                setIsExtracting(false);
+                                alert("Error connecting to extraction service.");
                               }
-                            } catch (err) {
-                              console.error(err);
-                              btn.innerText = 'Error';
-                            }
-                          }}
-                          className="bg-[var(--gold-dark)] text-white font-bold px-6 py-2 rounded-md transition-colors hover:bg-[var(--gold)] disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          Run AI Extraction
-                        </button>
-                      </div>
-                      <p className="text-white/40 text-xs mt-3">This will fetch the URL via FireCrawl and use Gemini to format the rules and FAQ.</p>
+                            }}
+                            disabled={isExtracting}
+                            className="bg-[var(--gold-dark)] text-white font-bold px-6 py-2 rounded-md transition-colors hover:bg-[var(--gold)] disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {isExtracting ? 'Extracting...' : 'Run AI Extraction'}
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="bg-white/5 border border-dashed border-white/20 rounded-md p-4 flex flex-col items-center justify-center min-h-[100px]">
+                          {isExtracting ? (
+                            <div className="text-[var(--gold)] font-bold animate-pulse">Running AI Extraction...</div>
+                          ) : (
+                            <UploadButton
+                              endpoint="courseDocumentUploader"
+                              onClientUploadComplete={async (res) => {
+                                if (!res || res.length === 0) return;
+                                setIsExtracting(true);
+                                const fileUrl = res[0].url;
+                                const mimeType = res[0].type;
+                                
+                                try {
+                                  const apiRes = await fetch('/api/courses/extract-docs', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ courseId: course.id, fileUrl, mimeType })
+                                  });
+                                  if (apiRes.ok) {
+                                    window.location.reload();
+                                  } else {
+                                    alert("Extraction failed.");
+                                    setIsExtracting(false);
+                                  }
+                                } catch (e) {
+                                  console.error(e);
+                                  alert("Error connecting to extraction service.");
+                                  setIsExtracting(false);
+                                }
+                              }}
+                              onUploadError={(error: Error) => {
+                                alert(`ERROR! ${error.message}`);
+                              }}
+                              appearance={{
+                                button: "bg-[var(--gold-dark)] text-white hover:bg-[var(--gold)] font-bold px-6 py-2 rounded-md ut-uploading:opacity-50"
+                              }}
+                            />
+                          )}
+                        </div>
+                      )}
+                      
+                      <p className="text-white/40 text-xs mt-3">
+                        {extractMode === 'url' ? 'This will fetch the URL via FireCrawl and use Gemini to format the rules and FAQ.' : 'This will securely upload the file to your cloud storage and feed it directly into Gemini 1.5 Flash.'}
+                      </p>
                     </div>
                  </div>
               )}

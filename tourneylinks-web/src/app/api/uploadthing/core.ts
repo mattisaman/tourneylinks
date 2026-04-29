@@ -29,6 +29,23 @@ export const ourFileRouter = {
       console.log("File url:", file.url);
       return { uploadedBy: metadata.clerkId, url: file.url };
     }),
+
+  // Define an endpoint for Course Documentation (PDFs, Images, Word Docs)
+  courseDocumentUploader: f({ 
+    pdf: { maxFileSize: "16MB", maxFileCount: 1 }, 
+    image: { maxFileSize: "8MB", maxFileCount: 1 },
+    text: { maxFileSize: "4MB", maxFileCount: 1 }
+  })
+    .middleware(async () => {
+      const { userId } = await auth();
+      if (!userId) throw new Error("Unauthorized: Must be logged in to upload course documents");
+      return { clerkId: userId };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      console.log("Course Document Upload complete for userId:", metadata.clerkId);
+      console.log("File url:", file.url, "Type:", file.type);
+      return { uploadedBy: metadata.clerkId, url: file.url, type: file.type };
+    }),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;
