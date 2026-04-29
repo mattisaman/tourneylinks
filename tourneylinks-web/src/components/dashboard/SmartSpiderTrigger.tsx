@@ -1,11 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { RefreshCw, Play, Search } from 'lucide-react';
+import { Play, Loader2, Bug } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function SmartSpiderTrigger() {
   const [isSyncing, setIsSyncing] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [progressStr, setProgressStr] = useState('');
+  const [totalInserted, setTotalInserted] = useState(0);
+  const router = useRouter();
 
   // Extended NY Regions to cover Western, Central, Eastern, and Southern Tier
   const nyMetros = [
@@ -22,109 +25,104 @@ export default function SmartSpiderTrigger() {
     "Geneseo, NY",
     "Jamestown, NY"
   ];
-  const [selectedMetro, setSelectedMetro] = useState(nyMetros[0]);
 
-  const handleSync = async () => {
+  const totalCombinations = nyMetros.length;
+  const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
+
+  const startAutomatedSweep = async () => {
+    if (isSyncing) return;
     setIsSyncing(true);
-    setResult(null);
+    setTotalInserted(0);
+    
+    let currentInserted = 0;
+    let step = 1;
 
-    try {
-      const response = await fetch('/api/system/smart-spider', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ region: selectedMetro })
-      });
-      const data = await response.json();
-      setResult(data);
-    } catch (e: any) {
-      setResult({ error: e.message });
-    } finally {
-      setIsSyncing(false);
+    for (const metro of nyMetros) {
+      setProgressStr(`[ ${step} / ${totalCombinations} ] Scraping: ${metro}...`);
+      
+      try {
+        const response = await fetch('/api/system/smart-spider', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ region: metro })
+        });
+        const data = await response.json();
+        
+        if (response.ok) {
+          currentInserted += data.inserted || 0;
+          setTotalInserted(currentInserted);
+        }
+      } catch (e: any) {
+        console.error(`Error on ${metro}:`, e);
+      }
+      
+      step++;
+      // Space out Playwright sessions by 10 seconds to avoid looking like a bot
+      await delay(10000);
     }
+
+    setProgressStr(`Headless Sweep Complete! Inserted ${currentInserted} events.`);
+    
+    setTimeout(() => {
+      setIsSyncing(false);
+      setProgressStr('');
+      router.refresh();
+    }, 5000);
   };
 
   return (
-    <div style={{ position: 'relative' }}>
-      <div style={{ 
-        display: 'flex', 
-        flexDirection: 'column',
-        gap: '0.5rem',
-        background: 'var(--white)',
-        padding: '1rem',
-        borderRadius: '12px',
-        border: '1px solid rgba(0,0,0,0.05)',
-        boxShadow: 'var(--shadow-sm)',
-        minWidth: '280px'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
-          <Search size={16} color="var(--forest)" />
-          <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--forest)' }}>
-            Phase 3: Smart Spider (Local)
-          </span>
-        </div>
-        
-        <p style={{ fontSize: '0.75rem', color: 'var(--mist)', margin: 0, lineHeight: 1.3 }}>
-          Headless Playwright scan of Facebook. Bypasses duplicates automatically.
-        </p>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.5rem', background: 'var(--white)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.05)', boxShadow: 'var(--shadow-sm)', minWidth: '280px', height: '100%' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+        <Bug size={16} color="var(--forest)" />
+        <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--forest)' }}>
+          Phase 3: Smart Spider (Local)
+        </span>
+      </div>
+      
+      <p style={{ fontSize: '0.75rem', color: 'var(--mist)', margin: 0, lineHeight: 1.3 }}>
+        1-Click automated headless sequence across {nyMetros.length} NY regions.
+      </p>
 
-        <select 
-          value={selectedMetro}
-          onChange={(e) => setSelectedMetro(e.target.value)}
-          style={{
-            padding: '0.5rem',
-            borderRadius: '6px',
-            border: '1px solid rgba(0,0,0,0.1)',
-            fontSize: '0.85rem',
-            background: 'var(--sand)',
-            cursor: 'pointer'
-          }}
-        >
-          {nyMetros.map(m => (
-            <option key={m} value={m}>{m}</option>
-          ))}
-        </select>
-
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%', marginTop: 'auto' }}>
         <button 
-          onClick={handleSync}
+          onClick={startAutomatedSweep}
           disabled={isSyncing}
-          className="btn-hero"
           style={{ 
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'center',
-            gap: '0.5rem',
-            padding: '0.6rem 1rem',
-            fontSize: '0.85rem',
-            opacity: isSyncing ? 0.7 : 1,
+            gap: '0.5rem', 
+            background: isSyncing ? 'var(--sand)' : 'var(--forest)', 
+            color: isSyncing ? 'var(--mist)' : 'var(--white)', 
+            padding: '0.8rem 1.5rem', 
+            borderRadius: '8px', 
+            fontWeight: 700, 
             cursor: isSyncing ? 'not-allowed' : 'pointer',
-            background: isSyncing ? 'var(--mist)' : 'var(--emerald)'
+            border: isSyncing ? '1px solid rgba(0,0,0,0.1)' : 'none',
+            transition: 'all 0.2s',
+            height: '48px',
+            width: '100%',
+            whiteSpace: 'nowrap'
           }}
+          title="Run sequential Playwright scraping for all regions"
         >
-          {isSyncing ? (
-            <><RefreshCw size={14} className="pulse-dot" /> Running Playwright...</>
-          ) : (
-            <><Play size={14} /> Launch Headless Scan</>
-          )}
+          {isSyncing ? <Loader2 size={18} className="pulse-dot" /> : <Play size={18} />}
+          {isSyncing ? 'Executing Script...' : 'Launch NY Headless Sweep'}
         </button>
 
-        {result && (
+        {progressStr && (
           <div style={{ 
-            marginTop: '0.5rem', 
-            padding: '0.75rem', 
-            background: result.error ? '#FEE2E2' : '#ECFDF5', 
+            marginTop: '0.25rem', 
+            padding: '0.5rem', 
+            background: '#ECFDF5', 
             borderRadius: '6px',
-            fontSize: '0.75rem',
-            color: result.error ? '#991B1B' : '#065F46'
+            fontSize: '0.7rem',
+            color: '#065F46',
+            fontWeight: 600,
+            textAlign: 'center'
           }}>
-            {result.error ? (
-              <span>Error: {result.error}</span>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                <strong>Scanned {result.scraped} Raw URLs</strong>
-                <span>✅ Inserted: {result.inserted}</span>
-                <span>⏭️ Skipped (Dupes): {result.skipped}</span>
-              </div>
-            )}
+            {progressStr}
+            {isSyncing && <div style={{ marginTop: '0.25rem', fontSize: '0.65rem' }}>Total Inserted: {totalInserted}</div>}
           </div>
         )}
       </div>

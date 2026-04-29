@@ -1,13 +1,21 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Search } from 'lucide-react';
+import { Search, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function PlatformSearchTrigger() {
   const [isProcessing, setIsProcessing] = useState(false);
-  const [message, setMessage] = useState('');
-  const [platform, setPlatform] = useState('golfstatus.com');
+  const [progressStr, setProgressStr] = useState('');
+  const [totalInserted, setTotalInserted] = useState(0);
+  const router = useRouter();
+
+  const platforms = [
+    "golfstatus.com",
+    "birdease.com",
+    "perfectgolfevent.com",
+    "eventcaddy.com"
+  ];
   
   // Extended NY Regions to cover Western, Central, Eastern, and Southern Tier
   const nyMetros = [
@@ -24,46 +32,59 @@ export default function PlatformSearchTrigger() {
     "Geneseo, NY",
     "Jamestown, NY"
   ];
-  const [selectedMetro, setSelectedMetro] = useState(nyMetros[0]);
-  
-  const router = useRouter();
 
-  const startSearch = async () => {
+  const totalCombinations = platforms.length * nyMetros.length;
+
+  const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
+
+  const startAutomatedSweep = async () => {
     if (isProcessing) return;
     setIsProcessing(true);
-    setMessage(`Searching ${platform}...`);
+    setTotalInserted(0);
     
-    try {
-      const res = await fetch('/api/system/platform-search', { 
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          platform: platform,
-          query: `charity golf tournament 2026 "${selectedMetro}"`
-        })
-      });
-      const data = await res.json();
-      
-      if (res.ok) {
-        setMessage(`Found ${data.searched} URLs. Inserted ${data.inserted} new events.`);
-      } else {
-        setMessage(`Failed: ${data.error || 'Unknown error'}`);
+    let currentInserted = 0;
+    let step = 1;
+
+    for (const platform of platforms) {
+      for (const metro of nyMetros) {
+        setProgressStr(`[ ${step} / ${totalCombinations} ] ${metro} (${platform})`);
+        
+        try {
+          const res = await fetch('/api/system/platform-search', { 
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              platform: platform,
+              query: `charity golf tournament 2026 "${metro}"`
+            })
+          });
+          const data = await res.json();
+          
+          if (res.ok) {
+            currentInserted += data.inserted || 0;
+            setTotalInserted(currentInserted);
+          }
+        } catch (err) {
+          console.error(`Error on ${platform} - ${metro}:`, err);
+        }
+        
+        step++;
+        // Space out requests by 3 seconds to avoid getting blocked by Firecrawl / Google
+        await delay(3000);
       }
-    } catch (err) {
-      console.error(err);
-      setMessage('Network error during search.');
     }
     
-    // Briefly hold the success message before resetting
+    setProgressStr(`Sweep Complete! Inserted ${currentInserted} events.`);
+    
     setTimeout(() => {
       setIsProcessing(false);
-      setMessage('');
+      setProgressStr('');
       router.refresh();
-    }, 4000);
+    }, 5000);
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.5rem', background: 'var(--white)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.05)', boxShadow: 'var(--shadow-sm)', minWidth: '280px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.5rem', background: 'var(--white)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.05)', boxShadow: 'var(--shadow-sm)', minWidth: '280px', height: '100%' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
         <Search size={16} color="var(--forest)" />
         <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--forest)' }}>
@@ -71,75 +92,51 @@ export default function PlatformSearchTrigger() {
         </span>
       </div>
       <p style={{ fontSize: '0.75rem', color: 'var(--mist)', margin: 0, lineHeight: 1.3 }}>
-        Searches specific platforms via Google.
+        1-Click automated sweep across {platforms.length} platforms and {nyMetros.length} NY regions.
       </p>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%' }}>
-        <select 
-          value={platform}
-          onChange={(e) => setPlatform(e.target.value)}
-          disabled={isProcessing}
-          style={{
-            padding: '0 0.5rem',
-            borderRadius: '8px',
-            border: '1px solid rgba(0,0,0,0.1)',
-            background: 'var(--white)',
-            fontSize: '0.85rem',
-            color: 'var(--forest)',
-            width: '100%',
-            height: '36px'
-          }}
-        >
-          <option value="golfstatus.com">GolfStatus</option>
-          <option value="birdease.com">Birdease</option>
-          <option value="perfectgolfevent.com">Perfect Golf Event</option>
-          <option value="eventcaddy.com">Event Caddy</option>
-        </select>
-        
-        <select 
-          value={selectedMetro}
-          onChange={(e) => setSelectedMetro(e.target.value)}
-          disabled={isProcessing}
-          style={{
-            padding: '0 0.5rem',
-            borderRadius: '8px',
-            border: '1px solid rgba(0,0,0,0.1)',
-            background: 'var(--white)',
-            fontSize: '0.85rem',
-            color: 'var(--forest)',
-            width: '100%',
-            height: '36px'
-          }}
-        >
-          {nyMetros.map(m => (
-            <option key={m} value={m}>{m}</option>
-          ))}
-        </select>
-
+      
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%', marginTop: 'auto' }}>
         <button 
-          onClick={startSearch}
+          onClick={startAutomatedSweep}
           disabled={isProcessing}
           style={{ 
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'center',
             gap: '0.5rem', 
-            background: isProcessing ? 'rgba(0,0,0,0.05)' : 'var(--emerald)', 
+            background: isProcessing ? 'var(--sand)' : 'var(--emerald)', 
             color: isProcessing ? 'var(--mist)' : 'var(--white)', 
             padding: '0.8rem 1.5rem', 
             borderRadius: '8px', 
             fontWeight: 700, 
             cursor: isProcessing ? 'not-allowed' : 'pointer',
-            border: 'none',
+            border: isProcessing ? '1px solid rgba(0,0,0,0.1)' : 'none',
             transition: 'all 0.2s',
             height: '48px',
-            flex: 1,
+            width: '100%',
             whiteSpace: 'nowrap'
           }}
-          title="Search the selected platform for 2026 events via Google"
+          title="Run automated sequence for all regions and platforms"
         >
-          <Search size={18} />
-          {message || 'Targeted Search'}
+          {isProcessing ? <Loader2 size={18} className="pulse-dot" /> : <Search size={18} />}
+          {isProcessing ? 'Executing Sweep...' : 'Run NY State Sweep'}
         </button>
+
+        {progressStr && (
+          <div style={{ 
+            marginTop: '0.25rem', 
+            padding: '0.5rem', 
+            background: '#ECFDF5', 
+            borderRadius: '6px',
+            fontSize: '0.7rem',
+            color: '#065F46',
+            fontWeight: 600,
+            textAlign: 'center'
+          }}>
+            {progressStr}
+            {isProcessing && <div style={{ marginTop: '0.25rem', fontSize: '0.65rem' }}>Total Inserted: {totalInserted}</div>}
+          </div>
+        )}
       </div>
     </div>
   );
