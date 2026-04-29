@@ -24,7 +24,7 @@ export async function POST() {
           isNotNull(courses.website),
           or(
             isNull(courses.lastCrawledAt),
-            lt(courses.lastCrawledAt, sevenDaysAgo.toISOString())
+            lt(courses.lastCrawledAt, sevenDaysAgo)
           )
         )
       )
@@ -40,7 +40,7 @@ export async function POST() {
     
     // Optimistically update the lastCrawledAt to prevent duplicate crawling if this fails or times out
     await db.update(courses)
-      .set({ lastCrawledAt: new Date().toISOString() })
+      .set({ lastCrawledAt: new Date() })
       .where(eq(courses.id, course.id));
 
     let markdown = '';

@@ -6,7 +6,7 @@ import { Server, Activity, Database, Zap } from 'lucide-react';
 import CheckbackTrigger from './CheckbackTrigger';
 import CrawlerTrigger from './CrawlerTrigger';
 import { courses } from '@/lib/db';
-import { isNotNull, or, isNull, lt } from 'drizzle-orm';
+import { and, isNotNull, or, isNull, lt } from 'drizzle-orm';
 
 export const dynamic = 'force-dynamic';
 
@@ -26,7 +26,7 @@ export default async function NOCDashboard() {
         isNotNull(courses.website),
         or(
           isNull(courses.lastCrawledAt),
-          lt(courses.lastCrawledAt, new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
+          lt(courses.lastCrawledAt, new Date(Date.now() - 7 * 24 * 60 * 60 * 1000))
         )
       )
     )
