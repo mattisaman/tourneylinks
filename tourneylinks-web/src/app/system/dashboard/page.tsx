@@ -4,6 +4,9 @@ import { desc, sql, inArray } from 'drizzle-orm';
 import SpiderDispatcher from '@/components/system/SpiderDispatcher';
 import { Server, Activity, Database, Zap } from 'lucide-react';
 import CheckbackTrigger from './CheckbackTrigger';
+import CrawlerTrigger from './CrawlerTrigger';
+import { courses } from '@/lib/db';
+import { isNotNull, or, isNull, lt } from 'drizzle-orm';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,7 +20,16 @@ export default async function NOCDashboard() {
     db.select({ count: sql<number>`count(*)` }).from(crawlLogs).where(sql`${crawlLogs.status} = 'success'`),
     db.select({ count: sql<number>`count(*)` }).from(tournaments).where(sql`${tournaments.source} = 'eventbrite-apify'`),
     db.select({ count: sql<number>`count(*)` }).from(tournaments).where(sql`${tournaments.source} = 'facebook'`),
-    db.select({ count: sql<number>`count(*)` }).from(tournaments).where(sql`${tournaments.extractedAt} IS NULL`)
+    db.select({ count: sql<number>`count(*)` }).from(tournaments).where(sql`${tournaments.extractedAt} IS NULL`),
+    db.select({ count: sql<number>`count(*)` }).from(courses).where(
+      and(
+        isNotNull(courses.website),
+        or(
+          isNull(courses.lastCrawledAt),
+          lt(courses.lastCrawledAt, new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
+        )
+      )
+    )
   ]);
 
   const totalTournaments = Number(results[0][0].count);
@@ -27,6 +39,7 @@ export default async function NOCDashboard() {
   const eventbriteCount = Number(results[4][0].count);
   const fbCount = Number(results[5][0].count);
   const pendingCheckbacks = Number(results[6][0].count);
+  const eligibleCoursesCount = Number(results[7][0].count);
   const successRate = totalCrawls > 0 ? Math.round((successfulCrawls / totalCrawls) * 100) : 0;
   
   // Cost Estimate (Extremely rough: $0.003 per page for Gemini Flash + Search/Scrape overhead)
@@ -73,6 +86,7 @@ export default async function NOCDashboard() {
              <p style={{ color: 'var(--mist)', margin: 0 }}>Global Spider Engine Telemetry Hub</p>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <CrawlerTrigger pendingCount={eligibleCoursesCount} />
             <CheckbackTrigger pendingCount={pendingCheckbacks} />
             <a href="/system/analytics" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--forest)', color: 'var(--white)', padding: '0.8rem 1.5rem', borderRadius: '8px', fontWeight: 700, textDecoration: 'none', transition: 'background 0.2s' }}>
                View Market Intelligence ↗

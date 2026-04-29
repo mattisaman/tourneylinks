@@ -47,6 +47,7 @@ export const courses = pgTable('courses', {
   
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
+  lastCrawledAt: timestamp('last_crawled_at'), // Track when the Clubhouse Crawler last checked this site
   isActive: boolean('is_active').default(true),
 });
 

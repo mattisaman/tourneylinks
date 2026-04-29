@@ -124,8 +124,15 @@ ${markdown.slice(0, 30000)}
       });
       
       const responseText = response.text || "{}";
-      const data = JSON.parse(responseText);
-      
+      let data = {};
+      try {
+        const cleanedText = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
+        data = JSON.parse(cleanedText);
+      } catch (parseError) {
+        console.error("Failed to parse Gemini JSON. Raw response:", responseText);
+        throw new Error("Invalid JSON format from Gemini");
+      }
+
       const updateData: any = {
         entryFee: data.entryFee || tournament.entryFee,
         organizerName: data.organizerName || tournament.organizerName,
