@@ -7,15 +7,20 @@ export default function SmartSpiderTrigger() {
   const [isSyncing, setIsSyncing] = useState(false);
   const [result, setResult] = useState<any>(null);
 
-  // Hardcoded to NY Metros for Phase 1
+  // Extended NY Regions to cover Western, Central, Eastern, and Southern Tier
   const nyMetros = [
     "New York City, NY",
-    "Buffalo, NY",
-    "Rochester, NY",
-    "Syracuse, NY",
+    "Long Island, NY",
     "Albany, NY",
+    "Syracuse, NY",
+    "Rochester, NY",
+    "Buffalo, NY",
     "Binghamton, NY",
-    "Ithaca, NY"
+    "Ithaca, NY",
+    "Corning, NY",
+    "Elmira, NY",
+    "Geneseo, NY",
+    "Jamestown, NY"
   ];
   const [selectedMetro, setSelectedMetro] = useState(nyMetros[0]);
 
