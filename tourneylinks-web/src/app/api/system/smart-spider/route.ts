@@ -37,6 +37,11 @@ export async function POST(req: Request) {
     // Wait a moment for dynamic content
     await page.waitForTimeout(3000);
 
+    // Bypass Login Popup: User noted that refreshing the page clears the forced login modal
+    console.log(`[Smart Spider] Reloading page to bypass potential login popup...`);
+    await page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 });
+    await page.waitForTimeout(3000);
+
     // Scroll down a few times to load events
     for (let i = 0; i < 3; i++) {
       await page.evaluate(() => window.scrollBy(0, window.innerHeight));
