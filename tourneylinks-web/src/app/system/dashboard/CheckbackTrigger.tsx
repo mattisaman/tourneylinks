@@ -31,7 +31,10 @@ export default function CheckbackTrigger({ pendingCount }: { pendingCount: numbe
     let isComplete = false;
     let localProcessed = 0;
 
-    while (!isComplete && localProcessed < pendingCount) {
+    const BATCH_LIMIT = 100;
+    const itemsToProcess = Math.min(pendingCount, BATCH_LIMIT);
+
+    while (!isComplete && localProcessed < itemsToProcess) {
       try {
         const res = await fetch('/api/system/normalize-next', { method: 'POST' });
         const data = await res.json();
@@ -43,7 +46,7 @@ export default function CheckbackTrigger({ pendingCount }: { pendingCount: numbe
           localProcessed++;
           setProcessedCount(localProcessed);
           setCurrentTournament(data.tournamentName || `Event ID ${data.processedId}`);
-          setMessage(`[${data.action}] Processing next...`);
+          setMessage(`[${data.action}] Processing ${localProcessed} of ${itemsToProcess}...`);
         }
       } catch (err) {
         console.error(err);
