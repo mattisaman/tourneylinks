@@ -4,15 +4,15 @@ import { and, eq, isNull, gte, asc } from 'drizzle-orm';
 import { GoogleGenAI } from '@google/genai';
 import FirecrawlApp from '@mendable/firecrawl-js';
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-const firecrawl = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY });
-
 export const maxDuration = 300; // 5 minutes max per request to avoid timeout
 export const dynamic = 'force-dynamic';
 
 export async function POST() {
   console.log("Normalizer API Hit");
   try {
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    const firecrawl = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY });
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 

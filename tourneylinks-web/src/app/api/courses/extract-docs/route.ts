@@ -4,13 +4,14 @@ import { eq } from 'drizzle-orm';
 import { GoogleGenAI } from '@google/genai';
 import FirecrawlApp from '@mendable/firecrawl-js';
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-const firecrawl = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY });
-
 export const maxDuration = 300; // 5 minutes
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
   try {
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    const firecrawl = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY });
+
     const { courseId, url } = await req.json();
 
     if (!courseId || !url) {
