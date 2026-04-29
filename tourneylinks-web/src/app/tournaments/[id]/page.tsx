@@ -411,6 +411,23 @@ export default async function TournamentGatewayPage({ params }: { params: Promis
                       )}
                     </ul>
                   </div>
+
+                  {/* Contact Host */}
+                  <div className="mobile-pad" style={{ background: '#f8faf9', padding: '2.5rem', borderRadius: '24px', border: '1px solid rgba(0,0,0,0.05)' }}>
+                    <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>👋</div>
+                    <h3 style={{ fontSize: '1.4rem', color: 'var(--forest)', fontWeight: 800, marginBottom: '1rem' }}>Contact Host</h3>
+                    <ul style={{ listStyle: 'none', margin: 0, padding: 0, fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--ink)' }}>
+                      {(tournament.organizerName || tournament.organizerEmail || tournament.organizerPhone) ? (
+                        <>
+                          {tournament.organizerName && <li style={{ fontWeight: 700 }}>{tournament.organizerName}</li>}
+                          {tournament.organizerEmail && <li><a href={`mailto:${tournament.organizerEmail}`} style={{ color: 'var(--gold)', textDecoration: 'none', fontWeight: 600 }}>{tournament.organizerEmail}</a></li>}
+                          {tournament.organizerPhone && <li><a href={`tel:${tournament.organizerPhone}`} style={{ color: 'var(--forest)', textDecoration: 'none', fontWeight: 600 }}>{tournament.organizerPhone}</a></li>}
+                        </>
+                      ) : (
+                        <li style={{ fontStyle: 'italic', color: 'var(--mist)' }}>Contact information not provided. Reach out via the official website.</li>
+                      )}
+                    </ul>
+                  </div>
                 </div>
 
               </div>
