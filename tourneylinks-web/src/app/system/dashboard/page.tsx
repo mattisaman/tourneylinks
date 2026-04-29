@@ -7,6 +7,7 @@ import CheckbackTrigger from './CheckbackTrigger';
 import CrawlerTrigger from './CrawlerTrigger';
 import ApifySyncTrigger from './ApifySyncTrigger';
 import PlatformSearchTrigger from './PlatformSearchTrigger';
+import SmartSpiderTrigger from '@/components/dashboard/SmartSpiderTrigger';
 import { courses } from '@/lib/db';
 import { and, isNotNull, or, isNull, lt } from 'drizzle-orm';
 
@@ -96,15 +97,32 @@ export default async function NOCDashboard() {
         `}} />
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
           <div>
-             <h1 style={{ fontSize: '2.5rem', fontWeight: 700, margin: '0 0 0.5rem 0', color: 'var(--forest)' }}>Network Operations</h1>
-             <p style={{ color: 'var(--mist)', margin: 0 }}>Global Spider Engine Telemetry Hub</p>
+             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+               <h1 style={{ fontSize: '2.5rem', fontWeight: 700, margin: 0, color: 'var(--forest)' }}>NY State Geo-Dispatcher</h1>
+               <span style={{ background: '#E0E7FF', color: '#4338CA', padding: '0.2rem 0.6rem', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 600 }}>EXPERIMENTAL</span>
+             </div>
+             <p style={{ color: 'var(--mist)', margin: 0 }}>Execute targeted geographic sweeps across multiple data sources.</p>
           </div>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
-            <PlatformSearchTrigger />
-            <ApifySyncTrigger />
             <CrawlerTrigger pendingCount={eligibleCoursesCount} />
             <CheckbackTrigger pendingCount={pendingCheckbacks} />
           </div>
+        </div>
+
+        {/* Geographic Sweep Sequence */}
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(3, 1fr)', 
+          gap: '1.5rem', 
+          marginBottom: '3rem',
+          background: 'var(--sand)',
+          padding: '1.5rem',
+          borderRadius: '16px',
+          border: '1px solid rgba(0,0,0,0.05)'
+        }}>
+          <ApifySyncTrigger />
+          <PlatformSearchTrigger />
+          <SmartSpiderTrigger />
         </div>
 
         {/* System Health Indicators */}
