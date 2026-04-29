@@ -6,6 +6,7 @@ import { Server, Activity, Database, Zap } from 'lucide-react';
 import CheckbackTrigger from './CheckbackTrigger';
 import CrawlerTrigger from './CrawlerTrigger';
 import ApifySyncTrigger from './ApifySyncTrigger';
+import PlatformSearchTrigger from './PlatformSearchTrigger';
 import { courses } from '@/lib/db';
 import { and, isNotNull, or, isNull, lt } from 'drizzle-orm';
 
@@ -98,13 +99,11 @@ export default async function NOCDashboard() {
              <h1 style={{ fontSize: '2.5rem', fontWeight: 700, margin: '0 0 0.5rem 0', color: 'var(--forest)' }}>Network Operations</h1>
              <p style={{ color: 'var(--mist)', margin: 0 }}>Global Spider Engine Telemetry Hub</p>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
+            <PlatformSearchTrigger />
             <ApifySyncTrigger />
             <CrawlerTrigger pendingCount={eligibleCoursesCount} />
             <CheckbackTrigger pendingCount={pendingCheckbacks} />
-            <a href="/system/analytics" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--forest)', color: 'var(--white)', padding: '0.8rem 1.5rem', borderRadius: '8px', fontWeight: 700, textDecoration: 'none', transition: 'background 0.2s' }}>
-               View Market Intelligence ↗
-            </a>
           </div>
         </div>
 
