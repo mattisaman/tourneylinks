@@ -14,6 +14,8 @@ import { and, isNotNull, or, isNull, lt } from 'drizzle-orm';
 export const dynamic = 'force-dynamic';
 
 export default async function NOCDashboard() {
+  console.log('--- DASHBOARD RENDER ---');
+  console.log('DATABASE_URL starts with:', process.env.DATABASE_URL?.substring(0, 30));
   
   // Quick Reference Global Stats
   const results = await Promise.all([
