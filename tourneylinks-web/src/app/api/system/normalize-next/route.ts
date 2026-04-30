@@ -33,7 +33,12 @@ export async function POST() {
     }
 
     const tournament = pendingTournaments[0];
-    const url = tournament.registrationUrl;
+    let url = tournament.registrationUrl || tournament.sourceUrl;
+    
+    // Facebook blocks scrapers, and we already have the full description from Apify anyway.
+    if (url && url.includes('facebook.com')) {
+        url = null; 
+    }
     
     let markdown = '';
     let screenshotUrl: string | null = null;
