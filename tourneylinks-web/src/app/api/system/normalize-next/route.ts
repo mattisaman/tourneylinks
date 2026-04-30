@@ -21,8 +21,7 @@ export async function POST() {
       .where(
         and(
           eq(tournaments.status, 'active'),
-          isNull(tournaments.extractedAt),
-          gte(tournaments.dateStart, today.toISOString())
+          isNull(tournaments.extractedAt)
         )
       )
       .orderBy(asc(tournaments.id))

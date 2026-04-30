@@ -25,7 +25,7 @@ export default async function NOCDashboard() {
     db.select({ count: sql<number>`count(*)` }).from(crawlLogs).where(sql`${crawlLogs.status} = 'success'`),
     db.select({ count: sql<number>`count(*)` }).from(tournaments).where(sql`${tournaments.source} = 'eventbrite-apify'`),
     db.select({ count: sql<number>`count(*)` }).from(tournaments).where(sql`${tournaments.source} LIKE '%facebook%'`),
-    db.select({ count: sql<number>`count(*)` }).from(tournaments).where(sql`${tournaments.extractedAt} IS NULL`),
+    db.select({ count: sql<number>`count(*)` }).from(tournaments).where(sql`${tournaments.extractedAt} IS NULL AND ${tournaments.status} = 'active'`),
     db.select({ count: sql<number>`count(*)` }).from(courses).where(
       and(
         isNotNull(courses.website),
