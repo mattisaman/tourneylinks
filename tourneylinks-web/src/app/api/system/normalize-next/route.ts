@@ -41,26 +41,68 @@ export async function POST() {
     }
     
     let markdown = '';
-    let screenshotUrl: string | null = null;
     
+    let isDirectMedia = false;
+    let directMediaBase64: string | null = null;
+    let directMediaMime: string | null = null;
+
     if (url) {
+      const lowerUrl = url.toLowerCase();
+      if (lowerUrl.endsWith('.pdf')) {
+        isDirectMedia = true; directMediaMime = 'application/pdf';
+      } else if (lowerUrl.endsWith('.jpg') || lowerUrl.endsWith('.jpeg')) {
+        isDirectMedia = true; directMediaMime = 'image/jpeg';
+      } else if (lowerUrl.endsWith('.png')) {
+        isDirectMedia = true; directMediaMime = 'image/png';
+      } else {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 3000);
+          const head = await fetch(url, { method: 'HEAD', signal: controller.signal });
+          clearTimeout(timeoutId);
+          
+          const type = head.headers.get('content-type') || '';
+          if (type.includes('pdf')) {
+            isDirectMedia = true; directMediaMime = 'application/pdf';
+          } else if (type.includes('image/jpeg') || type.includes('image/jpg')) {
+            isDirectMedia = true; directMediaMime = 'image/jpeg';
+          } else if (type.includes('image/png')) {
+            isDirectMedia = true; directMediaMime = 'image/png';
+          }
+        } catch (e) {
+          // ignore
+        }
+      }
+    }
+
+    if (isDirectMedia && url) {
       try {
-        const scrapeResult = await firecrawl.scrape(url, { formats: ['markdown', 'screenshot'] });
-        if (!scrapeResult || (!scrapeResult.markdown && !scrapeResult.screenshot)) {
+        const mediaRes = await fetch(url);
+        const arrayBuffer = await mediaRes.arrayBuffer();
+        directMediaBase64 = Buffer.from(arrayBuffer).toString('base64');
+      } catch (e: any) {
+        console.error(`Media fetch error: ${e.message}`);
+        isDirectMedia = false;
+      }
+    }
+
+    if (!isDirectMedia && url) {
+      try {
+        const scrapeResult = await firecrawl.scrape(url, { formats: ['markdown'] });
+        if (!scrapeResult || !scrapeResult.markdown) {
           markdown = tournament.description || '';
         } else {
           markdown = scrapeResult.markdown || '';
         }
-        screenshotUrl = scrapeResult.screenshot || null;
       } catch (e: any) {
         console.error(`FireCrawl error: ${e.message}`);
         markdown = tournament.description || '';
       }
-    } else {
+    } else if (!isDirectMedia) {
       markdown = tournament.description || '';
     }
 
-    if (!markdown || markdown.trim().length < 50) {
+    if (!isDirectMedia && (!markdown || markdown.trim().length < 50)) {
       await db.update(tournaments)
         .set({ extractedAt: new Date().toISOString(), extractionConfidence: 0.1 })
         .where(eq(tournaments.id, tournament.id));
@@ -74,7 +116,7 @@ export async function POST() {
 
     // Call Gemini
     const prompt = `You are a golf tournament data extraction specialist.
-Analyze the following text content scraped from a golf tournament registration page or raw Facebook description.
+Analyze the following ${isDirectMedia ? 'flyer/image/document' : 'text content scraped from a golf tournament registration page or raw Facebook description'}.
 Extract the relevant details and output strictly as a JSON object matching this schema:
 
 {
@@ -96,29 +138,19 @@ Extract the relevant details and output strictly as a JSON object matching this 
 }
 
 If any piece of information is missing, use null or an empty array. Do not hallucinate data. If the event is in the past, still extract the date exactly as written.
-
-CONTENT:
-${markdown.slice(0, 30000)}
-`;
+${!isDirectMedia ? `\nCONTENT:\n${markdown.slice(0, 30000)}` : ''}`;
 
     try {
-      const contents: any[] = [prompt];
-      
-      if (screenshotUrl) {
-        try {
-          const imgRes = await fetch(screenshotUrl);
-          const arrayBuffer = await imgRes.arrayBuffer();
-          const base64 = Buffer.from(arrayBuffer).toString('base64');
-          contents.push({
-            inlineData: {
-              data: base64,
-              mimeType: 'image/jpeg'
-            }
-          });
-        } catch (imgErr) {
-          console.error("Failed to fetch screenshot for AI:", imgErr);
-        }
+      const contents: any[] = [];
+      if (isDirectMedia && directMediaBase64 && directMediaMime) {
+        contents.push({
+          inlineData: {
+            data: directMediaBase64,
+            mimeType: directMediaMime
+          }
+        });
       }
+      contents.push(prompt);
 
       let response;
       let retries = 3;
