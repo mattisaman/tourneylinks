@@ -69,10 +69,22 @@ export default function CrawlerTrigger({ pendingCount }: { pendingCount: number 
   const progressPercentage = initialCount > 0 ? Math.min(100, Math.round((processedCount / Math.min(initialCount, 10)) * 100)) : 0;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem', width: '350px' }}>
-      <button 
-        onClick={startProcessing}
-        disabled={isProcessing || pendingCount === 0}
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.5rem', background: 'var(--white)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.05)', boxShadow: 'var(--shadow-sm)', minWidth: '280px', height: '100%' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+        <Network size={16} color="var(--forest)" />
+        <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--forest)' }}>
+          Phase 4: Course Intelligence
+        </span>
+      </div>
+      <p style={{ fontSize: '0.75rem', color: 'var(--mist)', margin: 0, lineHeight: 1.3 }}>
+        Extract amenities & logos from {pendingCount} courses.
+      </p>
+
+    return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%', marginTop: 'auto' }}>
+        <button 
+          onClick={startProcessing}
+          disabled={isProcessing || pendingCount === 0}
         style={{ 
           display: 'flex', 
           alignItems: 'center', 

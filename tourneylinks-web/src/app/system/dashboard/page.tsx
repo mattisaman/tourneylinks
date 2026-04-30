@@ -106,25 +106,27 @@ export default async function NOCDashboard() {
              <p style={{ color: 'var(--mist)', margin: 0 }}>Execute targeted geographic sweeps across multiple data sources.</p>
           </div>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
-            <CrawlerTrigger pendingCount={eligibleCoursesCount} />
-            <CheckbackTrigger pendingCount={pendingCheckbacks} />
+            {/* Top triggers moved to pipeline below */}
           </div>
         </div>
 
-        {/* Geographic Sweep Sequence */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(3, 1fr)', 
-          gap: '1.5rem', 
-          marginBottom: '3rem',
-          background: 'var(--sand)',
-          padding: '1.5rem',
-          borderRadius: '16px',
-          border: '1px solid rgba(0,0,0,0.05)'
-        }}>
-          <ApifySyncTrigger />
-          <PlatformSearchTrigger />
-          <SmartSpiderTrigger />
+        {/* 4-Step Ingestion Pipeline Sequence */}
+        <div style={{ marginBottom: '3rem' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--forest)', marginBottom: '1.25rem' }}>Automated Discovery & Ingestion Pipeline</h2>
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(4, 1fr)', 
+            gap: '1.5rem', 
+            background: 'var(--sand)',
+            padding: '1.5rem',
+            borderRadius: '16px',
+            border: '1px solid rgba(0,0,0,0.05)'
+          }}>
+            <SmartSpiderTrigger />
+            <PlatformSearchTrigger />
+            <CheckbackTrigger pendingCount={pendingCheckbacks} />
+            <CrawlerTrigger pendingCount={eligibleCoursesCount} />
+          </div>
         </div>
 
         {/* System Health Indicators */}
@@ -135,15 +137,18 @@ export default async function NOCDashboard() {
           <HealthCard title="Neon DB Ingestion" status="Synchronized" icon={<Database color="var(--forest)" />} color="var(--forest)" />
         </div>
 
-        {/* Apify External Link */}
+        {/* Apify External Link & Fallback Sync */}
         <div className="lux-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem', background: 'var(--white)', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '12px' }}>
            <div>
               <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--forest)', marginBottom: '0.25rem' }}>External Scraping Engine</h3>
-              <p style={{ color: 'var(--mist)', fontSize: '0.9rem', margin: 0 }}>Configure and launch new webhook payloads from Apify.</p>
+              <p style={{ color: 'var(--mist)', fontSize: '0.9rem', margin: 0 }}>Configure new webhooks or manually sync payloads from Apify.</p>
            </div>
-           <a href="https://console.apify.com" target="_blank" rel="noopener noreferrer" className="btn-hero" style={{ padding: '0.8rem 1.5rem', fontSize: '0.9rem' }}>
-              Open Apify Console ↗
-           </a>
+           <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+             <ApifySyncTrigger />
+             <a href="https://console.apify.com" target="_blank" rel="noopener noreferrer" className="btn-hero" style={{ padding: '0.8rem 1.5rem', fontSize: '0.9rem' }}>
+                Open Apify Console ↗
+             </a>
+           </div>
         </div>
 
         {/* Quick Reference Dashboard */}

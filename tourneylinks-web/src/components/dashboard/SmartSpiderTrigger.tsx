@@ -75,7 +75,7 @@ export default function SmartSpiderTrigger() {
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
         <Bug size={16} color="var(--forest)" />
         <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--forest)' }}>
-          Phase 3: Smart Spider (Local)
+          Phase 1: Smart Spider (Local)
         </span>
       </div>
       
