@@ -153,8 +153,8 @@ ${!isDirectMedia ? `\nCONTENT:\n${markdown.slice(0, 30000)}` : ''}`;
       contents.push(prompt);
 
       let response;
-      let retries = 3;
-      let delay = 1000;
+      let retries = 5;
+      let delay = 4000;
       
       while (retries > 0) {
         try {
@@ -168,12 +168,13 @@ ${!isDirectMedia ? `\nCONTENT:\n${markdown.slice(0, 30000)}` : ''}`;
           break; // Success, exit retry loop
         } catch (apiError: any) {
           retries--;
-          if (retries === 0 || !apiError.message?.includes('503')) {
-            throw apiError; // Throw if out of retries or not a 503
+          const errMsg = apiError.message || '';
+          if (retries === 0 || (!errMsg.includes('503') && !errMsg.includes('429'))) {
+            throw apiError; // Throw if out of retries or not a 503/429
           }
-          console.log(`[Gemini] 503 Service Unavailable. Retrying in ${delay}ms...`);
+          console.log(`[Gemini] Overloaded/Rate Limited. Retrying in ${delay}ms...`);
           await new Promise(resolve => setTimeout(resolve, delay));
-          delay *= 2; // Exponential backoff
+          delay *= 1.5; // Exponential backoff
         }
       }
       
