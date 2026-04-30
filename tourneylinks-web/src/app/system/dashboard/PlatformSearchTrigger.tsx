@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Search, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-export default function PlatformSearchTrigger() {
+export default function PlatformSearchTrigger({ isNextAction = false }: { isNextAction?: boolean }) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progressStr, setProgressStr] = useState('');
   const [totalInserted, setTotalInserted] = useState(0);
@@ -84,12 +84,13 @@ export default function PlatformSearchTrigger() {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.5rem', background: 'var(--white)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.05)', boxShadow: 'var(--shadow-sm)', minWidth: '280px', height: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.5rem', background: 'var(--white)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.05)', boxShadow: isNextAction ? '0 0 0 2px var(--forest), var(--shadow-sm)' : 'var(--shadow-sm)', minWidth: '280px', height: '100%' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
         <Search size={16} color="var(--forest)" />
         <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--forest)' }}>
-          Phase 2: SaaS Platforms
+          Step 3: Search Event Platforms
         </span>
+        {isNextAction && <div style={{ background: 'var(--forest)', color: 'white', fontSize: '0.65rem', fontWeight: 800, padding: '0.15rem 0.4rem', borderRadius: '4px', marginLeft: 'auto', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Next Action</div>}
       </div>
       <p style={{ fontSize: '0.75rem', color: 'var(--mist)', margin: 0, lineHeight: 1.3 }}>
         1-Click automated sweep across {platforms.length} platforms and {nyMetros.length} NY regions.

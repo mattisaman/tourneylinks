@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Play, Loader2, Bug } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-export default function SmartSpiderTrigger() {
+export default function SmartSpiderTrigger({ isNextAction = false }: { isNextAction?: boolean }) {
   const [isSyncing, setIsSyncing] = useState(false);
   const [progressStr, setProgressStr] = useState('');
   const [totalInserted, setTotalInserted] = useState(0);
@@ -71,12 +71,13 @@ export default function SmartSpiderTrigger() {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.5rem', background: 'var(--white)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.05)', boxShadow: 'var(--shadow-sm)', minWidth: '280px', height: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.5rem', background: 'var(--white)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.05)', boxShadow: isNextAction ? '0 0 0 2px var(--forest), var(--shadow-sm)' : 'var(--shadow-sm)', minWidth: '280px', height: '100%' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
         <Bug size={16} color="var(--forest)" />
         <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--forest)' }}>
-          Phase 1: Smart Spider (Local)
+          Step 2: Search Local Web (Local)
         </span>
+        {isNextAction && <div style={{ background: 'var(--forest)', color: 'white', fontSize: '0.65rem', fontWeight: 800, padding: '0.15rem 0.4rem', borderRadius: '4px', marginLeft: 'auto', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Next Action</div>}
       </div>
       
       <p style={{ fontSize: '0.75rem', color: 'var(--mist)', margin: 0, lineHeight: 1.3 }}>

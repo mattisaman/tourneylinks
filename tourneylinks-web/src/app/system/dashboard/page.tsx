@@ -47,6 +47,17 @@ export default async function NOCDashboard() {
   const eligibleCoursesCount = Number(results[7][0].count);
   const successRate = totalCrawls > 0 ? Math.round((successfulCrawls / totalCrawls) * 100) : 0;
   
+  // Smart Guidance Logic
+  let nextActionPhase = 1;
+  if (pendingCheckbacks > 0) {
+    nextActionPhase = 4;
+  } else if (eligibleCoursesCount > 0) {
+    nextActionPhase = 5;
+  } else {
+    // If we have less than 100 recent crawls, assume we might need more discovery
+    nextActionPhase = (totalCrawls > 100 && pendingCheckbacks === 0) ? 0 : 2; 
+  }
+
   // Cost Estimate (Extremely rough: $0.003 per page for Gemini Flash + Search/Scrape overhead)
   const estCost = (totalCrawls * 0.003).toFixed(2);
 
@@ -97,63 +108,65 @@ export default async function NOCDashboard() {
           .pulse-dot { animation: pulse 1.5s infinite; }
           @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
         `}} />
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-          <div>
-             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-               <h1 style={{ fontSize: '2.5rem', fontWeight: 700, margin: 0, color: 'var(--forest)' }}>NY State Geo-Dispatcher</h1>
-               <span style={{ background: '#E0E7FF', color: '#4338CA', padding: '0.2rem 0.6rem', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 600 }}>EXPERIMENTAL</span>
-             </div>
-             <p style={{ color: 'var(--mist)', margin: 0 }}>Execute targeted geographic sweeps across multiple data sources.</p>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
-            {/* Top triggers moved to pipeline below */}
-          </div>
+        
+        {/* Dynamic Command Center Header */}
+        <div style={{ background: 'var(--forest)', color: 'white', padding: '2.5rem', borderRadius: '16px', marginBottom: '2.5rem', boxShadow: 'var(--shadow-md)' }}>
+           <h1 style={{ fontSize: '2rem', fontWeight: 800, margin: '0 0 0.5rem 0' }}>Tournament Data Engine</h1>
+           <p style={{ fontSize: '1.1rem', margin: 0, opacity: 0.9, lineHeight: 1.5 }}>
+             {nextActionPhase === 4 && `You have ${pendingCheckbacks} raw events waiting to be processed. Your next step is to run the AI Normalizer.`}
+             {nextActionPhase === 5 && `You have ${eligibleCoursesCount} courses missing logos or details. Your next step is to run the Course Crawler.`}
+             {nextActionPhase < 4 && `Your data pipeline is currently completely synchronized. You can start a new discovery search to find more events.`}
+           </p>
         </div>
 
-        {/* 4-Step Ingestion Pipeline Sequence */}
-        <div style={{ marginBottom: '3rem' }}>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--forest)', marginBottom: '1.25rem' }}>Automated Discovery & Ingestion Pipeline</h2>
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(4, 1fr)', 
-            gap: '1.5rem', 
-            background: 'var(--sand)',
-            padding: '1.5rem',
-            borderRadius: '16px',
-            border: '1px solid rgba(0,0,0,0.05)'
-          }}>
-            <SmartSpiderTrigger />
-            <PlatformSearchTrigger />
-            <CheckbackTrigger pendingCount={pendingCheckbacks} />
-            <CrawlerTrigger pendingCount={eligibleCoursesCount} />
+        <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: '2rem', marginBottom: '3rem', alignItems: 'flex-start' }}>
+          
+          {/* LEFT COLUMN: Pipeline Sequence */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--forest)', margin: '0 0 0.5rem 0' }}>Ingestion Pipeline</h2>
+            
+            <ApifySyncTrigger isNextAction={nextActionPhase === 1} />
+            
+            <div style={{ width: '2px', height: '16px', background: 'rgba(0,0,0,0.1)', margin: '0 auto' }} />
+            <SmartSpiderTrigger isNextAction={nextActionPhase === 2} />
+            
+            <div style={{ width: '2px', height: '16px', background: 'rgba(0,0,0,0.1)', margin: '0 auto' }} />
+            <PlatformSearchTrigger isNextAction={nextActionPhase === 3} />
+            
+            <div style={{ width: '2px', height: '16px', background: 'rgba(0,0,0,0.1)', margin: '0 auto' }} />
+            <CheckbackTrigger pendingCount={pendingCheckbacks} isNextAction={nextActionPhase === 4} />
+            
+            <div style={{ width: '2px', height: '16px', background: 'rgba(0,0,0,0.1)', margin: '0 auto' }} />
+            <CrawlerTrigger pendingCount={eligibleCoursesCount} isNextAction={nextActionPhase === 5} />
           </div>
-        </div>
 
-        {/* System Health Indicators */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem', marginBottom: '3rem' }}>
-          <HealthCard title="Upstash QStash" status="Nominal" icon={<Server color="var(--grass)" />} color="var(--grass)" />
-          <HealthCard title="Engine 1: Native" status={isActivelyRunning ? "Processing Payload" : "Standby"} icon={<Activity color={isActivelyRunning ? "var(--emerald)" : "var(--mist)"} />} color={isActivelyRunning ? "var(--emerald)" : "var(--mist)"} isPulsing={isActivelyRunning} />
-          <HealthCard title="Engine 2: FireCrawl" status="Standby" icon={<Zap color="var(--gold-dark)" />} color="var(--gold-dark)" />
-          <HealthCard title="Neon DB Ingestion" status="Synchronized" icon={<Database color="var(--forest)" />} color="var(--forest)" />
-        </div>
+          {/* RIGHT COLUMN: Information & Feeds */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            
+            {/* The Data Funnel */}
+            <div>
+              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--forest)', margin: '0 0 1rem 0' }}>Data Funnel</h2>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+                <FunnelCard title="Raw Events Found" value={(totalTournaments + pendingCheckbacks).toString()} color="var(--gold-dark)" />
+                <FunnelCard title="Waiting for AI" value={pendingCheckbacks.toString()} color="var(--admin-pin-red)" highlight={pendingCheckbacks > 0} />
+                <FunnelCard title="Fully Published" value={totalTournaments.toString()} color="var(--emerald)" />
+              </div>
+            </div>
 
-        {/* Apify External Link & Fallback Sync */}
-        <div className="lux-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem', background: 'var(--white)', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '12px' }}>
-           <div>
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--forest)', marginBottom: '0.25rem' }}>External Scraping Engine</h3>
-              <p style={{ color: 'var(--mist)', fontSize: '0.9rem', margin: 0 }}>Configure new webhooks or manually sync payloads from Apify.</p>
-           </div>
-           <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-             <ApifySyncTrigger />
-             <a href="https://console.apify.com" target="_blank" rel="noopener noreferrer" className="btn-hero" style={{ padding: '0.8rem 1.5rem', fontSize: '0.9rem' }}>
-                Open Apify Console ↗
-             </a>
-           </div>
-        </div>
+            {/* External Systems Link */}
+            <div className="lux-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 1.5rem', background: 'var(--white)', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '12px' }}>
+               <div>
+                  <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--forest)', marginBottom: '0.15rem' }}>Apify Developer Console</h3>
+                  <p style={{ color: 'var(--mist)', fontSize: '0.8rem', margin: 0 }}>Configure platform webhooks or monitor SaaS scraper logs.</p>
+               </div>
+               <a href="https://console.apify.com" target="_blank" rel="noopener noreferrer" className="btn-hero" style={{ padding: '0.6rem 1.2rem', fontSize: '0.8rem' }}>
+                  Open Apify Console ↗
+               </a>
+            </div>
 
         {/* Quick Reference Dashboard */}
         <div style={{ marginTop: '3.5rem' }}>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--forest)', marginBottom: '1.25rem' }}>Global Ingestion Metrics</h2>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--forest)', marginBottom: '1.25rem' }}>Platform Statistics</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem', marginBottom: '1rem' }}>
              <QuickStatCard title="Total Discoveries" value={totalTournaments.toString()} label="Tournaments Extracted to Database" color="var(--emerald)" />
              <QuickStatCard title="Facebook Events" value={fbCount.toString()} label="Native Social Graph Ingest" color="#1877F2" />
@@ -167,8 +180,8 @@ export default async function NOCDashboard() {
         {/* New Feature: Recently Discovered Tournaments Highlight */}
         {uniqueRecentTournaments.length > 0 && (
           <div style={{ marginTop: '3.5rem' }}>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--forest)', marginBottom: '1.25rem' }}>Recently Extracted Listings</h2>
-            <p style={{ color: 'var(--mist)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>These events were successfully pulled from the latest payloads and are live on the directory.</p>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--forest)', marginBottom: '1.25rem' }}>Recently Published Tournaments</h2>
+            <p style={{ color: 'var(--mist)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>These events have successfully passed through the pipeline and are now live on the directory.</p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
               {uniqueRecentTournaments.map((t, idx) => {
                 const isFb = t.source.includes('facebook');
@@ -301,26 +314,12 @@ export default async function NOCDashboard() {
           </div>
         </div>
 
+          </div> {/* End Right Column */}
+        </div> {/* End Outer Grid */}
     </div>
   );
 }
 
-function HealthCard({ title, status, icon, color, isPulsing = false }: { title: string, status: string, icon: React.ReactNode, color: string, isPulsing?: boolean }) {
-  return (
-    <div style={{ background: 'var(--white)', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '12px', padding: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem', boxShadow: 'var(--shadow-sm)' }}>
-      <div style={{ background: `color-mix(in srgb, ${color} 15%, transparent)`, padding: '0.85rem', borderRadius: '10px' }}>
-         {icon}
-      </div>
-      <div>
-        <div style={{ color: 'var(--mist)', fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{title}</div>
-        <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--forest)', display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.25rem' }}>
-          <div className={isPulsing ? 'pulse-dot' : ''} style={{ width: '8px', height: '8px', borderRadius: '50%', background: color, boxShadow: `0 0 8px ${color}` }}></div>
-          {status}
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function QuickStatCard({ title, value, label, color }: { title: string, value: string, label: string, color: string }) {
   return (
@@ -328,6 +327,21 @@ function QuickStatCard({ title, value, label, color }: { title: string, value: s
        <div style={{ color: 'var(--mist)', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.5rem' }}>{title}</div>
        <div style={{ fontSize: '2.5rem', fontWeight: 800, color: color, lineHeight: 1.1 }}>{value}</div>
        <div style={{ color: 'var(--mist)', fontSize: '0.85rem', fontWeight: 500, marginTop: '0.5rem' }}>{label}</div>
+    </div>
+  );
+}
+
+function FunnelCard({ title, value, color, highlight = false }: { title: string, value: string, color: string, highlight?: boolean }) {
+  return (
+    <div style={{ 
+      background: highlight ? `color-mix(in srgb, ${color} 10%, white)` : 'var(--white)', 
+      border: highlight ? `2px solid ${color}` : '1px solid rgba(0,0,0,0.05)', 
+      borderRadius: '12px', 
+      padding: '1.5rem', 
+      boxShadow: 'var(--shadow-sm)' 
+    }}>
+       <div style={{ color: highlight ? color : 'var(--mist)', fontSize: '0.85rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.5rem' }}>{title}</div>
+       <div style={{ fontSize: '2.5rem', fontWeight: 800, color: color, lineHeight: 1.1 }}>{value}</div>
     </div>
   );
 }
