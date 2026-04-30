@@ -47,6 +47,13 @@ export default function CheckbackTrigger({ pendingCount }: { pendingCount: numbe
           setProcessedCount(localProcessed);
           setCurrentTournament(data.tournamentName || `Event ID ${data.processedId}`);
           setMessage(`[${data.action}] Processing ${localProcessed} of ${itemsToProcess}...`);
+          
+          // STRICT 15 RPM RATE LIMITING FOR GEMINI FREE TIER
+          // We must wait ~4 seconds between requests so we never exceed 15 requests per minute.
+          if (localProcessed < itemsToProcess && !isComplete) {
+            setMessage(`[${data.action}] Throttling for 4s to respect Gemini rate limits...`);
+            await new Promise(resolve => setTimeout(resolve, 4200));
+          }
         }
       } catch (err) {
         console.error(err);
