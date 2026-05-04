@@ -124,6 +124,22 @@ export const crawlLogs = pgTable('crawl_logs', {
   crawledAt: timestamp('crawled_at').defaultNow(),
 });
 
+export const visitedUrls = pgTable('visited_urls', {
+  id: serial('id').primaryKey(),
+  urlHash: text('url_hash').notNull().unique(), // sha256 of normalized URL
+  url: text('url').notNull(),
+  sourceDomain: text('source_domain'),
+  discoveredAt: timestamp('discovered_at').defaultNow(),
+  lastCrawledAt: timestamp('last_crawled_at'),
+  status: text('status').default('pending'), // 'pending', 'crawled', 'failed', 'skipped'
+  tournamentsFound: integer('tournaments_found').default(0),
+  depth: integer('depth').default(0),
+}, (table) => [
+  index('idx_visited_urls_hash').on(table.urlHash),
+  index('idx_visited_urls_status').on(table.status),
+  index('idx_visited_urls_domain').on(table.sourceDomain),
+]);
+
 // ─── Database connection ───
 
 let db: ReturnType<typeof drizzle> | null = null;
@@ -299,6 +315,38 @@ export async function logCrawl(cycleId: string, sourceId: string, url: string, s
     tournamentsFound: found,
     error: error || null,
   });
+}
+
+// ─── Deduplication / Visited URLs Operations ───
+
+export async function markUrlVisited(urlHash: string, url: string, domain: string, depth: number = 0): Promise<boolean> {
+  const database = getDb();
+  try {
+    await database.insert(visitedUrls).values({
+      urlHash,
+      url,
+      sourceDomain: domain,
+      status: 'crawled',
+      depth,
+      lastCrawledAt: new Date()
+    }).onConflictDoUpdate({
+      target: visitedUrls.urlHash,
+      set: {
+        lastCrawledAt: new Date(),
+        status: 'crawled'
+      }
+    });
+    return true;
+  } catch (err) {
+    logger.error({ urlHash, error: String(err) }, 'Failed to mark URL as visited');
+    return false;
+  }
+}
+
+export async function isUrlVisited(urlHash: string): Promise<boolean> {
+  const database = getDb();
+  const result = await database.select().from(visitedUrls).where(eq(visitedUrls.urlHash, urlHash));
+  return result.length > 0 && result[0].status === 'crawled';
 }
 
 export async function getTournamentCount(): Promise<number> {

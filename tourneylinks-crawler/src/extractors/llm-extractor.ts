@@ -219,7 +219,7 @@ ${EXTRACTION_PROMPT}`,
       }
     }
 
-    const tokensUsed = (response.usageMetadata?.promptTokenCount || 0) + (response.usageMetadata?.candidatesTokenCount || 0);
+    const tokensUsed = (response?.usageMetadata?.promptTokenCount || 0) + (response?.usageMetadata?.candidatesTokenCount || 0);
 
     logger.info({
       url: pageUrl, source: sourceId,
